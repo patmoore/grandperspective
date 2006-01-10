@@ -1,0 +1,34 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {colorMappingChoiceAction = id; paletteChoiceAction = id; upAction = id; }; 
+            CLASS = DirectoryViewControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                colorMappingChoice = NSPopUpButton; 
+                mainView = NSView; 
+                paletteChoice = NSPopUpButton; 
+                upButton = NSButton; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {
+                abort = id; 
+                duplicateDirectoryView = id; 
+                openDirectoryView = id; 
+                twinDirectoryView = id; 
+            }; 
+            CLASS = StartupControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                progressIndicator = NSProgressIndicator; 
+                progressPanel = NSPanel; 
+                progressText = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
