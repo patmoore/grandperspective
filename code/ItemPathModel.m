@@ -33,7 +33,8 @@
 }
 
 - (void) dealloc {
-  NSLog(@"ItemPathModel-dealloc");
+  //NSLog(@"ItemPathModel-dealloc");
+
   [path release];
   
   [super dealloc];

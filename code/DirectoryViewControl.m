@@ -49,8 +49,11 @@ id makeSizeString(ITEM_SIZE size) {
 @implementation DirectoryViewControl
 
 - (id) initWithItemTree:(FileItem*)root {
-  return [self initWithItemTree:root
-                 itemPathModel:[[ItemPathModel alloc] initWithTree:root]
+  ItemPathModel  *pathModel = 
+    [[[ItemPathModel alloc] initWithTree:root] autorelease];
+
+  return [self initWithItemTree:root 
+                 itemPathModel:pathModel
                  fileItemHashingKey:nil];
 }
 

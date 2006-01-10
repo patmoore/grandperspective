@@ -21,6 +21,8 @@
 }
 
 - (void) dealloc {
+  //NSLog(@"ItemPathBuilder-dealloc");
+
   [pathModel release];
 }
 
