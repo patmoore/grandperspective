@@ -1,0 +1,70 @@
+==============================================================================
+  GrandPerspective
+==============================================================================
+
+------------------------------------------------------------------------------
+  Version 0.92, 08-01-2006
+------------------------------------------------------------------------------
+
+Changes since Version 0.91:
+
+- New functionality:
+  - Added a "twin window" command. This is like the "duplicate window" 
+    command, except that navigation of the directory tree in the new window is
+    synchronized with its parent window.
+
+- Improved functionality:
+  - When duplicating a window, the file colouring scheme and the path in the 
+    tree are now also copied.
+
+- Code clean up:
+  - Refactored code so that it adheres much better to the MVC pattern.
+
+- Bug fixes:
+  - Fixed bug that would occassionally prevent redrawing of the directory 
+    view. (ID 1309819)
+  - Plugged a big memory leak. The directory tree is now actually freed when
+    all windows that refer to it are closed.
+
+
+------------------------------------------------------------------------------
+  Version 0.91, 30-09-2005
+------------------------------------------------------------------------------
+
+Changes since Version 0.90:
+
+- Now building with ZeroLink disabled, so that the application should actually
+  run on machines other than my own. :-)
+
+- Optimised view drawing. Drawing the tree map of my entire hard drive 
+  contents at 1280x1024 resolution on my Mac Mini now takes only half a
+  second.
+
+
+------------------------------------------------------------------------------
+  Version 0.90, 20-09-2005
+------------------------------------------------------------------------------
+
+First release of GrandPerspective.
+
+Features:
+
+- A view showing directory trees graphically:
+  - Layout of files using a basic balanced tree building algorithm.
+  - Drawing of files using basic gradient filling.
+
+- Support for different file colouring schemes. Colouring by: 
+  - Directory name (i.e. a hash of the name)
+  - File name (i.e. a hash of the name)
+  - File type (i.e. hash of file extension)
+  - Nothing (all files same colour)
+
+- Selection of a file in the view:
+  - To descend into the directory tree.
+  - To enable copying of file path. 
+
+- Support for multiple windows:
+  - Scan different folder and show in new window.
+  - Duplication of an existing window (to view data differently).
+
+
