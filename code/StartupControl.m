@@ -125,8 +125,7 @@
   FileItem  *itemTree = [oldControl itemTree];
   
   if (itemTree!=nil) {
-    // Note: sharing reference is okay, as hashing schemes are immutable.
-    FileItemHashing  *fileItemHashing = [oldControl fileItemHashing];
+    NSString  *fileItemHashingKey = [oldControl fileItemHashingKey];
 
     // Share or clone the path model.
     ItemPathModel  *itemPathModel = [oldControl itemPathModel];
@@ -138,7 +137,7 @@
       [[DirectoryViewControl alloc] 
           initWithItemTree:itemTree 
           itemPathModel:itemPathModel
-          fileItemHashing:fileItemHashing];          
+          fileItemHashingKey:fileItemHashingKey];          
     // Note: The control should auto-release itself when its window closes
       
     // Force loading (and showing) of the window.

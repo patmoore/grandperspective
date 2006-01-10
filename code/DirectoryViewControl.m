@@ -51,14 +51,14 @@ id makeSizeString(ITEM_SIZE size) {
 - (id) initWithItemTree:(FileItem*)root {
   return [self initWithItemTree:root
                  itemPathModel:[[ItemPathModel alloc] initWithTree:root]
-                 fileItemHashing:nil];
+                 fileItemHashingKey:nil];
 }
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithItemTree:(FileItem*)root 
          itemPathModel:(ItemPathModel*)pathModel
-         fileItemHashing:(FileItemHashing*)fileItemHashing {
+         fileItemHashingKey:(NSString*)fileItemHashingKey {
          
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
     itemTreeRoot = [root retain];
@@ -67,13 +67,10 @@ id makeSizeString(ITEM_SIZE size) {
     hashingOptions = 
       [[FileItemHashingOptions defaultFileItemHashingOptions] retain];
     
-    if (fileItemHashing == nil) {
-      hashingOption = [[hashingOptions fileItemHashingForKey:
-                         [hashingOptions keyForDefaultHashing]] retain];
-    }
-    else {
-      hashingOption = [fileItemHashing retain];
-    }
+    initialHashingOptionKey = 
+      [ ((fileItemHashingKey == nil) ? [hashingOptions keyForDefaultHashing]
+                                     : fileItemHashingKey) 
+        retain ];
     
     itemPathModel = [pathModel retain];
   }
@@ -92,7 +89,7 @@ id makeSizeString(ITEM_SIZE size) {
   [invisiblePathName release];
 
   [hashingOptions release];
-  [hashingOption release];
+  [initialHashingOptionKey release];
   
   [super dealloc];
 }
@@ -103,8 +100,8 @@ id makeSizeString(ITEM_SIZE size) {
 }
 
 
-- (FileItemHashing*) fileItemHashing {
-  return hashingOption;
+- (NSString*) fileItemHashingKey {
+  return [colorMappingChoice objectValueOfSelectedItem];
 }
 
 - (ItemPathModel*) itemPathModel {
@@ -116,8 +113,11 @@ id makeSizeString(ITEM_SIZE size) {
   [colorMappingChoice addItemsWithObjectValues:
      [[hashingOptions allKeys] 
          sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
-  [colorMappingChoice selectItemWithObjectValue:hashingOption];
-  [mainView setFileItemHashing:hashingOption];
+  
+  [colorMappingChoice selectItemWithObjectValue:initialHashingOptionKey];
+  [initialHashingOptionKey release];
+  initialHashingOptionKey = nil;
+  [self colorMappingChanged:nil];
   
   [mainView setItemPathModel:itemPathModel];
   
@@ -158,7 +158,8 @@ id makeSizeString(ITEM_SIZE size) {
 }
 
 - (IBAction) colorMappingChanged:(id)sender {
-  hashingOption = [hashingOptions fileItemHashingForKey:
+  FileItemHashing  *hashingOption = 
+    [hashingOptions fileItemHashingForKey:
                                [colorMappingChoice objectValueOfSelectedItem]];
       
   [mainView setFileItemHashing:hashingOption];

@@ -20,7 +20,7 @@
   ItemPathModel  *itemPathModel;
 
   FileItemHashingOptions  *hashingOptions;
-  FileItemHashing  *hashingOption;
+  NSString  *initialHashingOptionKey;
 
   NSMutableString  *invisiblePathName;
 }
@@ -32,11 +32,11 @@
 - (id) initWithItemTree:(FileItem*)itemTreeRoot;
 - (id) initWithItemTree:(FileItem*)itemTreeRoot 
          itemPathModel:(ItemPathModel*)itemPathModel
-         fileItemHashing:(FileItemHashing*)fileItemHashing;
+         fileItemHashingKey:(NSString*)fileItemHashingKey;
 
 - (FileItem*) itemTree;
 
-- (FileItemHashing*) fileItemHashing;
+- (NSString*) fileItemHashingKey;
 
 - (ItemPathModel*) itemPathModel;
 
