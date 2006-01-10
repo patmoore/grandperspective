@@ -130,7 +130,7 @@
     // Share or clone the path model.
     ItemPathModel  *itemPathModel = [oldControl itemPathModel];
     if (!shareModel) {
-      itemPathModel = [itemPathModel copy];
+      itemPathModel = [[itemPathModel copy] autorelease];
     }
     
     DirectoryViewControl  *newControl = 
