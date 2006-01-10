@@ -44,7 +44,7 @@ static struct {
 
 - (Item*) createTreeForItems:(NSMutableArray*)items;
   
-- (void) buildTreeForDirectory:(DirectoryItem*)dirItem 
+- (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref;
 
 @end // @interface BalancedTreeBuilder (PrivateMethods)
@@ -119,9 +119,9 @@ static struct {
   DirectoryItem*  rootItem = 
     [[[DirectoryItem alloc] initWithName:path parent:nil] autorelease];
 
-  [self buildTreeForDirectory:rootItem parentPath:@"" ref:&rootRef];
+  BOOL  ok = [self buildTreeForDirectory:rootItem parentPath:@"" ref:&rootRef];
 
-  return rootItem;
+  return ok ? rootItem : nil;
 }
 
 @end // @implementation BalancedTreeBuilder
@@ -200,7 +200,7 @@ static struct {
 }
 
 
-- (void) buildTreeForDirectory:(DirectoryItem*)dirItem 
+- (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
   // TEMP
   //if ([[dirItem name] isEqualToString:@"exclude-me"]) {
@@ -323,6 +323,8 @@ static struct {
   [dirChildren release];
   [dirFsRefs release];
   [localAutoreleasePool release];
+  
+  return !abort;
 }
 
 @end // @implementation BalancedTreeBuilder (PrivateMethods)
