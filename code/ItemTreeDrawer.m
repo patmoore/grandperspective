@@ -5,18 +5,12 @@
 #import "ColorPalette.h"
 #import "TreeLayoutBuilder.h"
 
-enum {
-  IMAGE_TASK_PENDING = 345,
-  NO_IMAGE_TASK
-};
 
 @interface ItemTreeDrawer (PrivateMethods)
 
-- (void) defaultPostNotificationName:(NSString*)notificationName;
-- (void) imageDrawLoop;
-- (void) backgroundDrawItemTree:(Item*)itemTreeRoot 
-           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder 
-           inRect:(NSRect)bounds;
+// Implicitly implement "TreeLayoutTraverser" protocol.
+- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;
+
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) calculateGradientColors;
@@ -44,13 +38,6 @@ enum {
     
     colorPalette = colorPaletteVal;
     [colorPalette retain];
-  
-    workLock = [[NSConditionLock alloc] initWithCondition:NO_IMAGE_TASK];
-    settingsLock = [[NSLock alloc] init];
-    abort = NO;
-
-    [NSThread detachNewThreadSelector:@selector(imageDrawLoop)
-                toTarget:self withObject:nil];
   }
   return self;
 }
@@ -61,23 +48,14 @@ enum {
   
   free(gradientColors);
   
-  [image release];
-  
-  [workLock release];
-  [settingsLock release];
-  
-  [drawItemTree release];
-  [drawLayoutBuilder release];
-  
   [super dealloc];
 }
+
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashingVal {
   if (fileItemHashingVal != fileItemHashing) {
     [fileItemHashing release];
     fileItemHashing = [fileItemHashingVal retain];
-    
-    [self resetImage];
   }
 }
 
@@ -87,32 +65,71 @@ enum {
 
 
 - (void) setColorPalette:(ColorPalette*)colorPaletteVal {
-  [settingsLock lock];
-  [colorPaletteVal retain];
-  [colorPalette release];
-  colorPalette = colorPaletteVal;
-  [settingsLock unlock];
-
-  [self resetImage];
+  if (colorPaletteVal != colorPalette) {
+    [colorPalette release];
+    colorPalette = colorPaletteVal;
+  }
 }
 
 
-
-- (NSImage*) getImage {
-  [settingsLock lock];
-  NSImage*  returnImage = [[image retain] autorelease];
-  [settingsLock unlock];
+- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot 
+               usingLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder
+               inRect: (NSRect)bounds {
+  NSDate  *startTime = [NSDate date];
   
-  return returnImage;
+  abort = NO;
+
+  if (colorPalette!=nil) {
+    [self calculateGradientColors];
+    [colorPalette release];
+    colorPalette = nil;
+  }
+
+  NSAssert(drawBitmap == nil, @"Bitmap should be nil.");
+  drawBitmap =  
+    [[NSBitmapImageRep alloc] 
+      initWithBitmapDataPlanes: NULL
+      pixelsWide: (int)bounds.size.width
+      pixelsHigh: (int)bounds.size.height
+      bitsPerSample: 8
+      samplesPerPixel: 3
+      hasAlpha: NO
+      isPlanar: NO
+      colorSpaceName: NSDeviceRGBColorSpace
+      bytesPerRow: 0
+      bitsPerPixel: 32];
+  
+  // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
+  // useful/occur?
+  id  traverser = self;
+  [layoutBuilder layoutItemTree: itemTreeRoot inRect: bounds 
+                 traverser: traverser];
+
+  NSImage  *image = nil;
+
+  if (!abort) {
+    NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
+
+    image = [[NSImage alloc] initWithSize:bounds.size];
+    [image addRepresentation:drawBitmap];
+  }
+
+  [drawBitmap release];
+  drawBitmap = nil;
+
+  return image;
 }
 
-- (void) resetImage {
-  [settingsLock lock];
-  [image release];
-  image = nil;
-  [settingsLock unlock];
+
+- (void) abortDrawing {
+  abort = YES;
 }
 
+
+@end // @implementation ItemTreeDrawer
+
+
+@implementation ItemTreeDrawer (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (![item isVirtual]) {
@@ -126,118 +143,6 @@ enum {
 
   // Only descend/continue when the current drawing task has not been aborted.
   return !abort;
-}
-
-- (void) drawItemTree:(Item*)itemTreeRoot 
-           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
-           inRect:(NSRect)bounds {
-  [settingsLock lock];
-  if (drawItemTree != itemTreeRoot) {
-    [drawItemTree release];
-    drawItemTree = [itemTreeRoot retain];
-  }
-  if (drawLayoutBuilder != layoutBuilder) {
-    [drawLayoutBuilder release];
-    drawLayoutBuilder = [layoutBuilder retain];
-  }
-  drawInRect = bounds;
-  abort = YES;
-
-  if ([workLock condition] == NO_IMAGE_TASK) {
-    // Notify waiting thread
-    [workLock lock];
-    [workLock unlockWithCondition:IMAGE_TASK_PENDING];
-  }
-  [settingsLock unlock];
-}
-
-@end // @implementation ItemTreeDrawer
-
-
-@implementation ItemTreeDrawer (PrivateMethods)
-
-- (void) defaultPostNotificationName:(NSString*)notificationName {
-  [[NSNotificationCenter defaultCenter]
-      postNotificationName:notificationName object:self];
-}
-
-- (void) imageDrawLoop {
-  while (YES) {
-    NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
-
-    [workLock lockWhenCondition:IMAGE_TASK_PENDING];
-        
-    [settingsLock lock];
-    NSAssert(drawItemTree != nil && drawLayoutBuilder != nil, 
-             @"Draw task not set properly.");
-    Item  *tree = [drawItemTree autorelease];
-    TreeLayoutBuilder  *builder = [drawLayoutBuilder autorelease];
-    NSRect  rect = drawInRect;
-    drawItemTree = nil;
-    drawLayoutBuilder = nil;
-    abort = NO;
-    
-    NSDate  *startTime = [NSDate date];
-    
-    if (colorPalette!=nil) {
-      [self calculateGradientColors];
-      [colorPalette release];
-      colorPalette = nil;
-    }
-    
-    [settingsLock unlock];
-
-    [self backgroundDrawItemTree:tree usingLayoutBuilder:builder inRect:rect];
-    
-    [settingsLock lock];
-    if (!abort) {
-      [self performSelectorOnMainThread:@selector(defaultPostNotificationName:)
-              withObject:@"itemTreeImageReady" waitUntilDone:NO];
-      
-      [workLock unlockWithCondition:NO_IMAGE_TASK];
-      
-      //NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
-    }
-    else {
-      [workLock unlockWithCondition:IMAGE_TASK_PENDING];
-    }
-    [settingsLock unlock];
-    
-    [pool release];
-  }
-}
-
-// Called from own thread.
-- (void) backgroundDrawItemTree:(Item*)itemTreeRoot 
-           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
-           inRect:(NSRect)bounds {
-  [self resetImage];
-  
-  drawBitmap = [[NSBitmapImageRep alloc] 
-                 initWithBitmapDataPlanes:NULL
-                 pixelsWide:(int)bounds.size.width
-                 pixelsHigh:(int)bounds.size.height
-                 bitsPerSample:8
-                 samplesPerPixel:3
-                 hasAlpha:NO
-                 isPlanar:NO
-                 colorSpaceName:NSDeviceRGBColorSpace
-                 bytesPerRow:0
-                 bitsPerPixel:32];
-  
-  // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
-  // useful/occur?
-  [layoutBuilder layoutItemTree:itemTreeRoot inRect:bounds traverser:self];
-
-  [settingsLock lock];
-  if (!abort) {
-    image = [[NSImage alloc] initWithSize:bounds.size];
-    [image addRepresentation:drawBitmap];
-  }
-  [settingsLock unlock];
-
-  [drawBitmap release];
-  drawBitmap = nil;
 }
 
 

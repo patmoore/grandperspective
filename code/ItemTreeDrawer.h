@@ -1,12 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-#import "TreeLayoutTraverser.h"
+//#import "TreeLayoutTraverser.h"
 
+@class Item;
 @class TreeLayoutBuilder;
 @class FileItemHashing;
 @class ColorPalette;
 
-@interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
+@interface ItemTreeDrawer : NSObject {
 
   FileItemHashing  *fileItemHashing;
 
@@ -15,17 +16,8 @@
   UInt32  *gradientColors;
   int  numGradientColors;
 
-  NSImage  *image;
   NSBitmapImageRep  *drawBitmap;
-
-  NSConditionLock  *workLock;
-  NSLock           *settingsLock;  
-  BOOL             abort;
-
-  // Settings for next drawing task
-  Item               *drawItemTree; // Assumed to be immutable
-  TreeLayoutBuilder  *drawLayoutBuilder; // Assumed to be immutable
-  NSRect             drawInRect;
+  BOOL  abort;
 }
 
 - (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashing;
@@ -39,11 +31,10 @@
 - (void) setColorPalette:(ColorPalette*)colorPalette;
 
 // Both "itemTreeRoot" and "layoutBuilder" should be immutable.
-- (void) drawItemTree:(Item*)itemTreeRoot 
+- (NSImage*) drawImageOfItemTree:(Item*)itemTreeRoot 
            usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
            inRect:(NSRect)bounds;
 
-- (NSImage*) getImage;
-- (void) resetImage;
+- (void) abortDrawing;
 
 @end

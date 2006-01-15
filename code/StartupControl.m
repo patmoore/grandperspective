@@ -70,6 +70,33 @@
   [self createWindowByCopying:YES];
 }
 
+- (IBAction) saveDirectionViewImage:(id)sender {
+  DirectoryViewControl  *control = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+
+  // get image size... (or default)
+
+  NSSavePanel  *savePanel = [NSSavePanel savePanel];
+  
+  [savePanel setRequiredFileType: @"png"];
+  
+  if ([savePanel runModal] == NSOKButton) {
+    // get image filename.
+    NSString  *filename = [savePanel filename];
+
+    // check exists...
+
+    NSBitmapImageRep  *imageBitmap; // from somewhere
+    NSData  *pngData = [imageBitmap 
+                         representationUsingType: NSPNGFileType
+                         properties: nil];
+  
+    if (! [pngData  writeToFile: filename atomically: NO] ) {
+      // report error
+    }
+  }
+}
+
 @end // @implementation StartupControl
 
 
