@@ -2,7 +2,12 @@
     IBClasses = (
         {CLASS = DirectoryView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {
-            ACTIONS = {colorMappingChanged = id; downAction = id; upAction = id; }; 
+            ACTIONS = {
+                colorMappingChanged = id; 
+                downAction = id; 
+                openFileInFinder = id; 
+                upAction = id; 
+            }; 
             CLASS = DirectoryViewControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -11,6 +16,7 @@
                 itemNameLabel = NSTextField; 
                 itemSizeLabel = NSTextField; 
                 mainView = DirectoryView; 
+                openButton = NSButton; 
                 upButton = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 

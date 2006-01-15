@@ -10,6 +10,9 @@
 - (void) postVisibleItemTreeChanged;
 - (void) postVisibleItemPathLockingChanged;
 
+// "start" is inclusive, "end" is exclusive.
+- (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end;
+
 @end
 
 
@@ -106,6 +109,24 @@
 
 - (FileItem*) fileItemPathEndPoint {
   return [path objectAtIndex:lastFileItemIndex];
+}
+
+
+
+- (NSString*) rootFilePathName {
+  FileItem  *root = [path objectAtIndex:0];
+  return [root name];
+}
+
+- (NSString*) invisibleFilePathName {
+  return [self buildPathNameFromIndex:1             // skip the tree root
+                 toIndex:visibleTreeRootIndex + 1]; // include visible root
+}
+
+- (NSString*) visibleFilePathName {
+  return [self buildPathNameFromIndex:visibleTreeRootIndex + 1  
+                                                     // skip the visible root
+                  toIndex:[path count]];             // include the end point
 }
 
 
@@ -232,6 +253,29 @@
 - (void) postVisibleItemPathLockingChanged {
   [[NSNotificationCenter defaultCenter]
       postNotificationName:@"visibleItemPathLockingChanged" object:self];
+}
+
+- (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end {
+  NSMutableString  *s = 
+    [[[NSMutableString alloc] initWithCapacity:128] autorelease];
+
+  int  i = start; // Skip the root
+  while (i < end) {
+    Item*  item = [path objectAtIndex:i]; 
+
+    if (![item isVirtual]) {
+      if ([s length] > 0) {
+        [s appendString:@"/"];
+      }
+      
+      id  fileitem = item;
+      [s appendString:[fileitem name]];
+    }
+    i++;
+  }
+
+  // Return an immutable string.
+  return  [NSString stringWithString:s];
 }
 
 @end

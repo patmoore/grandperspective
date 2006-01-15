@@ -160,6 +160,19 @@ id makeSizeString(ITEM_SIZE size) {
   [itemPathModel moveTreeViewDown];
 }
 
+- (IBAction) openFileInFinder:(id)sender {
+  NSString  *filePath = [itemPathModel visibleFilePathName];
+  NSString  *rootPath = 
+    [[itemPathModel rootFilePathName] 
+      stringByAppendingPathComponent: [itemPathModel invisibleFilePathName]];
+    
+  NSLog(@"root=%@ file=%@", rootPath, filePath);
+
+  [[NSWorkspace sharedWorkspace] 
+    selectFile: [rootPath stringByAppendingPathComponent:filePath] 
+    inFileViewerRootedAtPath: rootPath];  
+}
+
 - (IBAction) colorMappingChanged:(id)sender {
   FileItemHashing  *hashingOption = 
     [hashingOptions fileItemHashingForKey:
@@ -176,21 +189,7 @@ id makeSizeString(ITEM_SIZE size) {
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
   
   [invisiblePathName release];
-  invisiblePathName = [[NSMutableString alloc] initWithCapacity:128];
-
-  NSEnumerator  *items;
-  FileItem  *item;
-
-  items = [[itemPathModel invisibleFileItemPath] objectEnumerator];
-  [items nextObject]; // Skip first item
-  while (item = [items nextObject]) {
-    if ([invisiblePathName length] > 0) {
-      // TODO: get directory separator from somewhere?
-      [invisiblePathName appendString:@"/"];
-    }
-
-    [invisiblePathName appendString:[item name]];
-  }
+  invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
 
   [self updateButtonState:notification];
 }
@@ -200,23 +199,13 @@ id makeSizeString(ITEM_SIZE size) {
   [upButton setEnabled:[itemPathModel canMoveTreeViewUp]];
   [downButton setEnabled: [itemPathModel isVisibleItemPathLocked] &&
                           [itemPathModel canMoveTreeViewDown] ];
+  [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
 
   [itemSizeLabel setStringValue:
      makeSizeString([[itemPathModel fileItemPathEndPoint] itemSize])];
 
-  NSMutableString  *visiblePathName = [NSMutableString stringWithCapacity:128];  
-  NSEnumerator  *items = [[itemPathModel visibleFileItemPath] objectEnumerator];
-  FileItem  *item;
-
-  while (item = [items nextObject]) {
-    if ([visiblePathName length] > 0) {
-      // TODO: get directory separator from somewhere?
-      [visiblePathName appendString:@"/"];
-    }
-
-    [visiblePathName appendString:[item name]];    
-  }
-
+  NSString  *visiblePathName = [itemPathModel visibleFilePathName];
+  
   NSMutableString  *name = 
     [[NSMutableString alloc] 
         initWithCapacity:[invisiblePathName length] +

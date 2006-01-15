@@ -15,6 +15,7 @@
   IBOutlet DirectoryView *mainView;
   IBOutlet NSButton *upButton;
   IBOutlet NSButton *downButton;
+  IBOutlet NSButton *openButton;
 
   FileItem  *itemTreeRoot;
   ItemPathModel  *itemPathModel;
@@ -22,12 +23,13 @@
   FileItemHashingOptions  *hashingOptions;
   NSString  *initialHashingOptionKey;
 
-  NSMutableString  *invisiblePathName;
+  NSString  *invisiblePathName;
 }
 
-- (IBAction) colorMappingChanged:(id)sender;
 - (IBAction) upAction:(id)sender;
 - (IBAction) downAction:(id)sender;
+- (IBAction) openFileInFinder:(id)sender;
+- (IBAction) colorMappingChanged:(id)sender;
 
 - (id) initWithItemTree:(FileItem*)itemTreeRoot;
 - (id) initWithItemTree:(FileItem*)itemTreeRoot 
