@@ -10,6 +10,7 @@
 @interface ItemTreeDrawer : NSObject {
 
   FileItemHashing  *fileItemHashing;
+  TreeLayoutBuilder  *layoutBuilder;
 
   // Only set when it has not yet been loaded into the gradient array.
   ColorPalette  *colorPalette;
@@ -22,18 +23,20 @@
 
 - (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashing;
 
-- (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashing
-                  colorPalette:(ColorPalette*)colorPalette;
+- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashing
+         colorPalette: (ColorPalette*)colorPalette
+         layoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
+
+- (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
+- (TreeLayoutBuilder*) treeLayoutBuilder;
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
 - (FileItemHashing*) fileItemHashing;
 
 - (void) setColorPalette:(ColorPalette*)colorPalette;
 
-// Both "itemTreeRoot" and "layoutBuilder" should be immutable.
-- (NSImage*) drawImageOfItemTree:(Item*)itemTreeRoot 
-           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
-           inRect:(NSRect)bounds;
+// The tree starting at "itemTreeRoot" should be immutable.
+- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds;
 
 - (void) abortDrawing;
 

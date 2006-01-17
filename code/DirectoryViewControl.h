@@ -39,8 +39,10 @@
 - (FileItem*) itemTree;
 
 - (NSString*) fileItemHashingKey;
+- (FileItemHashing*) fileItemHashing;
 
 - (ItemPathModel*) itemPathModel;
 
+- (DirectoryView*) directoryView;
 
 @end

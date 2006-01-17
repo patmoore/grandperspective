@@ -107,8 +107,18 @@ id makeSizeString(ITEM_SIZE size) {
   return [colorMappingChoice objectValueOfSelectedItem];
 }
 
+- (FileItemHashing*) fileItemHashing {
+  return [mainView fileItemHashing];
+}
+
+
 - (ItemPathModel*) itemPathModel {
   return itemPathModel;
+}
+
+
+- (DirectoryView*) directoryView {
+  return mainView;
 }
 
 

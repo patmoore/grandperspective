@@ -19,9 +19,16 @@ enum {
 
 @implementation AsynchronousItemTreeDrawer
 
+// Overrides designated initialiser of superclass.
+- (id) init {
+  return [self initWithItemTreeDrawer: 
+                 [[[ItemTreeDrawer alloc] init] autorelease]];
+}
+
 - (id) initWithItemTreeDrawer: (ItemTreeDrawer*)drawerVal {
   if (self = [super init]) {
     drawer = [drawerVal retain];
+    fileItemHashing = [[drawer fileItemHashing] retain];
   
     workLock = [[NSConditionLock alloc] initWithCondition:NO_IMAGE_TASK];
     settingsLock = [[NSLock alloc] init];
@@ -35,6 +42,7 @@ enum {
 
 - (void) dealloc {
   [drawer release];
+  [fileItemHashing release];
   
   [image release];
   
@@ -42,7 +50,6 @@ enum {
   [settingsLock release];
   
   [drawItemTree release];
-  [drawLayoutBuilder release];
   
   [super dealloc];
 }
@@ -52,13 +59,25 @@ enum {
   [settingsLock lock];
 
   [fileItemHashingVal retain];
-  [drawFileItemHashing release];
-  drawFileItemHashing = fileItemHashingVal;
+  [fileItemHashing release];
+  fileItemHashing = fileItemHashingVal;
 
-  [self resetImage];
+  // Invalidate the image.
+  [image release];
+  image = nil;
 
   [settingsLock unlock];
 }
+
+- (FileItemHashing*) fileItemHashing {
+  return fileItemHashing;
+}
+
+
+- (TreeLayoutBuilder*) treeLayoutBuilder {
+  return [drawer treeLayoutBuilder];
+}
+
 
 
 - (NSImage*) getImage {
@@ -77,17 +96,12 @@ enum {
 }
 
 
-- (void) asynchronouslyDrawImageOfItemTree: (Item*)itemTreeRoot 
-           usingLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder
+- (void) asynchronouslyDrawImageOfItemTree: (Item*)itemTreeRoot
            inRect: (NSRect)bounds {
   [settingsLock lock];
   if (drawItemTree != itemTreeRoot) {
     [drawItemTree release];
     drawItemTree = [itemTreeRoot retain];
-  }
-  if (drawLayoutBuilder != layoutBuilder) {
-    [drawLayoutBuilder release];
-    drawLayoutBuilder = [layoutBuilder retain];
   }
   drawInRect = bounds;
 
@@ -116,23 +130,18 @@ enum {
     NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
 
     [workLock lockWhenCondition:IMAGE_TASK_PENDING];
-        
+            
     [settingsLock lock];
-    NSAssert(drawItemTree != nil && drawLayoutBuilder != nil, 
-             @"Draw task not set properly.");
+    NSAssert(drawItemTree != nil, @"Draw task not set properly.");
     Item  *tree = [drawItemTree autorelease];
-    TreeLayoutBuilder  *builder = [drawLayoutBuilder autorelease];
     NSRect  rect = drawInRect;
-    [drawer setFileItemHashing:drawFileItemHashing];
+    [drawer setFileItemHashing:fileItemHashing];
 
     drawItemTree = nil;
-    drawLayoutBuilder = nil;
 
     [settingsLock unlock];
     
-    image = [drawer drawImageOfItemTree: tree 
-                      usingLayoutBuilder: builder
-                      inRect: rect];
+    image = [drawer drawImageOfItemTree: tree inRect: rect];
     
     [settingsLock lock];
     if (image != nil) {

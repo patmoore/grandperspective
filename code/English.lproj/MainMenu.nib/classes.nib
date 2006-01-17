@@ -18,6 +18,7 @@
                 abort = id; 
                 duplicateDirectoryView = id; 
                 openDirectoryView = id; 
+                saveDirectoryViewImage = id; 
                 twinDirectoryView = id; 
             }; 
             CLASS = StartupControl; 

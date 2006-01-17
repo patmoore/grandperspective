@@ -4,7 +4,10 @@
 
 #import "BalancedTreeBuilder.h"
 #import "DirectoryViewControl.h"
+#import "DirectoryView.h"
 #import "ItemPathModel.h"
+#import "ItemTreeDrawer.h"
+
 
 @interface StartupControl (PrivateMethods)
 - (void)readDirectories:(NSString*)dirName;
@@ -24,6 +27,8 @@
 
 - (void) dealloc {
   NSAssert(treeBuilder == nil, @"TreeBuilder should be nil.");
+  
+  [treeDrawer release];
   
   [super dealloc];
 }
@@ -58,6 +63,10 @@
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
   
+  if ( [anItem action]==@selector(saveDirectoryViewImage:) ) {
+    return ([[NSApplication sharedApplication] mainWindow] != nil);
+  }
+  
   return YES;
 }
 
@@ -70,28 +79,42 @@
   [self createWindowByCopying:YES];
 }
 
-- (IBAction) saveDirectionViewImage:(id)sender {
-  DirectoryViewControl  *control = 
+- (IBAction) saveDirectoryViewImage:(id)sender {
+  DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
   // get image size... (or default)
+  NSRect  bounds = [[dirViewControl directoryView] bounds];
 
   NSSavePanel  *savePanel = [NSSavePanel savePanel];
   
-  [savePanel setRequiredFileType: @"png"];
+  [savePanel setRequiredFileType: @"tiff"];
   
   if ([savePanel runModal] == NSOKButton) {
     // get image filename.
     NSString  *filename = [savePanel filename];
 
     // check exists...
-
-    NSBitmapImageRep  *imageBitmap; // from somewhere
+    
+    if (treeDrawer == nil) {
+      // Lazily create drawer.
+      treeDrawer = [[ItemTreeDrawer alloc] init];
+    }
+    [treeDrawer setFileItemHashing:[dirViewControl fileItemHashing]];
+    
+    NSImage  *image =
+      [treeDrawer 
+         drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]
+         inRect: bounds];
+    
+    NSBitmapImageRep  *imageBitmap = 
+      [[image representations] objectAtIndex:0];
     NSData  *pngData = [imageBitmap 
-                         representationUsingType: NSPNGFileType
-                         properties: nil];
+                          representationUsingType: NSTIFFFileType
+                          properties: nil];
   
     if (! [pngData  writeToFile: filename atomically: NO] ) {
+      NSLog(@"writeToFile failed");
       // report error
     }
   }

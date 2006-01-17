@@ -13,23 +13,6 @@
 
 @implementation TreeLayoutBuilder
 
-- (void) dealloc {
-  [layoutLimits release];
-  
-  [super dealloc];
-}
-
-
-- (void) setLayoutLimits:(id <TreeLayoutTraverser>)layoutLimitsVal {
-  NSAssert(layoutLimitsVal!=nil, @"Cannot be nil.");
-  if (layoutLimits!=layoutLimitsVal) {
-    [layoutLimits release];
-    layoutLimits = layoutLimitsVal;
-    [layoutLimits retain];
-  }
-}
-
-
 - (void) layoutItemTree:(Item*)itemTreeRoot inRect:(NSRect)bounds
            traverser:(id <TreeLayoutTraverser>)traverser {
   [self layoutItemTree:itemTreeRoot inRect:bounds traverser:traverser depth:0];
@@ -43,10 +26,17 @@
 - (void) layoutItemTree:(id)root inRect:(NSRect)rect 
           traverser:(id <TreeLayoutTraverser>)traverser depth:(int)depth {
   
-  //NSLog(@"%@", NSStringFromRect(rect));
-  
-  if (!([layoutLimits descendIntoItem:root atRect:rect depth:depth] &&
-        [traverser descendIntoItem:root atRect:rect depth:depth])) {
+  // Rectangle must enclose one or more pixel "centers", i.e. it must enclose
+  // a point (x+0.5, y+0.5) where x, y are integer values. This means that the
+  // rectangle will be visible.
+  if ( ( (int)(rect.origin.x + rect.size.width + 0.5f) - 
+         (int)(rect.origin.x + 0.5f) <= 0 ) || 
+       ( (int)(rect.origin.y + rect.size.height + 0.5f) -
+         (int)(rect.origin.y + 0.5f) <= 0 ) ) {
+    return;
+  }
+    
+  if (! [traverser descendIntoItem:root atRect:rect depth:depth] ) {
     return;
   }
   
@@ -65,10 +55,7 @@
     else {
       NSDivideRect(rect, &rect1, &rect2, ratio*NSHeight(rect), NSMinYEdge); 
     }
-    
-    //NSLog(@"%@ divided into %@ and %@", NSStringFromRect(rect),
-    //      NSStringFromRect(rect1), NSStringFromRect(rect2));
-    
+        
     [self layoutItemTree:sub1 inRect:rect1 traverser:traverser depth:depth];
     [self layoutItemTree:sub2 inRect:rect2 traverser:traverser depth:depth];
   }

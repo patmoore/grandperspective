@@ -26,29 +26,44 @@
 }
 
 - (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashingVal {
-  return [self initWithFileItemHashing:fileItemHashingVal
-                 colorPalette:[ColorPalette defaultColorPalette]];
+  return [self initWithFileItemHashing: fileItemHashingVal
+                 colorPalette: [ColorPalette defaultColorPalette]
+                 layoutBuilder: [[[TreeLayoutBuilder alloc] init] autorelease]];
 }
 
-- (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashingVal
-         colorPalette:(ColorPalette*)colorPaletteVal {
+- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashingVal
+         colorPalette: (ColorPalette*)colorPaletteVal
+         layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
   if (self = [super init]) {
-    fileItemHashing = fileItemHashingVal;
-    [fileItemHashing retain];
+    fileItemHashing = [fileItemHashingVal retain];
     
-    colorPalette = colorPaletteVal;
-    [colorPalette retain];
+    colorPalette = [colorPaletteVal retain];
+    
+    layoutBuilder = [layoutBuilderVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
+  [layoutBuilder release];
   [fileItemHashing release];
   [colorPalette release];
   
   free(gradientColors);
   
   [super dealloc];
+}
+
+
+- (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
+  if (layoutBuilderVal != layoutBuilder) {
+    [layoutBuilder release];
+    layoutBuilder = [layoutBuilderVal retain];
+  }
+}
+
+- (TreeLayoutBuilder*) treeLayoutBuilder {
+  return layoutBuilder;
 }
 
 
@@ -72,9 +87,7 @@
 }
 
 
-- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot 
-               usingLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder
-               inRect: (NSRect)bounds {
+- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds {
   NSDate  *startTime = [NSDate date];
   
   abort = NO;

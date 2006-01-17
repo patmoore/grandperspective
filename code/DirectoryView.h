@@ -1,7 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@class TreeLayoutBuilder;
-@class ItemTreeDrawer;
+@class AsynchronousItemTreeDrawer;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
 @class ItemPathModel;
@@ -9,8 +8,7 @@
 
 @interface DirectoryView : NSView {
 
-  TreeLayoutBuilder  *treeLayoutBuilder;
-  ItemTreeDrawer  *treeDrawer;
+  AsynchronousItemTreeDrawer  *treeDrawer;
   ItemPathDrawer  *pathDrawer;
   ItemPathBuilder  *pathBuilder;
   
@@ -18,6 +16,7 @@
 }
 
 - (void) setItemPathModel:(ItemPathModel*)itemPath;
+- (ItemPathModel*) itemPathModel;
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
 - (FileItemHashing*) fileItemHashing;

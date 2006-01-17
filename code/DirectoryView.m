@@ -4,7 +4,7 @@
 
 #import "FileItem.h"
 #import "TreeLayoutBuilder.h"
-#import "ItemTreeDrawer.h"
+#import "AsynchronousItemTreeDrawer.h"
 #import "ItemPathDrawer.h"
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
@@ -25,36 +25,12 @@
 @end  
 
 
-@interface LayoutLimits : NSObject <TreeLayoutTraverser> {
-}
-@end // @interface LayoutLimits
-
-
-@implementation LayoutLimits
-
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
-  // Rectangle must enclose one or more pixel "centers", i.e. it must enclose
-  // a point (x+0.5, y+0.5) where x, y are integer values. This means that the
-  // rectangle will be visible.
-  return ((int)(rect.origin.x + rect.size.width + 0.5f) - 
-          (int)(rect.origin.x + 0.5f) > 0 && 
-          (int)(rect.origin.y + rect.size.height + 0.5f) -
-          (int)(rect.origin.y + 0.5f) > 0);
-}
-
-@end // @implementation LayoutLimits
-
-
 @implementation DirectoryView
 
 - (id) initWithFrame:(NSRect)frame {
   if (self = [super initWithFrame:frame]) {
-    treeLayoutBuilder = [[TreeLayoutBuilder alloc] init];
+    treeDrawer = [[AsynchronousItemTreeDrawer alloc] init];
 
-    [treeLayoutBuilder setLayoutLimits:
-      [[[LayoutLimits alloc] init] autorelease]];
-    
-    treeDrawer = [[ItemTreeDrawer alloc] init];
     pathDrawer = [[ItemPathDrawer alloc] init];
     
     [[NSNotificationCenter defaultCenter]
@@ -70,7 +46,6 @@
   
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
-  [treeLayoutBuilder release];
   [treeDrawer release];
   [pathDrawer release];
   [pathBuilder release];
@@ -110,8 +85,13 @@
   [self setNeedsDisplay:YES];
 }
 
+- (ItemPathModel*) itemPathModel {
+  return pathModel;
+}
+
+
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing {
-  if (fileItemHashing != [self fileItemHashing]) {
+  if (fileItemHashing != [treeDrawer fileItemHashing]) {
     [treeDrawer setFileItemHashing:fileItemHashing];
     [self setNeedsDisplay:YES];
   }
@@ -136,16 +116,16 @@
     NSRectFill([self bounds]);
     
     // Create image in background thread.
-    [treeDrawer drawItemTree:[pathModel visibleItemTree]
-                  usingLayoutBuilder:treeLayoutBuilder
-                  inRect:[self bounds]];
+    [treeDrawer asynchronouslyDrawImageOfItemTree: [pathModel visibleItemTree]
+                  inRect: [self bounds]];
   }
   else {
     [image compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
   
-    [pathDrawer drawItemPath:[pathModel itemPath] 
-         tree:[pathModel visibleItemTree] 
-         usingLayoutBuilder:treeLayoutBuilder bounds:[self bounds]];
+    [pathDrawer drawItemPath: [pathModel itemPath] 
+                  tree: [pathModel visibleItemTree] 
+                  usingLayoutBuilder: [treeDrawer treeLayoutBuilder]
+                  bounds: [self bounds]];
   }
 }
 
@@ -246,9 +226,9 @@
 
 
 - (void) buildPathToMouseLoc:(NSPoint)point {
-  [pathBuilder buildVisibleItemPathToPoint:point
-                       usingLayoutBuilder:treeLayoutBuilder
-                       bounds:[self bounds]];
+  [pathBuilder buildVisibleItemPathToPoint: point
+                       usingLayoutBuilder: [treeDrawer treeLayoutBuilder]
+                       bounds: [self bounds]];
 }
 
 @end // @implementation DirectoryView (PrivateMethods)
