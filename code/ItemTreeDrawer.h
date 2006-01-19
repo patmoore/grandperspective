@@ -39,5 +39,6 @@
 - (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds;
 
 - (void) abortDrawing;
+- (void) resetAbortDrawingFlag;
 
 @end

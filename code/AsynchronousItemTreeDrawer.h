@@ -14,6 +14,7 @@
 
   NSConditionLock  *workLock;
   NSLock           *settingsLock;
+  BOOL  alive;
 
   // Settings for next drawing task
   Item               *drawItemTree; // Assumed to be immutable
@@ -21,6 +22,9 @@
 }
 
 - (id) initWithItemTreeDrawer: (ItemTreeDrawer*)drawer;
+
+// Call to free used resources (in particular background thread that is used).
+- (void) dispose;
 
 // Both "itemTreeRoot" and "layoutBuilder" should be immutable.
 - (void) asynchronouslyDrawImageOfItemTree:(Item*)itemTreeRoot 

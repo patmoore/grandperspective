@@ -6,8 +6,14 @@
 #import "TreeLayoutBuilder.h"
 
 enum {
-  IMAGE_TASK_PENDING = 345,
-  NO_IMAGE_TASK
+  // Indicates that there is a drawing task in progress or ready to be
+  // executed (or that the drawer has been disposed and that the thread
+  // needs to terminate).
+  DRAWING_THREAD_BUSY = 345,
+
+  // Indicates that the thread can block or is blocking, waiting for a new
+  // drawing task (or for the drawer to be disposed).
+  DRAWING_THREAD_IDLE
 };
 
 @interface AsynchronousItemTreeDrawer (PrivateMethods)
@@ -30,8 +36,9 @@ enum {
     drawer = [drawerVal retain];
     fileItemHashing = [[drawer fileItemHashing] retain];
   
-    workLock = [[NSConditionLock alloc] initWithCondition:NO_IMAGE_TASK];
+    workLock = [[NSConditionLock alloc] initWithCondition:DRAWING_THREAD_IDLE];
     settingsLock = [[NSLock alloc] init];
+    alive = YES;
 
     [NSThread detachNewThreadSelector:@selector(imageDrawLoop)
                 toTarget:self withObject:nil];
@@ -41,6 +48,10 @@ enum {
 
 
 - (void) dealloc {
+  NSLog(@"AsynchronousItemTreeDrawer-dealloc");
+
+  NSAssert(!alive, @"Deallocating without a dispose.");
+
   [drawer release];
   [fileItemHashing release];
   
@@ -52,6 +63,26 @@ enum {
   [drawItemTree release];
   
   [super dealloc];
+}
+
+
+- (void) dispose {
+  [settingsLock lock];
+  NSAssert(alive, @"Disposing of an already dead drawer.");
+
+  alive = NO;
+
+  if ([workLock condition] == DRAWING_THREAD_BUSY) {
+    // Abort drawing 
+    [drawer abortDrawing];
+  }
+  else {
+    // Notify waiting thread
+    [workLock lock];
+    [workLock unlockWithCondition:DRAWING_THREAD_BUSY];
+  }
+  
+  [settingsLock unlock];
 }
 
 
@@ -79,7 +110,6 @@ enum {
 }
 
 
-
 - (NSImage*) getImage {
   [settingsLock lock];
   NSImage*  returnImage = [[image retain] autorelease];
@@ -99,20 +129,24 @@ enum {
 - (void) asynchronouslyDrawImageOfItemTree: (Item*)itemTreeRoot
            inRect: (NSRect)bounds {
   [settingsLock lock];
+  NSAssert(alive, @"Disturbing a dead drawer.");
+  
   if (drawItemTree != itemTreeRoot) {
     [drawItemTree release];
     drawItemTree = [itemTreeRoot retain];
   }
   drawInRect = bounds;
 
-  // Abort drawing (whether or not drawing is taking place).
-  [drawer abortDrawing];
-
-  if ([workLock condition] == NO_IMAGE_TASK) {
+  if ([workLock condition] == DRAWING_THREAD_BUSY) {
+    // Abort drawing 
+    [drawer abortDrawing];
+  }
+  else {
     // Notify waiting thread
     [workLock lock];
-    [workLock unlockWithCondition:IMAGE_TASK_PENDING];
+    [workLock unlockWithCondition:DRAWING_THREAD_BUSY];
   }
+
   [settingsLock unlock];
 }
 
@@ -126,37 +160,53 @@ enum {
 }
 
 - (void) imageDrawLoop {
-  while (YES) {
+  BOOL  terminate = NO;
+  
+  while (!terminate) {
     NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
 
-    [workLock lockWhenCondition:IMAGE_TASK_PENDING];
+    [workLock lockWhenCondition:DRAWING_THREAD_BUSY];
             
     [settingsLock lock];
-    NSAssert(drawItemTree != nil, @"Draw task not set properly.");
-    Item  *tree = [drawItemTree autorelease];
-    NSRect  rect = drawInRect;
-    [drawer setFileItemHashing:fileItemHashing];
+    if (alive) {
+      NSAssert(drawItemTree != nil, @"Draw task not set properly.");
+      Item  *tree = [drawItemTree autorelease];
+      NSRect  rect = drawInRect;
+      [drawer setFileItemHashing:fileItemHashing];
 
-    drawItemTree = nil;
+      drawItemTree = nil;
 
-    [settingsLock unlock];
-    
-    image = [drawer drawImageOfItemTree: tree inRect: rect];
-    
-    [settingsLock lock];
-    if (image != nil) {
-      [self performSelectorOnMainThread:@selector(defaultPostNotificationName:)
-              withObject:@"itemTreeImageReady" waitUntilDone:NO];
+      // Drawing may have been aborted. Clear the flag so that the drawing 
+      // task at least starts (it may be aborted again of course).
+      //
+      // Note: This should happen in a "settingsLock" block, and can therefore
+      // not be done by the drawer in its drawImageOfItemTree:inRect: method.
+      [drawer resetAbortDrawingFlag];
+
+      [settingsLock unlock]; // Don't lock settings while drawing.
+      image = [drawer drawImageOfItemTree: tree inRect: rect];
+      [settingsLock lock];
       
-      [workLock unlockWithCondition:NO_IMAGE_TASK];
+      if (image != nil) {
+        [self performSelectorOnMainThread:@selector(defaultPostNotificationName:)
+                withObject:@"itemTreeImageReady" waitUntilDone:NO];
+      }
+      
+      if (alive && drawItemTree==nil) {      
+        [workLock unlockWithCondition:DRAWING_THREAD_IDLE];
+      }
+      else {
+        [workLock unlockWithCondition:DRAWING_THREAD_BUSY];
+      }
     }
     else {
-      [workLock unlockWithCondition:IMAGE_TASK_PENDING];
+      terminate = YES;
     }
     [settingsLock unlock];
     
     [pool release];
   }
+  NSLog(@"Thread terminated.");
 }
 
 @end // AsynchronousItemTreeDrawer (PrivateMethods)

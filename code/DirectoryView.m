@@ -46,6 +46,7 @@
   
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
+  [treeDrawer dispose];
   [treeDrawer release];
   [pathDrawer release];
   [pathBuilder release];

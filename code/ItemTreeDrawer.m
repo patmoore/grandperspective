@@ -40,6 +40,8 @@
     colorPalette = [colorPaletteVal retain];
     
     layoutBuilder = [layoutBuilderVal retain];
+    
+    abort = NO;
   }
   return self;
 }
@@ -90,8 +92,6 @@
 - (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds {
   NSDate  *startTime = [NSDate date];
   
-  abort = NO;
-
   if (colorPalette!=nil) {
     [self calculateGradientColors];
     [colorPalette release];
@@ -136,6 +136,10 @@
 
 - (void) abortDrawing {
   abort = YES;
+}
+
+- (void) resetAbortDrawingFlag {
+  abort = NO;
 }
 
 
