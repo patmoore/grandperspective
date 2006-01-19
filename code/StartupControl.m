@@ -83,7 +83,7 @@
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  // get image size... (or default)
+  // Get image size... (or default)
   NSRect  bounds = [[dirViewControl directoryView] bounds];
 
   NSSavePanel  *savePanel = [NSSavePanel savePanel];
@@ -91,11 +91,9 @@
   [savePanel setRequiredFileType: @"tiff"];
   
   if ([savePanel runModal] == NSOKButton) {
-    // get image filename.
+    // Get the filename for the image.
     NSString  *filename = [savePanel filename];
 
-    // check exists...
-    
     if (treeDrawer == nil) {
       // Lazily create drawer.
       treeDrawer = [[ItemTreeDrawer alloc] init];
@@ -107,15 +105,17 @@
          drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]
          inRect: bounds];
     
-    NSBitmapImageRep  *imageBitmap = 
-      [[image representations] objectAtIndex:0];
-    NSData  *pngData = [imageBitmap 
-                          representationUsingType: NSTIFFFileType
-                          properties: nil];
+    NSBitmapImageRep  *imageBitmap = [[image representations] objectAtIndex:0];
+    NSData  *imageData = [imageBitmap 
+                            representationUsingType: NSTIFFFileType
+                            properties: nil];
   
-    if (! [pngData  writeToFile: filename atomically: NO] ) {
-      NSLog(@"writeToFile failed");
-      // report error
+    if (! [imageData  writeToFile: filename atomically: NO] ) {
+      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+      [alert addButtonWithTitle:@"OK"];
+      [alert setMessageText:@"Failed to save the image."];
+
+      [alert runModal];
     }
   }
 }
