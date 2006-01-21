@@ -4,9 +4,8 @@
 
 #import "BalancedTreeBuilder.h"
 #import "DirectoryViewControl.h"
-#import "DirectoryView.h"
+#import "SaveImageDialogControl.h"
 #import "ItemPathModel.h"
-#import "ItemTreeDrawer.h"
 
 
 @interface StartupControl (PrivateMethods)
@@ -27,8 +26,6 @@
 
 - (void) dealloc {
   NSAssert(treeBuilder == nil, @"TreeBuilder should be nil.");
-  
-  [treeDrawer release];
   
   [super dealloc];
 }
@@ -83,41 +80,10 @@
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  // Get image size... (or default)
-  NSRect  bounds = [[dirViewControl directoryView] bounds];
-
-  NSSavePanel  *savePanel = [NSSavePanel savePanel];
-  
-  [savePanel setRequiredFileType: @"tiff"];
-  
-  if ([savePanel runModal] == NSOKButton) {
-    // Get the filename for the image.
-    NSString  *filename = [savePanel filename];
-
-    if (treeDrawer == nil) {
-      // Lazily create drawer.
-      treeDrawer = [[ItemTreeDrawer alloc] init];
-    }
-    [treeDrawer setFileItemHashing:[dirViewControl fileItemHashing]];
-    
-    NSImage  *image =
-      [treeDrawer 
-         drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]
-         inRect: bounds];
-    
-    NSBitmapImageRep  *imageBitmap = [[image representations] objectAtIndex:0];
-    NSData  *imageData = [imageBitmap 
-                            representationUsingType: NSTIFFFileType
-                            properties: nil];
-  
-    if (! [imageData  writeToFile: filename atomically: NO] ) {
-      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-      [alert addButtonWithTitle:@"OK"];
-      [alert setMessageText:@"Failed to save the image."];
-
-      [alert runModal];
-    }
-  }
+  // Dialog auto-disposes when its job is done.
+  SaveImageDialogControl  *saveImageDialogControl = 
+    [[SaveImageDialogControl alloc] 
+        initWithDirectoryViewControl: dirViewControl];
 }
 
 @end // @implementation StartupControl
