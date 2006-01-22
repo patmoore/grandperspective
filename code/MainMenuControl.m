@@ -1,4 +1,4 @@
-#import "StartupControl.h"
+#import "MainMenuControl.h"
 
 #import "FileItem.h"
 
@@ -8,14 +8,14 @@
 #import "ItemPathModel.h"
 
 
-@interface StartupControl (PrivateMethods)
+@interface MainMenuControl (PrivateMethods)
 - (void)readDirectories:(NSString*)dirName;
 - (void)createWindowForTree:(FileItem*)itemTree;
 - (void)createWindowByCopying:(BOOL)shareModel;
 @end
 
 
-@implementation StartupControl
+@implementation MainMenuControl
 
 - (id) init {
   if (self = [super init]) {
@@ -86,10 +86,10 @@
         initWithDirectoryViewControl: dirViewControl];
 }
 
-@end // @implementation StartupControl
+@end // @implementation MainMenuControl
 
 
-@implementation StartupControl (PrivateMethods)
+@implementation MainMenuControl (PrivateMethods)
 
 - (void) readDirectories:(NSString*)dirName {
   NSAutoreleasePool *pool;
@@ -161,4 +161,4 @@
   }
 }
 
-@end // @implementation StartupControl (PrivateMethods)
+@end // @implementation MainMenuControl (PrivateMethods)

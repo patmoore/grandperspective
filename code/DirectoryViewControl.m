@@ -2,7 +2,6 @@
 
 #import "FileItem.h"
 #import "DirectoryView.h"
-#import "StartupControl.h"
 #import "ItemPathModel.h"
 #import "FileItemHashingOptions.h"
 #import "FileItemHashing.h"

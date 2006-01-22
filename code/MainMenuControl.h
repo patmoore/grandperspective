@@ -2,8 +2,7 @@
 
 @class BalancedTreeBuilder;
 
-// TODO: rename to ApplicationControl
-@interface StartupControl : NSObject {
+@interface MainMenuControl : NSObject {
 
   IBOutlet NSPanel *progressPanel;
   IBOutlet NSTextField *progressText;

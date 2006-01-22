@@ -21,6 +21,23 @@
                 saveDirectoryViewImage = id; 
                 twinDirectoryView = id; 
             }; 
+            CLASS = MainMenuControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                progressIndicator = NSProgressIndicator; 
+                progressPanel = NSPanel; 
+                progressText = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {
+                abort = id; 
+                duplicateDirectoryView = id; 
+                openDirectoryView = id; 
+                saveDirectoryViewImage = id; 
+                twinDirectoryView = id; 
+            }; 
             CLASS = StartupControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {
