@@ -3,6 +3,28 @@
 ==============================================================================
 
 ------------------------------------------------------------------------------
+  Version 0.93, 22-01-2006
+------------------------------------------------------------------------------
+
+Changes since Version 0.92:
+
+- New functionality:
+  - The selected file can now be opened in Finder. This is useful to examine
+    the file, and optionally remove, move or edit it.
+  - An image of the directory view can now be generated and saved (as a TIFF
+    image).
+
+- Code clean up:
+  - Refactored ItemTreeDrawer into two classes. ItemTreeDrawer now does the 
+    basic drawing, and AsynchronousItemTreeDrawer manages drawing in a 
+    separate thread.
+
+- Bug fix:
+  - The thread used for drawing in the background is now properly terminated
+    and disposed of when it is not needed anymore.
+
+
+------------------------------------------------------------------------------
   Version 0.92, 10-01-2006
 ------------------------------------------------------------------------------
 
