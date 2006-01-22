@@ -19,6 +19,15 @@ rectangles as square as possible.
 
 * SYSTEM REQUIREMENTS
 
+- PowerPC processor
+
+  Unfortunately, GrandPerspective does not yet run on Intel Macs.
+  Although this would require only minimal (or no) changes to the 
+  code, I currently don't have the software to build Universal 
+  Binaries, nor (access to) the hardware to actually test it. 
+  Volunteers with an Intel Mac who don't mind being a beta-tester,
+  please step forward. :-)
+
 - Mac OS X, 10.2 or higher
   
   Note: The dependency on functionality introduced after Mac OS X 10.0
