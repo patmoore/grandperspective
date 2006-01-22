@@ -9,8 +9,9 @@
 Changes since Version 0.92:
 
 - New functionality:
-  - The selected file can now be opened in Finder. This is useful to examine
-    the file, and optionally remove, move or edit it.
+  - Selected files can now be opened in Finder. This can be used to examine
+    files and folders in more detail, and to optionally remove, move or edit
+    files.
   - An image of the directory view can now be generated and saved (as a TIFF
     image).
 
