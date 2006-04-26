@@ -51,8 +51,8 @@ This version of GrandPerspective is released as two separate files:
   * GrandPerspective-GRANDPERSPECTIVE_SOFTWARE_VERSION_ID-src.tgz
 
       This contains the source code of the application. It consists of
-      is the Objective C source code, as well as various auxiliary
-      files, such as the nib files that are used to construct the GUI.
+      the Objective C source code, as well as various auxiliary files,
+      such as the nib files that are used to construct the GUI.
 
 
 * LICENSE
