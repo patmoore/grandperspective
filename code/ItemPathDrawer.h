@@ -1,15 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
 
-#import "TreeLayoutTraverser.h"
-
 @class Item;
 @class TreeLayoutBuilder;
 
 
-// TODO: Move TreeLayoutTraverser protocol out of interface, as it's
-// only an implementation detail.
-@interface ItemPathDrawer : NSObject<TreeLayoutTraverser> {
+@interface ItemPathDrawer : NSObject {
   BOOL          highlightPathEndPoint;
 
   // Temporary variables only used for drawing the path

@@ -5,6 +5,14 @@
 #import "TreeLayoutBuilder.h"
 
 
+@interface ItemPathBuilder (PrivateMethods)
+
+// Implicitly implement "TreeLayoutTraverser" protocol.
+- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;
+
+@end
+
+
 @implementation ItemPathBuilder
 
 // Overrides super's designated initialiser.
@@ -21,8 +29,6 @@
 }
 
 - (void) dealloc {
-  //NSLog(@"ItemPathBuilder-dealloc");
-
   [pathModel release];
 }
 
@@ -35,8 +41,9 @@
   [pathModel clearVisibleItemPath];
   buildTargetPoint = point;
 
+  id  traverser = self;
   [layoutBuilder layoutItemTree:[pathModel visibleItemTree] inRect:bounds
-                   traverser:self];
+                   traverser:traverser];
   
   [pathModel suppressItemPathChangedNotifications:NO];
 }

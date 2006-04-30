@@ -1,17 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-#import "TreeLayoutTraverser.h"
-
 @class ItemPathModel;
 @class TreeLayoutBuilder;
 
 
-// TODO: Move TreeLayoutTraverser protocol out of interface, as it's
-// only an implementation detail.
-@interface ItemPathBuilder : NSObject<TreeLayoutTraverser> {
+@interface ItemPathBuilder : NSObject {
   ItemPathModel*  pathModel;
 
-  // Temporary variables only used for building the path.
+  // Temporary variable, only used while building the path.
   NSPoint   buildTargetPoint;
 }
 
