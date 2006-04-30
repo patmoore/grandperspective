@@ -133,9 +133,17 @@
     [[DirectoryViewControl alloc] initWithItemTree:itemTree];
   // Note: The control should auto-release itself when its window closes    
       
+  // Create window title based on scan location and time.
+  NSMutableString*  title = [NSMutableString stringWithCapacity:
+                               [[itemTree name] length] +11];
+  [title setString:[itemTree name]];
+  [title appendString:
+           [[NSDate date] descriptionWithCalendarFormat:@" - %H:%M:%S" 
+                            timeZone:nil locale:nil]];
+
   // Force loading (and showing) of the window.
   [windowManager addWindow:[dirViewControl window] 
-                   usingTitle:[itemTree name]];
+                   usingTitle:title];
 }
 
 
