@@ -48,6 +48,10 @@
   [pathModel suppressItemPathChangedNotifications:NO];
 }
 
+@end
+
+
+@implementation ItemPathBuilder (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (!NSPointInRect(buildTargetPoint, rect)) {
@@ -62,4 +66,4 @@
   return YES;
 }
 
-@end
+@end // @implementation ItemPathBuilder (PrivateMethods)

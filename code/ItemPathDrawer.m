@@ -33,6 +33,7 @@
   }
   
   lastBezierPath = nil;
+  
   id  traverser = self;  
   [layoutBuilder layoutItemTree:tree inRect:bounds traverser:traverser];
   
@@ -48,6 +49,11 @@
 
   drawPath = nil;
 }
+
+@end // @implementation ItemPathDrawer
+
+
+@implementation ItemPathDrawer (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (drawPathIndex >= [drawPath count] 
@@ -68,4 +74,5 @@
   return YES;
 }
 
-@end // @implementation ItemPathDrawer
+@end // @implementation ItemPathDrawer (PrivateMethods)
+
