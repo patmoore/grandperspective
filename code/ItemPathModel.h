@@ -32,31 +32,29 @@
   // (Note: the invisible part can never be changed directly. Only by first
   // making it visible can it be changed). 
   BOOL  visibleItemPathLocked;
-  
-
 }
 
 - (id) initWithTree:(FileItem*)itemTreeRoot;
 
 // Returns the file items in the invisble part of the path until (inclusive)
-// root in view
+// root in view.
 - (NSArray*) invisibleFileItemPath;
 
 // Returns the file items in the visible part of the path (excluding root in 
-// view)
+// view).
 - (NSArray*) visibleFileItemPath;
 
-// Returns all items in the invisble part of the path  until (inclusive) root 
-// in view
+// Returns all items in the invisble part of the path until (inclusive) root 
+// in view.
 - (NSArray*) invisibleItemPath;
 
-// Returns all items in the visible part of the path (excluding root in view)
+// Returns all items in the visible part of the path (excluding root in view).
 - (NSArray*) visibleItemPath;
 
-// Returns all items in the path
+// Returns all items in the path.
 - (NSArray*) itemPath;
 
-// Returns the last file item in the path
+// Returns the last file item in the path.
 - (FileItem*) fileItemPathEndPoint;
 
 // The path name for the root of the tree. 

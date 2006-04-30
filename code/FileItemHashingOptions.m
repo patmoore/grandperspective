@@ -26,7 +26,7 @@
   return depth;
 }
 
-@end // HashingByDepth
+@end // @implementation HashingByDepth
 
 
 @implementation HashingByExtension
@@ -35,7 +35,7 @@
   return [[[item name] pathExtension] hash];
 }
 
-@end // HashingByExtension
+@end // @implementation HashingByExtension
 
 
 @implementation HashingByFilename
@@ -44,7 +44,7 @@
   return [[item name] hash];
 }
 
-@end //HashingByFilename
+@end // @implementation HashingByFilename
 
 
 @implementation HashingByDirectoryName
@@ -53,7 +53,7 @@
   return [[[item parentDirectory] name] hash];
 }
 
-@end // HashingByDirectoryName 
+@end // @implementation HashingByDirectoryName 
 
 
 @implementation FileItemHashingOptions
@@ -121,4 +121,4 @@ FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
   return [optionsDictionary objectForKey:key];
 }
 
-@end
+@end // @implementation FileItemHashingOptions

@@ -9,13 +9,13 @@
 
 @interface DirectoryViewControl : NSWindowController {
 
-  IBOutlet NSComboBox *colorMappingChoice;
-  IBOutlet NSTextField *itemNameLabel;
-  IBOutlet NSTextField *itemSizeLabel;
-  IBOutlet DirectoryView *mainView;
-  IBOutlet NSButton *upButton;
-  IBOutlet NSButton *downButton;
-  IBOutlet NSButton *openButton;
+  IBOutlet NSComboBox  *colorMappingChoice;
+  IBOutlet NSTextField  *itemNameLabel;
+  IBOutlet NSTextField  *itemSizeLabel;
+  IBOutlet DirectoryView  *mainView;
+  IBOutlet NSButton  *upButton;
+  IBOutlet NSButton  *downButton;
+  IBOutlet NSButton  *openButton;
 
   FileItem  *itemTreeRoot;
   ItemPathModel  *itemPathModel;

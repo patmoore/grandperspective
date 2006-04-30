@@ -1,7 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-//#import "TreeLayoutTraverser.h"
-
 @class Item;
 @class TreeLayoutBuilder;
 @class FileItemHashing;

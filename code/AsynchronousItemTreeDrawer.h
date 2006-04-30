@@ -13,12 +13,12 @@
   NSImage  *image;
 
   NSConditionLock  *workLock;
-  NSLock           *settingsLock;
+  NSLock  *settingsLock;
   BOOL  alive;
 
   // Settings for next drawing task
-  Item               *drawItemTree; // Assumed to be immutable
-  NSRect             drawInRect;
+  Item  *drawItemTree; // Assumed to be immutable
+  NSRect  drawInRect;
 }
 
 - (id) initWithItemTreeDrawer: (ItemTreeDrawer*)drawer;

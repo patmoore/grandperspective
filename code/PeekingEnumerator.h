@@ -4,7 +4,7 @@
 @interface PeekingEnumerator : NSObject {
 
   NSEnumerator*  enumerator;
-  id             nextObject;
+  id  nextObject;
   
 }
 

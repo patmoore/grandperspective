@@ -42,7 +42,7 @@ id makeSizeString(ITEM_SIZE size) {
 - (void) updateButtonState:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
 
-@end  
+@end
 
 
 @implementation DirectoryViewControl

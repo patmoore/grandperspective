@@ -4,9 +4,9 @@
 
 @interface MainMenuControl : NSObject {
 
-  IBOutlet NSPanel *progressPanel;
-  IBOutlet NSTextField *progressText;
-  IBOutlet NSProgressIndicator *progressIndicator;
+  IBOutlet NSPanel  *progressPanel;
+  IBOutlet NSTextField  *progressText;
+  IBOutlet NSProgressIndicator  *progressIndicator;
   
   BalancedTreeBuilder  *treeBuilder;
 }

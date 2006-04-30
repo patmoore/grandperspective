@@ -42,8 +42,6 @@
 
 
 - (void) dealloc {
-  //NSLog(@"DirectoryView-dealloc");
-  
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
   [treeDrawer dispose];
@@ -136,19 +134,15 @@
 }
 
 - (BOOL) becomeFirstResponder {
-  //NSLog(@"becomeFirstResponder");
   return YES;
 }
 
 - (BOOL) resignFirstResponder {
-  //NSLog(@"resignFirstResponder");
   return YES;
 }
 
 
 - (void) mouseDown:(NSEvent*)theEvent {
-  //NSLog(@"mouseDown");
-
   // Toggle the path locking.
 
   BOOL  wasLocked = [pathModel isVisibleItemPathLocked];

@@ -4,7 +4,7 @@
 
 @interface FileItemHashingOptions : NSObject {
   NSDictionary  *optionsDictionary;
-  NSString      *defaultKey;
+  NSString  *defaultKey;
 }
 
 + (FileItemHashingOptions*) defaultFileItemHashingOptions;
