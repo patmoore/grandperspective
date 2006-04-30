@@ -7,6 +7,7 @@
 #import "SaveImageDialogControl.h"
 #import "ItemPathModel.h"
 
+#import "WindowManager.h"
 
 @interface MainMenuControl (PrivateMethods)
 - (void)readDirectories:(NSString*)dirName;
@@ -19,12 +20,14 @@
 
 - (id) init {
   if (self = [super init]) {
-    // void
+    windowManager = [[WindowManager alloc] init];
   }
   return self;
 }
 
 - (void) dealloc {
+  [windowManager release];
+
   NSAssert(treeBuilder == nil, @"TreeBuilder should be nil.");
   
   [super dealloc];
@@ -131,7 +134,8 @@
   // Note: The control should auto-release itself when its window closes    
       
   // Force loading (and showing) of the window.
-  [[dirViewControl window] setTitle:[itemTree name]];
+  [windowManager addWindow:[dirViewControl window] 
+                   usingTitle:[itemTree name]];
 }
 
 
@@ -157,7 +161,8 @@
     // Note: The control should auto-release itself when its window closes
       
     // Force loading (and showing) of the window.
-    [[newControl window] setTitle:[itemTree name]];
+    [windowManager addWindow:[newControl window] 
+                     usingTitle:[[oldControl window] title]];
   }
 }
 

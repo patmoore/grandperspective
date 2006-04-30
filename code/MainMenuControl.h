@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class BalancedTreeBuilder;
+@class WindowManager;
 
 @interface MainMenuControl : NSObject {
 
@@ -9,6 +10,7 @@
   IBOutlet NSProgressIndicator  *progressIndicator;
   
   BalancedTreeBuilder  *treeBuilder;
+  WindowManager  *windowManager;
 }
 
 - (IBAction) abort:(id)sender;
