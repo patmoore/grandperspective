@@ -2,27 +2,12 @@
 
 #import "FileItem.h"
 
-#import "BalancedTreeBuilder.h"
 #import "DirectoryViewControl.h"
 #import "SaveImageDialogControl.h"
+#import "ScanProgressPanelControl.h"
 #import "ItemPathModel.h"
 
 #import "WindowManager.h"
-
-
-// TODO: Move it to its own file. Make it own the progressPanel, -Text and
-// -Indicator. And also make it responsible for handling abort.
-@interface ScanDirectoryInvocation : NSObject {
-  id        callBack;
-  SEL       callBackSelector;
-}
-
-- (id) initWithCallBack:(id)callBack selector:(SEL)selector;
-
-// Can be invoked in a different thread
-- (void) scanDirectory:(NSString*)dirName;
-
-@end
 
 
 @interface MainMenuControl (PrivateMethods)
@@ -44,13 +29,7 @@
 - (void) dealloc {
   [windowManager release];
 
-  NSAssert(treeBuilder == nil, @"TreeBuilder should be nil.");
-  
   [super dealloc];
-}
-
-- (IBAction) abort:(id)sender {
-  [treeBuilder abort];
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
@@ -107,68 +86,16 @@
 @end // @implementation MainMenuControl
 
 
-@implementation ScanDirectoryInvocation
-
-- (id) initWithCallBack:(id)callBackVal selector:(SEL)selector {
-  if (self = [super init]) {
-    callBack = [callBackVal retain];
-    callBackSelector = selector;
-  }
-}
-
-- (void) dealloc {
-  [super dealloc];
-  
-  [callBack release];
-}
-
-
-// Designed to be invoked in a separate thread.
-- (void) scanDirectory:(NSString*)dirName {
-  NSAutoreleasePool *pool;
-  pool = [[NSAutoreleasePool alloc] init];
-  
-  NSDate  *startTime = [NSDate date];
-  
-  [progressText setStringValue:[NSString stringWithFormat:@"Scanning %@", 
-                                           dirName]];
-  [progressPanel center];
-  [progressPanel orderFront:self];
-  
-  [progressIndicator startAnimation:nil];
-  
-  treeBuilder = [[BalancedTreeBuilder alloc] init];
-  
-  FileItem*  itemTreeRoot = [treeBuilder buildTreeForPath: [self dirName]];
-  
-  [treeBuilder release];
-  treeBuilder = nil;
-  [dirName release];
-  
-  [progressIndicator stopAnimation:nil];
-  NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
-        [itemTreeRoot itemSize], -[startTime timeIntervalSinceNow]);
-  
-  [progressPanel close];
- 
-  [callBack performSelector:callBackSelector withObject:itemTreeRoot];
-  
-  [pool release];  
-}
-
-@end // @implementation ScanDirectoryInvocation
-
-
 @implementation MainMenuControl (PrivateMethods)
 
 - (void) createWindowForDirectory:(NSString*)dirName {
-  ScanDirectoryInvocation  scanner = 
-    [[ScanDirectoryInvocation alloc] initWithCallBack:self 
+  ScanProgressPanelControl  *scanner = 
+    [[ScanProgressPanelControl alloc] initWithCallBack:self 
                                     selector:@selector(createWindowForTree:)];
                                     
   [NSThread detachNewThreadSelector:@selector(scanDirectory:)
               toTarget:scanner withObject:dirName];
-                    
+
   // Assumes that above call retains its target.
   [scanner release];
 }
