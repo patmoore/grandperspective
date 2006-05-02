@@ -9,10 +9,26 @@
 
 #import "WindowManager.h"
 
+
+// TODO: Move it to its own file. Make it own the progressPanel, -Text and
+// -Indicator. And also make it responsible for handling abort.
+@interface ScanDirectoryInvocation : NSObject {
+  id        callBack;
+  SEL       callBackSelector;
+}
+
+- (id) initWithCallBack:(id)callBack selector:(SEL)selector;
+
+// Can be invoked in a different thread
+- (void) scanDirectory:(NSString*)dirName;
+
+@end
+
+
 @interface MainMenuControl (PrivateMethods)
-- (void)readDirectories:(NSString*)dirName;
-- (void)createWindowForTree:(FileItem*)itemTree;
-- (void)createWindowByCopying:(BOOL)shareModel;
+- (void) createWindowForDirectory:(NSString*)dirName;
+- (void) createWindowForTree:(FileItem*)itemTree;
+- (void) createWindowByCopying:(BOOL)shareModel;
 @end
 
 
@@ -51,8 +67,7 @@
     NSString  *dirName = 
       [[[openPanel filenames] objectAtIndex:0] retain];
   
-    [NSThread detachNewThreadSelector:@selector(readDirectories:)
-                             toTarget:self withObject:dirName];
+    [self createWindowForDirectory:dirName];
   }
 }
 
@@ -92,15 +107,31 @@
 @end // @implementation MainMenuControl
 
 
-@implementation MainMenuControl (PrivateMethods)
+@implementation ScanDirectoryInvocation
 
-- (void) readDirectories:(NSString*)dirName {
+- (id) initWithCallBack:(id)callBackVal selector:(SEL)selector {
+  if (self = [super init]) {
+    callBack = [callBackVal retain];
+    callBackSelector = selector;
+  }
+}
+
+- (void) dealloc {
+  [super dealloc];
+  
+  [callBack release];
+}
+
+
+// Designed to be invoked in a separate thread.
+- (void) scanDirectory:(NSString*)dirName {
   NSAutoreleasePool *pool;
   pool = [[NSAutoreleasePool alloc] init];
   
   NSDate  *startTime = [NSDate date];
   
-  [progressText setStringValue:@"Scanning directory..."];
+  [progressText setStringValue:[NSString stringWithFormat:@"Scanning %@", 
+                                           dirName]];
   [progressPanel center];
   [progressPanel orderFront:self];
   
@@ -108,7 +139,7 @@
   
   treeBuilder = [[BalancedTreeBuilder alloc] init];
   
-  FileItem*  itemTreeRoot = [treeBuilder buildTreeForPath:dirName];
+  FileItem*  itemTreeRoot = [treeBuilder buildTreeForPath: [self dirName]];
   
   [treeBuilder release];
   treeBuilder = nil;
@@ -119,35 +150,51 @@
         [itemTreeRoot itemSize], -[startTime timeIntervalSinceNow]);
   
   [progressPanel close];
-  
-  if (itemTreeRoot != nil) {
-    [self createWindowForTree:itemTreeRoot];
-  }
+ 
+  [callBack performSelector:callBackSelector withObject:itemTreeRoot];
   
   [pool release];  
 }
 
+@end // @implementation ScanDirectoryInvocation
+
+
+@implementation MainMenuControl (PrivateMethods)
+
+- (void) createWindowForDirectory:(NSString*)dirName {
+  ScanDirectoryInvocation  scanner = 
+    [[ScanDirectoryInvocation alloc] initWithCallBack:self 
+                                    selector:@selector(createWindowForTree:)];
+                                    
+  [NSThread detachNewThreadSelector:@selector(scanDirectory:)
+              toTarget:scanner withObject:dirName];
+                    
+  // Assumes that above call retains its target.
+  [scanner release];
+}
 
 - (void) createWindowForTree:(FileItem*)itemTree {
+  if (itemTree == nil) {
+    // Reading failed or cancelled. Don't create a window.
+    return;
+  }
+  
   DirectoryViewControl  *dirViewControl = 
     [[DirectoryViewControl alloc] initWithItemTree:itemTree];
   // Note: The control should auto-release itself when its window closes    
       
   // Create window title based on scan location and time.
-  NSMutableString*  title = [NSMutableString stringWithCapacity:
-                               [[itemTree name] length] +11];
-  [title setString:[itemTree name]];
-  [title appendString:
-           [[NSDate date] descriptionWithCalendarFormat:@" - %H:%M:%S" 
-                            timeZone:nil locale:nil]];
+  NSString*  title = 
+    [NSString stringWithFormat:@"%@ - %@", [itemTree name],
+                [[NSDate date] descriptionWithCalendarFormat:@"%H:%M:%S"
+                                 timeZone:nil locale:nil]];
 
   // Force loading (and showing) of the window.
-  [windowManager addWindow:[dirViewControl window] 
-                   usingTitle:title];
+  [windowManager addWindow:[dirViewControl window] usingTitle:title];
 }
 
 
-- (void)createWindowByCopying:(BOOL)shareModel {
+- (void) createWindowByCopying:(BOOL)shareModel {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
   FileItem  *itemTree = [oldControl itemTree];
