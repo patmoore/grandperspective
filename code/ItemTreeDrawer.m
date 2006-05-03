@@ -51,7 +51,7 @@
   [fileItemHashing release];
   [colorPalette release];
   
-  [gradientColors release];
+  free(gradientColors);
   
   [super dealloc];
 }
@@ -164,34 +164,45 @@
 
 
 - (void)drawBasicFilledRect:(NSRect)rect colorHash:(int)colorHash {
-  NSColor  * intColor = 
-    [gradientColors objectAtIndex:((abs(colorHash) % numGradientColors) * 256 + 128)];
+  UInt32  intColor = 
+    gradientColors[(abs(colorHash) % numGradientColors) * 256 + 128];
+
+  UInt32  *data = (UInt32*)[drawBitmap bitmapData];
   
   int  x, y;
   int  x0 = (int)(rect.origin.x + 0.5f);
   int  y0 = (int)(rect.origin.y + 0.5f);  
   int  height = (int)(rect.origin.y + rect.size.height + 0.5f) - y0;
   int  width = (int)(rect.origin.x + rect.size.width + 0.5f) - x0;
+  int  bitmapWidth = [drawBitmap pixelsWide];
   int  bitmapHeight = [drawBitmap pixelsHigh];
   
-  for (y=y0; y<y0+height; y++) {
-    for (x=x0; x<x0+width; x++) {
-        [drawBitmap setColor:intColor atX:x y:bitmapHeight-y];
+  for (y=0; y<height; y++) {
+    int  pos = x0 + (bitmapHeight - y0 - y - 1) * bitmapWidth;
+    for (x=0; x<width; x++) {
+      data[pos] = intColor;
+      pos++;
     }
   }
 }
 
 
 - (void)drawGradientFilledRect:(NSRect)rect colorHash:(int)colorHash {
-  UInt32 baseColorIndex = (abs(colorHash) % numGradientColors) * 256;
+  UInt32  *intColors = 
+    &gradientColors[(abs(colorHash) % numGradientColors) * 256];
+  UInt32  intColor;
   int  colorIndex;
-  NSColor * intColor;
+  
+  UInt32  *data = (UInt32*)[drawBitmap bitmapData];
+  UInt32  *pos;
+  UInt32  *poslim;
   
   int  x, y;
   int  x0 = (int)(rect.origin.x + 0.5f);
   int  y0 = (int)(rect.origin.y + 0.5f);
   int  width = (int)(rect.origin.x + rect.size.width + 0.5f) - x0;
   int  height = (int)(rect.origin.y + rect.size.height + 0.5f) - y0;
+  int  bitmapWidth = [drawBitmap pixelsWide];
   int  bitmapHeight = [drawBitmap pixelsHigh];
  
   if (height <= 0 || width <= 0) {
@@ -210,11 +221,14 @@
     else if (colorIndex > 255) {
       colorIndex = 255;
     }
-    intColor = [gradientColors objectAtIndex:(baseColorIndex + colorIndex)];
+    intColor = intColors[colorIndex];
     
-    for(x=0; x < ((height - y - 1) * width / height); x++)
-    {
-        [drawBitmap setColor:intColor atX:(x0+x) y:bitmapHeight-(y0+y)];
+    x = (height - y - 1) * width / height; // Maximum x. 
+    pos = &data[ (bitmapHeight - y0 - y - 1) * bitmapWidth + x0 ];
+    poslim = pos + x;
+    while (pos < poslim) {
+      *pos = intColor;
+      pos++;
     }
   }
   
@@ -228,11 +242,14 @@
     else if (colorIndex > 255) {
       colorIndex = 255;
     }
-    intColor = [gradientColors objectAtIndex:(baseColorIndex + colorIndex)];
+    intColor = intColors[colorIndex];
     
-    for(y=(width - x - 1) * height / width; y < height; y++)
-    {
-        [drawBitmap setColor:intColor atX:(x0+x) y:bitmapHeight-(y0+y)];
+    y = (width - x - 1) * height / width; // Minimum y.
+    pos = &data[ (bitmapHeight - y0 - height) * bitmapWidth + x + x0 ];
+    poslim = pos + bitmapWidth * (height - y);
+    while (pos < poslim) {
+      *pos = intColor;
+      pos += bitmapWidth;
     }
   }
 }
@@ -240,15 +257,16 @@
 
 - (void) calculateGradientColors {
   NSAssert(colorPalette != nil, @"Color palette must be set.");
+  free(gradientColors);
 
-//  NSAutoreleasePool  *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
-  
   numGradientColors = [colorPalette numColors];
-  [gradientColors release];
-  gradientColors = [NSMutableArray arrayWithCapacity:(numGradientColors * 256)];
-  NSAssert(gradientColors != NULL, @"Failed to create gradientColors.");
+  gradientColors = malloc(sizeof(UInt32) * numGradientColors * 256);
+  NSAssert(gradientColors != NULL, @"Failed to malloc gradientColors."); 
+  
+  NSAutoreleasePool  *localAutoreleasePool = [[NSAutoreleasePool alloc] init];
   
   int  i, j;
+  UInt32  *pos = gradientColors;
   
   for (i=0; i<[colorPalette numColors]; i++) {    
     NSColor  *color = [colorPalette getColorForInt:i];
@@ -270,7 +288,10 @@
                             brightness:brightness * ( 1 - adjust)
                             alpha:alpha];
                    
-      [gradientColors addObject:modColor];
+      *pos++ = CFSwapInt32BigToHost(
+                 ((UInt32)([modColor redComponent] * 255) & 0xFF) << 24 |
+                 ((UInt32)([modColor greenComponent] * 255) & 0xFF) << 16 |
+                 ((UInt32)([modColor blueComponent] * 255) & 0xFF) << 8);
     }
     
     // Lighter colors
@@ -294,11 +315,14 @@
                               alpha:alpha];
       }
       
-      [gradientColors addObject:modColor];
+      *pos++ = CFSwapInt32BigToHost(
+                 ((UInt32)([modColor redComponent] * 255) & 0xFF) << 24 |
+                 ((UInt32)([modColor greenComponent] * 255) & 0xFF) << 16 |
+                 ((UInt32)([modColor blueComponent] * 255) & 0xFF) << 8);
     }
   }
   
-//  [localAutoreleasePool release];
+  [localAutoreleasePool release];
 }
 
 @end // @implementation ItemTreeDrawer (PrivateMethods)

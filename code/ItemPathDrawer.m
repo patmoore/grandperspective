@@ -19,9 +19,9 @@
 }
 
 
-- (id) drawItemPath:(NSArray*)path tree:(Item*)tree 
-         usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
-         bounds:(NSRect)bounds {
+- (void) drawItemPath:(NSArray*)path tree:(Item*)tree 
+           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder
+           bounds:(NSRect)bounds {
 
   drawPath = path; // Not retaining it. It's only needed during this method.
 
@@ -48,7 +48,6 @@
   }
 
   drawPath = nil;
-  return self;
 }
 
 @end // @implementation ItemPathDrawer
