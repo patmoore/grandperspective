@@ -12,7 +12,7 @@
 
   // Only set when it has not yet been loaded into the gradient array.
   ColorPalette  *colorPalette;
-  UInt32  *gradientColors;
+  NSMutableArray  *gradientColors;
   int  numGradientColors;
 
   NSBitmapImageRep  *drawBitmap;

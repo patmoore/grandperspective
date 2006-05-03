@@ -61,7 +61,7 @@
 - (NSArray*) invisibleFileItemPath {
   NSMutableArray  *invisible = [NSMutableArray arrayWithCapacity:8];
 
-  int  i = 0;
+  UInt32  i = 0;
   while (i <= visibleTreeRootIndex) {
     if (![[path objectAtIndex:i] isVirtual]) {
       [invisible addObject:[path objectAtIndex:i]];

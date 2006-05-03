@@ -48,6 +48,7 @@
   }
 
   drawPath = nil;
+  return self;
 }
 
 @end // @implementation ItemPathDrawer

@@ -91,6 +91,7 @@ static struct {
 
 - (void) dealloc {
   [tmpArray release];
+    [super dealloc];
 }
 
 

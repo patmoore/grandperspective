@@ -162,8 +162,8 @@ enum {
 - (void) imageDrawLoop {
   BOOL  terminate = NO;
   
-  while (!terminate) {
     NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
+  while (!terminate) {
 
     [workLock lockWhenCondition:DRAWING_THREAD_BUSY];
             
@@ -204,8 +204,8 @@ enum {
     }
     [settingsLock unlock];
     
-    [pool release];
   }
+  [pool release];
   NSLog(@"Thread terminated.");
 }
 

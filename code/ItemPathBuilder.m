@@ -30,6 +30,7 @@
 
 - (void) dealloc {
   [pathModel release];
+    [super dealloc];
 }
 
 - (void) buildVisibleItemPathToPoint:(NSPoint)point 
