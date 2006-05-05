@@ -23,6 +23,8 @@
 
 - (id) initWithTaskExecutor: (NSObject <TaskExecutor>*)executor;
 
+- (NSObject <TaskExecutor>*) taskExecutor;
+
 // Call to free used resources (in particular the background thread that is 
 // being used).
 - (void) dispose;

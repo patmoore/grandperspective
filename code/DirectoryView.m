@@ -3,18 +3,25 @@
 #import "math.h"
 
 #import "FileItem.h"
+
 #import "TreeLayoutBuilder.h"
-#import "AsynchronousItemTreeDrawer.h"
+#import "ItemTreeDrawer.h"
 #import "ItemPathDrawer.h"
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
+
 #import "ColorPalette.h"
 #import "TreeLayoutTraverser.h"
+
+#import "AsynchronousTaskManager.h"
+#import "DrawTaskExecutor.h"
+#import "DrawTaskInput.h"
 
 
 @interface DirectoryView (PrivateMethods)
 
-- (void) itemTreeImageReady:(NSNotification*)notification;
+- (void) itemTreeImageReady:(id)image;
+
 - (void) visibleItemPathChanged:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
 - (void) visibleItemPathLockingChanged:(NSNotification*)notification;
@@ -29,13 +36,18 @@
 
 - (id) initWithFrame:(NSRect)frame {
   if (self = [super initWithFrame:frame]) {
-    treeDrawer = [[AsynchronousItemTreeDrawer alloc] init];
+    ItemTreeDrawer  *treeDrawer = [[ItemTreeDrawer alloc] init];
+    DrawTaskExecutor  *drawTaskExecutor = 
+      [[DrawTaskExecutor alloc] initWithTreeDrawer:treeDrawer];
+  
+    treeLayoutBuilder = [[treeDrawer treeLayoutBuilder] retain];
+    drawTaskManager = 
+      [[AsynchronousTaskManager alloc] initWithTaskExecutor:drawTaskExecutor];
+
+    [treeDrawer release];
+    [drawTaskExecutor release];
 
     pathDrawer = [[ItemPathDrawer alloc] init];
-    
-    [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(itemTreeImageReady:)
-      name:@"itemTreeImageReady" object:treeDrawer];  
   }
   return self;
 }
@@ -44,11 +56,16 @@
 - (void) dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
-  [treeDrawer dispose];
-  [treeDrawer release];
+  [drawTaskManager dispose];
+  [drawTaskManager release];
+
+  [treeLayoutBuilder release];
+
   [pathDrawer release];
   [pathBuilder release];
   [pathModel release];
+  
+  [treeImage release];
   
   [super dealloc];
 }
@@ -90,14 +107,25 @@
 
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing {
-  if (fileItemHashing != [treeDrawer fileItemHashing]) {
-    [treeDrawer setFileItemHashing:fileItemHashing];
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+  
+  if (fileItemHashing != [drawTaskExecutor fileItemHashing]) {
+    [drawTaskExecutor setFileItemHashing:fileItemHashing];
+
     [self setNeedsDisplay:YES];
+
+    // Discard the existing image.
+    [treeImage release];
+    treeImage = nil;
   }
 }
 
 - (FileItemHashing*) fileItemHashing {
-  return [treeDrawer fileItemHashing];
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+
+  return [drawTaskExecutor fileItemHashing];
 }
 
 
@@ -106,8 +134,7 @@
     return;
   }
 
-  NSImage*  image = [treeDrawer getImage];
-  if (image==nil || !NSEqualSizes([image size], [self bounds].size)) {
+  if (treeImage==nil || !NSEqualSizes([treeImage size], [self bounds].size)) {
     NSAssert([self bounds].origin.x == 0 &&
              [self bounds].origin.y == 0, @"Bounds not at (0, 0)");
 
@@ -115,15 +142,19 @@
     NSRectFill([self bounds]);
     
     // Create image in background thread.
-    [treeDrawer asynchronouslyDrawImageOfItemTree: [pathModel visibleItemTree]
-                  inRect: [self bounds]];
+    DrawTaskInput  *drawInput = 
+      [[DrawTaskInput alloc] initWithItemTree:[pathModel visibleItemTree] 
+                               bounds:[self bounds]];
+    [drawTaskManager asynchronouslyRunTaskWithInput:drawInput callBack:self 
+                       selector:@selector(itemTreeImageReady:)];
+    [drawInput release];
   }
   else {
-    [image compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
+    [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
   
     [pathDrawer drawItemPath: [pathModel itemPath] 
                   tree: [pathModel visibleItemTree] 
-                  usingLayoutBuilder: [treeDrawer treeLayoutBuilder]
+                  usingLayoutBuilder: treeLayoutBuilder
                   bounds: [self bounds]];
   }
 }
@@ -180,10 +211,13 @@
 @implementation DirectoryView (PrivateMethods)
 
 
-- (void) itemTreeImageReady:(NSNotification*)notification {
+- (void) itemTreeImageReady:(id)image {
   // Note: This method is called from the main thread (even though it has been
   // triggered by the drawer's background thread). So calling setNeedsDisplay
   // directly is okay.
+  [treeImage release];
+  treeImage = [image retain];
+  
   [self setNeedsDisplay:YES];  
 }
 
@@ -192,7 +226,9 @@
 }
 
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
-  [treeDrawer resetImage];
+  // Discard the existing image.
+  [treeImage release];
+  treeImage = nil;
   
   [self setNeedsDisplay:YES];
 }
@@ -222,7 +258,7 @@
 
 - (void) buildPathToMouseLoc:(NSPoint)point {
   [pathBuilder buildVisibleItemPathToPoint: point
-                       usingLayoutBuilder: [treeDrawer treeLayoutBuilder]
+                       usingLayoutBuilder: treeLayoutBuilder
                        bounds: [self bounds]];
 }
 

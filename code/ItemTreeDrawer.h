@@ -12,7 +12,6 @@
 
   // Only set when it has not yet been loaded into the gradient array.
   ColorPalette  *colorPalette;
-  //NSArray  *gradientColors;
   UInt32  *gradientColors;
   int  numGradientColors;
 
@@ -38,6 +37,5 @@
 - (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds;
 
 - (void) abortDrawing;
-- (void) resetAbortDrawingFlag;
 
 @end

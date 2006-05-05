@@ -1,18 +1,22 @@
 #import <Cocoa/Cocoa.h>
 
-@class AsynchronousItemTreeDrawer;
+@class AsynchronousTaskManager;
+@class TreeLayoutBuilder;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
 @class ItemPathModel;
 @class FileItemHashing;
 
 @interface DirectoryView : NSView {
+  AsynchronousTaskManager  *drawTaskManager;
 
-  AsynchronousItemTreeDrawer  *treeDrawer;
+  TreeLayoutBuilder  *treeLayoutBuilder;
   ItemPathDrawer  *pathDrawer;
   ItemPathBuilder  *pathBuilder;
   
   ItemPathModel  *pathModel;
+  
+  NSImage  *treeImage;  
 }
 
 - (void) setItemPathModel:(ItemPathModel*)itemPath;

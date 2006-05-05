@@ -126,6 +126,7 @@
     image = [[NSImage alloc] initWithSize:bounds.size];
     [image addRepresentation:drawBitmap];
   }
+  abort = NO; // Enable drawer again for next time.
 
   [drawBitmap release];
   drawBitmap = nil;
@@ -137,11 +138,6 @@
 - (void) abortDrawing {
   abort = YES;
 }
-
-- (void) resetAbortDrawingFlag {
-  abort = NO;
-}
-
 
 @end // @implementation ItemTreeDrawer
 

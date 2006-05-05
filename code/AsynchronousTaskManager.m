@@ -83,6 +83,11 @@ enum {
 }
 
 
+- (NSObject <TaskExecutor>*) taskExecutor {
+  return executor;
+}
+
+
 - (void) asynchronouslyRunTaskWithInput:(id)input callBack:(id)callBack 
            selector:(SEL)selector {
 
