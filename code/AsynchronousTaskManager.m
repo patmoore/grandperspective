@@ -71,7 +71,7 @@ enum {
 
   if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
     // Abort task
-    [executor abortTask];
+    [executor disable];
   }
   else {
     // Notify waiting thread
@@ -101,7 +101,7 @@ enum {
 
   if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
     // Abort task 
-    [executor abortTask];
+    [executor disable];
   }
   else {
     // Notify waiting thread
@@ -131,15 +131,15 @@ enum {
       id  taskInput = [nextTaskInput autorelease];
       id  taskCallBack = [nextTaskCallBack autorelease];
       SEL  taskCallBackSelector = nextTaskCallBackSelector;
-      taskInput = nil;
-      taskCallBack = nil;
+      nextTaskInput = nil;
+      nextTaskCallBack = nil;
       
-      // The previous task may have been aborted. Clear the flag so that the
-      // new task at least starts (it may be aborted again of course).
+      // The previous task may have been aborted. Make sure that the executor
+      // is enabled again (it may be aborted again of course).
       //
       // Note: This should happen in a "settingsLock" block, and can therefore
       // not be done by the executor in its runTaskWithInput: method.
-      [executor resetAbortTaskFlag];
+      [executor enable];
 
       [settingsLock unlock]; // Don't lock settings while running the task.
       id  taskOutput = [executor runTaskWithInput:taskInput];

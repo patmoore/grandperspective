@@ -4,10 +4,12 @@
 
 #import "DirectoryViewControl.h"
 #import "SaveImageDialogControl.h"
-#import "ScanProgressPanelControl.h"
 #import "ItemPathModel.h"
 
 #import "WindowManager.h"
+
+#import "AsynchronousTaskManager.h"
+#import "ScanTaskExecutor.h"
 
 
 @interface MainMenuControl (PrivateMethods)
@@ -21,13 +23,18 @@
 
 - (id) init {
   if (self = [super init]) {
-    windowManager = [[WindowManager alloc] init];
+    windowManager = [[WindowManager alloc] init];  
+
+    scanTaskManager = 
+      [[AsynchronousTaskManager alloc] initWithTaskExecutor:
+         [[[ScanTaskExecutor alloc] init] autorelease]];
   }
   return self;
 }
 
 - (void) dealloc {
   [windowManager release];
+  [scanTaskManager release];
 
   [super dealloc];
 }
@@ -89,15 +96,8 @@
 @implementation MainMenuControl (PrivateMethods)
 
 - (void) createWindowForDirectory:(NSString*)dirName {
-  ScanProgressPanelControl  *scanner = 
-    [[ScanProgressPanelControl alloc] initWithCallBack:self 
-                                    selector:@selector(createWindowForTree:)];
-                                    
-  [NSThread detachNewThreadSelector:@selector(scanDirectory:)
-              toTarget:scanner withObject:dirName];
-
-  // Assumes that above call retains its target.
-  [scanner release];
+  [scanTaskManager asynchronouslyRunTaskWithInput:dirName callBack:self
+                     selector:@selector(createWindowForTree:)];
 }
 
 - (void) createWindowForTree:(FileItem*)itemTree {
