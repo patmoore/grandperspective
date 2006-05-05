@@ -174,7 +174,7 @@
   int  y0 = (int)(rect.origin.y + 0.5f);  
   int  height = (int)(rect.origin.y + rect.size.height + 0.5f) - y0;
   int  width = (int)(rect.origin.x + rect.size.width + 0.5f) - x0;
-  int  bitmapWidth = [drawBitmap pixelsWide];
+  int  bitmapWidth = [drawBitmap bytesPerRow] / sizeof(UInt32);
   int  bitmapHeight = [drawBitmap pixelsHigh];
   
   for (y=0; y<height; y++) {
@@ -202,7 +202,7 @@
   int  y0 = (int)(rect.origin.y + 0.5f);
   int  width = (int)(rect.origin.x + rect.size.width + 0.5f) - x0;
   int  height = (int)(rect.origin.y + rect.size.height + 0.5f) - y0;
-  int  bitmapWidth = [drawBitmap pixelsWide];
+  int  bitmapWidth = [drawBitmap bytesPerRow] / sizeof(UInt32);
   int  bitmapHeight = [drawBitmap pixelsHigh];
  
   if (height <= 0 || width <= 0) {
