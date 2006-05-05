@@ -34,6 +34,8 @@
 
 - (void) dealloc {
   [windowManager release];
+  
+  [scanTaskManager dispose];
   [scanTaskManager release];
 
   [super dealloc];
