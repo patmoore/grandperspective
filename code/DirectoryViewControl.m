@@ -64,7 +64,7 @@ id makeSizeString(ITEM_SIZE size) {
          
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
     itemTreeRoot = [root retain];
-    invisiblePathName = [[NSString alloc] init];
+    invisiblePathName = nil;
     
     hashingOptions = 
       [[FileItemHashingOptions defaultFileItemHashingOptions] retain];
@@ -134,6 +134,9 @@ id makeSizeString(ITEM_SIZE size) {
   [mainView setItemPathModel:itemPathModel];
   
   [super windowDidLoad];
+  
+  NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
+  invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
 
   [[NSNotificationCenter defaultCenter]
       addObserver:self selector:@selector(updateButtonState:)

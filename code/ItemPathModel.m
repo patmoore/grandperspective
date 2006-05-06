@@ -1,7 +1,7 @@
 #import "ItemPathModel.h"
 
-
-#import "FileItem.h"
+#import "CompoundItem.h"
+#import "DirectoryItem.h" // Imports FileItem.h
 
 
 @interface ItemPathModel (PrivateMethods)
@@ -12,6 +12,8 @@
 
 // "start" is inclusive, "end" is exclusive.
 - (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end;
+
+- (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item;
 
 @end
 
@@ -198,6 +200,35 @@
 }
 
 
+- (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name {
+  NSAssert(!visibleItemPathLocked, @"Cannot change path when locked.");
+  
+  id  pathEndPoint = [path lastObject];
+  
+  if ([pathEndPoint isVirtual] || [pathEndPoint isPlainFile]) {
+    // Can only extend from a DirectoryItem
+    return NO;
+  }
+  
+  DirectoryItem  *dirItem = (DirectoryItem*)pathEndPoint;
+  
+  if (! [self extendPathToFileItemWithName:name 
+                fromItem:[dirItem getContents]] ) {
+    // Failed to find a file item with the given name.
+    return NO;
+  }
+  
+  NSAssert(![[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
+  lastFileItemIndex = [path count] - 1;
+
+  // Path was successfully extended.
+  if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
+    [self postVisibleItemPathChanged];
+  }
+  
+  return YES;
+}
+
 - (FileItem*) itemTree {
   return [path objectAtIndex:0];
 }
@@ -276,6 +307,36 @@
 
   // Return an immutable string.
   return  [NSString stringWithString:s];
+}
+
+
+- (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item {
+  [path addObject:item];
+  
+  if ([item isVirtual]) {
+    CompoundItem  *compoundItem = (CompoundItem*)item;
+    
+    if ([self extendPathToFileItemWithName:name 
+                fromItem:[compoundItem getFirst]]) {
+      return YES;  
+    }
+    if ([self extendPathToFileItemWithName:name 
+                fromItem:[compoundItem getSecond]]) {
+      return YES;
+    }
+  }
+  else {
+    FileItem  *fileItem = (FileItem*)item;
+    
+    if ([[fileItem name] isEqualToString:name]) {
+      return YES;
+    }
+  }
+  
+  // Item not found in this part of the tree, so back-track.
+  [path removeLastObject];
+  
+  return NO;
 }
 
 @end

@@ -45,7 +45,6 @@
   
   [treeBuilder release];
   treeBuilder = nil;
-  [dirName release];
   
   [progressIndicator stopAnimation:nil];
   NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 

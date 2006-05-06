@@ -76,6 +76,7 @@
 
 - (BOOL) clearVisibleItemPath;
 - (void) extendVisibleItemPath:(Item*)nextItem;
+- (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name;
 
 - (FileItem*) itemTree;
 - (FileItem*) visibleItemTree;
