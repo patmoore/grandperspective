@@ -47,8 +47,6 @@ enum {
 
 
 - (void) dealloc {
-  NSLog(@"AsynchronousTaskManager-dealloc");
-
   NSAssert(!alive, @"Deallocating without a dispose.");
 
   [executor release];
