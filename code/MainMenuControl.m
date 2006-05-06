@@ -14,15 +14,25 @@
 
 @interface PostScanningWindowCreator : NSObject {
   WindowManager  *windowManager;
-  NSArray  *invisibleFileItemTargetPath; 
-  NSArray  *visibleFileItemTargetPath;
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager;
-- (id) initWithWindowManager:(WindowManager*)windowManager 
-          targetPath:(ItemPathModel*)targetPath;
 
 - (void) createWindowForTree:(FileItem*)itemTree;
+- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree;
+
+@end
+
+
+@interface PostScanningCustomWindowCreator : PostScanningWindowCreator {
+  NSArray  *invisibleFileItemTargetPath; 
+  NSArray  *visibleFileItemTargetPath;
+  NSString  *fileItemHashingKey;
+}
+
+- (id) initWithWindowManager:(WindowManager*)windowManager
+         targetPath:(ItemPathModel*)targetPath
+         fileItemHashingKey:(NSString*)key;
 
 @end
 
@@ -105,9 +115,11 @@
     NSString  *dirName = [itemPathModel rootFilePathName];
     
     PostScanningWindowCreator  *windowCreator =
-      [[PostScanningWindowCreator alloc] 
-          initWithWindowManager:windowManager targetPath:itemPathModel];
-          
+      [[PostScanningCustomWindowCreator alloc] 
+          initWithWindowManager:windowManager
+            targetPath:itemPathModel 
+            fileItemHashingKey:[oldControl fileItemHashingKey]];
+    
     [scanTaskManager asynchronouslyRunTaskWithInput:dirName 
                        callBack:windowCreator
                        selector:@selector(createWindowForTree:)];
@@ -179,80 +191,28 @@
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManagerVal {
-  return [self initWithWindowManager:windowManagerVal targetPath:nil];
-}
-
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal 
-          targetPath:(ItemPathModel*)targetPath {
   if (self = [super init]) {
     windowManager = [windowManagerVal retain];
-    
-    if (targetPath != nil) {
-      invisibleFileItemTargetPath = [[targetPath invisibleFileItemPath] retain];
-      visibleFileItemTargetPath = [[targetPath visibleFileItemPath] retain];
-    }
   }
   return self;
 }
 
 - (void) dealloc {
-  NSLog(@"PostScanningWindowCreator dealloc");
-  
-  [invisibleFileItemTargetPath release];
-  [visibleFileItemTargetPath release];
   [windowManager release];
   
   [super dealloc];
 }
+
 
 - (void) createWindowForTree:(FileItem*)itemTree {
   if (itemTree == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
   }
-  
+
+  // Note: The control should auto-release itself when its window closes  
   DirectoryViewControl  *dirViewControl = 
-    [[DirectoryViewControl alloc] initWithItemTree:itemTree];
-  // Note: The control should auto-release itself when its window closes
-  
-  if (invisibleFileItemTargetPath != nil) {
-    // Try to match the path.
-    
-    ItemPathModel  *path = [dirViewControl itemPathModel];
-    [path suppressItemPathChangedNotifications:YES];
-    
-    BOOL  ok = YES;
-    NSEnumerator  *fileItemEnum = 
-      [invisibleFileItemTargetPath objectEnumerator];
-    FileItem  *fileItem;
-    
-    [fileItemEnum nextObject]; // Skip the root.
-    while (ok && (fileItem = [fileItemEnum nextObject])) {
-      ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
-    }
-    // Make this extension "invisible".
-    while ([path canMoveTreeViewDown]) {
-      [path moveTreeViewDown];
-    }
-    
-    if (ok && visibleFileItemTargetPath != nil) {
-      BOOL  hasVisibleItems = NO;
-      
-      fileItemEnum = [visibleFileItemTargetPath objectEnumerator];
-      while (ok && (fileItem = [fileItemEnum nextObject])) {
-        ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
-        if (ok) {
-          hasVisibleItems = YES;
-        }
-      }
-      
-      if (hasVisibleItems) {
-        [path setVisibleItemPathLocking:YES];
-      }
-    }
-        
-    [path suppressItemPathChangedNotifications:NO];
-  }
+    [[self createDirectoryViewControlForTree:itemTree] retain];
   
   // Create window title based on scan location and time.
   NSString*  title = 
@@ -264,5 +224,82 @@
   [windowManager addWindow:[dirViewControl window] usingTitle:title];
 }
 
+- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree {
+  return [[[DirectoryViewControl alloc] initWithItemTree:tree] autorelease];
+}
+
 @end // @implementation PostScanningWindowCreator
 
+
+@implementation PostScanningCustomWindowCreator
+
+// Overrides designated initialiser.
+- (id) initWithWindowManager:(WindowManager*)windowManagerVal {
+  NSAssert(NO, 
+    @"Use initWithWindowManager:targetPath:fileItemHashingKey instead.");
+}
+
+- (id) initWithWindowManager:(WindowManager*)windowManagerVal
+         targetPath:(ItemPathModel*)targetPath
+         fileItemHashingKey:(NSString*)key; {
+  if (self = [super initWithWindowManager:windowManagerVal]) {
+    invisibleFileItemTargetPath = [[targetPath invisibleFileItemPath] retain];
+    visibleFileItemTargetPath = [[targetPath visibleFileItemPath] retain];
+
+    fileItemHashingKey = [key retain];
+  }
+  return self;
+}
+
+- (void) dealloc {
+  [invisibleFileItemTargetPath release];
+  [visibleFileItemTargetPath release];
+  [fileItemHashingKey release];
+  
+  [super dealloc];
+}
+
+- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree {
+  // Try to match the path.
+  ItemPathModel  *path = 
+    [[[ItemPathModel alloc] initWithTree:tree] autorelease];
+
+  [path suppressItemPathChangedNotifications:YES];
+    
+  BOOL  ok = YES;
+  NSEnumerator  *fileItemEnum = [invisibleFileItemTargetPath objectEnumerator];
+  FileItem  *fileItem;
+    
+  [fileItemEnum nextObject]; // Skip the root.
+  while (ok && (fileItem = [fileItemEnum nextObject])) {
+    ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
+  }
+  // Make this extension "invisible".
+  while ([path canMoveTreeViewDown]) {
+    [path moveTreeViewDown];
+  }
+    
+  if (ok && visibleFileItemTargetPath != nil) {
+    BOOL  hasVisibleItems = NO;
+      
+    fileItemEnum = [visibleFileItemTargetPath objectEnumerator];
+    while (ok && (fileItem = [fileItemEnum nextObject])) {
+      ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
+      if (ok) {
+        hasVisibleItems = YES;
+      }
+    }
+      
+    if (hasVisibleItems) {
+      [path setVisibleItemPathLocking:YES];
+    }
+  }
+        
+  [path suppressItemPathChangedNotifications:NO];
+
+  return [[[DirectoryViewControl alloc] 
+              initWithItemTree:tree itemPathModel:path
+                fileItemHashingKey:fileItemHashingKey] autorelease];
+}
+
+@end // @implementation PostScanningCustomWindowCreator
