@@ -236,14 +236,22 @@
     }
     
     if (ok && visibleFileItemTargetPath != nil) {
+      BOOL  hasVisibleItems = NO;
+      
       fileItemEnum = [visibleFileItemTargetPath objectEnumerator];
       while (ok && (fileItem = [fileItemEnum nextObject])) {
         ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
+        if (ok) {
+          hasVisibleItems = YES;
+        }
+      }
+      
+      if (hasVisibleItems) {
+        [path setVisibleItemPathLocking:YES];
       }
     }
         
     [path suppressItemPathChangedNotifications:NO];
-    [path setVisibleItemPathLocking:YES];
   }
   
   // Create window title based on scan location and time.
