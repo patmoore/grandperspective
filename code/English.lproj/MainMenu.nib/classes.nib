@@ -15,19 +15,14 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {
-                abort = id; 
                 duplicateDirectoryView = id; 
                 openDirectoryView = id; 
+                rescanDirectoryView = id; 
                 saveDirectoryViewImage = id; 
                 twinDirectoryView = id; 
             }; 
             CLASS = MainMenuControl; 
             LANGUAGE = ObjC; 
-            OUTLETS = {
-                progressIndicator = NSProgressIndicator; 
-                progressPanel = NSPanel; 
-                progressText = NSTextField; 
-            }; 
             SUPERCLASS = NSObject; 
         }, 
         {
