@@ -10,12 +10,16 @@ Changes since Version 0.93:
 
 - New functionality:
   - There is now a "rescan" command which generates an up-to-date 
-    window given an existing one. Use this command for instance after
-    you have moved or deleted several files and folders.
+    window given an existing one. You can use this command after you
+    have moved or deleted several files and folders.
 
-- Improved functionality:
+- Tiny changes:
   - Window titles now include the time of the scan and, if needed,
     an additional number, to make each title unique.
+  - The scan progress panel now shows the name of the folder that is
+    being scanned.
+  - Renamed the "Open" button of the directory view window to "Show".
+  - Renamed the "Scan directory..." command to "Scan...".
 
 - Code clean up:
   - Generalised the execution of background threads in the new
@@ -26,7 +30,8 @@ Changes since Version 0.93:
 
 - Bug fix:
   - Fixed the drawing code so that it also runs properly when
-    compiled for Intel Macs.
+    compiled for Intel Macs. Many thanks to Craig Hughes for his
+    help with this.
 
 
 ----------------------------------------------------------------------
