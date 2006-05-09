@@ -19,7 +19,7 @@ Changes since Version 0.93:
   - The scan progress panel now shows the name of the folder that is
     being scanned.
   - Renamed the "Open" button of the directory view window to "Show".
-  - Renamed the "Scan directory..." command to "Scan...".
+  - Renamed the "Scan directory..." command to "Scan Folder...".
 
 - Code clean up:
   - Generalised the execution of background threads in the new
