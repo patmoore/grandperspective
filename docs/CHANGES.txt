@@ -3,6 +3,33 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.94, 09-05-2006
+----------------------------------------------------------------------
+
+Changes since Version 0.93:
+
+- New functionality:
+  - There is now a "rescan" command which generates an up-to-date 
+    window given an existing one. Use this command for instance after
+    you have moved or deleted several files and folders.
+
+- Improved functionality:
+  - Window titles now include the time of the scan and, if needed,
+    an additional number, to make each title unique.
+
+- Code clean up:
+  - Generalised the execution of background threads in the new
+    AsynchronousTaskManager class, which is now used for both drawing
+    and rescanning in a background thread. 
+  - The scan progress panel has been moved into a nib of its own,
+    and now has a dedicated control: ScanProgressPanelControl.
+
+- Bug fix:
+  - Fixed the drawing code so that it also runs properly when
+    compiled for Intel Macs.
+
+
+----------------------------------------------------------------------
   Version 0.93, 22-01-2006
 ----------------------------------------------------------------------
 

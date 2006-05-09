@@ -21,12 +21,13 @@ rectangles as square as possible.
 
 - PowerPC processor
 
-  Unfortunately, GrandPerspective does not yet run on Intel Macs.
-  Although this would require only minimal (or no) changes to the 
-  code, I currently don't have the software to build Universal 
-  Binaries, nor (access to) the hardware to actually test it. 
-  Volunteers with an Intel Mac who don't mind being a beta-tester,
-  please step forward. :-)
+  This executable is still built for Macs with a PowerPC processor.
+  The source code has already been modified so that it should compile
+  and run properly on Intel processors as well (thanks to Craig
+  Hughes for his help with this). However, I do not (yet) have the
+  software to build Universal Binaries, nor easy access to an Intel
+  Mac to actually test it. This makes releasing an "official"
+  Universal Binary a bit cumbersome, but expect one soon anyway.
 
 - Mac OS X, 10.2 or higher
   
