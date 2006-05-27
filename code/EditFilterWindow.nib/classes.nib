@@ -7,6 +7,7 @@
                 cancelFilter = id; 
                 editTestInRepository = id; 
                 filterActionChanged = id; 
+                handleTestsBrowserClick = id; 
                 performFilter = id; 
                 removeTestFromFilter = id; 
                 removeTestFromRepository = id; 
@@ -16,13 +17,14 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 addTestToFilterButton = NSButton; 
+                availableTestsBrowser = NSBrowser; 
                 editTestInRepositoryButton = NSButton; 
                 filterActionButton = NSPopUpButton; 
-                filterTestBrowser = NSBrowser; 
+                filterTestsBrowser = NSBrowser; 
                 performFilterButton = NSButton; 
                 removeTestFromFilterButton = NSButton; 
                 removeTestFromRepositoryButton = NSButton; 
-                repositoryTestBrowser = NSBrowser; 
+                testDescriptionDrawer = NSDrawer; 
                 testDescriptionView = NSTextView; 
             }; 
             SUPERCLASS = NSWindowController; 

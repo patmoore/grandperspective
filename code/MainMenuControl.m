@@ -4,6 +4,7 @@
 
 #import "DirectoryViewControl.h"
 #import "SaveImageDialogControl.h"
+#import "EditFilterWindowControl.h"
 #import "ItemPathModel.h"
 
 #import "WindowManager.h"
@@ -60,6 +61,8 @@
   
   [scanTaskManager dispose];
   [scanTaskManager release];
+  
+  [editFilterWindowControl release];
 
   [super dealloc];
 }
@@ -76,7 +79,8 @@
   }
   
   if ( [anItem action]==@selector(saveDirectoryViewImage:) ||
-       [anItem action]==@selector(rescanDirectoryView:) ) {
+       [anItem action]==@selector(rescanDirectoryView:) ||
+       [anItem action]==@selector(filterDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
   
@@ -125,6 +129,35 @@
                        selector:@selector(createWindowForTree:)];
                        
     [windowCreator release];
+  }
+}
+
+
+- (IBAction) filterDirectoryView:(id)sender {
+  if (editFilterWindowControl == nil) {
+    // Lazily create it
+    editFilterWindowControl = 
+      [[EditFilterWindowControl alloc] init];
+    // TODO: Read initial repository from user defaults
+  }
+
+  NSModalSession session = 
+    [NSApp beginModalSessionForWindow:[editFilterWindowControl window]];
+
+  int  status;
+  do {
+    status = [NSApp runModalSession:session];
+  } while (status == NSRunContinuesResponse);
+  [NSApp endModalSession:session];
+  [[editFilterWindowControl window] close];
+    
+  if (status == NSRunStoppedResponse) {
+    NSLog(@"Okay.");
+    // get rule from window
+  }
+  else {
+    NSLog(@"Aborted.");
+    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
   }
 }
 

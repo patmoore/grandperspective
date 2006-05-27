@@ -6,20 +6,22 @@
   IBOutlet NSPopUpButton  *filterActionButton;
 
   IBOutlet NSTextView  *testDescriptionView;
-
-  //IBOutlet NSButton  *cancelFilterButton;
+  IBOutlet NSDrawer  *testDescriptionDrawer;
+  
   IBOutlet NSButton  *performFilterButton;
 
-  //IBOutlet NSButton  *addTestToRepositoryButton;
   IBOutlet NSButton  *removeTestFromRepositoryButton;
   IBOutlet NSButton  *editTestInRepositoryButton;
 
   IBOutlet NSButton  *addTestToFilterButton;
   IBOutlet NSButton  *removeTestFromFilterButton;
   
-  IBOutlet NSBrowser  *filterTestBrowser;
-  IBOutlet NSBrowser  *repositoryTestBrowser;
-
+  IBOutlet NSBrowser  *filterTestsBrowser;
+  IBOutlet NSBrowser  *availableTestsBrowser;
+  
+  NSMutableDictionary  *allTestsByName;
+  NSMutableArray  *filterTests;
+  NSMutableArray  *availableTests;
 }
 
 - (IBAction) cancelFilter:(id)sender;
@@ -34,5 +36,9 @@
 
 - (IBAction) filterActionChanged:(id)sender;
 - (IBAction) showTestDescriptionChanged:(id)sender;
+
+- (IBAction) handleTestsBrowserClick:(id)sender;
+
+- (id) init;
 
 @end
