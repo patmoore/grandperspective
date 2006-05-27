@@ -29,6 +29,8 @@
 
     matches = [matchesVal retain];
   }
+  
+  return self;
 }
 
 - (void) dealloc {
