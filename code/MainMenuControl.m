@@ -141,14 +141,7 @@
     // TODO: Read initial repository from user defaults
   }
 
-  NSModalSession session = 
-    [NSApp beginModalSessionForWindow:[editFilterWindowControl window]];
-
-  int  status;
-  do {
-    status = [NSApp runModalSession:session];
-  } while (status == NSRunContinuesResponse);
-  [NSApp endModalSession:session];
+  int  status = [NSApp runModalForWindow:[editFilterWindowControl window]];
   [[editFilterWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
