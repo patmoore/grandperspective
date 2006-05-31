@@ -14,7 +14,7 @@
 // NSWindowController's case
 - (id) init {         
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
-    allTestsByName = [NSMutableDictionary dictionaryWithCapacity:32];
+    allTestsByName = [[NSMutableDictionary alloc] initWithCapacity:32];
     
     // TEMP: Init with some basic tests.
     // TODO: Should (elsewhere) get this from user defaults eventually.
