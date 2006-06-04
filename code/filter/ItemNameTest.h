@@ -5,9 +5,9 @@
 
 
 /**
- * (Abstract) string-based file item test.
+ * Item name test.
  */
-@interface StringBasedFileItemTest : AbstractFileItemTest {
+@interface ItemNameTest : AbstractFileItemTest {
 
   NSObject <StringTest>*  stringTest;
 

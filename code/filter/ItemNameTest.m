@@ -1,16 +1,7 @@
-#import "StringBasedFileItemTest.h"
-
-#import "StringTest.h"
-
-@interface StringBasedFileItemTest (PrivateMethods)
-
-// Not implemented. Needs to be provided by subclass.
-- (NSString*) subjectDescription;
-
-@end
+#import "ItemNameTest.h"
 
 
-@implementation StringBasedFileItemTest 
+@implementation ItemNameTest 
 
 - (id) initWithName:(NSString*)nameVal {
   NSAssert(NO, @"Use initWithName:stringTest instead.");
@@ -30,9 +21,12 @@
   [super dealloc];
 }
 
+- (BOOL) testFileItem:(FileItem*)item {
+  return [stringTest testString:[item name]];
+}
 
 - (NSString*) description {
-  return [stringTest descriptionWithSubject:[self subjectDescription]];
+  return [stringTest descriptionWithSubject:@"name"];
 }
 
 @end
