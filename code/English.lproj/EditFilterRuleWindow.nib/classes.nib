@@ -1,0 +1,19 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {cancelEdit = id; doneEditing = id; }; 
+            CLASS = EditFilterRuleWindowControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                doneButton = NSButton; 
+                ruleNameField = NSTextField; 
+                ruleTargetButton = NSPopUpButton; 
+                ruleTargetsView = NSTextView; 
+                ruleTestButton = NSPopUpButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}
