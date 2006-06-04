@@ -86,7 +86,11 @@
   [availableTestsBrowser setDelegate:self];
     
   [[self window] setReleasedWhenClosed:NO];
-
+  
+  [filterActionButton removeAllItems];
+  [filterActionButton addItemWithTitle:@"Show only"];
+  [filterActionButton addItemWithTitle:@"Do not show"];
+  
   [self updateButtonState:nil];
 }
 
@@ -201,38 +205,6 @@
 - (IBAction)handleTestsBrowserClick:(id)sender {
   [self updateButtonState:nil];
 }
-
-
-/*
-- (BOOL)browser:(NSBrowser *)sender selectCellWithString:(NSString *)title 
-          inColumn:(int)column {
-  NSLog(@"browser:selectCellWithString:inColumn");
-}
-
-- (BOOL)browser:(NSBrowser *)sender selectRow:(int)row inColumn:(int)column {
-  NSLog(@"browser:selectRow:inColumn");
-  NSAssert(column==0, @"Invalid column.");
-  
-  NSString  *selectedTestName = nil;
-  
-  if (sender == filterTestsBrowser) {
-    selectedTestName = [filterTests objectAtIndex:row];
-    return YES;
-  }
-  else if (sender == availableTestsBrowser) {
-    selectedTestName = [availableTests objectAtIndex:row];
-    return YES;
-  }
-  else {
-    NSAssert(NO, @"Unexpected sender.");
-  }
-  
-  // TODO: deselect cell in other browser?
-  NSObject <FileItemTest>  *selectedTest = 
-    [allTestsByName objectForKey:selectedTestName];
-  [testDescriptionView setString:[selectedTest description]];
-}
-*/
 
 @end
 
