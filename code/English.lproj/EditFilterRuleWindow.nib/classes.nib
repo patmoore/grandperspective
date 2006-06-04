@@ -6,10 +6,18 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 doneButton = NSButton; 
+                nameCheckBox = NSButton; 
+                nameMatchPopUpButton = NSPopUpButton; 
+                nameTargetsView = NSTextView; 
                 ruleNameField = NSTextField; 
-                ruleTargetButton = NSPopUpButton; 
-                ruleTargetsView = NSTextView; 
-                ruleTestButton = NSPopUpButton; 
+                sizeLowerBoundCheckBox = NSButton; 
+                sizeLowerBoundField = NSTextField; 
+                sizeLowerBoundUnits = NSPopUpButton; 
+                sizeUpperBoundCheckBox = NSButton; 
+                sizeUpperBoundField = NSTextField; 
+                sizeUpperBoundUnits = NSPopUpButton; 
+                typeCheckBox = NSButton; 
+                typePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
