@@ -7,8 +7,13 @@
 #import "filter/FileNameTest.h"
 #import "filter/DirectoryNameTest.h"
 
-@implementation EditFilterWindowControl
+@interface EditFilterWindowControl (PrivateMethods)
 
+- (void) updateButtonState:(NSNotification*)notification;
+
+@end
+
+@implementation EditFilterWindowControl
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
@@ -80,10 +85,9 @@
   [filterTestsBrowser setDelegate:self];
   [availableTestsBrowser setDelegate:self];
     
-  //[filterTestsBrowser validateVisibleColumns];
-  //[availableTestsBrowser validateVisibleColumns];
-    
   [[self window] setReleasedWhenClosed:NO];
+
+  [self updateButtonState:nil];
 }
 
 
@@ -116,6 +120,8 @@
     
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
+
+    [self updateButtonState:nil];
   }
 }
 
@@ -128,6 +134,8 @@
 
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
+    
+    [self updateButtonState:nil];
   }
 }
 
@@ -191,13 +199,7 @@
 // HACK: Not sure why this works, but it does. The two delegate methods of
 // receiving selection events are only called in exceptional cases.
 - (IBAction)handleTestsBrowserClick:(id)sender {
-  //NSLog(@"doClick");
-  
-  NSString  *selectedTestName = [[sender selectedCell] title];
-
-  NSObject <FileItemTest>  *selectedTest = 
-    [allTestsByName objectForKey:selectedTestName];
-  [testDescriptionView setString:[selectedTest description]];
+  [self updateButtonState:nil];
 }
 
 
@@ -231,5 +233,50 @@
   [testDescriptionView setString:[selectedTest description]];
 }
 */
+
+@end
+
+@implementation EditFilterWindowControl (PrivateMethods)
+
+- (void) updateButtonState:(NSNotification*)notification {
+
+  // Find out which test (if any) is currently highlighted.
+  NSString  *newSelectedTestName = nil;
+  if ([[self window] firstResponder] == 
+        [filterTestsBrowser matrixInColumn:0]) {
+    newSelectedTestName = [[filterTestsBrowser selectedCell] title];
+  }
+  else if ([[self window] firstResponder] == 
+             [availableTestsBrowser matrixInColumn:0]) {
+    newSelectedTestName = [[availableTestsBrowser selectedCell] title];
+  }
+  
+  // If highlighted test changed, update the description text view
+  if (newSelectedTestName != selectedTestName) {
+    [selectedTestName release];
+    selectedTestName = [newSelectedTestName retain];
+
+    if (selectedTestName != nil) {
+      NSObject <FileItemTest>  *selectedTest = 
+        [allTestsByName objectForKey:selectedTestName];
+      [testDescriptionView setString:[selectedTest description]];
+    }
+    else {
+      [testDescriptionView setString:@""];
+    }
+  }
+  
+  // Update enabled status of buttons with context-dependent actions.
+  BOOL  availableTestSelected = ([availableTestsBrowser selectedCell] != nil);
+
+  [removeTestFromRepositoryButton setEnabled:availableTestSelected];
+  [editTestInRepositoryButton setEnabled:availableTestSelected];
+  [addTestToFilterButton setEnabled:availableTestSelected];
+
+  [removeTestFromFilterButton setEnabled: 
+    ([filterTestsBrowser selectedCell] != nil)];
+
+  [performFilterButton setEnabled: ([filterTests count] > 0)];
+}
 
 @end

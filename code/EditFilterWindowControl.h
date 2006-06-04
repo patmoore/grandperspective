@@ -22,6 +22,7 @@
   NSMutableDictionary  *allTestsByName;
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
+  NSString  *selectedTestName;
 }
 
 - (IBAction) cancelFilter:(id)sender;
