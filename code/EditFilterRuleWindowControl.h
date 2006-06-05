@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
+@protocol FileItemTest;
 
 @interface EditFilterRuleWindowControl : NSWindowController {
 
@@ -23,7 +24,19 @@
   IBOutlet NSButton  *doneButton;
 }
 
+- (IBAction)valueEntered:(id)sender;
+
 - (IBAction) cancelEdit:(id)sender;
 - (IBAction) doneEditing:(id)sender;
+
+
+// Configures the window to represent the given test.
+- (void) representFileItemTest:(NSObject <FileItemTest> *)test;
+
+// Creates the test object that represents the current window state.
+- (NSObject <FileItemTest> *) createFileItemTest;
+
+- (void) setFileItemTestName:(NSString *)name;
+- (NSString*) fileItemTestName;
 
 @end
