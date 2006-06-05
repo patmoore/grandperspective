@@ -21,13 +21,15 @@
 
   int  max = [subTests count];
   int  i = 0;
+  [descr appendString:@"("];
   while (i < max) {
     if (i > 0) {
-      [descr appendString:@" AND "];
+      [descr appendString:@") and ("];
     }
     [descr appendString: [[subTests objectAtIndex:i++] description]];
   }
-  
+  [descr appendString:@")"];
+    
   return descr;
 }
 
