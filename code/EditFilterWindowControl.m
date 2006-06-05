@@ -4,8 +4,9 @@
 #import "filter/StringSuffixTest.h"
 #import "filter/StringEqualityTest.h"
 #import "filter/FileItemTest.h"
-#import "filter/FileNameTest.h"
-#import "filter/DirectoryNameTest.h"
+#import "filter/ItemNameTest.h"
+#import "filter/ItemTypeTest.h"
+#import "filter/CompoundAndItemTest.h"
 
 @interface EditFilterWindowControl (PrivateMethods)
 
@@ -23,46 +24,57 @@
     
     // TEMP: Init with some basic tests.
     // TODO: Should (elsewhere) get this from user defaults eventually.
-    NSMutableArray  *imageExtensions = 
-      [NSMutableArray arrayWithCapacity:16];
-    [imageExtensions addObject:@".jpg"];
-    [imageExtensions addObject:@".JPG"];
-    [imageExtensions addObject:@".png"];
-    [imageExtensions addObject:@".PNG"];
-    [imageExtensions addObject:@".gif"];
-    [imageExtensions addObject:@".GIF"];
-    NSObject <StringTest>  *imageExtensionTest = 
-      [[[StringSuffixTest alloc] initWithMatches:imageExtensions] autorelease];
-    NSObject <FileItemTest>  *imageTest =
-      [[FileNameTest alloc] initWithName:@"Images" 
-                              stringTest:imageExtensionTest];
-    [allTestsByName setObject:imageTest forKey:[imageTest name]];
+    NSArray  *imageExtensions = 
+      [NSArray arrayWithObjects:@".jpg", @".JPG", @".png", @".PNG", @".gif", 
+                                @".GIF"];
+    NSObject <StringTest>  *imageStringTest = 
+      [[[StringSuffixTest alloc] initWithMatchTargets:imageExtensions] 
+           autorelease];
+    NSObject <FileItemTest>  *imageNameTest =
+      [[[ItemNameTest alloc] initWithStringTest:imageStringTest]
+           autorelease];
+    NSObject <FileItemTest>  *imageTypeTest =
+      [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
+    NSArray  *imageTests = 
+      [NSArray arrayWithObjects:imageNameTest, imageTypeTest];
+    NSObject <FileItemTest>  *imageTest = 
+      [[[CompoundAndItemTest alloc] initWithSubItemTests:imageTests] 
+           autorelease];
+    [allTestsByName setObject:imageTest forKey:@"Images"];
     
-    NSMutableArray  *musicExtensions = 
-      [NSMutableArray arrayWithCapacity:16];
-    [musicExtensions addObject:@".mp3"];
-    [musicExtensions addObject:@".MP3"];
-    [musicExtensions addObject:@".wav"];
-    [musicExtensions addObject:@".WAV"];
-    NSObject <StringTest>  *musicExtensionTest = 
-      [[[StringSuffixTest alloc] initWithMatches:musicExtensions] autorelease];
-    NSObject <FileItemTest>  *musicTest =
-      [[FileNameTest alloc] initWithName:@"Music" 
-                              stringTest:musicExtensionTest];
-    [allTestsByName setObject:musicTest forKey:[musicTest name]];    
-
-    NSMutableArray  *versionControlFolders = 
-      [NSMutableArray arrayWithCapacity:16];
-    [versionControlFolders addObject:@"CVS"];
-    [versionControlFolders addObject:@".svn"];
-    NSObject <StringTest>  *versionControlNameTest = 
-      [[[StringEqualityTest alloc] initWithMatches:versionControlFolders] 
-        autorelease];
-    NSObject <FileItemTest>  *versionControlTest =
-      [[DirectoryNameTest alloc] initWithName:@"Version control" 
-                                   stringTest:versionControlNameTest];
-    [allTestsByName setObject:versionControlTest 
-                       forKey:[versionControlTest name]];
+    NSArray  *musicExtensions = 
+      [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV"];
+    NSObject <StringTest>  *musicStringTest = 
+      [[[StringSuffixTest alloc] initWithMatchTargets:musicExtensions]
+           autorelease];
+    NSObject <FileItemTest>  *musicNameTest =
+      [[[ItemNameTest alloc] initWithStringTest:musicStringTest]
+           autorelease];
+    NSObject <FileItemTest>  *musicTypeTest =
+      [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
+    NSArray  *musicTests = 
+      [NSArray arrayWithObjects:musicNameTest, musicTypeTest];
+    NSObject <FileItemTest>  *musicTest = 
+      [[[CompoundAndItemTest alloc] initWithSubItemTests:musicTests] 
+           autorelease];
+    [allTestsByName setObject:musicTest forKey:@"Music"];
+    
+    NSArray  *versionControlFolders = 
+      [NSArray arrayWithObjects:@"CVS", @".svn"];
+    NSObject <StringTest>  *versionControlStringTest = 
+      [[[StringEqualityTest alloc] initWithMatchTargets:versionControlFolders] 
+           autorelease];
+    NSObject <FileItemTest>  *versionControlNameTest =
+      [[[ItemNameTest alloc] initWithStringTest:versionControlStringTest]
+           autorelease];
+    NSObject <FileItemTest>  *versionControlTypeTest =
+      [[[ItemTypeTest alloc] initWithTestForPlainFile:NO] autorelease];
+    NSArray  *versionControlTests = 
+      [NSArray arrayWithObjects:versionControlNameTest, versionControlTypeTest];
+    NSObject <FileItemTest>  *versionControlTest = 
+      [[[CompoundAndItemTest alloc] initWithSubItemTests:versionControlTests]
+           autorelease];
+    [allTestsByName setObject:versionControlTest forKey:@"Version control"];
                        
     filterTests = [[NSMutableArray alloc] initWithCapacity:8];
     availableTests = [[NSMutableArray alloc] 
