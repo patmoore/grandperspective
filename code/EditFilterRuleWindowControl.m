@@ -88,6 +88,8 @@
     // It is a stand-alone test.
     [self updateStateBasedOnTest:test];
   }
+  
+  [self updateEnabledState:nil];
 }
 
 // Creates the test object that represents the current window state.
@@ -125,6 +127,8 @@
 
 - (void) setFileItemTestName:(NSString *)name {
   [ruleNameField setStringValue:name];
+  
+  [self updateEnabledState:nil];
 }
 
 - (NSString*) fileItemTestName {
@@ -273,7 +277,7 @@
 
 
 - (ItemTypeTest*) itemTypeTestBasedOnState {
-  if ([typeCheckBox isEnabled]) {
+  if ([typeCheckBox state]==NSOnState) {
     return [[[ItemTypeTest alloc] initWithTestForPlainFile:
                                     [typePopUpButton indexOfSelectedItem]==0]
                 autorelease];
@@ -285,7 +289,7 @@
 
 
 - (ItemNameTest*) itemNameTestBasedOnState {
-  if ([nameCheckBox isEnabled]) {
+  if ([nameCheckBox state]==NSOnState) {
     NSArray  *rawTargets = 
       [[nameTargetsView string] componentsSeparatedByString:@"\n"];
       
@@ -320,15 +324,15 @@
     }
   }
   else {
-    // Test not enabled.
+    // Test not used.
     return nil;
   }
 }
 
 
 - (ItemSizeTest*) itemSizeTestBasedOnState {
-  if ([sizeLowerBoundCheckBox isEnabled]) {
-    if ([sizeUpperBoundCheckBox isEnabled]) {
+  if ([sizeLowerBoundCheckBox state]==NSOnState) {
+    if ([sizeUpperBoundCheckBox state]==NSOnState) {
       return [[[ItemSizeTest alloc] 
                   initWithLowerBound:[sizeLowerBoundField intValue] 
                           upperBound:[sizeUpperBoundField intValue]] 
@@ -341,7 +345,7 @@
     }
   }
   else {
-    if ([sizeUpperBoundCheckBox isEnabled]) {
+    if ([sizeUpperBoundCheckBox state]==NSOnState) {
       return [[[ItemSizeTest alloc] 
                   initWithUpperBound:[sizeUpperBoundField intValue]] 
                   autorelease];

@@ -120,6 +120,7 @@
   [NSApp stopModal];
 }
 
+
 - (IBAction) addTestToRepository:(id)sender {
   if (editFilterRuleWindowControl == nil) {
     // Lazily create it
@@ -154,6 +155,12 @@
 
         [availableTests addObject:testName];
         [availableTestsBrowser validateVisibleColumns];
+        
+        // Select the newly added test.
+        [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
+                                 inColumn:0];
+        
+        [self updateWindowState:nil];
 
         break;
       }
@@ -165,13 +172,98 @@
   }
 }
 
+
 - (IBAction) removeTestFromRepository:(id)sender {
-  // void
+  NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
+  
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  [alert addButtonWithTitle:@"OK"];
+  [alert addButtonWithTitle:@"Cancel"];
+  [alert setMessageText:
+           [NSString stringWithFormat:@"Remove the rule named \"%@\"?",
+              testName]];
+
+  if ([alert runModal] == NSAlertFirstButtonReturn) {
+    // Delete confirmed.
+    [allTestsByName removeObjectForKey:testName];
+    [availableTests removeObject:testName];
+          
+    [availableTestsBrowser validateVisibleColumns];
+    
+    [self updateWindowState:nil];
+  }
 }
 
+
 - (IBAction) editTestInRepository:(id)sender {
-  // void
+  if (editFilterRuleWindowControl == nil) {
+    // Lazily create it
+    editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
+    // Force loading of the window.
+    [editFilterRuleWindowControl window];
+  }
+
+  NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
+  NSObject <FileItemTest>  *oldTest = [allTestsByName objectForKey:oldName];
+
+  [editFilterRuleWindowControl representFileItemTest:oldTest];
+  [editFilterRuleWindowControl setFileItemTestName:oldName];
+
+  while (YES) {
+    int  status = 
+           [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
+    [[editFilterRuleWindowControl window] close];
+    
+    if (status == NSRunStoppedResponse) {
+      NSString*  newName = [editFilterRuleWindowControl fileItemTestName];
+
+      if (! [newName isEqualToString:oldName] &&
+          [allTestsByName objectForKey:newName] != nil) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert addButtonWithTitle:@"OK"];
+        [alert setMessageText:
+          [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
+                      newName]];
+
+        [alert runModal];
+      }
+      else {
+        NSObject <FileItemTest>  *newTest = 
+          [editFilterRuleWindowControl createFileItemTest];
+          
+        if ([newName isEqualToString:oldName]) {
+          // Name did not change, so only replace test
+          [allTestsByName setObject:newTest forKey:newName];
+          
+          // Invalidate "cached" test description text (even though the name
+          // is the same, the test itself may have changed).
+          [selectedTestName release];
+          selectedTestName = nil;
+        }
+        else {
+          // Name changed, so test under old name, and add new one.
+          [allTestsByName removeObjectForKey:oldName];
+          [availableTests removeObject:oldName];
+          
+          [allTestsByName setObject:newTest forKey:newName];
+          [availableTests addObject:newName];
+          
+          [availableTestsBrowser validateVisibleColumns];
+        }
+  
+        [self updateWindowState:nil];
+        
+        break;
+      }
+    }
+    else {
+      NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
+      break;
+    }
+  }
 }
+
 
 - (IBAction) addTestToFilter:(id)sender {
   NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
@@ -182,6 +274,10 @@
     
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
+    
+    // Select the moved test.
+    [filterTestsBrowser selectRow:[filterTests indexOfObject:testName]
+                          inColumn:0];
 
     [self updateWindowState:nil];
   }
@@ -196,6 +292,10 @@
 
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
+    
+    // Select the moved test.
+    [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
+                             inColumn:0];
     
     [self updateWindowState:nil];
   }
@@ -270,14 +370,19 @@
 
 - (void) updateWindowState:(NSNotification*)notification {
 
+  BOOL  filterTestsHighlighted = 
+          ( [[self window] firstResponder]
+            == [filterTestsBrowser matrixInColumn:0] );
+  BOOL  availableTestsHighlighted = 
+          ( [[self window] firstResponder]
+            == [availableTestsBrowser matrixInColumn:0] );
+
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
-  if ([[self window] firstResponder] == 
-        [filterTestsBrowser matrixInColumn:0]) {
+  if (filterTestsHighlighted) {
     newSelectedTestName = [[filterTestsBrowser selectedCell] title];
   }
-  else if ([[self window] firstResponder] == 
-             [availableTestsBrowser matrixInColumn:0]) {
+  else if (availableTestsHighlighted) {
     newSelectedTestName = [[availableTestsBrowser selectedCell] title];
   }
   
@@ -297,14 +402,17 @@
   }
   
   // Update enabled status of buttons with context-dependent actions.
-  BOOL  availableTestSelected = ([availableTestsBrowser selectedCell] != nil);
+  BOOL  availableTestHighlighted = 
+          ( ([availableTestsBrowser selectedCell] != nil) && 
+            availableTestsHighlighted );
 
-  [removeTestFromRepositoryButton setEnabled:availableTestSelected];
-  [editTestInRepositoryButton setEnabled:availableTestSelected];
-  [addTestToFilterButton setEnabled:availableTestSelected];
+  [removeTestFromRepositoryButton setEnabled:availableTestHighlighted];
+  [editTestInRepositoryButton setEnabled:availableTestHighlighted];
+  [addTestToFilterButton setEnabled:availableTestHighlighted];
 
   [removeTestFromFilterButton setEnabled: 
-    ([filterTestsBrowser selectedCell] != nil)];
+    ( ([filterTestsBrowser selectedCell] != nil) &&
+      filterTestsHighlighted )];
 
   [performFilterButton setEnabled: ([filterTests count] > 0)];
 }
