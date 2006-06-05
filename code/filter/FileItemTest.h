@@ -6,6 +6,4 @@
 
 - (BOOL) testFileItem:(FileItem*)item;
 
-- (NSString*) name;
-
 @end

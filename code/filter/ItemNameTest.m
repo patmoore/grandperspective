@@ -3,13 +3,13 @@
 
 @implementation ItemNameTest 
 
-- (id) initWithName:(NSString*)nameVal {
-  NSAssert(NO, @"Use initWithName:stringTest instead.");
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithStringTest: instead.");
 }
 
-- (id) initWithName:(NSString*)nameVal
-         stringTest:(NSObject <StringTest>*)stringTestVal {
-  if (self = [super initWithName:nameVal]) {
+- (id) initWithStringTest:(NSObject <StringTest>*)stringTestVal {
+  if (self = [super init]) {
     stringTest = [stringTestVal retain];
   }
   return self;
@@ -19,6 +19,10 @@
   [stringTest release];
   
   [super dealloc];
+}
+
+- (NSObject <StringTest>*) stringTest {
+  return stringTest;
 }
 
 - (BOOL) testFileItem:(FileItem*)item {

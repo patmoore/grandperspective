@@ -3,13 +3,10 @@
 
 @implementation AbstractFileItemTest
 
+// Overrides designated initialiser.
 - (id) init {
-  return [self initWithName:@""];
-}
-
-- (id) initWithName:(NSString*)nameVal {
   if (self = [super init]) {
-    name = [nameVal retain];
+    name = nil; // Not strictly needed, but better "nil" it explicitly.
   }
 
   return self;
@@ -19,6 +16,13 @@
   [name release];
   
   [super dealloc];
+}
+
+- (void) setName:(NSString*)nameVal {
+  if (nameVal != name) {
+    [name release];
+    name = [nameVal retain];
+  }
 }
 
 - (NSString*) name {

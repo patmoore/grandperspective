@@ -1,17 +1,20 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
 
 
 /**
  * Item type test.
  */
-@interface ItemTypeTest : AbstractFileItemTest {
+@interface ItemTypeTest : NSObject<FileItemTest>  {
 
   BOOL  testForPlainFile;
 
 }
 
-- (id) initWithName:(NSString*)name testForPlainFile:(BOOL)plainFileFlag;
+
+- (id) initWithTestForPlainFile:(BOOL)plainFileFlag;
+
+- (BOOL) testsForPlainFile;
 
 @end

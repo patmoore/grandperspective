@@ -3,12 +3,21 @@
 
 @implementation ItemTypeTest
 
-- (id) initWithName:(NSString*)nameVal testForPlainFile:(BOOL)plainFileFlag {
-  if (self = [super initWithName:nameVal]) {
+// Overrides designated initialiser.
+- (id) init {
+  NSAssert(NO, @"Use initWithTestForPlainFile instead.");
+}
+
+- (id) initWithTestForPlainFile:(BOOL)plainFileFlag {
+  if (self = [super init]) {
     testForPlainFile = plainFileFlag;    
   }
   
   return self;
+}
+
+- (BOOL) testsForPlainFile {
+  return testForPlainFile;
 }
 
 - (BOOL) testFileItem:(FileItem*)item {

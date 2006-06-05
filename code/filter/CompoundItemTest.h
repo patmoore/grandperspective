@@ -10,7 +10,7 @@
   NSArray  *subTests;
 }
 
-- (id) initWithName:(NSString*)name subItemTests:(NSArray*)subTests;
+- (id) initWithSubItemTests:(NSArray*)subTests;
 
 - (NSArray*) subItemTests;
 

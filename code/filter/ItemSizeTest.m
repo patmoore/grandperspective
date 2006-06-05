@@ -3,25 +3,45 @@
 
 @implementation ItemSizeTest
 
-- (id) initWithName:(NSString*)nameVal lowerBound:(ITEM_SIZE)lowerBoundVal {
-  return [self initWithName:nameVal lowerBound:lowerBoundVal 
-                                    upperBound:ULONG_LONG_MAX];
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithLowerBound:upperBound: instead.");
 }
 
-- (id) initWithName:(NSString*)nameVal upperBound:(ITEM_SIZE)upperBoundVal {
-  return [self initWithName:nameVal lowerBound:0 
-                                    upperBound:upperBoundVal];
+- (id) initWithLowerBound:(ITEM_SIZE)lowerBoundVal {
+  return [self initWithLowerBound:lowerBoundVal upperBound:ULONG_LONG_MAX];
 }
 
-- (id) initWithName:(NSString*)nameVal lowerBound:(ITEM_SIZE)lowerBoundVal
-                                       upperBound:(ITEM_SIZE)upperBoundVal {
-  if (self = [super initWithName:nameVal]) {
+- (id) initWithUpperBound:(ITEM_SIZE)upperBoundVal {
+  return [self initWithLowerBound:0 upperBound:upperBoundVal];
+}
+
+- (id) initWithLowerBound:(ITEM_SIZE)lowerBoundVal
+               upperBound:(ITEM_SIZE)upperBoundVal {
+  if (self = [super init]) {
     lowerBound = lowerBoundVal;
     upperBound = upperBoundVal;
   }
   
   return self;
 }
+
+- (BOOL) hasLowerBound {
+  return (lowerBound > 0);
+}
+
+- (BOOL) hasUpperBound {
+  return (upperBound < ULONG_LONG_MAX);
+}
+
+- (ITEM_SIZE) lowerBound {
+  return lowerBound;
+}
+
+- (ITEM_SIZE) upperBound {
+  return upperBound;
+}
+
                                     
 - (BOOL) testFileItem:(FileItem*)item {
   return ([item itemSize] >= lowerBound && 
@@ -31,16 +51,16 @@
 - (NSString*) description {
   // TODO: show "kB", "MB", or "GB" if needed.
   
-  if (lowerBound == 0) {
-    return (upperBound == ULONG_LONG_MAX) ?
-      @"any size" :
-      [NSString stringWithFormat:@"size is smaller than %qu", upperBound];
+  if ([self hasLowerBound]) {
+    return [self hasUpperBound] ?
+      [NSString stringWithFormat:@"size is between %qu and %qu", lowerBound,
+                                                                 upperBound] :
+      [NSString stringWithFormat:@"size is larger than %qu", lowerBound];
   }
   else {
-    return (upperBound == ULONG_LONG_MAX) ?
-      [NSString stringWithFormat:@"size is larger than %qu", lowerBound] :
-      [NSString stringWithFormat:@"size is between %qu and %qu", lowerBound,
-                                                                 upperBound];
+    return [self hasUpperBound] ?
+      [NSString stringWithFormat:@"size is smaller than %qu", upperBound] :
+      @"any size";
   }
 }
 

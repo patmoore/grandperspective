@@ -22,12 +22,13 @@
 
 @implementation MultiMatchStringTest
 
-- (id) initWithMatches:(NSArray*)matchesVal {
+- (id) initWithMatchTargets:(NSArray*)matchesVal {
   if (self = [super init]) {
     NSAssert([matchesVal count] >= 1, 
              @"There must at least be one possible match.");
 
-    matches = [matchesVal retain];
+    // Make the array immutable
+    matches = [[NSArray alloc] initWithArray:matchesVal];
   }
   
   return self;
@@ -37,6 +38,11 @@
   [matches release];
 
   [super dealloc];
+}
+
+
+- (NSArray*) matchTargets {
+  return matches;
 }
 
 

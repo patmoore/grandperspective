@@ -2,12 +2,11 @@
 
 #import "FileItemTest.h"
 
+// TODO: (Temporarily?) not needed: remove?
 @interface AbstractFileItemTest : NSObject<FileItemTest> {
 
   NSString*  name;
 
 }
-
-- (id) initWithName:(NSString*)name;
 
 @end

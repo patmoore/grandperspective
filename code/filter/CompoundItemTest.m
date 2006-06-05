@@ -3,8 +3,13 @@
 
 @implementation CompoundItemTest
 
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithSubItemTests: instead.");
+}
+
 - (id) initWithSubItemTests:(NSArray*)subTestsVal {
-  if (self = [super initWithName:nameVal]) {
+  if (self = [super init]) {
     // Make the array immutable
     subTests = [[NSArray alloc] initWithArray:subTestsVal];
   }

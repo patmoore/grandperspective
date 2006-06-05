@@ -11,6 +11,8 @@
 
 }
 
-- (id) initWithMatches:(NSArray*)matches;
+- (id) initWithMatchTargets:(NSArray*)matches;
+
+- (NSArray*) matchTargets;
 
 @end
