@@ -8,9 +8,11 @@
 #import "filter/ItemTypeTest.h"
 #import "filter/CompoundAndItemTest.h"
 
+#import "EditFilterRuleWindowControl.h"
+
 @interface EditFilterWindowControl (PrivateMethods)
 
-- (void) updateButtonState:(NSNotification*)notification;
+- (void) updateWindowState:(NSNotification*)notification;
 
 @end
 
@@ -18,7 +20,7 @@
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) init {         
+- (id) init {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
     allTestsByName = [[NSMutableDictionary alloc] initWithCapacity:32];
     
@@ -26,7 +28,7 @@
     // TODO: Should (elsewhere) get this from user defaults eventually.
     NSArray  *imageExtensions = 
       [NSArray arrayWithObjects:@".jpg", @".JPG", @".png", @".PNG", @".gif", 
-                                @".GIF"];
+                                @".GIF", nil];
     NSObject <StringTest>  *imageStringTest = 
       [[[StringSuffixTest alloc] initWithMatchTargets:imageExtensions] 
            autorelease];
@@ -36,14 +38,14 @@
     NSObject <FileItemTest>  *imageTypeTest =
       [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
     NSArray  *imageTests = 
-      [NSArray arrayWithObjects:imageNameTest, imageTypeTest];
+      [NSArray arrayWithObjects:imageNameTest, imageTypeTest, nil];
     NSObject <FileItemTest>  *imageTest = 
       [[[CompoundAndItemTest alloc] initWithSubItemTests:imageTests] 
            autorelease];
     [allTestsByName setObject:imageTest forKey:@"Images"];
     
     NSArray  *musicExtensions = 
-      [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV"];
+      [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV", nil];
     NSObject <StringTest>  *musicStringTest = 
       [[[StringSuffixTest alloc] initWithMatchTargets:musicExtensions]
            autorelease];
@@ -53,14 +55,14 @@
     NSObject <FileItemTest>  *musicTypeTest =
       [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
     NSArray  *musicTests = 
-      [NSArray arrayWithObjects:musicNameTest, musicTypeTest];
+      [NSArray arrayWithObjects:musicNameTest, musicTypeTest, nil];
     NSObject <FileItemTest>  *musicTest = 
       [[[CompoundAndItemTest alloc] initWithSubItemTests:musicTests] 
            autorelease];
     [allTestsByName setObject:musicTest forKey:@"Music"];
     
     NSArray  *versionControlFolders = 
-      [NSArray arrayWithObjects:@"CVS", @".svn"];
+      [NSArray arrayWithObjects:@"CVS", @".svn", nil];
     NSObject <StringTest>  *versionControlStringTest = 
       [[[StringEqualityTest alloc] initWithMatchTargets:versionControlFolders] 
            autorelease];
@@ -70,7 +72,8 @@
     NSObject <FileItemTest>  *versionControlTypeTest =
       [[[ItemTypeTest alloc] initWithTestForPlainFile:NO] autorelease];
     NSArray  *versionControlTests = 
-      [NSArray arrayWithObjects:versionControlNameTest, versionControlTypeTest];
+      [NSArray arrayWithObjects:versionControlNameTest, versionControlTypeTest, 
+                                nil];
     NSObject <FileItemTest>  *versionControlTest = 
       [[[CompoundAndItemTest alloc] initWithSubItemTests:versionControlTests]
            autorelease];
@@ -89,6 +92,8 @@
   [availableTests release];
   [allTestsByName release];
   
+  [editFilterRuleWindowControl release];
+  
   [super dealloc];
 }
 
@@ -103,7 +108,7 @@
   [filterActionButton addItemWithTitle:@"Show only"];
   [filterActionButton addItemWithTitle:@"Do not show"];
   
-  [self updateButtonState:nil];
+  [self updateWindowState:nil];
 }
 
 
@@ -116,7 +121,48 @@
 }
 
 - (IBAction) addTestToRepository:(id)sender {
-  // void
+  if (editFilterRuleWindowControl == nil) {
+    // Lazily create it
+    editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
+  }
+  else {
+    [editFilterRuleWindowControl representFileItemTest:nil];
+    [editFilterRuleWindowControl setFileItemTestName:@""];
+  }
+
+  while (YES) {
+    int  status = 
+           [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
+    [[editFilterRuleWindowControl window] close];
+    
+    if (status == NSRunStoppedResponse) {
+      NSString*  testName = [editFilterRuleWindowControl fileItemTestName];
+
+      if ([allTestsByName objectForKey:testName] != nil) {
+        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+        [alert addButtonWithTitle:@"OK"];
+        [alert setMessageText:
+          [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
+                      testName]];
+
+        [alert runModal];
+      }
+      else {
+        NSObject <FileItemTest>  *test = 
+          [editFilterRuleWindowControl createFileItemTest];    
+        [allTestsByName setObject:test forKey:testName];
+
+        [availableTests addObject:testName];
+        [availableTestsBrowser validateVisibleColumns];
+
+        break;
+      }
+    }
+    else {
+      NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
+      break;
+    }
+  }
 }
 
 - (IBAction) removeTestFromRepository:(id)sender {
@@ -137,7 +183,7 @@
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
 
-    [self updateButtonState:nil];
+    [self updateWindowState:nil];
   }
 }
 
@@ -151,7 +197,7 @@
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
     
-    [self updateButtonState:nil];
+    [self updateWindowState:nil];
   }
 }
 
@@ -215,14 +261,14 @@
 // HACK: Not sure why this works, but it does. The two delegate methods of
 // receiving selection events are only called in exceptional cases.
 - (IBAction)handleTestsBrowserClick:(id)sender {
-  [self updateButtonState:nil];
+  [self updateWindowState:nil];
 }
 
 @end
 
 @implementation EditFilterWindowControl (PrivateMethods)
 
-- (void) updateButtonState:(NSNotification*)notification {
+- (void) updateWindowState:(NSNotification*)notification {
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;

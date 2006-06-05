@@ -26,6 +26,8 @@
 
 - (IBAction)valueEntered:(id)sender;
 
+- (IBAction) updateEnabledState:(id)sender;
+
 - (IBAction) cancelEdit:(id)sender;
 - (IBAction) doneEditing:(id)sender;
 

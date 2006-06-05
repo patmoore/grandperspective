@@ -15,6 +15,7 @@
 
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
+// Note: "state" excludes the name of the test.
 - (void) resetState;
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test;
 - (void) updateStateBasedOnItemTypeTest:(ItemTypeTest*)test;
@@ -30,9 +31,51 @@
 
 @implementation EditFilterRuleWindowControl
 
+// Special case: should not cover (override) super's designated initialiser in
+// NSWindowController's case
+- (id) init {         
+  if (self = [super initWithWindowNibName:@"EditFilterRuleWindow" owner:self]) {
+    // void
+  }
+  return self;
+}
+
+
+- (void) windowDidLoad {
+  NSLog(@"windowDidLoad %@", [self window]);
+
+  [typePopUpButton removeAllItems];
+  [typePopUpButton addItemWithTitle:@"file"];
+  [typePopUpButton addItemWithTitle:@"folder"];
+
+  [nameMatchPopUpButton removeAllItems];
+  [nameMatchPopUpButton addItemWithTitle:@"is"];
+  [nameMatchPopUpButton addItemWithTitle:@"contains"];
+  [nameMatchPopUpButton addItemWithTitle:@"starts with"];
+  [nameMatchPopUpButton addItemWithTitle:@"ends with"];
+
+  NSArray  *sizeUnits = [NSArray arrayWithObjects:@"bytes", @"kB", @"MB", 
+                                                  @"GB"];
+  [sizeLowerBoundUnits removeAllItems];
+  [sizeLowerBoundUnits addItemsWithTitles:sizeUnits];
+  [sizeUpperBoundUnits removeAllItems];
+  [sizeUpperBoundUnits addItemsWithTitles:sizeUnits];
+
+  [self updateEnabledState:nil];
+
+  [[self window] setReleasedWhenClosed:NO];
+}
+
+
 // Configures the window to represent the given test.
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test {
-  if ([test isKindOfClass:[CompoundAndItemTest class]]) {
+  [self resetState];
+  
+  if (test == nil) {
+    // No test specified. Leave window in default state.
+    return;
+  }
+  else if ([test isKindOfClass:[CompoundAndItemTest class]]) {
     // It is a compound test. Iterate over all subtests.
     NSEnumerator  *subTests = 
       [[((CompoundAndItemTest*)test) subItemTests] objectEnumerator];
@@ -66,8 +109,17 @@
   if (subTest != nil) {
     [subTests addObject:subTest];
   }
-    
-  return nil; // TODO
+  
+  if ([subTests count] == 0) {
+    return nil;
+  }
+  else if ([subTests count] == 1) {
+    return [subTests lastObject];
+  }
+  else {
+    return [[[CompoundAndItemTest alloc] initWithSubItemTests:subTests]
+                autorelease];
+  }
 }
 
 
@@ -100,15 +152,51 @@
   [sender setIntValue: value];
 }
 
+
+- (IBAction) updateEnabledState:(id)sender {
+  // Note: "sender" is ignored. Always updating all.
+  
+  BOOL  typeTestUsed = [typeCheckBox state]==NSOnState;
+  BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
+  BOOL  lowerBoundTestUsed = [sizeLowerBoundCheckBox state]==NSOnState;
+  BOOL  upperBoundTestUsed = [sizeUpperBoundCheckBox state]==NSOnState;
+    
+  [typePopUpButton setEnabled:typeTestUsed];
+  
+  [nameMatchPopUpButton setEnabled:nameTestUsed];
+  [nameTargetsView setEditable:nameTestUsed];
+  
+  [sizeLowerBoundField setEnabled:lowerBoundTestUsed];
+  [sizeLowerBoundUnits setEnabled:lowerBoundTestUsed];
+  [sizeUpperBoundField setEnabled:upperBoundTestUsed];
+  [sizeUpperBoundUnits setEnabled:upperBoundTestUsed];
+
+  [doneButton setEnabled:
+     (typeTestUsed || nameTestUsed || lowerBoundTestUsed || upperBoundTestUsed) 
+     && [[ruleNameField stringValue] length] > 0];
+}
+
 @end
 
 @implementation EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState {
-  [typeCheckBox setEnabled:NO];
-  [nameCheckBox setEnabled:NO];
-  [sizeLowerBoundCheckBox setEnabled:NO];
-  [sizeUpperBoundCheckBox setEnabled:NO];
+  [typeCheckBox setState:NSOffState];
+  [typePopUpButton selectItemAtIndex:0]; // File
+  
+  [nameCheckBox setState:NSOffState];
+  [nameMatchPopUpButton selectItemAtIndex:3]; // Suffix
+  [nameTargetsView setString:@""];
+  
+  [sizeLowerBoundCheckBox setState:NSOffState];
+  [sizeLowerBoundField setIntValue:0];
+  [sizeLowerBoundUnits selectItemAtIndex:0]; // bytes
+  
+  [sizeUpperBoundCheckBox setState:NSOffState];
+  [sizeUpperBoundField setIntValue:0];
+  [sizeUpperBoundUnits selectItemAtIndex:0]; // bytes
+  
+  [self updateEnabledState:nil];
 }
 
 
@@ -129,13 +217,13 @@
 
 
 - (void) updateStateBasedOnItemTypeTest:(ItemTypeTest*)test {
-  [typeCheckBox setEnabled:YES];    
+  [typeCheckBox setState:NSOnState];    
   [typePopUpButton selectItemAtIndex: ([test testsForPlainFile] ? 0 : 1)];
 }
 
 
 - (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test {
-  [nameCheckBox setEnabled:YES];
+  [nameCheckBox setState:NSOnState];
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   int  index = -1;
     
@@ -171,13 +259,13 @@
 
 - (void) updateStateBasedOnItemSizeTest:(ItemSizeTest*)test {
   if ([test hasLowerBound]) {
-    [sizeLowerBoundCheckBox setEnabled:YES];
+    [sizeLowerBoundCheckBox setState:NSOnState];
     [sizeLowerBoundField setIntValue:[test lowerBound]];
     // TODO: set "bytes", "kB", "MB", "GB" value. 
   }
 
   if ([test hasUpperBound]) {
-    [sizeUpperBoundCheckBox setEnabled:YES];
+    [sizeUpperBoundCheckBox setState:NSOnState];
     [sizeUpperBoundField setIntValue:[test upperBound]];
     // TODO: set "bytes", "kB", "MB", "GB" value. 
   }

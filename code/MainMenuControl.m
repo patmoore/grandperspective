@@ -136,8 +136,7 @@
 - (IBAction) filterDirectoryView:(id)sender {
   if (editFilterWindowControl == nil) {
     // Lazily create it
-    editFilterWindowControl = 
-      [[EditFilterWindowControl alloc] init];
+    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
     // TODO: Read initial repository from user defaults
   }
 

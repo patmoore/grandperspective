@@ -1,7 +1,12 @@
 {
     IBClasses = (
         {
-            ACTIONS = {cancelEdit = id; doneEditing = id; }; 
+            ACTIONS = {
+                cancelEdit = id; 
+                doneEditing = id; 
+                updateEnabledState = id; 
+                valueEntered = id; 
+            }; 
             CLASS = EditFilterRuleWindowControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {

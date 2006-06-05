@@ -1,6 +1,8 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class EditFilterRuleWindowControl;
+
 @interface EditFilterWindowControl : NSWindowController {
 
   IBOutlet NSPopUpButton  *filterActionButton;
@@ -23,6 +25,8 @@
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
   NSString  *selectedTestName;
+  
+  EditFilterRuleWindowControl  *editFilterRuleWindowControl;
 }
 
 - (IBAction) cancelFilter:(id)sender;
