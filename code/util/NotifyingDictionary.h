@@ -8,12 +8,15 @@
 
 }
 
-- (id) initWithDictionary:(NSMutableDictionary*)dict;
+- (id) initWithCapacity:(unsigned)capacity;
 
-- (id) initWithNotificationCenter:(NSNotificationCenter*)notificationCenter;
+- (id) initWithCapacity:(unsigned)capacity 
+         initialContents:(NSDictionary*)contents;
 
-- (id) initWithDictionary:(NSMutableDictionary*)dict 
-         notificationCenter:(NSNotificationCenter*)notificationCenter;
+
+- (NSNotificationCenter*) notificationCenter; 
+- (void) setNotificationCenter:(NSNotificationCenter*)notificationCenter; 
+
 
 /**
  * Adds the object to the dictionary.
@@ -60,7 +63,7 @@
  * updateObject:forKey:.
  *
  * Returns "YES" if the operation succeeded, and fires a notification named 
- * "objectMoved". The old key is available in the userInfo under the "oldkey"
+ * "objectRenamed". The old key is available in the userInfo under the "oldkey"
  * string, and the new key similarly under the "newkey" string.
  *
  * Returns "NO" if the operation failed (because no object was stored under

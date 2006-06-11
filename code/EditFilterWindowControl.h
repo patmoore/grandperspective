@@ -1,7 +1,9 @@
 #import <Cocoa/Cocoa.h>
 
-
 @class EditFilterRuleWindowControl;
+@class NotifyingDictionary;
+@class FileItemTestRepository;
+
 
 @interface EditFilterWindowControl : NSWindowController {
 
@@ -21,10 +23,12 @@
   IBOutlet NSBrowser  *filterTestsBrowser;
   IBOutlet NSBrowser  *availableTestsBrowser;
   
-  NSMutableDictionary  *allTestsByName;
+  NotifyingDictionary  *allTestsByName;
+    
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
   NSString  *selectedTestName;
+  NSString  *testNameToSelect;
   
   EditFilterRuleWindowControl  *editFilterRuleWindowControl;
 }
@@ -44,6 +48,6 @@
 
 - (IBAction) handleTestsBrowserClick:(id)sender;
 
-- (id) init;
+- (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
 @end

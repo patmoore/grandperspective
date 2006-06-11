@@ -9,30 +9,28 @@ static NSDictionary  *immutableDict = nil;
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithDictionary:
-                             [NSMutableDictionary dictionaryWithCapacity:32]];
+  return [self initWithCapacity:32];
 }
 
-- (id) initWithDictionary:(NSMutableDictionary*)dictVal {
-  return [self initWithDictionary:dictVal 
-                  notificationCenter:[NSNotificationCenter defaultCenter]];
+- (id) initWithCapacity:(unsigned)capacity {
+  return [self initWithCapacity:capacity initialContents:nil];
 }
 
-- (id) initWithNotificationCenter:(NSNotificationCenter*)notificationCenterVal {
-  return [self initWithDictionary:
-                               [NSMutableDictionary dictionaryWithCapacity:32]
-                 notificationCenter:notificationCenterVal];
-}
-
-- (id) initWithDictionary:(NSMutableDictionary*)dictVal 
-    notificationCenter:(NSNotificationCenter*)notificationCenterVal {
+- (id) initWithCapacity:(unsigned)capacity
+         initialContents:(NSDictionary*)contents {
   if (self = [super init]) {
-    dict = [dictVal retain];
-    notificationCenter = [notificationCenterVal retain];
-    
     if (immutableDict == nil) {
+      // Static initialisation
       immutableDict = [[NSDictionary alloc] init];
     }
+
+    dict = [[NSMutableDictionary alloc] initWithCapacity:capacity];
+    
+    if (contents != nil) {
+      [dict addEntriesFromDictionary:contents];
+    }
+    
+    notificationCenter = [[NSNotificationCenter defaultCenter] retain];    
   }
   
   return self;
@@ -41,6 +39,18 @@ static NSDictionary  *immutableDict = nil;
 - (void) dealloc {
   [dict release];
   [notificationCenter release];
+}
+
+
+- (NSNotificationCenter*) notificationCenter {
+  return notificationCenter;
+}
+  
+- (void) setNotificationCenter:(NSNotificationCenter*)notificationCenterVal {
+  if (notificationCenterVal != notificationCenter) {
+    [notificationCenter release];
+    notificationCenter = [notificationCenterVal retain];
+  }
 }
 
 
@@ -85,7 +95,7 @@ static NSDictionary  *immutableDict = nil;
     
     // Fire notification even when reference stayed the same. Object may have
     // been internally modified.
-    [notificationCenter postNotificationName:@"objectChanged"
+    [notificationCenter postNotificationName:@"objectUpdated"
                           object:self
                           userInfo:[NSDictionary dictionaryWithObject:key
                                                    forKey:@"key"]];
@@ -105,8 +115,8 @@ static NSDictionary  *immutableDict = nil;
     [notificationCenter postNotificationName:@"objectRenamed"
                           object:self
                           userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                   @"oldkey", oldKey, 
-                                                   @"newkey", newKey, nil]];
+                                                   oldKey, @"oldkey", 
+                                                   newKey, @"newkey", nil]];
     return YES;
   }
 }

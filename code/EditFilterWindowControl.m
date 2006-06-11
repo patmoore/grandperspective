@@ -1,16 +1,16 @@
 #import "EditFilterWindowControl.h"
 
-#import "filter/StringTest.h"
-#import "filter/StringSuffixTest.h"
-#import "filter/StringEqualityTest.h"
-#import "filter/FileItemTest.h"
-#import "filter/ItemNameTest.h"
-#import "filter/ItemTypeTest.h"
-#import "filter/CompoundAndItemTest.h"
+#import "util/NotifyingDictionary.h"
+#import "filter/FileItemTestRepository.h"
 
 #import "EditFilterRuleWindowControl.h"
 
 @interface EditFilterWindowControl (PrivateMethods)
+
+- (void) testAddedToRepository:(NSNotification*)notification;
+- (void) testRemovedFromRepository:(NSNotification*)notification;
+- (void) testUpdatedInRepository:(NSNotification*)notification;
+- (void) testRenamedInRepository:(NSNotification*)notification;
 
 - (void) updateWindowState:(NSNotification*)notification;
 
@@ -18,76 +18,41 @@
 
 @implementation EditFilterWindowControl
 
+- (id) init {
+  return [self initWithTestRepository:
+                 [FileItemTestRepository defaultFileItemTestRepository]];
+}
+
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) init {
+- (id) initWithTestRepository:(FileItemTestRepository*)testRepository {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
-    allTestsByName = [[NSMutableDictionary alloc] initWithCapacity:32];
+    allTestsByName = 
+      [[testRepository testsByNameAsNotifyingDictionary] retain];
+
+    NSNotificationCenter  *nc = [allTestsByName notificationCenter];
     
-    // TEMP: Init with some basic tests.
-    // TODO: Should (elsewhere) get this from user defaults eventually.
-    NSArray  *imageExtensions = 
-      [NSArray arrayWithObjects:@".jpg", @".JPG", @".png", @".PNG", @".gif", 
-                                @".GIF", nil];
-    NSObject <StringTest>  *imageStringTest = 
-      [[[StringSuffixTest alloc] initWithMatchTargets:imageExtensions] 
-           autorelease];
-    NSObject <FileItemTest>  *imageNameTest =
-      [[[ItemNameTest alloc] initWithStringTest:imageStringTest]
-           autorelease];
-    NSObject <FileItemTest>  *imageTypeTest =
-      [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
-    NSArray  *imageTests = 
-      [NSArray arrayWithObjects:imageNameTest, imageTypeTest, nil];
-    NSObject <FileItemTest>  *imageTest = 
-      [[[CompoundAndItemTest alloc] initWithSubItemTests:imageTests] 
-           autorelease];
-    [allTestsByName setObject:imageTest forKey:@"Images"];
-    
-    NSArray  *musicExtensions = 
-      [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV", nil];
-    NSObject <StringTest>  *musicStringTest = 
-      [[[StringSuffixTest alloc] initWithMatchTargets:musicExtensions]
-           autorelease];
-    NSObject <FileItemTest>  *musicNameTest =
-      [[[ItemNameTest alloc] initWithStringTest:musicStringTest]
-           autorelease];
-    NSObject <FileItemTest>  *musicTypeTest =
-      [[[ItemTypeTest alloc] initWithTestForPlainFile:YES] autorelease];
-    NSArray  *musicTests = 
-      [NSArray arrayWithObjects:musicNameTest, musicTypeTest, nil];
-    NSObject <FileItemTest>  *musicTest = 
-      [[[CompoundAndItemTest alloc] initWithSubItemTests:musicTests] 
-           autorelease];
-    [allTestsByName setObject:musicTest forKey:@"Music"];
-    
-    NSArray  *versionControlFolders = 
-      [NSArray arrayWithObjects:@"CVS", @".svn", nil];
-    NSObject <StringTest>  *versionControlStringTest = 
-      [[[StringEqualityTest alloc] initWithMatchTargets:versionControlFolders] 
-           autorelease];
-    NSObject <FileItemTest>  *versionControlNameTest =
-      [[[ItemNameTest alloc] initWithStringTest:versionControlStringTest]
-           autorelease];
-    NSObject <FileItemTest>  *versionControlTypeTest =
-      [[[ItemTypeTest alloc] initWithTestForPlainFile:NO] autorelease];
-    NSArray  *versionControlTests = 
-      [NSArray arrayWithObjects:versionControlNameTest, versionControlTypeTest, 
-                                nil];
-    NSObject <FileItemTest>  *versionControlTest = 
-      [[[CompoundAndItemTest alloc] initWithSubItemTests:versionControlTests]
-           autorelease];
-    [allTestsByName setObject:versionControlTest forKey:@"Version control"];
-                       
+    [nc addObserver:self selector:@selector(testAddedToRepository:) 
+          name:@"objectAdded" object:allTestsByName];
+    [nc addObserver:self selector:@selector(testRemovedFromRepository:) 
+          name:@"objectRemoved" object:allTestsByName];
+    [nc addObserver:self selector:@selector(testUpdatedInRepository:) 
+          name:@"objectUpdated" object:allTestsByName];
+    [nc addObserver:self selector:@selector(testRenamedInRepository:) 
+          name:@"objectRenamed" object:allTestsByName];
+            
     filterTests = [[NSMutableArray alloc] initWithCapacity:8];
     availableTests = [[NSMutableArray alloc] 
                          initWithCapacity:[allTestsByName count] + 8];
+                         
     [availableTests addObjectsFromArray:[allTestsByName allKeys]];
   }
   return self;
 }
 
 - (void) dealloc {
+  [[allTestsByName notificationCenter] removeObserver:self];
+
   [filterTests release];
   [availableTests release];
   [allTestsByName release];
@@ -151,16 +116,13 @@
       else {
         NSObject <FileItemTest>  *test = 
           [editFilterRuleWindowControl createFileItemTest];    
-        [allTestsByName setObject:test forKey:testName];
 
-        [availableTests addObject:testName];
-        [availableTestsBrowser validateVisibleColumns];
+        [testNameToSelect release];
+        testNameToSelect = [testName retain];
+
+        [allTestsByName addObject:test forKey:testName];
         
-        // Select the newly added test.
-        [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
-                                 inColumn:0];
-        
-        [self updateWindowState:nil];
+        // Rest of addition handled in response to notification event.
 
         break;
       }
@@ -187,11 +149,8 @@
   if ([alert runModal] == NSAlertFirstButtonReturn) {
     // Delete confirmed.
     [allTestsByName removeObjectForKey:testName];
-    [availableTests removeObject:testName];
-          
-    [availableTestsBrowser validateVisibleColumns];
-    
-    [self updateWindowState:nil];
+
+    // Rest of delete handled in response to notification event.
   }
 }
 
@@ -232,28 +191,17 @@
         NSObject <FileItemTest>  *newTest = 
           [editFilterRuleWindowControl createFileItemTest];
           
-        if ([newName isEqualToString:oldName]) {
-          // Name did not change, so only replace test
-          [allTestsByName setObject:newTest forKey:newName];
+        if (! [newName isEqualToString:oldName]) {
+          // Handle name change.
+          [allTestsByName moveObjectFromKey:oldName toKey:newName];
           
-          // Invalidate "cached" test description text (even though the name
-          // is the same, the test itself may have changed).
-          [selectedTestName release];
-          selectedTestName = nil;
+          // Rest of rename handled in response to update notification event.
         }
-        else {
-          // Name changed, so test under old name, and add new one.
-          [allTestsByName removeObjectForKey:oldName];
-          [availableTests removeObject:oldName];
-          
-          [allTestsByName setObject:newTest forKey:newName];
-          [availableTests addObject:newName];
-          
-          [availableTestsBrowser validateVisibleColumns];
-        }
-  
-        [self updateWindowState:nil];
         
+        // Test itself has changed as well.
+        [allTestsByName updateObject:newTest forKey:newName];
+          
+        // Rest of update handled in response to update notification event.
         break;
       }
     }
@@ -367,6 +315,85 @@
 @end
 
 @implementation EditFilterWindowControl (PrivateMethods)
+
+- (void) testAddedToRepository:(NSNotification*)notification {        
+  NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+
+  [availableTests addObject:testName];
+  [availableTestsBrowser validateVisibleColumns];
+        
+  if ([testNameToSelect isEqualToString:testName]) { 
+    // Select the newly added test.
+    [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
+                             inColumn:0];
+
+    [testNameToSelect release];
+    testNameToSelect = nil;
+  }
+                
+  [self updateWindowState:nil];
+}
+
+
+- (void) testRemovedFromRepository:(NSNotification*)notification {
+  NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+
+  int  index = [availableTests indexOfObject:testName];
+  if (index != NSNotFound) {
+    [availableTests removeObjectAtIndex:index];
+          
+    [availableTestsBrowser validateVisibleColumns];
+  }
+
+  index = [filterTests indexOfObject:testName];
+  if (index != NSNotFound) {
+    [filterTests removeObjectAtIndex:index];
+          
+    [filterTestsBrowser validateVisibleColumns];
+  }
+
+  [self updateWindowState:nil];
+}
+
+
+- (void) testUpdatedInRepository:(NSNotification*)notification {
+  NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+
+  if ([selectedTestName isEqualToString:testName]) {
+    // Invalidate the selected test description text (as it may have changed).
+    [selectedTestName release];
+    selectedTestName = nil;
+  }
+  
+  [self updateWindowState:nil];
+}
+
+
+- (void) testRenamedInRepository:(NSNotification*)notification {
+  NSString  *oldTestName = [[notification userInfo] objectForKey:@"oldkey"];
+  NSString  *newTestName = [[notification userInfo] objectForKey:@"newkey"];
+
+  int  index = [availableTests indexOfObject:oldTestName];
+  if (index != NSNotFound) {
+    NSString  *oldSelectedName = [[availableTestsBrowser selectedCell] title];
+
+    [availableTests replaceObjectAtIndex:index withObject:newTestName];    
+    [availableTestsBrowser validateVisibleColumns];
+    
+    if ([oldSelectedName isEqualToString:oldTestName]) {
+      // It was selected, so make sure it still is.
+      [availableTestsBrowser selectRow:index inColumn:0];
+    }
+  }
+  
+  index = [filterTests indexOfObject:oldTestName];
+  if (index != NSNotFound) {
+    [filterTests replaceObjectAtIndex:index withObject:newTestName];
+          
+    [filterTestsBrowser validateVisibleColumns];
+  }
+}
+
 
 - (void) updateWindowState:(NSNotification*)notification {
 
