@@ -48,6 +48,7 @@ id makeSizeString(ITEM_SIZE size) {
 - (void) maskWindowCancelAction:(NSNotification*)notification;
 - (void) maskWindowOkAction:(NSNotification*)notification;
 - (void) maskWindowClosingAction:(NSNotification*)notification;
+- (void) maskWindowDidBecomeKey:(NSNotification*)notification;
 
 @end
 
@@ -171,7 +172,8 @@ id makeSizeString(ITEM_SIZE size) {
   NSLog(@"windowDidBecomeMain %@", [[self window] title]);
   
   if (editMaskFilterWindowControl != nil) {
-    [[editMaskFilterWindowControl window] orderFront:self];
+    [[editMaskFilterWindowControl window] 
+        orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
   }
 }
 
@@ -218,14 +220,22 @@ id makeSizeString(ITEM_SIZE size) {
           name:@"cancelPerformed" object:editMaskFilterWindowControl];
     [nc addObserver:self selector:@selector(maskWindowOkAction:)
           name:@"okPerformed" object:editMaskFilterWindowControl];
+
     [nc addObserver:self selector:@selector(maskWindowClosingAction:)
           name:@"NSWindowWillCloseNotification" 
+          object:[editMaskFilterWindowControl window]];
+    [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
+          name:@"NSWindowDidBecomeKeyNotification"
           object:[editMaskFilterWindowControl window]];
                   
     [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
   }
-    
-  [[editMaskFilterWindowControl window] makeKeyAndOrderFront:self];
+
+  // Note: First order it to front, then make it key. This ensures that
+  // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
+  // the back.
+  [[editMaskFilterWindowControl window] orderFront:self];
+  [[editMaskFilterWindowControl window] makeKeyWindow];
 }
 
 - (IBAction) colorMappingChanged:(id)sender {
@@ -296,10 +306,6 @@ id makeSizeString(ITEM_SIZE size) {
   NSLog(@"applyMask");
 }
 
-- (void) maskWindowClosingAction:(NSNotification*)notification {
-  NSLog(@"closingMask");
-}
-
 - (void) maskWindowCancelAction:(NSNotification*)notification {
   NSLog(@"cancelMask");
   
@@ -310,6 +316,15 @@ id makeSizeString(ITEM_SIZE size) {
   NSLog(@"okMask");
 
   [[editMaskFilterWindowControl window] close];  
+}
+
+- (void) maskWindowClosingAction:(NSNotification*)notification {
+  NSLog(@"closingMask");
+}
+
+- (void) maskWindowDidBecomeKey:(NSNotification*)notification {
+  [[self window] orderWindow:NSWindowBelow
+               relativeTo:[[editMaskFilterWindowControl window] windowNumber]];
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)
