@@ -5,6 +5,32 @@
 
 #import "EditFilterRuleWindowControl.h"
 
+
+// Handles closing of the "Edit Filter Rule Window", including a validity
+// check before the window is closed.
+@interface EditFilterRuleWindowTerminationControl : NSObject {
+  EditFilterRuleWindowControl  *windowControl;
+  NSDictionary  *allTests;
+  NSString  *allowedName;
+  BOOL  done;
+}
+
+- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControl 
+         existingTests:(NSDictionary*)allTests;
+- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControl 
+         existingTests:(NSDictionary*)allTests 
+         allowedName:(NSString*)name;
+
+- (void) windowClosing:(NSNotification*)notification;
+- (void) cancelAction:(NSNotification*)notification;
+- (void) okAction:(NSNotification*)notification;
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode 
+          contextInfo:(void *)contextInfo;
+
+@end
+
+
 @interface EditFilterWindowControl (PrivateMethods)
 
 - (void) createEditFilterRuleWindowControl;
@@ -13,10 +39,6 @@
 - (void) testRemovedFromRepository:(NSNotification*)notification;
 - (void) testUpdatedInRepository:(NSNotification*)notification;
 - (void) testRenamedInRepository:(NSNotification*)notification;
-
-- (void) editFilterRuleWindowClosing:(NSNotification*)notification;
-- (void) editFilterRuleWindowCancelAction:(NSNotification*)notification;
-- (void) editFilterRuleWindowOkAction:(NSNotification*)notification;
 
 - (void) updateWindowState:(NSNotification*)notification;
 
@@ -118,42 +140,34 @@
     [editFilterRuleWindowControl representFileItemTest:nil];
     [editFilterRuleWindowControl setFileItemTestName:@""];
   }
+  
+  EditFilterRuleWindowTerminationControl  *terminationControl = 
+    [[[EditFilterRuleWindowTerminationControl alloc]
+        initWithWindowControl:editFilterRuleWindowControl
+          existingTests:((NSDictionary*)allTestsByName)] autorelease];
 
-  while (YES) {
-    int  status = 
-           [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
-    [[editFilterRuleWindowControl window] close];
+  int  status = [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
+  [[editFilterRuleWindowControl window] close];
     
-    if (status == NSRunStoppedResponse) {
-      NSString*  testName = [editFilterRuleWindowControl fileItemTestName];
+  if (status == NSRunStoppedResponse) {
+    NSString*  testName = [editFilterRuleWindowControl fileItemTestName];
 
-      if ([((NSDictionary*)allTestsByName) objectForKey:testName] != nil) {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert addButtonWithTitle:@"OK"];
-        [alert setMessageText:
-          [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
-                      testName]];
+    // The terminationControl should have ensured that this check succeeds.
+    NSAssert( [((NSDictionary*)allTestsByName) objectForKey:testName] == nil,
+              @"Duplicate name check failed.");
 
-        [alert runModal];
-      }
-      else {
-        NSObject <FileItemTest>  *test = 
-          [editFilterRuleWindowControl createFileItemTest];    
+    NSObject <FileItemTest>  *test = 
+      [editFilterRuleWindowControl createFileItemTest];    
 
-        [testNameToSelect release];
-        testNameToSelect = [testName retain];
+    [testNameToSelect release];
+    testNameToSelect = [testName retain];
 
-        [allTestsByName addObject:test forKey:testName];
+    [allTestsByName addObject:test forKey:testName];
         
-        // Rest of addition handled in response to notification event.
-
-        break;
-      }
-    }
-    else {
-      NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-      break;
-    }
+    // Rest of addition handled in response to notification event.
+  }
+  else {
+    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
   }
 }
 
@@ -190,47 +204,41 @@
 
   [editFilterRuleWindowControl representFileItemTest:oldTest];
   [editFilterRuleWindowControl setFileItemTestName:oldName];
+  
+  EditFilterRuleWindowTerminationControl  *terminationControl = 
+    [[[EditFilterRuleWindowTerminationControl alloc]
+        initWithWindowControl:editFilterRuleWindowControl
+          existingTests:((NSDictionary*)allTestsByName)
+          allowedName:oldName] autorelease];
 
-  while (YES) {
-    int  status = 
-           [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
-    [[editFilterRuleWindowControl window] close];
+  int  status = [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
+  [[editFilterRuleWindowControl window] close];
     
-    if (status == NSRunStoppedResponse) {
-      NSString*  newName = [editFilterRuleWindowControl fileItemTestName];
+  if (status == NSRunStoppedResponse) {
+    NSString*  newName = [editFilterRuleWindowControl fileItemTestName];
 
-      if (! [newName isEqualToString:oldName] &&
-          [((NSDictionary*)allTestsByName) objectForKey:newName] != nil) {
-        NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-        [alert addButtonWithTitle:@"OK"];
-        [alert setMessageText:
-          [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
-                      newName]];
-
-        [alert runModal];
-      }
-      else {
-        NSObject <FileItemTest>  *newTest = 
-          [editFilterRuleWindowControl createFileItemTest];
+    // The terminationControl should have ensured that this check succeeds.
+    NSAssert( [newName isEqualToString:oldName] ||
+              [((NSDictionary*)allTestsByName) objectForKey:newName] == nil,
+              @"Duplicate name check failed.");
+                
+    NSObject <FileItemTest>  *newTest = 
+      [editFilterRuleWindowControl createFileItemTest];
           
-        if (! [newName isEqualToString:oldName]) {
-          // Handle name change.
-          [allTestsByName moveObjectFromKey:oldName toKey:newName];
+    if (! [newName isEqualToString:oldName]) {
+      // Handle name change.
+      [allTestsByName moveObjectFromKey:oldName toKey:newName];
           
-          // Rest of rename handled in response to update notification event.
-        }
+      // Rest of rename handled in response to update notification event.
+    }
         
-        // Test itself has changed as well.
-        [allTestsByName updateObject:newTest forKey:newName];
-          
-        // Rest of update handled in response to update notification event.
-        break;
-      }
-    }
-    else {
-      NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-      break;
-    }
+    // Test itself has changed as well.
+    [allTestsByName updateObject:newTest forKey:newName];
+     
+    // Rest of update handled in response to update notification event.
+  }
+  else {
+    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
   }
 }
 
@@ -343,15 +351,6 @@
              @"EditFilterRuleWindow already exists.");
   
   editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
-    
-  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver:self selector:@selector(editFilterRuleWindowCancelAction:)
-        name:@"cancelPerformed" object:editFilterRuleWindowControl];
-  [nc addObserver:self selector:@selector(editFilterRuleWindowOkAction:)
-        name:@"okPerformed" object:editFilterRuleWindowControl];
-  [nc addObserver:self selector:@selector(editFilterRuleWindowClosing:)
-          name:@"NSWindowWillCloseNotification" 
-          object:[editFilterRuleWindowControl window]];
 
   // Force loading of the window.
   [editFilterRuleWindowControl window];
@@ -437,19 +436,6 @@
 }
 
 
-- (void) editFilterRuleWindowClosing:(NSNotification*)notification {
-  [NSApp abortModal];
-}
-
-- (void) editFilterRuleWindowCancelAction:(NSNotification*)notification {
-  [NSApp abortModal];
-}
-
-- (void) editFilterRuleWindowOkAction:(NSNotification*)notification {
-  [NSApp stopModal];
-}
-
-
 - (void) updateWindowState:(NSNotification*)notification {
 
   BOOL  filterTestsHighlighted = 
@@ -497,6 +483,101 @@
       filterTestsHighlighted )];
 
   // [performFilterButton setEnabled: ([filterTests count] > 0)];
+}
+
+@end
+
+
+@implementation EditFilterRuleWindowTerminationControl
+
+// Overrides designated initialiser.
+- (id) init {
+  NSAssert(NO, @"Use initWithWindowControl:existingTests: instead.");
+}
+
+- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControlVal
+         existingTests:(NSDictionary*)allTestsVal {
+  return [self initWithWindowControl:windowControlVal
+                 existingTests:allTestsVal allowedName:nil];
+}
+
+- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControlVal 
+         existingTests:(NSDictionary*)allTestsVal
+         allowedName:(NSString*)name {
+  if (self = [super init]) {
+    windowControl = [windowControlVal retain];
+    allTests = [allTestsVal retain];
+    allowedName = [name retain];
+    
+    done = NO;
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(cancelAction:)
+          name:@"cancelPerformed" object:windowControl];
+    [nc addObserver:self selector:@selector(okAction:)
+          name:@"okPerformed" object:windowControl];
+    [nc addObserver:self selector:@selector(windowClosing:)
+          name:@"NSWindowWillCloseNotification" object:[windowControl window]];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  NSLog(@"EditFilterRuleWindowTerminationControl dealloc");
+  
+  [windowControl release];
+  [allTests release];
+  [allowedName release];
+
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+
+  [super dealloc];
+}
+
+
+- (void) windowClosing:(NSNotification*)notification {
+  if (!done) {
+    [NSApp abortModal];
+    done = YES;
+  }
+}
+
+- (void) cancelAction:(NSNotification*)notification {
+  NSAssert(!done, @"Already done.");
+
+  [NSApp abortModal];
+  done = YES;
+}
+
+- (void) okAction:(NSNotification*)notification {
+  NSString*  newName = [windowControl fileItemTestName];
+
+  if ( ![allowedName isEqualToString:newName] &&
+       [allTests objectForKey:newName] != nil) {
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+  
+    [alert addButtonWithTitle:@"OK"];
+    [alert setMessageText:
+       [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
+                   newName]];
+
+    [alert beginSheetModalForWindow:[windowControl window]
+             modalDelegate:self 
+             didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) 
+             contextInfo:nil];
+  }
+  else {
+    NSAssert(!done, @"Already done.");
+
+    [NSApp stopModal];
+    done = YES;
+  }
+}
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode
+          contextInfo:(void *)contextInfo {
+  // void
 }
 
 @end
