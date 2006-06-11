@@ -43,14 +43,17 @@
             
     filterTests = [[NSMutableArray alloc] initWithCapacity:8];
     availableTests = [[NSMutableArray alloc] 
-                         initWithCapacity:[allTestsByName count] + 8];
+                 initWithCapacity:[((NSDictionary*)allTestsByName) count] + 8];
                          
-    [availableTests addObjectsFromArray:[allTestsByName allKeys]];
+    [availableTests
+       addObjectsFromArray:[((NSDictionary*)allTestsByName) allKeys]];
   }
   return self;
 }
 
 - (void) dealloc {
+  NSLog(@"EditFilterWindowControl dealloc");
+
   [[allTestsByName notificationCenter] removeObserver:self];
 
   [filterTests release];
@@ -77,12 +80,27 @@
 }
 
 
-- (IBAction) cancelFilter:(id)sender {
-  [NSApp abortModal];
+- (void) removeApplyButton {
+  if (applyButton != nil) {
+    [applyButton removeFromSuperviewWithoutNeedingDisplay];
+    // [applyButton release];
+    applyButton = nil;
+  }
 }
 
-- (IBAction) performFilter:(id)sender {
-  [NSApp stopModal];
+
+- (IBAction) applyAction:(id)sender {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"applyPerformed"
+                                          object:self];
+}
+
+- (IBAction) cancelAction:(id)sender {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
+                                          object:self];}
+
+- (IBAction) okAction:(id)sender {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
+                                          object:self];
 }
 
 
@@ -104,7 +122,7 @@
     if (status == NSRunStoppedResponse) {
       NSString*  testName = [editFilterRuleWindowControl fileItemTestName];
 
-      if ([allTestsByName objectForKey:testName] != nil) {
+      if ([((NSDictionary*)allTestsByName) objectForKey:testName] != nil) {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
         [alert addButtonWithTitle:@"OK"];
         [alert setMessageText:
@@ -164,7 +182,8 @@
   }
 
   NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
-  NSObject <FileItemTest>  *oldTest = [allTestsByName objectForKey:oldName];
+  NSObject <FileItemTest>  *oldTest = 
+    [((NSDictionary*)allTestsByName) objectForKey:oldName];
 
   [editFilterRuleWindowControl representFileItemTest:oldTest];
   [editFilterRuleWindowControl setFileItemTestName:oldName];
@@ -178,7 +197,7 @@
       NSString*  newName = [editFilterRuleWindowControl fileItemTestName];
 
       if (! [newName isEqualToString:oldName] &&
-          [allTestsByName objectForKey:newName] != nil) {
+          [((NSDictionary*)allTestsByName) objectForKey:newName] != nil) {
         NSAlert *alert = [[[NSAlert alloc] init] autorelease];
         [alert addButtonWithTitle:@"OK"];
         [alert setMessageText:
@@ -420,7 +439,7 @@
 
     if (selectedTestName != nil) {
       NSObject <FileItemTest>  *selectedTest = 
-        [allTestsByName objectForKey:selectedTestName];
+        [((NSDictionary*)allTestsByName) objectForKey:selectedTestName];
       [testDescriptionView setString:[selectedTest description]];
     }
     else {
@@ -441,7 +460,7 @@
     ( ([filterTestsBrowser selectedCell] != nil) &&
       filterTestsHighlighted )];
 
-  [performFilterButton setEnabled: ([filterTests count] > 0)];
+  // [performFilterButton setEnabled: ([filterTests count] > 0)];
 }
 
 @end

@@ -6,6 +6,7 @@
 @class ItemPathModel;
 @class FileItemHashingOptions;
 @class FileItemHashing;
+@class EditFilterWindowControl;
 
 @interface DirectoryViewControl : NSWindowController {
 
@@ -22,6 +23,8 @@
 
   FileItemHashingOptions  *hashingOptions;
   NSString  *initialHashingOptionKey;
+  
+  EditFilterWindowControl  *editMaskFilterWindowControl;
 
   NSString  *invisiblePathName;
 }
@@ -29,6 +32,7 @@
 - (IBAction) upAction:(id)sender;
 - (IBAction) downAction:(id)sender;
 - (IBAction) openFileInFinder:(id)sender;
+- (IBAction) maskAction:(id)sender;
 - (IBAction) colorMappingChanged:(id)sender;
 
 - (id) initWithItemTree:(FileItem*)itemTreeRoot;
@@ -44,5 +48,7 @@
 - (ItemPathModel*) itemPathModel;
 
 - (DirectoryView*) directoryView;
+
+- (EditFilterWindowControl*) editMaskFilterWindowControl;
 
 @end

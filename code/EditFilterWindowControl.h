@@ -12,7 +12,8 @@
   IBOutlet NSTextView  *testDescriptionView;
   IBOutlet NSDrawer  *testDescriptionDrawer;
   
-  IBOutlet NSButton  *performFilterButton;
+  IBOutlet NSButton  *applyButton;
+  IBOutlet NSButton  *okButton;
 
   IBOutlet NSButton  *removeTestFromRepositoryButton;
   IBOutlet NSButton  *editTestInRepositoryButton;
@@ -33,8 +34,9 @@
   EditFilterRuleWindowControl  *editFilterRuleWindowControl;
 }
 
-- (IBAction) cancelFilter:(id)sender;
-- (IBAction) performFilter:(id)sender;
+- (IBAction) applyAction:(id)sender;
+- (IBAction) cancelAction:(id)sender;
+- (IBAction) okAction:(id)sender;
 
 - (IBAction) addTestToRepository:(id)sender;
 - (IBAction) removeTestFromRepository:(id)sender;
@@ -49,5 +51,7 @@
 - (IBAction) handleTestsBrowserClick:(id)sender;
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
+
+- (void) removeApplyButton;
 
 @end

@@ -39,7 +39,12 @@
 
 
 @interface MainMenuControl (PrivateMethods)
+
+- (void) editFilterWindowCancelAction:(NSNotification*)notification;
+- (void) editFilterWindowOkAction:(NSNotification*)notification;
+
 - (void) createWindowByCopying:(BOOL)shareModel;
+
 @end
 
 
@@ -73,6 +78,9 @@
 
 
 - (BOOL) validateMenuItem:(NSMenuItem *)anItem {
+  NSLog(@"mainWindow: %@", [[[NSApplication sharedApplication] mainWindow] title]);
+  NSLog(@"keyWindow: %@", [[[NSApplication sharedApplication] keyWindow] title]);
+
   if ( [anItem action]==@selector(duplicateDirectoryView:) ||
        [anItem action]==@selector(twinDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
@@ -137,9 +145,27 @@
   if (editFilterWindowControl == nil) {
     // Lazily create it
     editFilterWindowControl = [[EditFilterWindowControl alloc] init];
-    // TODO: Read initial repository from user defaults
-  }
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(editFilterWindowCancelAction:)
+          name:@"cancelPerformed" object:editFilterWindowControl];
+    [nc addObserver:self selector:@selector(editFilterWindowOkAction:)
+          name:@"okPerformed" object:editFilterWindowControl];
 
+    [[editFilterWindowControl window] setTitle:@"Apply filter"];
+
+    [editFilterWindowControl removeApplyButton];    
+  }
+  
+  DirectoryViewControl  *viewControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+  EditFilterWindowControl  *editFilterMaskWindowControl = 
+  
+    [viewControl editMaskFilterWindowControl];
+  if (editFilterMaskWindowControl != nil) {
+    // TODO: Based state on current mask for the window
+  }
+  
   int  status = [NSApp runModalForWindow:[editFilterWindowControl window]];
   [[editFilterWindowControl window] close];
     
@@ -177,6 +203,15 @@
 
 
 @implementation MainMenuControl (PrivateMethods)
+
+- (void) editFilterWindowCancelAction:(NSNotification*)notification {
+  [NSApp abortModal];
+}
+
+- (void) editFilterWindowOkAction:(NSNotification*)notification {
+  [NSApp stopModal];
+}
+
 
 - (void) createWindowByCopying:(BOOL)shareModel {
   DirectoryViewControl  *oldControl = 

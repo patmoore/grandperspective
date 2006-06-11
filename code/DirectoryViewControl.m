@@ -6,6 +6,8 @@
 #import "FileItemHashingOptions.h"
 #import "FileItemHashing.h"
 
+#import "EditFilterWindowControl.h"
+
 // TODO: actually change path by following mouse.
 
 
@@ -41,6 +43,10 @@ id makeSizeString(ITEM_SIZE size) {
 
 - (void) updateButtonState:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
+
+- (void) maskWindowApplyAction:(NSNotification*)notification;
+- (void) maskWindowCancelAction:(NSNotification*)notification;
+- (void) maskWindowOkAction:(NSNotification*)notification;
 
 @end
 
@@ -84,6 +90,8 @@ id makeSizeString(ITEM_SIZE size) {
   //NSLog(@"DirectoryViewControl-dealloc");
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  
+  [editMaskFilterWindowControl release];
 
   [itemTreeRoot release];
   [itemPathModel release];
@@ -121,6 +129,11 @@ id makeSizeString(ITEM_SIZE size) {
 }
 
 
+- (EditFilterWindowControl*) editMaskFilterWindowControl {
+  return editMaskFilterWindowControl;
+}
+
+
 - (void) windowDidLoad {
   [colorMappingChoice addItemsWithObjectValues:
      [[hashingOptions allKeys] 
@@ -138,18 +151,15 @@ id makeSizeString(ITEM_SIZE size) {
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
   invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(updateButtonState:)
-      name:@"visibleItemPathChanged" object:itemPathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(updateButtonState:)
-      name:@"visibleItemPathLockingChanged" object:itemPathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(visibleItemTreeChanged:)
-      name:@"visibleItemTreeChanged" object:itemPathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(windowWillClose:)
-      name:@"NSWindowWillCloseNotification" object:[self window]];
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver:self selector:@selector(updateButtonState:)
+        name:@"visibleItemPathChanged" object:itemPathModel];
+  [nc addObserver:self selector:@selector(updateButtonState:)
+        name:@"visibleItemPathLockingChanged" object:itemPathModel];
+  [nc addObserver:self selector:@selector(visibleItemTreeChanged:)
+        name:@"visibleItemTreeChanged" object:itemPathModel];
+  [nc addObserver:self selector:@selector(windowWillClose:)
+        name:@"NSWindowWillCloseNotification" object:[self window]];
 
   [self updateButtonState:nil];
 
@@ -183,6 +193,26 @@ id makeSizeString(ITEM_SIZE size) {
   [[NSWorkspace sharedWorkspace] 
     selectFile: [rootPath stringByAppendingPathComponent:filePath] 
     inFileViewerRootedAtPath: rootPath];  
+}
+
+- (IBAction) maskAction:(id)sender {
+  if (editMaskFilterWindowControl == nil) {
+    // Lazily create the "edit mask" window.
+    
+    editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector:@selector(maskWindowApplyAction:)
+          name:@"applyPerformed" object:editMaskFilterWindowControl];
+    [nc addObserver:self selector:@selector(maskWindowCancelAction:)
+          name:@"cancelPerformed" object:editMaskFilterWindowControl];
+    [nc addObserver:self selector:@selector(maskWindowOkAction:)
+          name:@"okPerformed" object:editMaskFilterWindowControl];
+                  
+    [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
+  }
+    
+  [[editMaskFilterWindowControl window] makeKeyAndOrderFront:self];
 }
 
 - (IBAction) colorMappingChanged:(id)sender {
@@ -246,6 +276,23 @@ id makeSizeString(ITEM_SIZE size) {
 
   [name release];
   [attributedName release]; 
+}
+
+
+- (void) maskWindowApplyAction:(NSNotification*)notification {
+  NSLog(@"applyMask");
+}
+
+- (void) maskWindowCancelAction:(NSNotification*)notification {
+  NSLog(@"cancelMask");
+  
+  [[editMaskFilterWindowControl window] close];
+}
+
+- (void) maskWindowOkAction:(NSNotification*)notification {
+  NSLog(@"okMask");
+
+  [[editMaskFilterWindowControl window] close];  
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)

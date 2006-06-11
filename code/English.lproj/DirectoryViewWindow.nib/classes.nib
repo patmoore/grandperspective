@@ -5,6 +5,7 @@
             ACTIONS = {
                 colorMappingChanged = id; 
                 downAction = id; 
+                maskAction = id; 
                 openFileInFinder = id; 
                 upAction = id; 
             }; 
