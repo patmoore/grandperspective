@@ -62,8 +62,6 @@
   [sizeUpperBoundUnits addItemsWithTitles:sizeUnits];
 
   [self updateEnabledState:nil];
-
-  [[self window] setReleasedWhenClosed:NO];
 }
 
 
@@ -136,12 +134,14 @@
 }
 
 
-- (IBAction) cancelEdit:(id)sender {
-  [NSApp abortModal];
+- (IBAction) cancelAction:(id)sender {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
+                                          object:self];
 }
 
-- (IBAction) doneEditing:(id)sender {
-  [NSApp stopModal];
+- (IBAction) okAction:(id)sender {
+  [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
+                                          object:self];
 }
 
 

@@ -7,10 +7,16 @@
 
 @interface EditFilterWindowControl (PrivateMethods)
 
+- (void) createEditFilterRuleWindowControl;
+
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
 - (void) testUpdatedInRepository:(NSNotification*)notification;
 - (void) testRenamedInRepository:(NSNotification*)notification;
+
+- (void) editFilterRuleWindowClosing:(NSNotification*)notification;
+- (void) editFilterRuleWindowCancelAction:(NSNotification*)notification;
+- (void) editFilterRuleWindowOkAction:(NSNotification*)notification;
 
 - (void) updateWindowState:(NSNotification*)notification;
 
@@ -69,8 +75,6 @@
 - (void) windowDidLoad {
   [filterTestsBrowser setDelegate:self];
   [availableTestsBrowser setDelegate:self];
-    
-  [[self window] setReleasedWhenClosed:NO];
   
   [filterActionButton removeAllItems];
   [filterActionButton addItemWithTitle:@"Show only"];
@@ -96,7 +100,8 @@
 
 - (IBAction) cancelAction:(id)sender {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
-                                          object:self];}
+                                          object:self];
+}
 
 - (IBAction) okAction:(id)sender {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
@@ -107,7 +112,7 @@
 - (IBAction) addTestToRepository:(id)sender {
   if (editFilterRuleWindowControl == nil) {
     // Lazily create it
-    editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
+    [self createEditFilterRuleWindowControl];
   }
   else {
     [editFilterRuleWindowControl representFileItemTest:nil];
@@ -176,9 +181,7 @@
 - (IBAction) editTestInRepository:(id)sender {
   if (editFilterRuleWindowControl == nil) {
     // Lazily create it
-    editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
-    // Force loading of the window.
-    [editFilterRuleWindowControl window];
+    [self createEditFilterRuleWindowControl];
   }
 
   NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
@@ -335,6 +338,26 @@
 
 @implementation EditFilterWindowControl (PrivateMethods)
 
+- (void) createEditFilterRuleWindowControl {
+  NSAssert(editFilterRuleWindowControl == nil, 
+             @"EditFilterRuleWindow already exists.");
+  
+  editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
+    
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver:self selector:@selector(editFilterRuleWindowCancelAction:)
+        name:@"cancelPerformed" object:editFilterRuleWindowControl];
+  [nc addObserver:self selector:@selector(editFilterRuleWindowOkAction:)
+        name:@"okPerformed" object:editFilterRuleWindowControl];
+  [nc addObserver:self selector:@selector(editFilterRuleWindowClosing:)
+          name:@"NSWindowWillCloseNotification" 
+          object:[editFilterRuleWindowControl window]];
+
+  // Force loading of the window.
+  [editFilterRuleWindowControl window];
+}
+
+
 - (void) testAddedToRepository:(NSNotification*)notification {        
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
 
@@ -411,6 +434,19 @@
           
     [filterTestsBrowser validateVisibleColumns];
   }
+}
+
+
+- (void) editFilterRuleWindowClosing:(NSNotification*)notification {
+  [NSApp abortModal];
+}
+
+- (void) editFilterRuleWindowCancelAction:(NSNotification*)notification {
+  [NSApp abortModal];
+}
+
+- (void) editFilterRuleWindowOkAction:(NSNotification*)notification {
+  [NSApp stopModal];
 }
 
 

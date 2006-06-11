@@ -28,8 +28,8 @@
 
 - (IBAction) updateEnabledState:(id)sender;
 
-- (IBAction) cancelEdit:(id)sender;
-- (IBAction) doneEditing:(id)sender;
+- (IBAction) cancelAction:(id)sender;
+- (IBAction) okAction:(id)sender;
 
 
 // Configures the window to represent the given test.

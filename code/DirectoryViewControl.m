@@ -47,6 +47,7 @@ id makeSizeString(ITEM_SIZE size) {
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
 - (void) maskWindowOkAction:(NSNotification*)notification;
+- (void) maskWindowClosingAction:(NSNotification*)notification;
 
 @end
 
@@ -87,7 +88,7 @@ id makeSizeString(ITEM_SIZE size) {
 }
 
 - (void) dealloc {
-  //NSLog(@"DirectoryViewControl-dealloc");
+  NSLog(@"DirectoryViewControl-dealloc");
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
@@ -158,8 +159,6 @@ id makeSizeString(ITEM_SIZE size) {
         name:@"visibleItemPathLockingChanged" object:itemPathModel];
   [nc addObserver:self selector:@selector(visibleItemTreeChanged:)
         name:@"visibleItemTreeChanged" object:itemPathModel];
-  [nc addObserver:self selector:@selector(windowWillClose:)
-        name:@"NSWindowWillCloseNotification" object:[self window]];
 
   [self updateButtonState:nil];
 
@@ -167,7 +166,18 @@ id makeSizeString(ITEM_SIZE size) {
   [[self window] makeKeyAndOrderFront:self];
 }
 
+// Invoked because the controller is the delegate for the window.
+- (void) windowDidBecomeMain:(NSNotification*)notification {
+  NSLog(@"windowDidBecomeMain %@", [[self window] title]);
+  
+  if (editMaskFilterWindowControl != nil) {
+    [[editMaskFilterWindowControl window] orderFront:self];
+  }
+}
+
+// Invoked because the controller is the delegate for the window.
 - (void) windowWillClose:(NSNotification*)notification {
+  NSLog(@"windowWillClose");
   [self autorelease];
 }
 
@@ -208,6 +218,9 @@ id makeSizeString(ITEM_SIZE size) {
           name:@"cancelPerformed" object:editMaskFilterWindowControl];
     [nc addObserver:self selector:@selector(maskWindowOkAction:)
           name:@"okPerformed" object:editMaskFilterWindowControl];
+    [nc addObserver:self selector:@selector(maskWindowClosingAction:)
+          name:@"NSWindowWillCloseNotification" 
+          object:[editMaskFilterWindowControl window]];
                   
     [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
   }
@@ -281,6 +294,10 @@ id makeSizeString(ITEM_SIZE size) {
 
 - (void) maskWindowApplyAction:(NSNotification*)notification {
   NSLog(@"applyMask");
+}
+
+- (void) maskWindowClosingAction:(NSNotification*)notification {
+  NSLog(@"closingMask");
 }
 
 - (void) maskWindowCancelAction:(NSNotification*)notification {

@@ -2,8 +2,8 @@
     IBClasses = (
         {
             ACTIONS = {
-                cancelEdit = id; 
-                doneEditing = id; 
+                cancelAction = id; 
+                okAction = id; 
                 updateEnabledState = id; 
                 valueEntered = id; 
             }; 
