@@ -30,8 +30,6 @@
   NSMutableArray  *availableTests;
   NSString  *selectedTestName;
   NSString  *testNameToSelect;
-  
-  EditFilterRuleWindowControl  *editFilterRuleWindowControl;
 }
 
 - (IBAction) applyAction:(id)sender;

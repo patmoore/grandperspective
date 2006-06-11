@@ -31,6 +31,16 @@
 
 @implementation EditFilterRuleWindowControl
 
+EditFilterRuleWindowControl  *defaultInstance = nil;
+
++ (id) defaultInstance {
+  if (defaultInstance == nil) {
+    defaultInstance = [[EditFilterRuleWindowControl alloc] init];
+  }
+  
+  return defaultInstance;
+}
+
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) init {         

@@ -24,7 +24,9 @@
   IBOutlet NSButton  *doneButton;
 }
 
-- (IBAction)valueEntered:(id)sender;
++ (id) defaultInstance;
+
+- (IBAction) valueEntered:(id)sender;
 
 - (IBAction) updateEnabledState:(id)sender;
 

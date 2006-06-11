@@ -33,8 +33,6 @@
 
 @interface EditFilterWindowControl (PrivateMethods)
 
-- (void) createEditFilterRuleWindowControl;
-
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
 - (void) testUpdatedInRepository:(NSNotification*)notification;
@@ -88,8 +86,6 @@
   [availableTests release];
   [allTestsByName release];
   
-  [editFilterRuleWindowControl release];
-  
   [super dealloc];
 }
 
@@ -132,32 +128,28 @@
 
 
 - (IBAction) addTestToRepository:(id)sender {
-  if (editFilterRuleWindowControl == nil) {
-    // Lazily create it
-    [self createEditFilterRuleWindowControl];
-  }
-  else {
-    [editFilterRuleWindowControl representFileItemTest:nil];
-    [editFilterRuleWindowControl setFileItemTestName:@""];
-  }
+  EditFilterRuleWindowControl  *ruleWindowControl = 
+    [EditFilterRuleWindowControl defaultInstance];
+
+  [ruleWindowControl representFileItemTest:nil];
+  [ruleWindowControl setFileItemTestName:@""];
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
-        initWithWindowControl:editFilterRuleWindowControl
+        initWithWindowControl:ruleWindowControl
           existingTests:((NSDictionary*)allTestsByName)] autorelease];
 
-  int  status = [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
-  [[editFilterRuleWindowControl window] close];
+  int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
+  [[ruleWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
-    NSString*  testName = [editFilterRuleWindowControl fileItemTestName];
+    NSString*  testName = [ruleWindowControl fileItemTestName];
 
     // The terminationControl should have ensured that this check succeeds.
     NSAssert( [((NSDictionary*)allTestsByName) objectForKey:testName] == nil,
               @"Duplicate name check failed.");
 
-    NSObject <FileItemTest>  *test = 
-      [editFilterRuleWindowControl createFileItemTest];    
+    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
 
     [testNameToSelect release];
     testNameToSelect = [testName retain];
@@ -193,37 +185,34 @@
 
 
 - (IBAction) editTestInRepository:(id)sender {
-  if (editFilterRuleWindowControl == nil) {
-    // Lazily create it
-    [self createEditFilterRuleWindowControl];
-  }
+  EditFilterRuleWindowControl  *ruleWindowControl = 
+    [EditFilterRuleWindowControl defaultInstance];
 
   NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
   NSObject <FileItemTest>  *oldTest = 
     [((NSDictionary*)allTestsByName) objectForKey:oldName];
 
-  [editFilterRuleWindowControl representFileItemTest:oldTest];
-  [editFilterRuleWindowControl setFileItemTestName:oldName];
+  [ruleWindowControl representFileItemTest:oldTest];
+  [ruleWindowControl setFileItemTestName:oldName];
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
-        initWithWindowControl:editFilterRuleWindowControl
+        initWithWindowControl:ruleWindowControl
           existingTests:((NSDictionary*)allTestsByName)
           allowedName:oldName] autorelease];
 
-  int  status = [NSApp runModalForWindow:[editFilterRuleWindowControl window]];
-  [[editFilterRuleWindowControl window] close];
+  int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
+  [[ruleWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
-    NSString*  newName = [editFilterRuleWindowControl fileItemTestName];
+    NSString*  newName = [ruleWindowControl fileItemTestName];
 
     // The terminationControl should have ensured that this check succeeds.
     NSAssert( [newName isEqualToString:oldName] ||
               [((NSDictionary*)allTestsByName) objectForKey:newName] == nil,
               @"Duplicate name check failed.");
                 
-    NSObject <FileItemTest>  *newTest = 
-      [editFilterRuleWindowControl createFileItemTest];
+    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];
           
     if (! [newName isEqualToString:oldName]) {
       // Handle name change.
@@ -344,18 +333,8 @@
 
 @end
 
+
 @implementation EditFilterWindowControl (PrivateMethods)
-
-- (void) createEditFilterRuleWindowControl {
-  NSAssert(editFilterRuleWindowControl == nil, 
-             @"EditFilterRuleWindow already exists.");
-  
-  editFilterRuleWindowControl = [[EditFilterRuleWindowControl alloc] init];
-
-  // Force loading of the window.
-  [editFilterRuleWindowControl window];
-}
-
 
 - (void) testAddedToRepository:(NSNotification*)notification {        
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
