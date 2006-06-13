@@ -40,6 +40,9 @@
 
 - (void) updateWindowState:(NSNotification*)notification;
 
+- (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
+          returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+
 @end
 
 @implementation EditFilterWindowControl
@@ -127,6 +130,24 @@
 }
 
 
+- (IBAction) removeTestFromRepository:(id)sender {
+  NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
+  
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  [alert addButtonWithTitle:@"OK"];
+  [alert addButtonWithTitle:@"Cancel"];
+  [alert setMessageText:
+           [NSString stringWithFormat:@"Remove the rule named \"%@\"?",
+              testName]];
+
+  [alert beginSheetModalForWindow:[self window] modalDelegate:self
+           didEndSelector:@selector(confirmTestRemovalAlertDidEnd: 
+                                      returnCode:contextInfo:) 
+           contextInfo:testName];
+}
+
+
 - (IBAction) addTestToRepository:(id)sender {
   EditFilterRuleWindowControl  *ruleWindowControl = 
     [EditFilterRuleWindowControl defaultInstance];
@@ -160,26 +181,6 @@
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }
-}
-
-
-- (IBAction) removeTestFromRepository:(id)sender {
-  NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
-  
-  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-
-  [alert addButtonWithTitle:@"OK"];
-  [alert addButtonWithTitle:@"Cancel"];
-  [alert setMessageText:
-           [NSString stringWithFormat:@"Remove the rule named \"%@\"?",
-              testName]];
-
-  if ([alert runModal] == NSAlertFirstButtonReturn) {
-    // Delete confirmed.
-    [allTestsByName removeObjectForKey:testName];
-
-    // Rest of delete handled in response to notification event.
   }
 }
 
@@ -462,6 +463,17 @@
       filterTestsHighlighted )];
 
   // [performFilterButton setEnabled: ([filterTests count] > 0)];
+}
+
+
+- (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
+          returnCode:(int)returnCode contextInfo:(void *)testName {
+  if (returnCode == NSAlertFirstButtonReturn) {
+    // Delete confirmed.
+    [allTestsByName removeObjectForKey:testName];
+
+    // Rest of delete handled in response to notification event.
+  }
 }
 
 @end
