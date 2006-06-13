@@ -43,6 +43,7 @@
       addObserver:self selector:@selector(windowWillClose:)
       name:@"NSWindowWillCloseNotification" object:[self window]];
 
+  [[self window] center];
   [[self window] makeKeyAndOrderFront: self];
 
   NSRect  bounds = [[dirViewControl directoryView] bounds];
