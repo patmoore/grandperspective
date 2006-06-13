@@ -1,11 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
+#import "TreeLayoutTraverser.h"
+
 @class Item;
 @class TreeLayoutBuilder;
 @class FileItemHashing;
 @class ColorPalette;
 
-@interface ItemTreeDrawer : NSObject {
+@interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
 
   FileItemHashing  *fileItemHashing;
   TreeLayoutBuilder  *layoutBuilder;

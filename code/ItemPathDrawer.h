@@ -1,11 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
+#import "TreeLayoutTraverser.h"
 
 @class Item;
 @class TreeLayoutBuilder;
 
 
-@interface ItemPathDrawer : NSObject {
+@interface ItemPathDrawer : NSObject <TreeLayoutTraverser> {
   BOOL          highlightPathEndPoint;
 
   // Temporary variables only used for drawing the path

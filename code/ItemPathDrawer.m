@@ -4,14 +4,6 @@
 #import "TreeLayoutBuilder.h"
 
 
-@interface ItemPathDrawer (PrivateMethods)
-
-// Implicitly implement "TreeLayoutTraverser" protocol.
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;
-
-@end
-
-
 @implementation ItemPathDrawer
 
 - (void) setHighlightPathEndPoint:(BOOL)option {
@@ -34,8 +26,7 @@
   
   lastBezierPath = nil;
   
-  id  traverser = self;  
-  [layoutBuilder layoutItemTree:tree inRect:bounds traverser:traverser];
+  [layoutBuilder layoutItemTree:tree inRect:bounds traverser:self];
   
   if (lastBezierPath!=nil) {
     [[NSColor selectedControlColor] set];
@@ -50,10 +41,6 @@
   drawPath = nil;
 }
 
-@end // @implementation ItemPathDrawer
-
-
-@implementation ItemPathDrawer (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (drawPathIndex >= [drawPath count] 
@@ -74,5 +61,5 @@
   return YES;
 }
 
-@end // @implementation ItemPathDrawer (PrivateMethods)
+@end // @implementation ItemPathDrawer
 

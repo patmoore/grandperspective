@@ -5,19 +5,11 @@
 #import "TreeLayoutBuilder.h"
 
 
-@interface ItemPathBuilder (PrivateMethods)
-
-// Implicitly implement "TreeLayoutTraverser" protocol.
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;
-
-@end
-
-
 @implementation ItemPathBuilder
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use -initWithTree instead.");
+  NSAssert(NO, @"Use -initWithPathModel: instead.");
 }
 
 - (id) initWithPathModel:(ItemPathModel*)pathModelVal {
@@ -43,17 +35,12 @@
   [pathModel clearVisibleItemPath];
   buildTargetPoint = point;
 
-  id  traverser = self;
   [layoutBuilder layoutItemTree:[pathModel visibleItemTree] inRect:bounds
-                   traverser:traverser];
+                   traverser:self];
   
   [pathModel suppressItemPathChangedNotifications:NO];
 }
 
-@end
-
-
-@implementation ItemPathBuilder (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (!NSPointInRect(buildTargetPoint, rect)) {
@@ -68,4 +55,4 @@
   return YES;
 }
 
-@end // @implementation ItemPathBuilder (PrivateMethods)
+@end // @implementation ItemPathBuilder

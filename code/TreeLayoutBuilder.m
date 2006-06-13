@@ -6,15 +6,16 @@
 
 
 @interface TreeLayoutBuilder (PrivateMethods) 
-  - (void) layoutItemTree:(id)root inRect:(NSRect)rect 
-             traverser:(id <TreeLayoutTraverser>)traverser depth:(int)depth;
+  - (void) layoutItemTree:(Item *)root inRect:(NSRect)rect 
+             traverser:(NSObject <TreeLayoutTraverser> *)traverser 
+             depth:(int)depth;
 @end
 
 
 @implementation TreeLayoutBuilder
 
-- (void) layoutItemTree:(Item*)itemTreeRoot inRect:(NSRect)bounds
-           traverser:(id <TreeLayoutTraverser>)traverser {
+- (void) layoutItemTree:(Item *)itemTreeRoot inRect:(NSRect)bounds
+           traverser:(NSObject <TreeLayoutTraverser> *)traverser {
   [self layoutItemTree:itemTreeRoot inRect:bounds traverser:traverser depth:0];
 }
 
@@ -23,8 +24,9 @@
 
 @implementation TreeLayoutBuilder (PrivateMethods)
 
-- (void) layoutItemTree:(id)root inRect:(NSRect)rect 
-          traverser:(id <TreeLayoutTraverser>)traverser depth:(int)depth {
+- (void) layoutItemTree:(Item *)root inRect:(NSRect)rect 
+          traverser:(NSObject <TreeLayoutTraverser> *)traverser 
+          depth:(int)depth {
   
   // Rectangle must enclose one or more pixel "centers", i.e. it must enclose
   // a point (x+0.5, y+0.5) where x, y are integer values. This means that the
@@ -41,8 +43,8 @@
   }
   
   if ([root isVirtual]) {
-    Item  *sub1 = [root getFirst];
-    Item  *sub2 = [root getSecond];
+    Item  *sub1 = [((CompoundItem *)root) getFirst];
+    Item  *sub2 = [((CompoundItem *)root) getSecond];
     
     float  ratio = 
       ([root itemSize]>0) ? ([sub1 itemSize]/(float)[root itemSize]) : 0.50;
@@ -59,8 +61,8 @@
     [self layoutItemTree:sub1 inRect:rect1 traverser:traverser depth:depth];
     [self layoutItemTree:sub2 inRect:rect2 traverser:traverser depth:depth];
   }
-  else if (![root isPlainFile]) { 
-    Item*  sub = [root getContents];		
+  else if (![((FileItem *)root) isPlainFile]) { 
+    Item*  sub = [((DirectoryItem *)root) getContents];		
 
     if (sub!=nil) {
       [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];

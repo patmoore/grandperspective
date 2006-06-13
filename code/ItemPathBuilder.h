@@ -1,10 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
+#import "TreeLayoutTraverser.h"
+
 @class ItemPathModel;
 @class TreeLayoutBuilder;
 
-
-@interface ItemPathBuilder : NSObject {
+@interface ItemPathBuilder : NSObject <TreeLayoutTraverser> {
   ItemPathModel*  pathModel;
 
   // Temporary variable, only used while building the path.

@@ -8,9 +8,6 @@
 
 @interface ItemTreeDrawer (PrivateMethods)
 
-// Implicitly implement "TreeLayoutTraverser" protocol.
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;
-
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) calculateGradientColors;
@@ -114,9 +111,7 @@
   
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  id  traverser = self;
-  [layoutBuilder layoutItemTree: itemTreeRoot inRect: bounds 
-                 traverser: traverser];
+  [layoutBuilder layoutItemTree:itemTreeRoot inRect:bounds traverser:self];
 
   NSImage  *image = nil;
 
@@ -139,10 +134,6 @@
   abort = YES;
 }
 
-@end // @implementation ItemTreeDrawer
-
-
-@implementation ItemTreeDrawer (PrivateMethods)
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (![item isVirtual]) {
@@ -158,6 +149,10 @@
   return !abort;
 }
 
+@end // @implementation ItemTreeDrawer
+
+
+@implementation ItemTreeDrawer (PrivateMethods)
 
 - (void)drawBasicFilledRect:(NSRect)rect colorHash:(int)colorHash {
   UInt32  intColor = 
