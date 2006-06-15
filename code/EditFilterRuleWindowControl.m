@@ -311,7 +311,14 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
     NSString  *target = nil;
     while (target = [rawTargetsEnum nextObject]) {
       if ([target length] > 0) {
-        [targets addObject:target];
+        if ([rawTargets count]==1) {
+          // Need to copy string, as componentsSeparatedByString: returns the
+          // (mutable) string directly if there is only one component.
+          [targets addObject:[NSString stringWithString:target]];
+        }
+        else {
+          [targets addObject:target];
+        }
       }
     }
     
