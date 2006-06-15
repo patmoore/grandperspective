@@ -129,6 +129,29 @@
 }
 
 
+- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+  
+  if (fileItemMask != [drawTaskExecutor fileItemMask]) {
+    [drawTaskExecutor setFileItemMask:fileItemMask];
+
+    [self setNeedsDisplay:YES];
+
+    // Discard the existing image.
+    [treeImage release];
+    treeImage = nil;
+  }
+}
+
+- (NSObject <FileItemTest> *) fileItemMask {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+
+  return [drawTaskExecutor fileItemMask];
+}
+
+
 - (void) drawRect:(NSRect)rect {
   if (pathModel==nil) {
     return;

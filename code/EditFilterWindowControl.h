@@ -3,7 +3,7 @@
 @class EditFilterRuleWindowControl;
 @class NotifyingDictionary;
 @class FileItemTestRepository;
-
+@protocol FileItemTest;
 
 @interface EditFilterWindowControl : NSWindowController {
 
@@ -51,5 +51,8 @@
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
 - (void) removeApplyButton;
+
+// Creates the test object that represents the current window state.
+- (NSObject <FileItemTest> *) createFileItemTest;
 
 @end

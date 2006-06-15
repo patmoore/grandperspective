@@ -15,6 +15,7 @@
   if (self = [super init]) {
     treeDrawer = [treeDrawerVal retain];
     fileItemHashing = [[treeDrawer fileItemHashing] retain];
+    fileItemMask = [[treeDrawer fileItemMask] retain];
 
     enabled = YES;
   }
@@ -23,7 +24,9 @@
 
 - (void) dealloc {
   [treeDrawer release];
+  
   [fileItemHashing release];
+  [fileItemMask release];
   
   [super dealloc];
 }
@@ -41,10 +44,23 @@
 }
 
 
+- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMaskVal {
+  if (fileItemMaskVal != fileItemMask) {
+    [fileItemMask release];
+    fileItemMask = [fileItemMaskVal retain];
+  }
+}
+
+- (NSObject <FileItemTest> *) fileItemMask {
+  return fileItemMask;
+}
+
+
 - (id) runTaskWithInput: (id)input {
   if (enabled) {
     // Always set, as it may have changed.
     [treeDrawer setFileItemHashing:fileItemHashing];
+    [treeDrawer setFileItemMask:fileItemMask];
 
     DrawTaskInput  *drawingInput = input;
     

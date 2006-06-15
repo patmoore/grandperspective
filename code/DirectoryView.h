@@ -6,6 +6,7 @@
 @class ItemPathBuilder;
 @class ItemPathModel;
 @class FileItemHashing;
+@protocol FileItemTest;
 
 @interface DirectoryView : NSView {
   AsynchronousTaskManager  *drawTaskManager;
@@ -24,5 +25,8 @@
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
 - (FileItemHashing*) fileItemHashing;
+
+- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
+- (NSObject <FileItemTest> *) fileItemMask;
 
 @end

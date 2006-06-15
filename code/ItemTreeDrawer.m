@@ -5,6 +5,7 @@
 #import "ColorPalette.h"
 #import "TreeLayoutBuilder.h"
 
+#import "filter/FileItemTest.h"
 
 @interface ItemTreeDrawer (PrivateMethods)
 
@@ -47,8 +48,11 @@
   [layoutBuilder release];
   [fileItemHashing release];
   [colorPalette release];
+  [fileItemMask release];
   
   free(gradientColors);
+  
+  NSAssert(drawBitmap==nil, @"Bitmap should be nil.");
   
   [super dealloc];
 }
@@ -75,6 +79,18 @@
 
 - (FileItemHashing*) fileItemHashing {
   return fileItemHashing;
+}
+
+
+- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMaskVal {
+  if (fileItemMaskVal != fileItemMask) {
+    [fileItemMask release];
+    fileItemMask = [fileItemMaskVal retain];
+  }
+}
+
+- (NSObject <FileItemTest> *) fileItemMask {
+  return fileItemMask;
 }
 
 
@@ -137,11 +153,17 @@
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
   if (![item isVirtual]) {
-    id  file = item;
-
-    if ([file isPlainFile]) {
-      [self drawGradientFilledRect:rect 
-              colorHash:[fileItemHashing hashForFileItem:file depth:depth]];
+    FileItem*  file = (FileItem*)item;
+    
+    if (fileItemMask==nil || [fileItemMask testFileItem:file]) {
+      if ([file isPlainFile]) {
+        [self drawGradientFilledRect:rect 
+                colorHash:[fileItemHashing hashForFileItem:file depth:depth]];
+      }
+    }
+    else {
+      // The file item is masked. Do not draw it and do not descend further.
+      return NO;
     }
   }
 

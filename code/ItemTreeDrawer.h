@@ -6,10 +6,13 @@
 @class TreeLayoutBuilder;
 @class FileItemHashing;
 @class ColorPalette;
+@protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
 
   FileItemHashing  *fileItemHashing;
+  NSObject<FileItemTest>  *fileItemMask;
+  
   TreeLayoutBuilder  *layoutBuilder;
 
   // Only set when it has not yet been loaded into the gradient array.
@@ -29,6 +32,9 @@
 
 - (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
 - (TreeLayoutBuilder*) treeLayoutBuilder;
+
+- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
+- (NSObject <FileItemTest> *) fileItemMask;
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
 - (FileItemHashing*) fileItemHashing;

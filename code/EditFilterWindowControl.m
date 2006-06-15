@@ -1,7 +1,10 @@
 #import "EditFilterWindowControl.h"
 
 #import "util/NotifyingDictionary.h"
+
 #import "filter/FileItemTestRepository.h"
+#import "filter/CompoundOrItemTest.h"
+#import "filter/NotItemTest.h"
 
 #import "EditFilterRuleWindowControl.h"
 
@@ -330,6 +333,37 @@
 // receiving selection events are only called in exceptional cases.
 - (IBAction)handleTestsBrowserClick:(id)sender {
   [self updateWindowState:nil];
+}
+
+
+// Creates the test object that represents the current window state.
+- (NSObject <FileItemTest> *) createFileItemTest {
+  if ([filterTests count] == 0) {
+    // Return "nil" to indicate that there is no filtering.
+    return nil;
+  }
+  
+  NSMutableArray  *subTests = 
+    [NSMutableArray arrayWithCapacity:[filterTests count]];
+  NSEnumerator  *testNameEnum = [filterTests objectEnumerator];
+  NSString  *testName;
+  while (testName = [testNameEnum nextObject]) {
+    NSObject<FileItemTest>  *subTest = 
+      [((NSDictionary*)allTestsByName) objectForKey:testName];
+    [subTests addObject:subTest];
+  }
+  
+  NSObject <FileItemTest>  *orTest = 
+    [[[CompoundOrItemTest alloc] initWithSubItemTests:subTests] autorelease];
+    
+  if ([filterActionButton indexOfSelectedItem] == 0) {
+    // Show only
+    return orTest;
+  }
+  else {
+    // Don't show
+    return [[[NotItemTest alloc] initWithSubItemTest:orTest] autorelease];
+  }
 }
 
 @end

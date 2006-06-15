@@ -304,6 +304,8 @@ id makeSizeString(ITEM_SIZE size) {
 
 - (void) maskWindowApplyAction:(NSNotification*)notification {
   NSLog(@"applyMask");
+  
+  [mainView setFileItemMask: [editMaskFilterWindowControl createFileItemTest]];
 }
 
 - (void) maskWindowCancelAction:(NSNotification*)notification {
@@ -315,7 +317,9 @@ id makeSizeString(ITEM_SIZE size) {
 - (void) maskWindowOkAction:(NSNotification*)notification {
   NSLog(@"okMask");
 
-  [[editMaskFilterWindowControl window] close];  
+  [[editMaskFilterWindowControl window] close];
+  
+  [mainView setFileItemMask: [editMaskFilterWindowControl createFileItemTest]];
 }
 
 - (void) maskWindowClosingAction:(NSNotification*)notification {
