@@ -1,5 +1,6 @@
 #import "ItemNameTest.h"
 
+#import "FileItem.h"
 
 @implementation ItemNameTest 
 

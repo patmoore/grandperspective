@@ -1,5 +1,6 @@
 #import "ItemSizeTest.h"
 
+#import "FileItem.h"
 
 @implementation ItemSizeTest
 
@@ -53,13 +54,16 @@
   
   if ([self hasLowerBound]) {
     return [self hasUpperBound] ?
-      [NSString stringWithFormat:@"size is between %qu and %qu", lowerBound,
-                                                                 upperBound] :
-      [NSString stringWithFormat:@"size is larger than %qu", lowerBound];
+      [NSString stringWithFormat:@"size is between %@ and %@", 
+                  [FileItem stringForFileItemSize:lowerBound],
+                  [FileItem stringForFileItemSize:upperBound]] :
+      [NSString stringWithFormat:@"size is larger than %@", 
+                  [FileItem stringForFileItemSize:lowerBound]];
   }
   else {
     return [self hasUpperBound] ?
-      [NSString stringWithFormat:@"size is smaller than %qu", upperBound] :
+      [NSString stringWithFormat:@"size is smaller than %qu", 
+                  [FileItem stringForFileItemSize:upperBound]] :
       @"any size";
   }
 }

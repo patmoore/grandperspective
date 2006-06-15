@@ -1,5 +1,6 @@
 #import "ItemTypeTest.h"
 
+#import "FileItem.h"
 
 @implementation ItemTypeTest
 

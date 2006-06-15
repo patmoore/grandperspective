@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-#import "FileItem.h"
+@class FileItem;
 
 @protocol FileItemTest
 

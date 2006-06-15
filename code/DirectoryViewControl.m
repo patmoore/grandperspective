@@ -8,36 +8,6 @@
 
 #import "EditFilterWindowControl.h"
 
-// TODO: actually change path by following mouse.
-
-
-char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
-
-id makeSizeString(ITEM_SIZE size) {
-  if (size < 1024) {
-    // Definitely don't want a decimal point here
-    return [NSString stringWithFormat:@"%qu B", size];
-  }
-
-  double  n = (double)size / 1024;
-  int  m = 0;
-  while (n > 1024 && m < 3) {
-    m++;
-    n /= 1024; 
-  }
-
-  NSMutableString*  s = 
-    [[[NSMutableString alloc] initWithCapacity:12] autorelease];
-  [s appendFormat:@"%.2f", n];
-  int  delPos = [s rangeOfString:@"."].location!=3 ? 4 : 3;
-  if (delPos < [s length]) {
-    [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
-  }
-
-  [s appendFormat:@" %cB", BYTE_SIZE_ORDER[m]];
-
-  return s;
-}
 
 @interface DirectoryViewControl (PrivateMethods)
 
@@ -267,7 +237,8 @@ id makeSizeString(ITEM_SIZE size) {
   [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
 
   [itemSizeLabel setStringValue:
-     makeSizeString([[itemPathModel fileItemPathEndPoint] itemSize])];
+     [FileItem stringForFileItemSize:[[itemPathModel fileItemPathEndPoint] 
+                                                       itemSize]]];
 
   NSString  *visiblePathName = [itemPathModel visibleFilePathName];
   

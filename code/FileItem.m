@@ -48,4 +48,33 @@
   return YES;
 }
 
+
+char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
+
++ (NSString*) stringForFileItemSize:(ITEM_SIZE)filesize {
+  if (filesize < 1024) {
+    // Definitely don't want a decimal point here
+    return [NSString stringWithFormat:@"%qu B", filesize];
+  }
+
+  double  n = (double)filesize / 1024;
+  int  m = 0;
+  while (n > 1024 && m < 3) {
+    m++;
+    n /= 1024; 
+  }
+
+  NSMutableString*  s = 
+    [[[NSMutableString alloc] initWithCapacity:12] autorelease];
+  [s appendFormat:@"%.2f", n];
+  int  delPos = [s rangeOfString:@"."].location!=3 ? 4 : 3;
+  if (delPos < [s length]) {
+    [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
+  }
+
+  [s appendFormat:@" %cB", BYTE_SIZE_ORDER[m]];
+
+  return s;
+}
+
 @end // @implementation FileItem

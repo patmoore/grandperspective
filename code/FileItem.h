@@ -19,4 +19,6 @@
   
 - (BOOL) isPlainFile;
 
++ (NSString*) stringForFileItemSize:(ITEM_SIZE)size;
+
 @end
