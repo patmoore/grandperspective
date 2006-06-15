@@ -27,4 +27,9 @@
   return subTests;
 }
 
+- (BOOL) testFileItem:(FileItem*)item {
+  NSAssert(NO, @"This method must be overridden.");
+  return NO;
+}
+
 @end

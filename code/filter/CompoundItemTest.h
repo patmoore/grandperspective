@@ -1,12 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
 
 
 /**
  * (Abstract) compound item test.
  */
-@interface CompoundItemTest : AbstractFileItemTest {
+@interface CompoundItemTest : NSObject<FileItemTest>  {
   NSArray  *subTests;
 }
 
