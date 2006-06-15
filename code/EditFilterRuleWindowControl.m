@@ -167,6 +167,31 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 }
 
 
+- (IBAction) nameCheckBoxChanged:(id)sender {
+  [self updateEnabledState:sender];
+  
+  if ([sender state]==NSOnState) {
+    [[self window] makeFirstResponder:nameTargetsView];
+  }
+}
+
+- (IBAction) lowerBoundCheckBoxChanged:(id)sender {
+  [self updateEnabledState:sender];
+  
+  if ([sender state]==NSOnState) {
+    [[self window] makeFirstResponder:sizeLowerBoundField];
+  }
+}
+
+- (IBAction) upperBoundCheckBoxChanged:(id)sender {  
+  [self updateEnabledState:sender];
+  
+  if ([sender state]==NSOnState) {
+    [[self window] makeFirstResponder:sizeUpperBoundField];
+  }
+}
+
+
 - (IBAction) updateEnabledState:(id)sender {
   // Note: "sender" is ignored. Always updating all.
   
@@ -273,15 +298,29 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 
 - (void) updateStateBasedOnItemSizeTest:(ItemSizeTest*)test {
   if ([test hasLowerBound]) {
-    [sizeLowerBoundCheckBox setState:NSOnState];
-    [sizeLowerBoundField setIntValue:[test lowerBound]];
-    // TODO: set "bytes", "kB", "MB", "GB" value. 
+    ITEM_SIZE  bound = [test lowerBound];
+    int  i = 0;
+    while (i < 3 && (bound % 1024)==0) {
+      i++;
+      bound /= 1024;
+    }
+    
+    [sizeLowerBoundCheckBox setState:NSOnState];    
+    [sizeLowerBoundField setIntValue:bound];
+    [sizeLowerBoundUnits selectItemAtIndex:i]; 
   }
 
   if ([test hasUpperBound]) {
+    ITEM_SIZE  bound = [test upperBound];
+    int  i = 0;
+    while (i < 3 && (bound % 1024)==0) {
+      i++;
+      bound /= 1024;
+    }
+    
     [sizeUpperBoundCheckBox setState:NSOnState];
-    [sizeUpperBoundField setIntValue:[test upperBound]];
-    // TODO: set "bytes", "kB", "MB", "GB" value. 
+    [sizeUpperBoundField setIntValue:bound];
+    [sizeUpperBoundUnits selectItemAtIndex:i];
   }
 }
 
@@ -348,24 +387,31 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 
 
 - (ItemSizeTest*) itemSizeTestBasedOnState {
+  ITEM_SIZE  lowerBound = [sizeLowerBoundField intValue];
+  int  i = [sizeLowerBoundUnits indexOfSelectedItem];
+  while (i-- > 0) {
+    lowerBound *= 1024;
+  }
+
+  ITEM_SIZE  upperBound = [sizeUpperBoundField intValue];
+  i = [sizeUpperBoundUnits indexOfSelectedItem];
+  while (i-- > 0) {
+    upperBound *= 1024;
+  }
+  
   if ([sizeLowerBoundCheckBox state]==NSOnState) {
     if ([sizeUpperBoundCheckBox state]==NSOnState) {
       return [[[ItemSizeTest alloc] 
-                  initWithLowerBound:[sizeLowerBoundField intValue] 
-                          upperBound:[sizeUpperBoundField intValue]] 
+                  initWithLowerBound:lowerBound upperBound:upperBound] 
                   autorelease];
     }
     else {
-      return [[[ItemSizeTest alloc] 
-                  initWithLowerBound:[sizeLowerBoundField intValue]] 
-                  autorelease];    
+      return [[[ItemSizeTest alloc] initWithLowerBound:lowerBound] autorelease];    
     }
   }
   else {
     if ([sizeUpperBoundCheckBox state]==NSOnState) {
-      return [[[ItemSizeTest alloc] 
-                  initWithUpperBound:[sizeUpperBoundField intValue]] 
-                  autorelease];
+      return [[[ItemSizeTest alloc] initWithUpperBound:upperBound] autorelease];
     }
     else {
       return nil;

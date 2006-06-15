@@ -28,6 +28,10 @@
 
 - (IBAction) valueEntered:(id)sender;
 
+- (IBAction) nameCheckBoxChanged:(id)sender;
+- (IBAction) lowerBoundCheckBoxChanged:(id)sender;
+- (IBAction) upperBoundCheckBoxChanged:(id)sender;
+
 - (IBAction) updateEnabledState:(id)sender;
 
 - (IBAction) cancelAction:(id)sender;

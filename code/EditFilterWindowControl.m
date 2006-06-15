@@ -249,6 +249,7 @@
     // Select the moved test.
     [filterTestsBrowser selectRow:[filterTests indexOfObject:testName]
                           inColumn:0];
+    [[self window] makeFirstResponder:filterTestsBrowser];
 
     [self updateWindowState:nil];
   }
@@ -267,6 +268,7 @@
     // Select the moved test.
     [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
                              inColumn:0];
+    [[self window] makeFirstResponder:availableTestsBrowser];
     
     [self updateWindowState:nil];
   }
@@ -381,6 +383,7 @@
     // Select the newly added test.
     [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
                              inColumn:0];
+    [[self window] makeFirstResponder:availableTestsBrowser];
 
     [testNameToSelect release];
     testNameToSelect = nil;
@@ -577,15 +580,23 @@
 
 - (void) okAction:(NSNotification*)notification {
   NSString*  newName = [windowControl fileItemTestName];
+  NSString*  errorText = nil;
 
-  if ( ![allowedName isEqualToString:newName] &&
-       [allTests objectForKey:newName] != nil) {
+  if ([newName isEqualToString:@""]) {
+    errorText = @"The rule must have a name.";
+  }
+  else if ( ![allowedName isEqualToString:newName] &&
+            [allTests objectForKey:newName] != nil) {
+    errorText = 
+      [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
+                  newName];
+  }
+ 
+  if (errorText != nil) {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   
     [alert addButtonWithTitle:@"OK"];
-    [alert setMessageText:
-       [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
-                   newName]];
+    [alert setMessageText:errorText];
 
     [alert beginSheetModalForWindow:[windowControl window]
              modalDelegate:self 
@@ -595,8 +606,8 @@
   else {
     NSAssert(!done, @"Already done.");
 
-    [NSApp stopModal];
     done = YES;
+    [NSApp stopModal];
   }
 }
 

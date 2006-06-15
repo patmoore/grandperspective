@@ -3,8 +3,11 @@
         {
             ACTIONS = {
                 cancelAction = id; 
+                lowerBoundCheckBoxChanged = id; 
+                nameCheckBoxChanged = id; 
                 okAction = id; 
                 updateEnabledState = id; 
+                upperBoundCheckBoxChanged = id; 
                 valueEntered = id; 
             }; 
             CLASS = EditFilterRuleWindowControl; 
