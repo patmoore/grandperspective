@@ -11,7 +11,7 @@
 
 @interface DirectoryViewControl : NSWindowController {
 
-  IBOutlet NSComboBox  *colorMappingChoice;
+  IBOutlet NSPopUpButton  *colorMappingPopUp;
   IBOutlet NSTextField  *itemNameLabel;
   IBOutlet NSTextField  *itemSizeLabel;
   IBOutlet DirectoryView  *mainView;

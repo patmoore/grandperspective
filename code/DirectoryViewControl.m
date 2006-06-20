@@ -85,7 +85,7 @@
 
 
 - (NSString*) fileItemHashingKey {
-  return [colorMappingChoice objectValueOfSelectedItem];
+  return [colorMappingPopUp titleOfSelectedItem];
 }
 
 - (FileItemHashing*) fileItemHashing {
@@ -109,11 +109,12 @@
 
 
 - (void) windowDidLoad {
-  [colorMappingChoice addItemsWithObjectValues:
+  [colorMappingPopUp removeAllItems];
+  [colorMappingPopUp addItemsWithTitles:
      [[hashingOptions allKeys] 
          sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
   
-  [colorMappingChoice selectItemWithObjectValue:initialHashingOptionKey];
+  [colorMappingPopUp selectItemWithTitle:initialHashingOptionKey];
   [initialHashingOptionKey release];
   initialHashingOptionKey = nil;
   [self colorMappingChanged:nil];
@@ -223,7 +224,7 @@
 - (IBAction) colorMappingChanged:(id)sender {
   FileItemHashing  *hashingOption = 
     [hashingOptions fileItemHashingForKey:
-                               [colorMappingChoice objectValueOfSelectedItem]];
+                               [colorMappingPopUp titleOfSelectedItem]];
       
   [mainView setFileItemHashing:hashingOption];
 }

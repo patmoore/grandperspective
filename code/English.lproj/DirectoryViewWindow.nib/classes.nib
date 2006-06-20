@@ -13,7 +13,7 @@
             CLASS = DirectoryViewControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {
-                colorMappingChoice = NSComboBox; 
+                colorMappingPopUp = NSPopUpButton; 
                 downButton = NSButton; 
                 itemNameLabel = NSTextField; 
                 itemSizeLabel = NSTextField; 
