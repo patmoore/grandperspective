@@ -7,6 +7,7 @@
 @class FileItemHashingOptions;
 @class FileItemHashing;
 @class EditFilterWindowControl;
+@protocol FileItemTest;
 
 @interface DirectoryViewControl : NSWindowController {
 
@@ -17,9 +18,12 @@
   IBOutlet NSButton  *upButton;
   IBOutlet NSButton  *downButton;
   IBOutlet NSButton  *openButton;
+  IBOutlet NSButton  *maskCheckBox;
 
   FileItem  *itemTreeRoot;
   ItemPathModel  *itemPathModel;
+  
+  NSObject <FileItemTest>  *fileItemMask;
 
   FileItemHashingOptions  *hashingOptions;
   NSString  *initialHashingOptionKey;
@@ -32,7 +36,10 @@
 - (IBAction) upAction:(id)sender;
 - (IBAction) downAction:(id)sender;
 - (IBAction) openFileInFinder:(id)sender;
+
+- (IBAction) maskCheckBoxChanged:(id)sender;
 - (IBAction) maskAction:(id)sender;
+
 - (IBAction) colorMappingChanged:(id)sender;
 
 - (id) initWithItemTree:(FileItem*)itemTreeRoot;

@@ -69,6 +69,8 @@
   [itemPathModel release];
   
   [invisiblePathName release];
+  
+  [fileItemMask release];
 
   [hashingOptions release];
   [initialHashingOptionKey release];
@@ -177,6 +179,16 @@
     inFileViewerRootedAtPath: rootPath];  
 }
 
+
+- (IBAction) maskCheckBoxChanged:(id)sender {
+  if ( [sender state]==NSOnState ) {
+    [mainView setFileItemMask:fileItemMask];
+  }
+  else {
+    [mainView setFileItemMask:nil];
+  }
+}
+
 - (IBAction) maskAction:(id)sender {
   if (editMaskFilterWindowControl == nil) {
     // Lazily create the "edit mask" window.
@@ -274,27 +286,29 @@
 
 
 - (void) maskWindowApplyAction:(NSNotification*)notification {
-  NSLog(@"applyMask");
-  
-  [mainView setFileItemMask: [editMaskFilterWindowControl createFileItemTest]];
+  [fileItemMask release];
+  fileItemMask = [[editMaskFilterWindowControl createFileItemTest] retain];
+
+  if (fileItemMask != nil) {
+    // Automatically enable mask (doesn't matter if it's already enabled).
+    [maskCheckBox setState:NSOnState];
+  }
+  [mainView setFileItemMask:fileItemMask];
 }
 
 - (void) maskWindowCancelAction:(NSNotification*)notification {
-  NSLog(@"cancelMask");
-  
   [[editMaskFilterWindowControl window] close];
 }
 
 - (void) maskWindowOkAction:(NSNotification*)notification {
-  NSLog(@"okMask");
-
   [[editMaskFilterWindowControl window] close];
   
-  [mainView setFileItemMask: [editMaskFilterWindowControl createFileItemTest]];
+  // Other than closing the window, the action is same as the "apply" one.
+  [self maskWindowApplyAction:notification];
 }
 
 - (void) maskWindowClosingAction:(NSNotification*)notification {
-  NSLog(@"closingMask");
+  // void. TODO: remove?
 }
 
 - (void) maskWindowDidBecomeKey:(NSNotification*)notification {

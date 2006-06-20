@@ -6,6 +6,7 @@
                 colorMappingChanged = id; 
                 downAction = id; 
                 maskAction = id; 
+                maskCheckBoxChanged = id; 
                 openFileInFinder = id; 
                 upAction = id; 
             }; 
@@ -17,6 +18,7 @@
                 itemNameLabel = NSTextField; 
                 itemSizeLabel = NSTextField; 
                 mainView = DirectoryView; 
+                maskCheckBox = NSButton; 
                 openButton = NSButton; 
                 upButton = NSButton; 
             }; 
