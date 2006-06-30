@@ -36,6 +36,10 @@
 
 @interface EditFilterWindowControl (PrivateMethods)
 
+- (NSArray *) availableTests;
+- (NSArray *) filterTests;
+- (NSPopUpButton *) filterActionButton;
+
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
 - (void) testUpdatedInRepository:(NSNotification*)notification;
@@ -105,6 +109,18 @@
   [filterActionButton addItemWithTitle:@"Do not show"];
   
   [self updateWindowState:nil];
+}
+
+
+- (void) mirrorStateOfEditFilterWindowControl:(EditFilterWindowControl*)other {
+  [availableTests setArray:[other availableTests]];
+  [availableTestsBrowser validateVisibleColumns];
+  
+  [filterTests setArray:[other filterTests]];
+  [filterTestsBrowser validateVisibleColumns];
+  
+  [filterActionButton selectItemAtIndex:
+                        [[other filterActionButton] indexOfSelectedItem]];
 }
 
 
@@ -372,6 +388,19 @@
 
 
 @implementation EditFilterWindowControl (PrivateMethods)
+
+- (NSArray *) availableTests {
+  return availableTests;
+}
+
+- (NSArray *) filterTests {
+  return filterTests;
+}
+
+- (NSPopUpButton *) filterActionButton {
+  return filterActionButton;
+}
+
 
 - (void) testAddedToRepository:(NSNotification*)notification {        
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];

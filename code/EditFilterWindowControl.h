@@ -50,6 +50,8 @@
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
+- (void) mirrorStateOfEditFilterWindowControl:(EditFilterWindowControl*)other;
+
 - (void) removeApplyButton;
 
 // Creates the test object that represents the current window state.

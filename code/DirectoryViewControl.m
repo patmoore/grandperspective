@@ -11,6 +11,8 @@
 
 @interface DirectoryViewControl (PrivateMethods)
 
+- (void) createEditMaskFilterWindow;
+
 - (void) updateButtonState:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
 
@@ -103,7 +105,16 @@
 }
 
 
+- (BOOL) hasEditMaskFilterWindow {
+  return (editMaskFilterWindowControl != nil);
+}
+
 - (EditFilterWindowControl*) editMaskFilterWindowControl {
+  if (editMaskFilterWindowControl == nil) {
+    // Create it on the fly.
+    [self createEditMaskFilterWindow];
+  }
+
   return editMaskFilterWindowControl;
 }
 
@@ -194,24 +205,7 @@
   if (editMaskFilterWindowControl == nil) {
     // Lazily create the "edit mask" window.
     
-    editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
-    
-    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(maskWindowApplyAction:)
-          name:@"applyPerformed" object:editMaskFilterWindowControl];
-    [nc addObserver:self selector:@selector(maskWindowCancelAction:)
-          name:@"cancelPerformed" object:editMaskFilterWindowControl];
-    [nc addObserver:self selector:@selector(maskWindowOkAction:)
-          name:@"okPerformed" object:editMaskFilterWindowControl];
-
-    [nc addObserver:self selector:@selector(maskWindowClosingAction:)
-          name:@"NSWindowWillCloseNotification" 
-          object:[editMaskFilterWindowControl window]];
-    [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
-          name:@"NSWindowDidBecomeKeyNotification"
-          object:[editMaskFilterWindowControl window]];
-                  
-    [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
+    [self createEditMaskFilterWindow];
   }
 
   // Note: First order it to front, then make it key. This ensures that
@@ -233,6 +227,27 @@
 
 
 @implementation DirectoryViewControl (PrivateMethods)
+
+- (void) createEditMaskFilterWindow {  
+  editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
+    
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver:self selector:@selector(maskWindowApplyAction:)
+        name:@"applyPerformed" object:editMaskFilterWindowControl];
+  [nc addObserver:self selector:@selector(maskWindowCancelAction:)
+        name:@"cancelPerformed" object:editMaskFilterWindowControl];
+  [nc addObserver:self selector:@selector(maskWindowOkAction:)
+        name:@"okPerformed" object:editMaskFilterWindowControl];
+
+  [nc addObserver:self selector:@selector(maskWindowClosingAction:)
+        name:@"NSWindowWillCloseNotification" 
+        object:[editMaskFilterWindowControl window]];
+  [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
+        name:@"NSWindowDidBecomeKeyNotification"
+        object:[editMaskFilterWindowControl window]];
+                  
+  // [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
+}
 
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
   

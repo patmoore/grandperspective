@@ -159,11 +159,10 @@
   
   DirectoryViewControl  *viewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
-  EditFilterWindowControl  *editFilterMaskWindowControl = 
-  
-    [viewControl editMaskFilterWindowControl];
-  if (editFilterMaskWindowControl != nil) {
-    // TODO: Based state on current mask for the window
+
+  if ([viewControl hasEditMaskFilterWindow]) {
+    [editFilterWindowControl mirrorStateOfEditFilterWindowControl:
+      [viewControl editMaskFilterWindowControl]];
   }
   
   int  status = [NSApp runModalForWindow:[editFilterWindowControl window]];
@@ -233,6 +232,17 @@
           itemPathModel:itemPathModel
           fileItemHashingKey:fileItemHashingKey];          
     // Note: The control should auto-release itself when its window closes
+    
+    if ([oldControl hasEditMaskFilterWindow]) {
+      [[newControl editMaskFilterWindowControl] 
+          mirrorStateOfEditFilterWindowControl:
+            [oldControl editMaskFilterWindowControl]];
+      
+      // TODO: hide window (it is automatically shown)
+      
+      // TODO: check if mask is active in old window, and if so, also activate
+      // it in the new window (this requires creating the filter).
+    }
       
     // Force loading (and showing) of the window.
     [windowManager addWindow:[newControl window] 
