@@ -222,6 +222,9 @@
   NSObject <FileItemTest>  *oldTest = 
     [((NSDictionary*)repositoryTestsByName) objectForKey:oldName];
 
+  // Ensure window is loaded before configuring its contents
+  NSWindow  *ruleWindowControlWindow = [ruleWindowControl window];
+
   [ruleWindowControl representFileItemTest:oldTest];
   [ruleWindowControl setFileItemTestName:oldName];
   
@@ -231,8 +234,8 @@
           existingTests:((NSDictionary*)repositoryTestsByName)
           allowedName:oldName] autorelease];
 
-  int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
-  [[ruleWindowControl window] close];
+  int  status = [NSApp runModalForWindow:ruleWindowControlWindow];
+  [ruleWindowControlWindow close];
     
   if (status == NSRunStoppedResponse) {
     NSString*  newName = [ruleWindowControl fileItemTestName];
