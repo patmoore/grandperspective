@@ -62,7 +62,7 @@
   }
   else {
     return [self hasUpperBound] ?
-      [NSString stringWithFormat:@"size is smaller than %qu", 
+      [NSString stringWithFormat:@"size is smaller than %@", 
                   [FileItem stringForFileItemSize:upperBound]] :
       @"any size";
   }
