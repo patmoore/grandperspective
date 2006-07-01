@@ -19,6 +19,9 @@
 }
 @end
 
+@interface HashingByTopDirectoryName : FileItemHashing {
+}
+@end
 
 @implementation HashingByDepth
 
@@ -56,6 +59,22 @@
 @end // @implementation HashingByDirectoryName 
 
 
+@implementation HashingByTopDirectoryName
+
+- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+  DirectoryItem  *dir = [item parentDirectory];
+  int  i = depth-2;
+
+  while (--i >= 0) {
+    dir = [dir parentDirectory];
+  }
+
+  return [[dir name] hash];
+}
+
+@end // @implementation HashingByTopDirectoryName 
+
+
 @implementation FileItemHashingOptions
 
 FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
@@ -72,8 +91,10 @@ FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
 // Overrides super's designated initialiser.
 - (id) init {
   NSMutableDictionary  *colorings = 
-    [NSMutableDictionary dictionaryWithCapacity:5];
+    [NSMutableDictionary dictionaryWithCapacity:6];
 
+  [colorings setObject:[[[HashingByTopDirectoryName alloc] init] autorelease]
+               forKey:@"top directory"];
   [colorings setObject:[[[HashingByDirectoryName alloc] init] autorelease]
                forKey:@"directory"];
   [colorings setObject:[[[HashingByExtension alloc] init] autorelease]
