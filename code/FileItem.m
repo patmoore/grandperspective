@@ -1,5 +1,14 @@
 #import "FileItem.h"
 
+#import "DirectoryItem.h"
+
+
+@interface FileItem (PrivateMethods)
+
+- (NSMutableString*) mutableStringForFileItemPath;
+
+@end
+
 
 @implementation FileItem
 
@@ -49,6 +58,14 @@
 }
 
 
+- (NSString*) stringForFileItemPath {
+  // Although the string could be made immutable before returning it, this is 
+  // not done for performance. Furthermore, the returned string is only used by 
+  // the callee, so who cares what he does with it...
+  return [self mutableStringForFileItemPath];
+}
+
+
 char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
 
 + (NSString*) stringForFileItemSize:(ITEM_SIZE)filesize {
@@ -87,3 +104,21 @@ char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
 }
 
 @end // @implementation FileItem
+
+
+@implementation FileItem (PrivateMethods)
+
+- (NSMutableString*) mutableStringForFileItemPath {
+  NSMutableString*  s = 
+    ((parent != nil) ? [parent mutableStringForFileItemPath]
+                     : [NSMutableString stringWithCapacity:64]);
+
+  if (! [self isPlainFile]) {
+    [s appendString:name];
+    [s appendString:@"/"];
+  }
+  
+  return s;
+}
+
+@end
