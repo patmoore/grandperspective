@@ -6,6 +6,7 @@
                 lowerBoundCheckBoxChanged = id; 
                 nameCheckBoxChanged = id; 
                 okAction = id; 
+                pathCheckBoxChanged = id; 
                 updateEnabledState = id; 
                 upperBoundCheckBoxChanged = id; 
                 valueEntered = id; 
@@ -17,6 +18,9 @@
                 nameCheckBox = NSButton; 
                 nameMatchPopUpButton = NSPopUpButton; 
                 nameTargetsView = NSTextView; 
+                pathCheckBox = NSButton; 
+                pathMatchPopUpButton = NSPopUpButton; 
+                pathTargetsView = NSTextView; 
                 ruleNameField = NSTextField; 
                 sizeLowerBoundCheckBox = NSButton; 
                 sizeLowerBoundField = NSTextField; 
@@ -24,8 +28,6 @@
                 sizeUpperBoundCheckBox = NSButton; 
                 sizeUpperBoundField = NSTextField; 
                 sizeUpperBoundUnits = NSPopUpButton; 
-                typeCheckBox = NSButton; 
-                typePopUpButton = NSPopUpButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

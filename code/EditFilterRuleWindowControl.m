@@ -13,28 +13,6 @@
 #import "filter/StringSuffixTest.h"
 
 
-// Using this struct for re-using the common code for the string-based test
-// on the item name as well as the path of the item.
-//
-// Note: Although this could be done using proper Objective C class, this is 
-// not ideal either as it is best to keep this structure/object short-lived. 
-// Otherwise the references to the GUI controls would be stored twice in the 
-// EditFitlerRuleWindowControl object, as it is unavoidable to store them 
-// individually as IBOutlets. Given that, use of a structure on the stack 
-// seems to better fit the short-lived way in that it is used. 
-typedef struct {
-  NSButton  *enabledCheckBox;
-  NSPopUpButton  *matchPopUpButton;
-  NSTextView  *targetsView;
-} MatchingControls; 
-
-void updateMatchingControlsBasedOnStringTest
-  (MatchingControls controls, MultiMatchStringTest *test);
-
-MultiMatchStringTest* stringTestBasedOnMatchingControls
-  (MatchingControls controls);
-
-
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
 // Note: "state" excludes the name of the test.
@@ -48,10 +26,25 @@ MultiMatchStringTest* stringTestBasedOnMatchingControls
 - (ItemPathTest*) itemPathTestBasedOnState;
 - (ItemSizeTest*) itemSizeTestBasedOnState;
 
-- (MatchingControls) nameMatchingControls;
-- (MatchingControls) pathMatchingControls;
+@end // @interface EditFilterRuleWindowControl (PrivateMethods)
 
-@end
+
+@interface StringBasedTestControls : NSObject {
+  NSButton  *enabledCheckBox;
+  NSPopUpButton  *matchPopUpButton;
+  NSTextView  *targetsTextView;
+}
+
+- (id) initWithEnabledCheckBox:(NSButton*)checkBox 
+         matchModePopUpButton:(NSPopUpButton*)popUpButton
+         targetsTextView:(NSTextView*)textView;
+
+- (void) resetState;
+
+- (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test;
+- (MultiMatchStringTest*) stringTestBasedOnState;
+
+@end // @interface StringBasedTestControls
 
 
 @implementation EditFilterRuleWindowControl
@@ -76,16 +69,25 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 }
 
 
+- (void) dealloc {
+  [nameTestControls release];
+  [pathTestControls release];
+
+  [super dealloc];
+}
+
+
 - (void) windowDidLoad {
   NSLog(@"windowDidLoad %@", [self window]);
 
-  [nameMatchPopUpButton removeAllItems];
-  [nameMatchPopUpButton addItemWithTitle:@"is"];
-  [nameMatchPopUpButton addItemWithTitle:@"contains"];
-  [nameMatchPopUpButton addItemWithTitle:@"starts with"];
-  [nameMatchPopUpButton addItemWithTitle:@"ends with"];
-  
-  // TODO: also set path pop-up button
+  nameTestControls = [[StringBasedTestControls alloc]
+                         initWithEnabledCheckBox: nameCheckBox
+                         matchModePopUpButton: nameMatchPopUpButton
+                         targetsTextView: nameTargetsView];
+  pathTestControls = [[StringBasedTestControls alloc]
+                         initWithEnabledCheckBox: pathCheckBox
+                         matchModePopUpButton: pathMatchPopUpButton
+                         targetsTextView: pathTargetsView];
 
   NSArray  *sizeUnits = [NSArray arrayWithObjects:@"bytes", @"kB", @"MB", 
                                                   @"GB"];
@@ -250,104 +252,12 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 @end
 
 
-void updateMatchingControlsBasedOnStringTest
-  (MatchingControls controls, MultiMatchStringTest *test) {
-  
-  [controls.enabledCheckBox setState: NSOnState];
-
-  int  index = -1;
-    
-  if ([test isKindOfClass:[StringEqualityTest class]]) {
-    index = 0;
-  }
-  else if ([test isKindOfClass:[StringContainmentTest class]]) {
-    index = 1;
-  }
-  else if ([test isKindOfClass:[StringPrefixTest class]]) {
-    index = 2;
-  }
-  else if ([test isKindOfClass:[StringSuffixTest class]]) {
-    index = 3;
-  }
-  else {
-    NSAssert(NO, @"Unknown string test.");
-  }
-  [controls.matchPopUpButton selectItemAtIndex: index];
-  
-  // Fill text view.
-  NSMutableString  *targetText = [NSMutableString stringWithCapacity:128];
-  NSEnumerator  *matchTargets = [[test matchTargets] objectEnumerator];
-  NSString*  matchTarget = nil;
-  while (matchTarget = [matchTargets nextObject]) {
-    [targetText appendString:matchTarget];
-    [targetText appendString:@"\n"];
-  }
-  
-  [controls.targetsView setString: nameTargetText];  
-}
-
-
-MultiMatchStringTest* stringTestBasedOnMatchingControls
-  (MatchingControls controls) {
-     
-  if ([controls.enabledCheckBox state]==NSOnState) {
-    NSArray  *rawTargets = 
-      [[controls.targetsView string] componentsSeparatedByString:@"\n"];
-      
-    NSMutableArray  *targets = 
-      [NSMutableArray arrayWithCapacity:[rawTargets count]];
-
-    // Ignore empty lines
-    NSEnumerator  *rawTargetsEnum = [rawTargets objectEnumerator];
-    NSString  *target = nil;
-    while (target = [rawTargetsEnum nextObject]) {
-      if ([target length] > 0) {
-        if ([rawTargets count]==1) {
-          // Need to copy string, as componentsSeparatedByString: returns the
-          // (mutable) string directly if there is only one component.
-          [targets addObject:[NSString stringWithString:target]];
-        }
-        else {
-          [targets addObject:target];
-        }
-      }
-    }
-    
-    if ([targets count] > 0) {
-      MultiMatchStringTest  *stringTest = nil;
-      switch ([controls.matchPopUpButton indexOfSelectedItem]) {
-        case 0: stringTest = [StringEqualityTest alloc]; break;
-        case 1: stringTest = [StringContainmentTest alloc]; break;
-        case 2: stringTest = [StringPrefixTest alloc]; break;
-        case 3: stringTest = [StringSuffixTest alloc]; break;
-        default: NSAssert(NO, @"Unexpected matching index.");
-      }
-      stringTest = [[stringTest initWithMatchTargets:targets] autorelease];
-      
-      return stringTest;
-    }
-    else {
-      // No match targets specified.
-      return nil;
-    }
-  }
-  else {
-    // Test not used.
-    return nil;
-  }
-}
-
-
 @implementation EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState {
-  [typeCheckBox setState:NSOffState];
-  [typePopUpButton selectItemAtIndex:0]; // File
-  
-  [nameCheckBox setState:NSOffState];
-  [nameMatchPopUpButton selectItemAtIndex:3]; // Suffix
-  [nameTargetsView setString:@""];
-  
+  [nameTestControls resetState];
+  [pathTestControls resetState];
+
   [sizeLowerBoundCheckBox setState:NSOffState];
   [sizeLowerBoundField setIntValue:0];
   [sizeLowerBoundUnits selectItemAtIndex:0]; // bytes
@@ -377,18 +287,16 @@ MultiMatchStringTest* stringTestBasedOnMatchingControls
 
 
 - (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test {
-  MatchingControls  controls = [self nameMatchingControls];
-
-  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];  
-  updateMatchingControlsBasedOnStringTest(controls, stringTest);
+  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
+  
+  [nameTestControls updateStateBasedOnStringTest:stringTest];
 }
 
 
 - (void) updateStateBasedOnItemPathTest:(ItemPathTest*)test {
-  MatchingControls  controls = [self nameMatchingControls];
-
-  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];  
-  updateMatchingControlsBasedOnStringTest(controls, stringTest);
+  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
+  
+  [pathTestControls updateStateBasedOnStringTest:stringTest];
 }
 
 
@@ -421,23 +329,8 @@ MultiMatchStringTest* stringTestBasedOnMatchingControls
 }
 
 
-- (ItemTypeTest*) itemTypeTestBasedOnState {
-  if ([typeCheckBox state]==NSOnState) {
-    return [[[ItemTypeTest alloc] initWithTestForPlainFile:
-                                    [typePopUpButton indexOfSelectedItem]==0]
-                autorelease];
-  }
-  else {
-    return nil;
-  }
-}
-
-
 - (ItemNameTest*) itemNameTestBasedOnState {
-  MatchingControls  controls = [self nameMatchingControls];
-
-  MultiMatchStringTest  *stringText = 
-    stringTestBasedOnMatchingControls(controls);
+  MultiMatchStringTest  *stringTest = [nameTestControls stringTestBasedOnState];
 
   if (stringTest != nil) {
     return [[[ItemNameTest alloc] initWithStringTest:stringTest] autorelease];
@@ -449,11 +342,8 @@ MultiMatchStringTest* stringTestBasedOnMatchingControls
 
 
 - (ItemPathTest*) itemPathTestBasedOnState {
-  MatchingControls  controls = [self pathMatchingControls];
-
-  MultiMatchStringTest  *stringText = 
-    stringTestBasedOnMatchingControls(controls);
-
+  MultiMatchStringTest  *stringTest = [pathTestControls stringTestBasedOnState];
+  
   if (stringTest != nil) {
     return [[[ItemPathTest alloc] initWithStringTest:stringTest] autorelease];
   }
@@ -496,21 +386,126 @@ MultiMatchStringTest* stringTestBasedOnMatchingControls
   }
 }
 
-
-- (MatchingControls) nameMatchingControls {
-  MatchingControls  c;
-  c.enabledButton = nameCheckBox;
-  c.matchPopUpButton = nameMatchPopUpButton;
-  c.targetsView = nameTargetsView;
-
-  return c;
-}
-
-- (MatchingControls) pathMatchingControls {
-  MatchingControls  c;
-  c.enabledButton = pathCheckBox;
-  c.matchPopUpButton = pathMatchPopUpButton;
-  c.targetsView = pathTargetsView;
-}
-
 @end
+
+
+@implementation StringBasedTestControls
+
+- (id) initWithEnabledCheckBox:(NSButton*)checkBox 
+         matchModePopUpButton:(NSPopUpButton*)popUpButton
+         targetsTextView:(NSTextView*)textView {
+  if (self = [super init]) {
+    enabledCheckBox = [checkBox retain];
+    matchPopUpButton = [popUpButton retain];
+    targetsTextView = [textView retain];
+    
+    [matchPopUpButton removeAllItems];
+    [matchPopUpButton addItemWithTitle:@"is"];
+    [matchPopUpButton addItemWithTitle:@"contains"];
+    [matchPopUpButton addItemWithTitle:@"starts with"];
+    [matchPopUpButton addItemWithTitle:@"ends with"];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [enabledCheckBox release];
+  [matchPopUpButton release];
+  [targetsTextView release];
+
+  [super dealloc];
+}
+
+
+- (void) resetState {
+  [enabledCheckBox setState:NSOffState];
+  [matchPopUpButton selectItemAtIndex:3]; // Suffix
+  [targetsTextView setString:@""];
+}
+
+
+- (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test {
+  [enabledCheckBox setState: NSOnState];
+
+  int  index = -1;
+    
+  if ([test isKindOfClass:[StringEqualityTest class]]) {
+    index = 0;
+  }
+  else if ([test isKindOfClass:[StringContainmentTest class]]) {
+    index = 1;
+  }
+  else if ([test isKindOfClass:[StringPrefixTest class]]) {
+    index = 2;
+  }
+  else if ([test isKindOfClass:[StringSuffixTest class]]) {
+    index = 3;
+  }
+  else {
+    NSAssert(NO, @"Unknown string test.");
+  }
+  [matchPopUpButton selectItemAtIndex: index];
+  
+  // Fill text view.
+  NSMutableString  *targetText = [NSMutableString stringWithCapacity:128];
+  NSEnumerator  *matchTargets = [[test matchTargets] objectEnumerator];
+  NSString*  matchTarget = nil;
+  while (matchTarget = [matchTargets nextObject]) {
+    [targetText appendString:matchTarget];
+    [targetText appendString:@"\n"];
+  }
+  
+  [targetsTextView setString: targetText];  
+}
+
+
+- (MultiMatchStringTest*) stringTestBasedOnState {
+  if ([enabledCheckBox state]==NSOnState) {
+    NSArray  *rawTargets = 
+      [[targetsTextView string] componentsSeparatedByString:@"\n"];
+      
+    NSMutableArray  *targets = 
+      [NSMutableArray arrayWithCapacity:[rawTargets count]];
+
+    // Ignore empty lines
+    NSEnumerator  *rawTargetsEnum = [rawTargets objectEnumerator];
+    NSString  *target = nil;
+    while (target = [rawTargetsEnum nextObject]) {
+      if ([target length] > 0) {
+        if ([rawTargets count]==1) {
+          // Need to copy string, as componentsSeparatedByString: returns the
+          // (mutable) string directly if there is only one component.
+          [targets addObject:[NSString stringWithString:target]];
+        }
+        else {
+          [targets addObject:target];
+        }
+      }
+    }
+    
+    if ([targets count] > 0) {
+      MultiMatchStringTest  *stringTest = nil;
+      switch ([matchPopUpButton indexOfSelectedItem]) {
+        case 0: stringTest = [StringEqualityTest alloc]; break;
+        case 1: stringTest = [StringContainmentTest alloc]; break;
+        case 2: stringTest = [StringPrefixTest alloc]; break;
+        case 3: stringTest = [StringSuffixTest alloc]; break;
+        default: NSAssert(NO, @"Unexpected matching index.");
+      }
+      stringTest = [[stringTest initWithMatchTargets:targets] autorelease];
+      
+      return stringTest;
+    }
+    else {
+      // No match targets specified.
+      return nil;
+    }
+  }
+  else {
+    // Test not used.
+    return nil;
+  }
+}
+
+@end // implementation StringBasedTestControls

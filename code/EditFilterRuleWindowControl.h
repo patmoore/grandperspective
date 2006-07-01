@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @protocol FileItemTest;
+@class StringBasedTestControls;
 
 @interface EditFilterRuleWindowControl : NSWindowController {
 
@@ -23,6 +24,9 @@
   IBOutlet NSPopUpButton  *sizeUpperBoundUnits;
 
   IBOutlet NSButton  *doneButton;
+  
+  StringBasedTestControls  *nameTestControls;
+  StringBasedTestControls  *pathTestControls;
 }
 
 + (id) defaultInstance;
