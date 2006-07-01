@@ -52,18 +52,14 @@
 - (NSString*) fileItemHashingKey;
 - (FileItemHashing*) fileItemHashing;
 
+- (NSObject <FileItemTest> *) fileItemMask;
+- (void) setFileItemMask:(NSObject <FileItemTest> *) mask;
+
+- (BOOL) fileItemMaskEnabled;
+- (void) enableFileItemMask:(BOOL) flag;
+
 - (ItemPathModel*) itemPathModel;
 
 - (DirectoryView*) directoryView;
-
-
-- (BOOL) hasEditMaskFilterWindow;
-
-/* Returns the control.
- *
- * Note: It creates it if it does not yet exist! If this is not what you want,
- * check first using hasEditMaskFilterWindow if the window already exists.
- */
-- (EditFilterWindowControl*) editMaskFilterWindowControl;
 
 @end

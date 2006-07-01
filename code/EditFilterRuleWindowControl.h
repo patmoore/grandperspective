@@ -43,14 +43,12 @@
 - (IBAction) cancelAction:(id)sender;
 - (IBAction) okAction:(id)sender;
 
+- (NSString*) fileItemTestName;
 
 // Configures the window to represent the given test.
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test;
 
 // Creates the test object that represents the current window state.
 - (NSObject <FileItemTest> *) createFileItemTest;
-
-- (void) setFileItemTestName:(NSString *)name;
-- (NSString*) fileItemTestName;
 
 @end

@@ -15,7 +15,6 @@
 
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
-// Note: "state" excludes the name of the test.
 - (void) resetState;
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test;
 - (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test;
@@ -100,6 +99,10 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 }
 
 
+- (NSString*) fileItemTestName {
+  return [ruleNameField stringValue];
+}
+
 // Configures the window to represent the given test.
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test {
   [self resetState];
@@ -108,7 +111,10 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
     // No test specified. Leave window in default state.
     return;
   }
-  else if ([test isKindOfClass:[CompoundAndItemTest class]]) {
+  
+  [ruleNameField setStringValue:[test name]];
+  
+  if ([test isKindOfClass:[CompoundAndItemTest class]]) {
     // It is a compound test. Iterate over all subtests.
     NSEnumerator  *subTests = 
       [[((CompoundAndItemTest*)test) subItemTests] objectEnumerator];
@@ -120,8 +126,8 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
   else {
     // It is a stand-alone test.
     [self updateStateBasedOnTest:test];
-  }
-  
+  }  
+
   [self updateEnabledState:nil];
 }
 
@@ -145,27 +151,21 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
     [subTests addObject:subTest];
   }
   
+  NSObject <FileItemTest>  *test;
   if ([subTests count] == 0) {
-    return nil;
+    test = nil;
   }
   else if ([subTests count] == 1) {
-    return [subTests lastObject];
+    test = [subTests lastObject];
   }
   else {
-    return [[[CompoundAndItemTest alloc] initWithSubItemTests:subTests]
+    test = [[[CompoundAndItemTest alloc] initWithSubItemTests:subTests]
                 autorelease];
   }
-}
 
-
-- (void) setFileItemTestName:(NSString *)name {
-  [ruleNameField setStringValue:name];
+  [test setName:[ruleNameField stringValue]];
   
-  [self updateEnabledState:nil];
-}
-
-- (NSString*) fileItemTestName {
-  return [ruleNameField stringValue];
+  return test;
 }
 
 
@@ -255,6 +255,8 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 @implementation EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState {
+  [ruleNameField setStringValue:@""];
+
   [nameTestControls resetState];
   [pathTestControls resetState];
 

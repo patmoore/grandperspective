@@ -95,6 +95,41 @@
 }
 
 
+- (NSObject <FileItemTest> *) fileItemMask {
+  return fileItemMask;
+}
+
+- (void) setFileItemMask:(NSObject <FileItemTest> *) mask {
+  if (mask != fileItemMask) {
+    [fileItemMask release];
+    fileItemMask = [mask retain];
+
+    if ([mainView fileItemMask] != nil) {
+      // Only let mainview immediately use it if it was already using a mask.
+      [mainView setFileItemMask:fileItemMask];
+    }
+  }
+}
+
+
+- (BOOL) fileItemMaskEnabled {
+  return [mainView fileItemMask] != nil;
+}
+
+- (void) enableFileItemMask:(BOOL) flag {
+  if (flag) {
+    [maskCheckBox setState:NSOnState];
+
+    [mainView setFileItemMask:fileItemMask];
+  }
+  else {
+    [maskCheckBox setState:NSOffState];
+
+    [mainView setFileItemMask:nil];    
+  }
+}
+
+
 - (ItemPathModel*) itemPathModel {
   return itemPathModel;
 }
@@ -102,20 +137,6 @@
 
 - (DirectoryView*) directoryView {
   return mainView;
-}
-
-
-- (BOOL) hasEditMaskFilterWindow {
-  return (editMaskFilterWindowControl != nil);
-}
-
-- (EditFilterWindowControl*) editMaskFilterWindowControl {
-  if (editMaskFilterWindowControl == nil) {
-    // Create it on the fly.
-    [self createEditMaskFilterWindow];
-  }
-
-  return editMaskFilterWindowControl;
 }
 
 
@@ -207,6 +228,8 @@
     
     [self createEditMaskFilterWindow];
   }
+  
+  [editMaskFilterWindowControl representFileItemTest:fileItemMask];
 
   // Note: First order it to front, then make it key. This ensures that
   // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
@@ -246,7 +269,7 @@
         name:@"NSWindowDidBecomeKeyNotification"
         object:[editMaskFilterWindowControl window]];
                   
-  // [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
+  [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
 }
 
 - (void) visibleItemTreeChanged:(NSNotification*)notification {

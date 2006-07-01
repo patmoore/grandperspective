@@ -52,9 +52,10 @@
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
-- (void) mirrorStateOfEditFilterWindowControl:(EditFilterWindowControl*)other;
-
 - (void) removeApplyButton;
+
+// Configures the window to represent the given test.
+- (void) representFileItemTest:(NSObject <FileItemTest> *)test;
 
 // Creates the test object that represents the current window state.
 - (NSObject <FileItemTest> *) createFileItemTest;

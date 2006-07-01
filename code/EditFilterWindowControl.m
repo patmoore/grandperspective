@@ -28,10 +28,10 @@
 - (void) cancelAction:(NSNotification*)notification;
 - (void) okAction:(NSNotification*)notification;
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode 
-          contextInfo:(void *)contextInfo;
+- (void) alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode 
+           contextInfo:(void *)contextInfo;
 
-@end
+@end // EditFilterRuleWindowTerminationControl
 
 
 @interface EditFilterWindowControl (PrivateMethods)
@@ -48,9 +48,10 @@
 - (void) updateWindowState:(NSNotification*)notification;
 
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
-          returnCode:(int)returnCode contextInfo:(void *)contextInfo;
+           returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
-@end
+@end // EditFilterWindowControl (PrivateMethods)
+
 
 @implementation EditFilterWindowControl
 
@@ -119,18 +120,6 @@
 }
 
 
-- (void) mirrorStateOfEditFilterWindowControl:(EditFilterWindowControl*)other {
-  [availableTests setArray:[other availableTests]];
-  [availableTestsBrowser validateVisibleColumns];
-  
-  [filterTests setArray:[other filterTests]];
-  [filterTestsBrowser validateVisibleColumns];
-  
-  [filterActionButton selectItemAtIndex:
-                        [[other filterActionButton] indexOfSelectedItem]];
-}
-
-
 - (void) removeApplyButton {
   if (applyButton != nil) {
     [applyButton removeFromSuperviewWithoutNeedingDisplay];
@@ -181,7 +170,6 @@
     [EditFilterRuleWindowControl defaultInstance];
 
   [ruleWindowControl representFileItemTest:nil];
-  [ruleWindowControl setFileItemTestName:@""];
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
@@ -192,14 +180,13 @@
   [[ruleWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
-    NSString*  testName = [ruleWindowControl fileItemTestName];
+    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
+    NSString*  testName = [test name];
 
     // The terminationControl should have ensured that this check succeeds.
     NSAssert( 
       [((NSDictionary*)repositoryTestsByName) objectForKey:testName] == nil,
       @"Duplicate name check failed.");
-
-    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
 
     [testNameToSelect release];
     testNameToSelect = [testName retain];
@@ -226,7 +213,6 @@
   NSWindow  *ruleWindowControlWindow = [ruleWindowControl window];
 
   [ruleWindowControl representFileItemTest:oldTest];
-  [ruleWindowControl setFileItemTestName:oldName];
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
@@ -238,7 +224,8 @@
   [ruleWindowControlWindow close];
     
   if (status == NSRunStoppedResponse) {
-    NSString*  newName = [ruleWindowControl fileItemTestName];
+    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];          
+    NSString  *newName = [newTest name];
 
     // The terminationControl should have ensured that this check succeeds.
     NSAssert( 
@@ -246,8 +233,6 @@
       [((NSDictionary*)repositoryTestsByName) objectForKey:newName] == nil,
       @"Duplicate name check failed.");
                 
-    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];
-          
     if (! [newName isEqualToString:oldName]) {
       // Handle name change.
       [repositoryTestsByName moveObjectFromKey:oldName toKey:newName];
@@ -257,7 +242,7 @@
         
     // Test itself has changed as well.
     [repositoryTestsByName updateObject:newTest forKey:newName];
-     
+
     // Rest of update handled in response to update notification event.
   }
   else {
@@ -325,7 +310,7 @@
 }
 
 // Delegate methods for NSBrowser
-- (BOOL)browser:(NSBrowser*)sender isColumnValid:(int)column {
+- (BOOL) browser:(NSBrowser*)sender isColumnValid:(int)column {
   NSAssert(column==0, @"Invalid column.");
   
   // When "validateVisibleColumns" is called, the visible column (just one)
@@ -333,7 +318,7 @@
   return NO;
 }
 
-- (int)browser:(NSBrowser *)sender numberOfRowsInColumn:(int)column {
+- (int) browser:(NSBrowser *)sender numberOfRowsInColumn:(int)column {
   NSLog(@"browser:numberOfRowsInColumn");
   NSAssert(column==0, @"Invalid column.");
   
@@ -348,8 +333,8 @@
   }
 }
 
-- (void)browser:(NSBrowser *)sender willDisplayCell:(id)cell atRow:(int)row 
-         column:(int)column {
+- (void) browser:(NSBrowser *)sender willDisplayCell:(id)cell atRow:(int)row 
+           column:(int)column {
   NSAssert(column==0, @"Invalid column.");
   
   if (sender == filterTestsBrowser) {
@@ -376,6 +361,47 @@
 }
 
 
+- (void) representFileItemTest:(NSObject <FileItemTest> *)test {
+  [filterTests removeAllObjects];
+  [filterTestsByName removeAllObjects];
+
+  if (test == nil) {
+    // Nothing needs doing
+  }
+  else {
+    if ([test isKindOfClass:[NotItemTest class]]) {
+      // Don't show
+      [filterActionButton selectItemAtIndex:1];
+      test = [((NotItemTest*)test) subItemTest];
+    }
+    else {
+      // Show only
+      [filterActionButton selectItemAtIndex:0];
+    }
+    
+    if ([test isKindOfClass:[CompoundOrItemTest class]]) {
+      NSArray  *subTests = [((CompoundOrItemTest*)test) subItemTests];
+      NSEnumerator  *subTestEnum = [subTests objectEnumerator];
+      NSObject <FileItemTest>  *subTest;
+      while (subTest = [subTestEnum nextObject]) {
+        NSAssert([subTest name] != nil, @"Test name must be non-nil.");
+        [filterTests addObject:[subTest name]];
+        [filterTestsByName setObject:subTest forKey:[subTest name]];
+      }
+    }
+    else {
+      NSAssert([test name] != nil, @"Test name must be non-nil.");
+      [filterTests addObject:[test name]];
+      [filterTestsByName setObject:test forKey:[test name]];      
+    }
+  }
+  
+  [filterTestsBrowser validateVisibleColumns];
+  [availableTestsBrowser validateVisibleColumns];
+  
+  [self updateWindowState:nil];
+}
+
 // Creates the test object that represents the current window state.
 - (NSObject <FileItemTest> *) createFileItemTest {
   if ([filterTests count] == 0) {
@@ -383,24 +409,32 @@
     return nil;
   }
   
-  NSMutableArray  *subTests = 
-    [NSMutableArray arrayWithCapacity:[filterTests count]];
-  NSEnumerator  *testNameEnum = [filterTests objectEnumerator];
-  NSString  *testName;
-  while (testName = [testNameEnum nextObject]) {
-    [subTests addObject: [filterTestsByName objectForKey:testName] ];
-  }
+  NSObject <FileItemTest>  *test = nil;
   
-  NSObject <FileItemTest>  *orTest = 
-    [[[CompoundOrItemTest alloc] initWithSubItemTests:subTests] autorelease];
+  if ([filterTests count] == 1) {
+    NSString  *testName = [filterTests objectAtIndex:0];
+    test = [filterTestsByName objectForKey: testName];
+  }
+  else {
+    NSMutableArray  *subTests = 
+      [NSMutableArray arrayWithCapacity:[filterTests count]];
+    NSEnumerator  *testNameEnum = [filterTests objectEnumerator];
+    NSString  *testName;
+    while (testName = [testNameEnum nextObject]) {
+      [subTests addObject: [filterTestsByName objectForKey:testName] ];
+    }
+  
+    test = 
+      [[[CompoundOrItemTest alloc] initWithSubItemTests:subTests] autorelease];
+  }
     
   if ([filterActionButton indexOfSelectedItem] == 0) {
     // Show only
-    return orTest;
+    return test;
   }
   else {
     // Don't show
-    return [[[NotItemTest alloc] initWithSubItemTest:orTest] autorelease];
+    return [[[NotItemTest alloc] initWithSubItemTest: test] autorelease];
   }
 }
 
