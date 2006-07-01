@@ -2,8 +2,8 @@
 
 #import "filter/FileItemTest.h"
 #import "filter/CompoundAndItemTest.h"
-#import "filter/ItemTypeTest.h"
 #import "filter/ItemNameTest.h"
+#import "filter/ItemPathTest.h"
 #import "filter/ItemSizeTest.h"
 
 #import "filter/MultiMatchStringTest.h"
@@ -13,18 +13,43 @@
 #import "filter/StringSuffixTest.h"
 
 
+// Using this struct for re-using the common code for the string-based test
+// on the item name as well as the path of the item.
+//
+// Note: Although this could be done using proper Objective C class, this is 
+// not ideal either as it is best to keep this structure/object short-lived. 
+// Otherwise the references to the GUI controls would be stored twice in the 
+// EditFitlerRuleWindowControl object, as it is unavoidable to store them 
+// individually as IBOutlets. Given that, use of a structure on the stack 
+// seems to better fit the short-lived way in that it is used. 
+typedef struct {
+  NSButton  *enabledCheckBox;
+  NSPopUpButton  *matchPopUpButton;
+  NSTextView  *targetsView;
+} MatchingControls; 
+
+void updateMatchingControlsBasedOnStringTest
+  (MatchingControls controls, MultiMatchStringTest *test);
+
+MultiMatchStringTest* stringTestBasedOnMatchingControls
+  (MatchingControls controls);
+
+
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
 // Note: "state" excludes the name of the test.
 - (void) resetState;
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test;
-- (void) updateStateBasedOnItemTypeTest:(ItemTypeTest*)test;
 - (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test;
+- (void) updateStateBasedOnItemPathTest:(ItemPathTest*)test;
 - (void) updateStateBasedOnItemSizeTest:(ItemSizeTest*)test;
 
-- (ItemTypeTest*) itemTypeTestBasedOnState;
 - (ItemNameTest*) itemNameTestBasedOnState;
+- (ItemPathTest*) itemPathTestBasedOnState;
 - (ItemSizeTest*) itemSizeTestBasedOnState;
+
+- (MatchingControls) nameMatchingControls;
+- (MatchingControls) pathMatchingControls;
 
 @end
 
@@ -54,15 +79,13 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 - (void) windowDidLoad {
   NSLog(@"windowDidLoad %@", [self window]);
 
-  [typePopUpButton removeAllItems];
-  [typePopUpButton addItemWithTitle:@"file"];
-  [typePopUpButton addItemWithTitle:@"folder"];
-
   [nameMatchPopUpButton removeAllItems];
   [nameMatchPopUpButton addItemWithTitle:@"is"];
   [nameMatchPopUpButton addItemWithTitle:@"contains"];
   [nameMatchPopUpButton addItemWithTitle:@"starts with"];
   [nameMatchPopUpButton addItemWithTitle:@"ends with"];
+  
+  // TODO: also set path pop-up button
 
   NSArray  *sizeUnits = [NSArray arrayWithObjects:@"bytes", @"kB", @"MB", 
                                                   @"GB"];
@@ -105,16 +128,16 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
   NSMutableArray  *subTests = [NSMutableArray arrayWithCapacity:3];
   NSObject <FileItemTest>  *subTest;
   
-  subTest = [self itemTypeTestBasedOnState];
-  if (subTest != nil) {
-    [subTests addObject:subTest];
-  }
-
   subTest = [self itemNameTestBasedOnState];
   if (subTest != nil) {
     [subTests addObject:subTest];
   }
   
+  subTest = [self itemPathTestBasedOnState];
+  if (subTest != nil) {
+    [subTests addObject:subTest];
+  }
+
   subTest = [self itemSizeTestBasedOnState];
   if (subTest != nil) {
     [subTests addObject:subTest];
@@ -175,6 +198,14 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
   }
 }
 
+- (IBAction) pathCheckBoxChanged:(id)sender {
+  [self updateEnabledState:sender];
+  
+  if ([sender state]==NSOnState) {
+    [[self window] makeFirstResponder:pathTargetsView];
+  }
+}
+
 - (IBAction) lowerBoundCheckBoxChanged:(id)sender {
   [self updateEnabledState:sender];
   
@@ -195,15 +226,16 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 - (IBAction) updateEnabledState:(id)sender {
   // Note: "sender" is ignored. Always updating all.
   
-  BOOL  typeTestUsed = [typeCheckBox state]==NSOnState;
   BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
+  BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
   BOOL  lowerBoundTestUsed = [sizeLowerBoundCheckBox state]==NSOnState;
   BOOL  upperBoundTestUsed = [sizeUpperBoundCheckBox state]==NSOnState;
     
-  [typePopUpButton setEnabled:typeTestUsed];
-  
   [nameMatchPopUpButton setEnabled:nameTestUsed];
   [nameTargetsView setEditable:nameTestUsed];
+  
+  [pathMatchPopUpButton setEnabled:pathTestUsed];
+  [pathTargetsView setEditable:pathTestUsed];
   
   [sizeLowerBoundField setEnabled:lowerBoundTestUsed];
   [sizeLowerBoundUnits setEnabled:lowerBoundTestUsed];
@@ -211,11 +243,100 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
   [sizeUpperBoundUnits setEnabled:upperBoundTestUsed];
 
   [doneButton setEnabled:
-     (typeTestUsed || nameTestUsed || lowerBoundTestUsed || upperBoundTestUsed) 
+     (nameTestUsed || pathTestUsed || lowerBoundTestUsed || upperBoundTestUsed) 
      && [[ruleNameField stringValue] length] > 0];
 }
 
 @end
+
+
+void updateMatchingControlsBasedOnStringTest
+  (MatchingControls controls, MultiMatchStringTest *test) {
+  
+  [controls.enabledCheckBox setState: NSOnState];
+
+  int  index = -1;
+    
+  if ([test isKindOfClass:[StringEqualityTest class]]) {
+    index = 0;
+  }
+  else if ([test isKindOfClass:[StringContainmentTest class]]) {
+    index = 1;
+  }
+  else if ([test isKindOfClass:[StringPrefixTest class]]) {
+    index = 2;
+  }
+  else if ([test isKindOfClass:[StringSuffixTest class]]) {
+    index = 3;
+  }
+  else {
+    NSAssert(NO, @"Unknown string test.");
+  }
+  [controls.matchPopUpButton selectItemAtIndex: index];
+  
+  // Fill text view.
+  NSMutableString  *targetText = [NSMutableString stringWithCapacity:128];
+  NSEnumerator  *matchTargets = [[test matchTargets] objectEnumerator];
+  NSString*  matchTarget = nil;
+  while (matchTarget = [matchTargets nextObject]) {
+    [targetText appendString:matchTarget];
+    [targetText appendString:@"\n"];
+  }
+  
+  [controls.targetsView setString: nameTargetText];  
+}
+
+
+MultiMatchStringTest* stringTestBasedOnMatchingControls
+  (MatchingControls controls) {
+     
+  if ([controls.enabledCheckBox state]==NSOnState) {
+    NSArray  *rawTargets = 
+      [[controls.targetsView string] componentsSeparatedByString:@"\n"];
+      
+    NSMutableArray  *targets = 
+      [NSMutableArray arrayWithCapacity:[rawTargets count]];
+
+    // Ignore empty lines
+    NSEnumerator  *rawTargetsEnum = [rawTargets objectEnumerator];
+    NSString  *target = nil;
+    while (target = [rawTargetsEnum nextObject]) {
+      if ([target length] > 0) {
+        if ([rawTargets count]==1) {
+          // Need to copy string, as componentsSeparatedByString: returns the
+          // (mutable) string directly if there is only one component.
+          [targets addObject:[NSString stringWithString:target]];
+        }
+        else {
+          [targets addObject:target];
+        }
+      }
+    }
+    
+    if ([targets count] > 0) {
+      MultiMatchStringTest  *stringTest = nil;
+      switch ([controls.matchPopUpButton indexOfSelectedItem]) {
+        case 0: stringTest = [StringEqualityTest alloc]; break;
+        case 1: stringTest = [StringContainmentTest alloc]; break;
+        case 2: stringTest = [StringPrefixTest alloc]; break;
+        case 3: stringTest = [StringSuffixTest alloc]; break;
+        default: NSAssert(NO, @"Unexpected matching index.");
+      }
+      stringTest = [[stringTest initWithMatchTargets:targets] autorelease];
+      
+      return stringTest;
+    }
+    else {
+      // No match targets specified.
+      return nil;
+    }
+  }
+  else {
+    // Test not used.
+    return nil;
+  }
+}
+
 
 @implementation EditFilterRuleWindowControl (PrivateMethods) 
 
@@ -240,11 +361,11 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 
 
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest>*)test {
-  if ([test isKindOfClass:[ItemTypeTest class]]) {
-    [self updateStateBasedOnItemTypeTest: (ItemTypeTest*)test];
-  }
-  else if ([test isKindOfClass:[ItemNameTest class]]) {
+  if ([test isKindOfClass:[ItemNameTest class]]) {
     [self updateStateBasedOnItemNameTest: (ItemNameTest*)test];
+  }
+  else if ([test isKindOfClass:[ItemPathTest class]]) {
+    [self updateStateBasedOnItemPathTest: (ItemPathTest*)test];
   }
   else if ([test isKindOfClass:[ItemSizeTest class]]) {
     [self updateStateBasedOnItemSizeTest: (ItemSizeTest*)test];
@@ -255,44 +376,19 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 }
 
 
-- (void) updateStateBasedOnItemTypeTest:(ItemTypeTest*)test {
-  [typeCheckBox setState:NSOnState];    
-  [typePopUpButton selectItemAtIndex: ([test testsForPlainFile] ? 0 : 1)];
+- (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test {
+  MatchingControls  controls = [self nameMatchingControls];
+
+  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];  
+  updateMatchingControlsBasedOnStringTest(controls, stringTest);
 }
 
 
-- (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test {
-  [nameCheckBox setState:NSOnState];
-  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
-  int  index = -1;
-    
-  if ([stringTest isKindOfClass:[StringEqualityTest class]]) {
-    index = 0;
-  }
-  else if ([stringTest isKindOfClass:[StringContainmentTest class]]) {
-    index = 1;
-  }
-  else if ([stringTest isKindOfClass:[StringPrefixTest class]]) {
-    index = 2;
-  }
-  else if ([stringTest isKindOfClass:[StringSuffixTest class]]) {
-    index = 3;
-  }
-  else {
-    NSAssert(NO, @"Unknown string test.");
-  }
-  [nameMatchPopUpButton selectItemAtIndex: index];
-  
-  // Fill text view.
-  NSMutableString  *nameTargetText = [NSMutableString stringWithCapacity:128];
-  NSEnumerator  *matchTargets = [[stringTest matchTargets] objectEnumerator];
-  NSString*  matchTarget = nil;
-  while (matchTarget = [matchTargets nextObject]) {
-    [nameTargetText appendString:matchTarget];
-    [nameTargetText appendString:@"\n"];
-  }
-  
-  [nameTargetsView setString:nameTargetText];
+- (void) updateStateBasedOnItemPathTest:(ItemPathTest*)test {
+  MatchingControls  controls = [self nameMatchingControls];
+
+  MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];  
+  updateMatchingControlsBasedOnStringTest(controls, stringTest);
 }
 
 
@@ -338,49 +434,30 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 
 
 - (ItemNameTest*) itemNameTestBasedOnState {
-  if ([nameCheckBox state]==NSOnState) {
-    NSArray  *rawTargets = 
-      [[nameTargetsView string] componentsSeparatedByString:@"\n"];
-      
-    NSMutableArray  *targets = 
-      [NSMutableArray arrayWithCapacity:[rawTargets count]];
+  MatchingControls  controls = [self nameMatchingControls];
 
-    // Ignore empty lines
-    NSEnumerator  *rawTargetsEnum = [rawTargets objectEnumerator];
-    NSString  *target = nil;
-    while (target = [rawTargetsEnum nextObject]) {
-      if ([target length] > 0) {
-        if ([rawTargets count]==1) {
-          // Need to copy string, as componentsSeparatedByString: returns the
-          // (mutable) string directly if there is only one component.
-          [targets addObject:[NSString stringWithString:target]];
-        }
-        else {
-          [targets addObject:target];
-        }
-      }
-    }
-    
-    if ([targets count] > 0) {
-      MultiMatchStringTest  *stringTest = nil;
-      switch ([nameMatchPopUpButton indexOfSelectedItem]) {
-        case 0: stringTest = [StringEqualityTest alloc]; break;
-        case 1: stringTest = [StringContainmentTest alloc]; break;
-        case 2: stringTest = [StringPrefixTest alloc]; break;
-        case 3: stringTest = [StringSuffixTest alloc]; break;
-        default: NSAssert(NO, @"Unexpected matching index.");
-      }
-      stringTest = [stringTest initWithMatchTargets:targets];
-      
-      return [[[ItemNameTest alloc] initWithStringTest:stringTest] autorelease];
-    }
-    else {
-      // No match targets specified.
-      return nil;
-    }
+  MultiMatchStringTest  *stringText = 
+    stringTestBasedOnMatchingControls(controls);
+
+  if (stringTest != nil) {
+    return [[[ItemNameTest alloc] initWithStringTest:stringTest] autorelease];
   }
   else {
-    // Test not used.
+    return nil;
+  }
+}
+
+
+- (ItemPathTest*) itemPathTestBasedOnState {
+  MatchingControls  controls = [self pathMatchingControls];
+
+  MultiMatchStringTest  *stringText = 
+    stringTestBasedOnMatchingControls(controls);
+
+  if (stringTest != nil) {
+    return [[[ItemPathTest alloc] initWithStringTest:stringTest] autorelease];
+  }
+  else {
     return nil;
   }
 }
@@ -417,6 +494,23 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
       return nil;
     }
   }
+}
+
+
+- (MatchingControls) nameMatchingControls {
+  MatchingControls  c;
+  c.enabledButton = nameCheckBox;
+  c.matchPopUpButton = nameMatchPopUpButton;
+  c.targetsView = nameTargetsView;
+
+  return c;
+}
+
+- (MatchingControls) pathMatchingControls {
+  MatchingControls  c;
+  c.enabledButton = pathCheckBox;
+  c.matchPopUpButton = pathMatchPopUpButton;
+  c.targetsView = pathTargetsView;
 }
 
 @end

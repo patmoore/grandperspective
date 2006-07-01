@@ -6,17 +6,18 @@
 
   IBOutlet NSTextField  *ruleNameField;
   
-  IBOutlet NSButton  *typeCheckBox;
-  IBOutlet NSPopUpButton  *typePopUpButton;
-
   IBOutlet NSButton  *nameCheckBox;
   IBOutlet NSPopUpButton  *nameMatchPopUpButton;
   IBOutlet NSTextView  *nameTargetsView;
 
+  IBOutlet NSButton  *pathCheckBox;
+  IBOutlet NSPopUpButton  *pathMatchPopUpButton;
+  IBOutlet NSTextView  *pathTargetsView;
+
   IBOutlet NSButton  *sizeLowerBoundCheckBox;
   IBOutlet NSTextField  *sizeLowerBoundField;
   IBOutlet NSPopUpButton  *sizeLowerBoundUnits;
-    
+
   IBOutlet NSButton  *sizeUpperBoundCheckBox;
   IBOutlet NSTextField  *sizeUpperBoundField;
   IBOutlet NSPopUpButton  *sizeUpperBoundUnits;
@@ -29,6 +30,7 @@
 - (IBAction) valueEntered:(id)sender;
 
 - (IBAction) nameCheckBoxChanged:(id)sender;
+- (IBAction) pathCheckBoxChanged:(id)sender;
 - (IBAction) lowerBoundCheckBoxChanged:(id)sender;
 - (IBAction) upperBoundCheckBoxChanged:(id)sender;
 
