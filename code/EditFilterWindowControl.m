@@ -63,26 +63,28 @@
 // NSWindowController's case
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
-    allTestsByName = 
+    repositoryTestsByName = 
       [[testRepository testsByNameAsNotifyingDictionary] retain];
 
-    NSNotificationCenter  *nc = [allTestsByName notificationCenter];
+    NSNotificationCenter  *nc = [repositoryTestsByName notificationCenter];
     
     [nc addObserver:self selector:@selector(testAddedToRepository:) 
-          name:@"objectAdded" object:allTestsByName];
+          name:@"objectAdded" object:repositoryTestsByName];
     [nc addObserver:self selector:@selector(testRemovedFromRepository:) 
-          name:@"objectRemoved" object:allTestsByName];
+          name:@"objectRemoved" object:repositoryTestsByName];
     [nc addObserver:self selector:@selector(testUpdatedInRepository:) 
-          name:@"objectUpdated" object:allTestsByName];
+          name:@"objectUpdated" object:repositoryTestsByName];
     [nc addObserver:self selector:@selector(testRenamedInRepository:) 
-          name:@"objectRenamed" object:allTestsByName];
+          name:@"objectRenamed" object:repositoryTestsByName];
+          
+    filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity:8];
             
     filterTests = [[NSMutableArray alloc] initWithCapacity:8];
     availableTests = [[NSMutableArray alloc] 
-                 initWithCapacity:[((NSDictionary*)allTestsByName) count] + 8];
+      initWithCapacity:[((NSDictionary*)repositoryTestsByName) count] + 8];
                          
     [availableTests
-       addObjectsFromArray:[((NSDictionary*)allTestsByName) allKeys]];
+       addObjectsFromArray:[((NSDictionary*)repositoryTestsByName) allKeys]];
   }
   return self;
 }
@@ -90,11 +92,16 @@
 - (void) dealloc {
   NSLog(@"EditFilterWindowControl dealloc");
 
-  [[allTestsByName notificationCenter] removeObserver:self];
+  [[repositoryTestsByName notificationCenter] removeObserver:self];
 
+  [repositoryTestsByName release];
+  [filterTestsByName release];
+  
   [filterTests release];
   [availableTests release];
-  [allTestsByName release];
+  
+  [selectedTestName release];
+  [testNameToSelect release];
   
   [super dealloc];
 }
@@ -159,6 +166,8 @@
   [alert setMessageText:
            [NSString stringWithFormat:@"Remove the rule named \"%@\"?",
               testName]];
+  [alert setInformativeText:
+           @"The rule will be irrevocably removed from the rule repository."];
 
   [alert beginSheetModalForWindow:[self window] modalDelegate:self
            didEndSelector:@selector(confirmTestRemovalAlertDidEnd: 
@@ -177,7 +186,7 @@
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
         initWithWindowControl:ruleWindowControl
-          existingTests:((NSDictionary*)allTestsByName)] autorelease];
+          existingTests:((NSDictionary*)repositoryTestsByName)] autorelease];
 
   int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
   [[ruleWindowControl window] close];
@@ -186,15 +195,16 @@
     NSString*  testName = [ruleWindowControl fileItemTestName];
 
     // The terminationControl should have ensured that this check succeeds.
-    NSAssert( [((NSDictionary*)allTestsByName) objectForKey:testName] == nil,
-              @"Duplicate name check failed.");
+    NSAssert( 
+      [((NSDictionary*)repositoryTestsByName) objectForKey:testName] == nil,
+      @"Duplicate name check failed.");
 
     NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
 
     [testNameToSelect release];
     testNameToSelect = [testName retain];
 
-    [allTestsByName addObject:test forKey:testName];
+    [repositoryTestsByName addObject:test forKey:testName];
         
     // Rest of addition handled in response to notification event.
   }
@@ -210,7 +220,7 @@
 
   NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
   NSObject <FileItemTest>  *oldTest = 
-    [((NSDictionary*)allTestsByName) objectForKey:oldName];
+    [((NSDictionary*)repositoryTestsByName) objectForKey:oldName];
 
   [ruleWindowControl representFileItemTest:oldTest];
   [ruleWindowControl setFileItemTestName:oldName];
@@ -218,7 +228,7 @@
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
         initWithWindowControl:ruleWindowControl
-          existingTests:((NSDictionary*)allTestsByName)
+          existingTests:((NSDictionary*)repositoryTestsByName)
           allowedName:oldName] autorelease];
 
   int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
@@ -228,21 +238,22 @@
     NSString*  newName = [ruleWindowControl fileItemTestName];
 
     // The terminationControl should have ensured that this check succeeds.
-    NSAssert( [newName isEqualToString:oldName] ||
-              [((NSDictionary*)allTestsByName) objectForKey:newName] == nil,
-              @"Duplicate name check failed.");
+    NSAssert( 
+      [newName isEqualToString:oldName] ||
+      [((NSDictionary*)repositoryTestsByName) objectForKey:newName] == nil,
+      @"Duplicate name check failed.");
                 
     NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];
           
     if (! [newName isEqualToString:oldName]) {
       // Handle name change.
-      [allTestsByName moveObjectFromKey:oldName toKey:newName];
+      [repositoryTestsByName moveObjectFromKey:oldName toKey:newName];
           
       // Rest of rename handled in response to update notification event.
     }
         
     // Test itself has changed as well.
-    [allTestsByName updateObject:newTest forKey:newName];
+    [repositoryTestsByName updateObject:newTest forKey:newName];
      
     // Rest of update handled in response to update notification event.
   }
@@ -256,13 +267,17 @@
   NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
   
   if (testName != nil) {
+    NSObject  *test = 
+      [((NSDictionary*)repositoryTestsByName) objectForKey:testName];
+    NSAssert(test != nil, @"Test not found in repository.");
+
     [filterTests addObject:testName];
-    [availableTests removeObject:testName];
+    [filterTestsByName setObject:test forKey:testName];
     
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
     
-    // Select the moved test.
+    // Select the newly added test.
     [filterTestsBrowser selectRow:[filterTests indexOfObject:testName]
                           inColumn:0];
     [[self window] makeFirstResponder:filterTestsBrowser];
@@ -275,16 +290,18 @@
   NSString  *testName = [[filterTestsBrowser selectedCell] stringValue];
   
   if (testName != nil) {
-    [availableTests addObject:testName];
     [filterTests removeObject:testName];
+    [filterTestsByName removeObjectForKey:testName];
 
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
     
-    // Select the moved test.
-    [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
-                             inColumn:0];
-    [[self window] makeFirstResponder:availableTestsBrowser];
+    // Select the test in the repository (if it still exists there)
+    int  index = [availableTests indexOfObject:testName];
+    if (index != NSNotFound) {
+      [availableTestsBrowser selectRow:index inColumn:0];
+      [[self window] makeFirstResponder:availableTestsBrowser];
+    }
     
     [self updateWindowState:nil];
   }
@@ -336,7 +353,9 @@
     [cell setStringValue:[filterTests objectAtIndex:row]];
   }
   else if (sender == availableTestsBrowser) {
-    [cell setStringValue:[availableTests objectAtIndex:row]];
+    NSString  *testName = [availableTests objectAtIndex:row]; 
+    [cell setStringValue:testName];
+    [cell setEnabled: ([filterTestsByName objectForKey:testName] == nil)];
   }
   else {
     NSAssert(NO, @"Unexpected sender.");
@@ -366,9 +385,7 @@
   NSEnumerator  *testNameEnum = [filterTests objectEnumerator];
   NSString  *testName;
   while (testName = [testNameEnum nextObject]) {
-    NSObject<FileItemTest>  *subTest = 
-      [((NSDictionary*)allTestsByName) objectForKey:testName];
-    [subTests addObject:subTest];
+    [subTests addObject: [filterTestsByName objectForKey:testName] ];
   }
   
   NSObject <FileItemTest>  *orTest = 
@@ -426,18 +443,10 @@
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
 
   int  index = [availableTests indexOfObject:testName];
-  if (index != NSNotFound) {
-    [availableTests removeObjectAtIndex:index];
-          
-    [availableTestsBrowser validateVisibleColumns];
-  }
+  NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
-  index = [filterTests indexOfObject:testName];
-  if (index != NSNotFound) {
-    [filterTests removeObjectAtIndex:index];
-          
-    [filterTestsBrowser validateVisibleColumns];
-  }
+  [availableTests removeObjectAtIndex:index];
+  [availableTestsBrowser validateVisibleColumns];
 
   [self updateWindowState:nil];
 }
@@ -461,23 +470,16 @@
   NSString  *newTestName = [[notification userInfo] objectForKey:@"newkey"];
 
   int  index = [availableTests indexOfObject:oldTestName];
-  if (index != NSNotFound) {
-    NSString  *oldSelectedName = [[availableTestsBrowser selectedCell] title];
+  NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
-    [availableTests replaceObjectAtIndex:index withObject:newTestName];    
-    [availableTestsBrowser validateVisibleColumns];
+  NSString  *oldSelectedName = [[availableTestsBrowser selectedCell] title];
+
+  [availableTests replaceObjectAtIndex:index withObject:newTestName];    
+  [availableTestsBrowser validateVisibleColumns];
     
-    if ([oldSelectedName isEqualToString:oldTestName]) {
-      // It was selected, so make sure it still is.
-      [availableTestsBrowser selectRow:index inColumn:0];
-    }
-  }
-  
-  index = [filterTests indexOfObject:oldTestName];
-  if (index != NSNotFound) {
-    [filterTests replaceObjectAtIndex:index withObject:newTestName];
-          
-    [filterTestsBrowser validateVisibleColumns];
+  if ([oldSelectedName isEqualToString:oldTestName]) {
+    // It was selected, so make sure it still is.
+    [availableTestsBrowser selectRow:index inColumn:0];
   }
 }
 
@@ -493,11 +495,17 @@
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
+  NSObject <FileItemTest>  *newSelectedTest = nil;
   if (filterTestsHighlighted) {
     newSelectedTestName = [[filterTestsBrowser selectedCell] title];
+    newSelectedTest = [filterTestsByName objectForKey:newSelectedTestName];
+
+    NSAssert(newSelectedTest != nil, @"Test not in dictionary.");
   }
   else if (availableTestsHighlighted) {
     newSelectedTestName = [[availableTestsBrowser selectedCell] title];
+    newSelectedTest =
+      [((NSDictionary*)repositoryTestsByName) objectForKey:newSelectedTestName];
   }
   
   // If highlighted test changed, update the description text view
@@ -505,10 +513,8 @@
     [selectedTestName release];
     selectedTestName = [newSelectedTestName retain];
 
-    if (selectedTestName != nil) {
-      NSObject <FileItemTest>  *selectedTest = 
-        [((NSDictionary*)allTestsByName) objectForKey:selectedTestName];
-      [testDescriptionView setString:[selectedTest description]];
+    if (newSelectedTest != nil) {
+      [testDescriptionView setString:[newSelectedTest description]];
     }
     else {
       [testDescriptionView setString:@""];
@@ -536,7 +542,7 @@
           returnCode:(int)returnCode contextInfo:(void *)testName {
   if (returnCode == NSAlertFirstButtonReturn) {
     // Delete confirmed.
-    [allTestsByName removeObjectForKey:testName];
+    [repositoryTestsByName removeObjectForKey:testName];
 
     // Rest of delete handled in response to notification event.
   }

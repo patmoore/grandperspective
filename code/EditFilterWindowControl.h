@@ -24,10 +24,12 @@
   IBOutlet NSBrowser  *filterTestsBrowser;
   IBOutlet NSBrowser  *availableTestsBrowser;
   
-  NotifyingDictionary  *allTestsByName;
+  NotifyingDictionary  *repositoryTestsByName;
+  NSMutableDictionary  *filterTestsByName;
     
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
+
   NSString  *selectedTestName;
   NSString  *testNameToSelect;
 }
