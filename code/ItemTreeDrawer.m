@@ -155,15 +155,10 @@
   if (![item isVirtual]) {
     FileItem*  file = (FileItem*)item;
     
-    if (fileItemMask==nil || [fileItemMask testFileItem:file]) {
-      if ([file isPlainFile]) {
-        [self drawGradientFilledRect:rect 
-                colorHash:[fileItemHashing hashForFileItem:file depth:depth]];
-      }
-    }
-    else {
-      // The file item is masked. Do not draw it and do not descend further.
-      return NO;
+    if ( [file isPlainFile] && ( fileItemMask==nil 
+                                 || [fileItemMask testFileItem:file] ) ) {
+      [self drawGradientFilledRect:rect 
+              colorHash:[fileItemHashing hashForFileItem:file depth:depth]];
     }
   }
 
