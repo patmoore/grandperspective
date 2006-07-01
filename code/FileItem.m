@@ -67,10 +67,19 @@ char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
   NSMutableString*  s = 
     [[[NSMutableString alloc] initWithCapacity:12] autorelease];
   [s appendFormat:@"%.2f", n];
-  int  delPos = [s rangeOfString:@"."].location!=3 ? 4 : 3;
-  if (delPos < [s length]) {
-    [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
+  
+  // Ensure that only the three most-significant digits are shown.
+  // Exception: If there are four digits before the decimal point, all four
+  // are shown.
+  int  delPos = [s rangeOfString:@"."].location;
+  if (delPos < 3) {
+    // Keep one or more digits after the decimal point.
+    delPos = 4;
   }
+  else {
+    // Keep all digits before the decimal point, drop the rest.
+  }
+  [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
 
   [s appendFormat:@" %cB", BYTE_SIZE_ORDER[m]];
 
