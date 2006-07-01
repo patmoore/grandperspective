@@ -4,9 +4,9 @@
 
 
 /**
- * Item name test.
+ * Item path test.
  */
-@interface ItemNameTest : ItemStringTest {
+@interface ItemPathTest : ItemStringTest {
 }
 
 @end
