@@ -1,12 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
-#import "FileItemTest.h"
+#import "AbstractFileItemTest.h"
 #import "Item.h"
 
 /**
  * Item size test.
  */
-@interface ItemSizeTest : NSObject<FileItemTest>  {
+@interface ItemSizeTest : AbstractFileItemTest  {
 
   ITEM_SIZE  lowerBound;
   ITEM_SIZE  upperBound;

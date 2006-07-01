@@ -1,13 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-#import "FileItemTest.h"
+#import "AbstractFileItemTest.h"
 
 @protocol StringTest;
 
 /**
  * (Abstract) item string-based test.
  */
-@interface ItemStringTest : NSObject<FileItemTest>  {
+@interface ItemStringTest : AbstractFileItemTest  {
 
   NSObject <StringTest>*  stringTest;
 

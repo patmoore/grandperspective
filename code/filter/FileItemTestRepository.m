@@ -13,6 +13,15 @@
 #import "../util/NotifyingDictionary.h"
 
 
+@interface FileItemTestRepository (PrivateMethods) 
+
+- (void) addTest:(NSObject <FileItemTest> *) test
+           toDictionary:(NSMutableDictionary*) dict
+           withName:(NSString*) name;
+
+@end
+
+
 @implementation FileItemTestRepository
 
 static FileItemTestRepository  *defaultFileItemTestRepository = nil;
@@ -35,22 +44,26 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
     NSObject <FileItemTest>  *tinyFileSizeTest = // 0 - 1k
       [[[ItemSizeTest alloc] initWithUpperBound:1024] autorelease];
-    [initialTestDictionary setObject:tinyFileSizeTest forKey:@"Tiny files"];
+    [self addTest:tinyFileSizeTest toDictionary:initialTestDictionary 
+            withName:@"Tiny files"];
     
     NSObject <FileItemTest>  *smallFileSizeTest = // 1k - 10k
       [[[ItemSizeTest alloc] initWithLowerBound:1024
                                      upperBound:10240] autorelease];
-    [initialTestDictionary setObject:smallFileSizeTest forKey:@"Small files"];
+    [self addTest:smallFileSizeTest toDictionary:initialTestDictionary 
+            withName:@"Small files"];
 
     NSObject <FileItemTest>  *mediumFileSizeTest = // 10k - 1M
       [[[ItemSizeTest alloc] initWithLowerBound:10240
                                      upperBound:1048576] autorelease];
-    [initialTestDictionary setObject:mediumFileSizeTest forKey:@"Medium files"];
+    [self addTest:mediumFileSizeTest toDictionary:initialTestDictionary 
+            withName:@"Medium files"];
 
     NSObject <FileItemTest>  *largeFileSizeTest = // 1M - 100M
       [[[ItemSizeTest alloc] initWithLowerBound:1048576
                                      upperBound:104857600] autorelease];
-    [initialTestDictionary setObject:largeFileSizeTest forKey:@"Large files"];
+    [self addTest:largeFileSizeTest toDictionary:initialTestDictionary 
+            withName:@"Large files"];
 
     NSObject <FileItemTest>  *hugeFileSizeTest = // 100M - ...
       [[[ItemSizeTest alloc] initWithLowerBound:104857600] autorelease];
@@ -65,7 +78,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *imageNameTest =
       [[[ItemNameTest alloc] initWithStringTest:imageStringTest]
            autorelease];
-    [initialTestDictionary setObject:imageNameTest forKey:@"Images"];
+    [self addTest:imageNameTest toDictionary:initialTestDictionary 
+            withName:@"Images"];
     
     NSArray  *musicExtensions = 
       [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV", nil];
@@ -75,8 +89,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *musicNameTest =
       [[[ItemNameTest alloc] initWithStringTest:musicStringTest]
            autorelease];
-    [initialTestDictionary setObject:musicNameTest forKey:@"Music"];
-    
+    [self addTest:musicNameTest toDictionary:initialTestDictionary 
+            withName:@"Music"];
+                
     NSArray  *versionControlFolders = 
       [NSArray arrayWithObjects:@"/CVS/", @"/.svn/", nil];
     NSObject <StringTest>  *versionControlStringTest = 
@@ -85,8 +100,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *versionControlPathTest =
       [[[ItemPathTest alloc] initWithStringTest:versionControlStringTest]
            autorelease];
-    [initialTestDictionary setObject:versionControlPathTest 
-                             forKey:@"Version control"];
+    [self addTest:versionControlPathTest toDictionary:initialTestDictionary 
+            withName:@"Version control"];
 
     testsByName = [[NotifyingDictionary alloc] 
                     initWithCapacity:16 initialContents:initialTestDictionary];
@@ -99,4 +114,16 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   return testsByName;
 }
 
-@end
+@end // FileItemTestRepository
+
+
+@implementation FileItemTestRepository (PrivateMethods) 
+
+- (void) addTest:(NSObject <FileItemTest> *) test
+           toDictionary:(NSMutableDictionary*) dict
+           withName:(NSString*) name {
+  [test setName:name];
+  [dict setObject:test forKey:name];
+}
+
+@end //  FileItemTestRepository (PrivateMethods) 

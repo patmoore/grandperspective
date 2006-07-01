@@ -22,6 +22,10 @@
   [super dealloc];
 }
 
+- (NSObject <FileItemTest> *) subItemTest {
+  return subItemTest;
+}
+
 - (BOOL) testFileItem:(FileItem*)item {
   return ! [subItemTest testFileItem:item];
 }

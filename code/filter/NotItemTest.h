@@ -1,11 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-#import "FileItemTest.h"
+#import "AbstractFileItemTest.h"
 
-@interface NotItemTest : NSObject<FileItemTest> {
-  NSObject<FileItemTest>  *subItemTest;
+@interface NotItemTest : AbstractFileItemTest {
+  NSObject <FileItemTest>  *subItemTest;
 }
 
 - (id) initWithSubItemTest:(NSObject<FileItemTest> *)subItemTest;
+
+- (NSObject <FileItemTest> *) subItemTest;
 
 @end
