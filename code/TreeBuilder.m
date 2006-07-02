@@ -28,11 +28,8 @@ static struct {
 
 @interface TreeBuilder (PrivateMethods)
 
-// Note: The use of the auto-release mechanism is not used here for performance 
-// reasons. In other words, this method assumes that the head of the list is
-// retained by the callee. It will make sure that the new head of the list is 
-// similarly retained, and release the previous head. 
-- (Item*) extendCompoundItemList:(Item*) list withItem:(Item*) item;
+// Assumes that the array may be destructively modified.
+- (Item*) createTreeForItems:(NSMutableArray*)items;
   
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref;
@@ -104,35 +101,64 @@ static struct {
 
 @implementation TreeBuilder (PrivateMethods)
 
-// Note: Not using auto-release for performance reasons. See interface
-// definition for details.
-- (Item*) extendCompoundItemList:(Item*) list withItem:(Item*) item {
-  NSAssert(item!=nil, @"item not nil.");
-  if (list != nil) {
-    // Extend the existing list.
-    Item  *newList = [[CompoundItem alloc] initWithFirst:item second:list];
-    [list release];
-    
-    return newList;
+// Builds a binary tree that is as balanced as possible. This method totally
+// ignores the sizes of the items so this tree is not ideal for visual
+// lay-out (although not too bad actually). The main reason a balanced tree
+// is returned, however, is because that way it can still be iterated over
+// recursively without a serious chance of a stack overflow.  
+- (Item*) createTreeForItems:(NSMutableArray*)items {
+  int  curCount = [items count];
+  
+  if (curCount == 0) {
+    return nil;
   }
-  else {
-    // Start the list.
-    [item retain];
-    
-    return item;
+  else if (curCount == 1) {
+    return [items objectAtIndex:0];
   }
+  
+  Item  *carryOver = nil;
+  do {
+    int  oldCount = curCount;
+    int  oldPos = 0; 
+    
+    curCount = 0;
+
+    if (carryOver != nil) {
+      Item  *newItem = 
+        [[CompoundItem alloc] initWithFirst: carryOver
+                                     second: [items objectAtIndex:oldPos++]];
+      [items replaceObjectAtIndex:curCount++ withObject:newItem];
+      carryOver = nil;
+    }
+
+    while (oldPos < oldCount) {
+      if (oldPos == oldCount - 1) {
+        carryOver = [items objectAtIndex: oldPos++];
+      }
+      else {
+        Item  *newItem = 
+          [[CompoundItem alloc] initWithFirst: [items objectAtIndex:oldPos++]
+                                       second: [items objectAtIndex:oldPos++]];
+        [items replaceObjectAtIndex:curCount++ withObject:newItem];
+      }
+    }
+  } while (curCount > 1 || carryOver != nil);
+  
+  return [items objectAtIndex:0];
 }
 
 
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
 
-  Item  *fileChildren = nil;
-  //Item  *dirChildren = nil;
+  NSMutableArray  *fileChildren = 
+    [[NSMutableArray alloc] initWithCapacity:128];
+  NSMutableArray  *dirChildren = 
+    [[NSMutableArray alloc] initWithCapacity:32];
+  NSMutableArray  *dirFsRefs = 
+    [[NSMutableArray alloc] initWithCapacity:32];
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
-  NSMutableArray  *dirChildrenArray = [NSMutableArray arrayWithCapacity:64];
-  NSMutableArray  *dirFsRefs = [NSMutableArray arrayWithCapacity:64];
   
   NSString  *path = [parentPath stringByAppendingPathComponent:[dirItem name]];
   ITEM_SIZE  dirSize = 0;
@@ -178,9 +204,7 @@ static struct {
             FSRefObject  *refObject = [[FSRefObject alloc] initWithFSRef:
                                           &(bulkCatalogInfo.fsRefArray[i])];
 
-            //dirChildren = [self extendCompoundItemList: dirChildren
-            //                      withItem: dirChildItem];
-            [dirChildrenArray addObject:dirChildItem];
+            [dirChildren addObject:dirChildItem];
             [dirFsRefs addObject:refObject];
 
             [dirChildItem release];
@@ -197,8 +221,7 @@ static struct {
               [[FileItem alloc] initWithName:childName parent:dirItem 
                                   size:childSize];
 
-            fileChildren = [self extendCompoundItemList: fileChildren
-                                   withItem: fileChildItem];
+            [fileChildren addObject:fileChildItem];
             [fileChildItem release];
 
             dirSize += childSize;
@@ -211,34 +234,26 @@ static struct {
     FSCloseIterator(iterator);
   }
 
-  Item  *dirChildren = nil;
   for (i = [dirFsRefs count]; --i >= 0 && !abort; ) {
-    DirectoryItem  *dirChildItem = [dirChildrenArray objectAtIndex:i];
+    DirectoryItem  *dirChildItem = [dirChildren objectAtIndex:i];
     FSRefObject  *refObject = [dirFsRefs objectAtIndex:i];
     
-    //NSString  *pathString =  [dirChildItem stringForFileItemPath];
-    //NSLog(@"%@", pathString);
-
     [self buildTreeForDirectory:dirChildItem parentPath:path
             ref: &(refObject->ref)];
     
     dirSize += [dirChildItem itemSize];
-    
-    dirChildren = [self extendCompoundItemList: dirChildren
-                          withItem: dirChildItem];
   }
   
-  Item  *contentTree = [CompoundItem compoundItemWithFirst: fileChildren 
-                                       second: dirChildren];
+  Item  *fileTree = [self createTreeForItems:fileChildren];
+  Item  *dirTree = [self createTreeForItems:dirChildren];
+  Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
+                                       second: dirTree];
 
-  //NSLog(@"Setting contents of %@", dirItem);
-  //NSLog(@"Path = %@", [dirItem stringForFileItemPath]);
   [dirItem setDirectoryContents:contentTree size:dirSize];
-  //NSString  *s = [dirItem description];
-  //NSLog(@"Done setting contents.");
   
   [fileChildren release];
   [dirChildren release];
+  [dirFsRefs release];
 
   [localAutoreleasePool release];
   
