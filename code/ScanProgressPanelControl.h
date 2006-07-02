@@ -1,13 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
-@class BalancedTreeBuilder;
+@class TreeBuilder;
 @class FileItem;
 
 @interface ScanProgressPanelControl : NSWindowController {
   IBOutlet NSTextField  *progressText;
   IBOutlet NSProgressIndicator  *progressIndicator;
   
-  BalancedTreeBuilder  *treeBuilder;
+  TreeBuilder  *treeBuilder;
 }
 
 - (FileItem*) scanDirectory:(NSString*)dirName;

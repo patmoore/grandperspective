@@ -1,22 +1,8 @@
-#import "BalancedTreeBuilder.h"
+#import "TreeBuilder.h"
 
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Also imports FileItem.h
-#import "PeekingEnumerator.h"
 
-
-int compareBySize(id item1, id item2, void* context) {
-  ITEM_SIZE  size1 = [item1 itemSize];
-  ITEM_SIZE  size2 = [item2 itemSize];
-  
-  if (size1 < size2) {
-    return NSOrderedAscending;
-  }
-  if (size1 > size2) {
-    return NSOrderedDescending;
-  }
-  return NSOrderedSame;
-}
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
  * pages. This is a good balance between the iteration I/O overhead and the 
@@ -40,14 +26,18 @@ static struct {
 } bulkCatalogInfo;
 
 
-@interface BalancedTreeBuilder (PrivateMethods)
+@interface TreeBuilder (PrivateMethods)
 
-- (Item*) createTreeForItems:(NSMutableArray*)items;
+// Note: The use of the auto-release mechanism is not used here for performance 
+// reasons. In other words, this method assumes that the head of the list is
+// retained by the callee. It will make sure that the new head of the list is 
+// similarly retained, and release the previous head. 
+- (Item*) extendCompoundItemList:(Item*) list withItem:(Item*) item;
   
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref;
 
-@end // @interface BalancedTreeBuilder (PrivateMethods)
+@end // @interface TreeBuilder (PrivateMethods)
 
 
 @interface FSRefObject : NSObject {
@@ -78,30 +68,13 @@ static struct {
 @end // @implementation FSRefObject
 
 
-@implementation BalancedTreeBuilder
+@implementation TreeBuilder
 
 - (id) init {
   if (self = [super init]) {
-    tmpArray = [[NSMutableArray alloc] initWithCapacity:1024];
-    separateFilesAndDirs = YES;
     abort = NO;
   }
   return self;
-}
-
-- (void) dealloc {
-  [tmpArray release];
-
-  [super dealloc];
-}
-
-
-- (void) setSeparatesFilesAndDirs:(BOOL)option {
-  separateFilesAndDirs = option;
-}
-
-- (BOOL) separatesFilesAndDirs {
-  return separateFilesAndDirs;
 }
 
 
@@ -126,98 +99,41 @@ static struct {
   return ok ? rootItem : nil;
 }
 
-@end // @implementation BalancedTreeBuilder
+@end // @implementation TreeBuilder
 
 
-@implementation BalancedTreeBuilder (PrivateMethods)
+@implementation TreeBuilder (PrivateMethods)
 
-// Note: assumes that array may be modified for sorting!
-- (Item*) createTreeForItems:(NSMutableArray*)items {
-
-  if ([items count]==0) {
-    // No items, so nothing needs doing: return immediately.
-    return nil;
-  }
-  
-  [items sortUsingFunction:compareBySize context:nil];
-
-  // Not using auto-release to minimise size of auto-release pool.
-  PeekingEnumerator  *sortedItems = 
-    [[PeekingEnumerator alloc] initWithEnumerator:[items objectEnumerator]];
-  
-  NSMutableArray*  sortedBranches = tmpArray;
-  NSAssert(tmpArray!=nil && [tmpArray count]==0, @"Temporary array not valid."); 
-  
-  int  branchesGetIndex = 0;
-  int  numBranches = 0;
-
-  while (YES) {
-    Item*  first = nil;
-    Item*  second = nil;
-
-    while (second == nil) {
-      Item*  smallest;
-
-      if ([sortedItems peekObject]==nil || // Out of leafs, or
-          (branchesGetIndex < numBranches && // orphaned branches exist
-           compareBySize([sortedBranches objectAtIndex:branchesGetIndex],
-                         [sortedItems peekObject], nil) ==
-           NSOrderedAscending)) {      // and the branch is smaller.
-        if (branchesGetIndex < numBranches) {
-          smallest = [sortedBranches objectAtIndex:branchesGetIndex++];
-        }
-        else {
-          // We're finished building the tree
-          
-          NSAssert(first != nil, @"First is nil.");
-          [first retain];
-        
-          // Clean up
-          [sortedBranches removeAllObjects]; // Keep array for next time.
-          [sortedItems release];
-          
-          return [first autorelease];
-        }
-      }
-      else {
-        smallest = [sortedItems nextObject];
-      }
-      NSAssert(smallest != nil, @"Smallest is nil.");
-      
-      if (first == nil) {
-        first = smallest;
-      }
-      else {
-        second = smallest;
-      }
-    }
+// Note: Not using auto-release for performance reasons. See interface
+// definition for details.
+- (Item*) extendCompoundItemList:(Item*) list withItem:(Item*) item {
+  NSAssert(item!=nil, @"item not nil.");
+  if (list != nil) {
+    // Extend the existing list.
+    Item  *newList = [[CompoundItem alloc] initWithFirst:item second:list];
+    [list release];
     
-    id  newBranch = 
-      [[CompoundItem alloc] initWithFirst:first second:second];
-    numBranches++;
-    [sortedBranches addObject:newBranch];
-    // Not auto-releasing to minimise size of auto-release pool.
-    [newBranch release];
+    return newList;
+  }
+  else {
+    // Start the list.
+    [item retain];
+    
+    return item;
   }
 }
 
 
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
-  // TEMP
-  //if ([[dirItem name] isEqualToString:@"exclude-me"]) {
-  //  return;
-  //}    
-           
-  NSMutableArray  *fileChildren = 
-    [[NSMutableArray alloc] initWithCapacity:256];
-  NSMutableArray  *dirChildren = 
-    [[NSMutableArray alloc] initWithCapacity:64];
-  NSMutableArray  *dirFsRefs = 
-    [[NSMutableArray alloc] initWithCapacity:64];
+
+  Item  *fileChildren = nil;
+  //Item  *dirChildren = nil;
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
-
+  NSMutableArray  *dirChildrenArray = [NSMutableArray arrayWithCapacity:64];
+  NSMutableArray  *dirFsRefs = [NSMutableArray arrayWithCapacity:64];
+  
   NSString  *path = [parentPath stringByAppendingPathComponent:[dirItem name]];
   ITEM_SIZE  dirSize = 0;
   int  i;
@@ -262,12 +178,9 @@ static struct {
             FSRefObject  *refObject = [[FSRefObject alloc] initWithFSRef:
                                           &(bulkCatalogInfo.fsRefArray[i])];
 
-            [dirChildren addObject:dirChildItem];
-
-            if (!separateFilesAndDirs) {
-              [fileChildren addObject:dirChildItem];
-            }
-            
+            //dirChildren = [self extendCompoundItemList: dirChildren
+            //                      withItem: dirChildItem];
+            [dirChildrenArray addObject:dirChildItem];
             [dirFsRefs addObject:refObject];
 
             [dirChildItem release];
@@ -275,16 +188,17 @@ static struct {
           }
           else {
             // A file node.
-                      
+            
             ITEM_SIZE  childSize = 
               (bulkCatalogInfo.catalogInfoArray[i].dataLogicalSize +
                bulkCatalogInfo.catalogInfoArray[i].rsrcLogicalSize);
       
             FileItem  *fileChildItem =
               [[FileItem alloc] initWithName:childName parent:dirItem 
-                                size:childSize];
+                                  size:childSize];
 
-            [fileChildren addObject:fileChildItem];
+            fileChildren = [self extendCompoundItemList: fileChildren
+                                   withItem: fileChildItem];
             [fileChildItem release];
 
             dirSize += childSize;
@@ -297,36 +211,38 @@ static struct {
     FSCloseIterator(iterator);
   }
 
-  for (i = [dirChildren count]; --i >=0 && !abort; ) {
+  Item  *dirChildren = nil;
+  for (i = [dirFsRefs count]; --i >= 0 && !abort; ) {
+    DirectoryItem  *dirChildItem = [dirChildrenArray objectAtIndex:i];
     FSRefObject  *refObject = [dirFsRefs objectAtIndex:i];
-    DirectoryItem  *dirChildItem = [dirChildren objectAtIndex:i];
     
+    //NSString  *pathString =  [dirChildItem stringForFileItemPath];
+    //NSLog(@"%@", pathString);
+
     [self buildTreeForDirectory:dirChildItem parentPath:path
             ref: &(refObject->ref)];
     
     dirSize += [dirChildItem itemSize];
-  }                                                               
-
-  Item*  contentTree;
-  if (separateFilesAndDirs) {
-    Item*  fileTree = [self createTreeForItems:fileChildren];
-    Item*  dirTree = [self createTreeForItems:dirChildren];
     
-    contentTree = [CompoundItem compoundItemWithFirst:fileTree second:dirTree];
+    dirChildren = [self extendCompoundItemList: dirChildren
+                          withItem: dirChildItem];
   }
-  else {
-    // Note: In this case, "fileChildren" contains all children.
-    contentTree = [self createTreeForItems:fileChildren];
-  }
+  
+  Item  *contentTree = [CompoundItem compoundItemWithFirst: fileChildren 
+                                       second: dirChildren];
 
+  //NSLog(@"Setting contents of %@", dirItem);
+  //NSLog(@"Path = %@", [dirItem stringForFileItemPath]);
   [dirItem setDirectoryContents:contentTree size:dirSize];
+  //NSString  *s = [dirItem description];
+  //NSLog(@"Done setting contents.");
   
   [fileChildren release];
   [dirChildren release];
-  [dirFsRefs release];
+
   [localAutoreleasePool release];
   
   return !abort;
 }
 
-@end // @implementation BalancedTreeBuilder (PrivateMethods)
+@end // @implementation TreeBuilder (PrivateMethods)

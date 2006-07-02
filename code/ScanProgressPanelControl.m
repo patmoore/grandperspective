@@ -1,6 +1,6 @@
 #import "ScanProgressPanelControl.h"
 
-#import "BalancedTreeBuilder.h"
+#import "TreeBuilder.h"
 #import "FileItem.h"
 
 
@@ -39,7 +39,7 @@
   
   [progressIndicator startAnimation:nil];
   
-  treeBuilder = [[BalancedTreeBuilder alloc] init];
+  treeBuilder = [[TreeBuilder alloc] init];
   
   FileItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
   
