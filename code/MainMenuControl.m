@@ -1,11 +1,12 @@
 #import "MainMenuControl.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 
 #import "DirectoryViewControl.h"
 #import "SaveImageDialogControl.h"
 #import "EditFilterWindowControl.h"
 #import "ItemPathModel.h"
+#import "TreeFilter.h"
 
 #import "WindowManager.h"
 
@@ -19,8 +20,9 @@
 
 - (id) initWithWindowManager:(WindowManager*)windowManager;
 
-- (void) createWindowForTree:(FileItem*)itemTree;
-- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree;
+- (void) createWindowForTree:(DirectoryItem*)itemTree;
+- (DirectoryViewControl*) 
+     createDirectoryViewControlForTree:(DirectoryItem*)tree;
 
 @end
 
@@ -43,7 +45,10 @@
 - (void) editFilterWindowCancelAction:(NSNotification*)notification;
 - (void) editFilterWindowOkAction:(NSNotification*)notification;
 
-- (void) createWindowByCopying:(BOOL)shareModel;
+- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel;
+
+- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel 
+           filterTest:(NSObject <FileItemTest> *)filterTest;
 
 @end
 
@@ -168,6 +173,10 @@
   if (status == NSRunStoppedResponse) {
     NSLog(@"Okay.");
     // get rule from window
+    NSObject <FileItemTest>  *fileItemTest =
+      [editFilterWindowControl createFileItemTest];
+
+    [self duplicateCurrentWindowSharingPath:NO filterTest:fileItemTest];
   }
   else {
     NSLog(@"Aborted.");
@@ -177,11 +186,11 @@
 
 
 - (IBAction) duplicateDirectoryView:(id)sender {
-  [self createWindowByCopying:NO];
+  [self duplicateCurrentWindowSharingPath:NO];
 }
 
 - (IBAction) twinDirectoryView:(id)sender {
-  [self createWindowByCopying:YES];
+  [self duplicateCurrentWindowSharingPath:YES];
 }
 
 
@@ -209,20 +218,37 @@
 }
 
 
-- (void) createWindowByCopying:(BOOL)shareModel {
+- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel {
+  [self duplicateCurrentWindowSharingPath:sharePathModel filterTest:nil];
+}
+
+- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel 
+           filterTest:(NSObject <FileItemTest> *)filterTest {
+           
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
-  FileItem  *itemTree = [oldControl itemTree];
+  DirectoryItem  *itemTree = [oldControl itemTree];
   
   if (itemTree!=nil) {
     NSString  *fileItemHashingKey = [oldControl fileItemHashingKey];
 
     // Share or clone the path model.
-    ItemPathModel  *itemPathModel = [oldControl itemPathModel];
-    if (!shareModel) {
-      itemPathModel = [[itemPathModel copy] autorelease];
+    ItemPathModel  *itemPathModel = nil;
+
+    if (filterTest != nil) {
+      TreeFilter  *treeFilter = 
+        [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
+      itemTree = [treeFilter filterItemTree:itemTree];
+
+      itemPathModel = [[ItemPathModel alloc] initWithTree:itemTree];
     }
-    
+    else {
+      [oldControl itemPathModel];
+      if (!sharePathModel) {
+        itemPathModel = [[itemPathModel copy] autorelease];
+      }
+    }
+        
     DirectoryViewControl  *newControl = 
       [[DirectoryViewControl alloc] 
           initWithItemTree:itemTree 
@@ -263,7 +289,7 @@
 }
 
 
-- (void) createWindowForTree:(FileItem*)itemTree {
+- (void) createWindowForTree:(DirectoryItem*)itemTree {
   if (itemTree == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
@@ -283,7 +309,8 @@
   [windowManager addWindow:[dirViewControl window] usingTitle:title];
 }
 
-- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree {
+- (DirectoryViewControl*) 
+     createDirectoryViewControlForTree:(DirectoryItem*)tree {
   return [[[DirectoryViewControl alloc] initWithItemTree:tree] autorelease];
 }
 
@@ -318,7 +345,8 @@
   [super dealloc];
 }
 
-- (DirectoryViewControl*) createDirectoryViewControlForTree:(FileItem*)tree {
+- (DirectoryViewControl*) 
+     createDirectoryViewControlForTree:(DirectoryItem*)tree {
   // Try to match the path.
   ItemPathModel  *path = 
     [[[ItemPathModel alloc] initWithTree:tree] autorelease];
