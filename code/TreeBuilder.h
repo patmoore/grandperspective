@@ -2,7 +2,7 @@
 
 
 @class TreeBalancer;
-@class FileItem;
+@class DirectoryItem;
 
 
 @interface TreeBuilder : NSObject {
@@ -16,6 +16,6 @@
 
 - (void) abort;
 
-- (FileItem*) buildTreeForPath:(NSString*)path;
+- (DirectoryItem*) buildTreeForPath:(NSString*)path;
 
 @end

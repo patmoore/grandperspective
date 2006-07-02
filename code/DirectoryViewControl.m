@@ -1,6 +1,6 @@
 #import "DirectoryViewControl.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
 #import "FileItemHashingOptions.h"
@@ -27,7 +27,7 @@
 
 @implementation DirectoryViewControl
 
-- (id) initWithItemTree:(FileItem*)root {
+- (id) initWithItemTree:(DirectoryItem*)root {
   ItemPathModel  *pathModel = 
     [[[ItemPathModel alloc] initWithTree:root] autorelease];
 
@@ -38,7 +38,7 @@
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithItemTree:(FileItem*)root 
+- (id) initWithItemTree:(DirectoryItem*)root 
          itemPathModel:(ItemPathModel*)pathModel
          fileItemHashingKey:(NSString*)fileItemHashingKey {
          
@@ -81,7 +81,7 @@
 }
 
 
-- (FileItem*) itemTree {
+- (DirectoryItem*) itemTree {
   return itemTreeRoot;
 }
 

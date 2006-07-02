@@ -86,7 +86,7 @@ static struct {
 }
 
 
-- (FileItem*) buildTreeForPath:(NSString*)path {
+- (DirectoryItem*) buildTreeForPath:(NSString*)path {
   FSRef  rootRef;
   Boolean  isDir;
 

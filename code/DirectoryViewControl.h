@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@class FileItem;
+@class DirectoryItem;
 @class DirectoryView;
 @class StartupControl;
 @class ItemPathModel;
@@ -20,7 +20,7 @@
   IBOutlet NSButton  *openButton;
   IBOutlet NSButton  *maskCheckBox;
 
-  FileItem  *itemTreeRoot;
+  DirectoryItem  *itemTreeRoot;
   ItemPathModel  *itemPathModel;
   
   NSObject <FileItemTest>  *fileItemMask;
@@ -42,12 +42,12 @@
 
 - (IBAction) colorMappingChanged:(id)sender;
 
-- (id) initWithItemTree:(FileItem*)itemTreeRoot;
-- (id) initWithItemTree:(FileItem*)itemTreeRoot 
+- (id) initWithItemTree:(DirectoryItem*)itemTreeRoot;
+- (id) initWithItemTree:(DirectoryItem*)itemTreeRoot 
          itemPathModel:(ItemPathModel*)itemPathModel
          fileItemHashingKey:(NSString*)fileItemHashingKey;
 
-- (FileItem*) itemTree;
+- (DirectoryItem*) itemTree;
 
 - (NSString*) fileItemHashingKey;
 - (FileItemHashing*) fileItemHashing;

@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class TreeBuilder;
-@class FileItem;
+@class DirectoryItem;
 
 @interface ScanProgressPanelControl : NSWindowController {
   IBOutlet NSTextField  *progressText;
@@ -10,7 +10,7 @@
   TreeBuilder  *treeBuilder;
 }
 
-- (FileItem*) scanDirectory:(NSString*)dirName;
+- (DirectoryItem*) scanDirectory:(NSString*)dirName;
 
 // Aborts the scanDirectory action (if ongoing).
 - (IBAction) abort:(id)sender;

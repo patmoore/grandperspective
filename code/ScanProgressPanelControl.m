@@ -1,7 +1,7 @@
 #import "ScanProgressPanelControl.h"
 
 #import "TreeBuilder.h"
-#import "FileItem.h"
+#import "DirectoryItem.h"
 
 
 @implementation ScanProgressPanelControl
@@ -29,7 +29,7 @@
 }
 
 
-- (FileItem*) scanDirectory:(NSString*)dirName {
+- (DirectoryItem*) scanDirectory:(NSString*)dirName {
   NSDate  *startTime = [NSDate date];
   
   [progressText setStringValue:[NSString stringWithFormat:@"Scanning %@", 
@@ -41,7 +41,7 @@
   
   treeBuilder = [[TreeBuilder alloc] init];
   
-  FileItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
+  DirectoryItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
   
   [treeBuilder release];
   treeBuilder = nil;
