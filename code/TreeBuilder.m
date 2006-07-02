@@ -2,6 +2,7 @@
 
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Also imports FileItem.h
+#import "TreeBalancer.h"
 
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
@@ -28,9 +29,6 @@ static struct {
 
 @interface TreeBuilder (PrivateMethods)
 
-// Assumes that the array may be destructively modified.
-- (Item*) createTreeForItems:(NSMutableArray*)items;
-  
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref;
 
@@ -69,9 +67,17 @@ static struct {
 
 - (id) init {
   if (self = [super init]) {
+    treeBalancer = [[TreeBalancer alloc] init];
     abort = NO;
   }
   return self;
+}
+
+
+- (void) dealloc {
+  [treeBalancer release];
+  
+  [super dealloc];
 }
 
 
@@ -100,53 +106,6 @@ static struct {
 
 
 @implementation TreeBuilder (PrivateMethods)
-
-// Builds a binary tree that is as balanced as possible. This method totally
-// ignores the sizes of the items so this tree is not ideal for visual
-// lay-out (although not too bad actually). The main reason a balanced tree
-// is returned, however, is because that way it can still be iterated over
-// recursively without a serious chance of a stack overflow.  
-- (Item*) createTreeForItems:(NSMutableArray*)items {
-  int  curCount = [items count];
-  
-  if (curCount == 0) {
-    return nil;
-  }
-  else if (curCount == 1) {
-    return [items objectAtIndex:0];
-  }
-  
-  Item  *carryOver = nil;
-  do {
-    int  oldCount = curCount;
-    int  oldPos = 0; 
-    
-    curCount = 0;
-
-    if (carryOver != nil) {
-      Item  *newItem = 
-        [[CompoundItem alloc] initWithFirst: carryOver
-                                     second: [items objectAtIndex:oldPos++]];
-      [items replaceObjectAtIndex:curCount++ withObject:newItem];
-      carryOver = nil;
-    }
-
-    while (oldPos < oldCount) {
-      if (oldPos == oldCount - 1) {
-        carryOver = [items objectAtIndex: oldPos++];
-      }
-      else {
-        Item  *newItem = 
-          [[CompoundItem alloc] initWithFirst: [items objectAtIndex:oldPos++]
-                                       second: [items objectAtIndex:oldPos++]];
-        [items replaceObjectAtIndex:curCount++ withObject:newItem];
-      }
-    }
-  } while (curCount > 1 || carryOver != nil);
-  
-  return [items objectAtIndex:0];
-}
-
 
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
@@ -244,8 +203,8 @@ static struct {
     dirSize += [dirChildItem itemSize];
   }
   
-  Item  *fileTree = [self createTreeForItems:fileChildren];
-  Item  *dirTree = [self createTreeForItems:dirChildren];
+  Item  *fileTree = [treeBalancer createTreeForItems:fileChildren];
+  Item  *dirTree = [treeBalancer createTreeForItems:dirChildren];
   Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
                                        second: dirTree];
 

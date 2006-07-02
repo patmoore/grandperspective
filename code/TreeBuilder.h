@@ -1,16 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class TreeBalancer;
 @class FileItem;
 
 
 @interface TreeBuilder : NSObject {
 
   BOOL  abort;
+  TreeBalancer  *treeBalancer;
 
 }
 
-- (id)init;
+- (id) init;
 
 - (void) abort;
 
