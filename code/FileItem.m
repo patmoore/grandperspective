@@ -117,6 +117,7 @@ char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
     [s appendString:name];
     [s appendString:@"/"];
   }
+  // TODO: check if stringByAppendingPathComponent: can be used instead.
   
   return s;
 }
