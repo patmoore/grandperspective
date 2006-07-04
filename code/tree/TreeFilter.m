@@ -3,7 +3,7 @@
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "TreeBalancer.h"
-#import "filter/FileItemTest.h"
+#import "FileItemTest.h"
 
 @interface TreeFilter (PrivateMethods)
 

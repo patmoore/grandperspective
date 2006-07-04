@@ -10,7 +10,7 @@
 #import "ItemSizeTest.h"
 #import "CompoundAndItemTest.h"
 
-#import "../util/NotifyingDictionary.h"
+#import "NotifyingDictionary.h"
 
 
 @interface FileItemTestRepository (PrivateMethods) 

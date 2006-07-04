@@ -5,7 +5,7 @@
 #import "ColorPalette.h"
 #import "TreeLayoutBuilder.h"
 
-#import "filter/FileItemTest.h"
+#import "FileItemTest.h"
 
 @interface ItemTreeDrawer (PrivateMethods)
 
