@@ -1,16 +1,16 @@
 #import "EditFilterRuleWindowControl.h"
 
-#import "filter/FileItemTest.h"
-#import "filter/CompoundAndItemTest.h"
-#import "filter/ItemNameTest.h"
-#import "filter/ItemPathTest.h"
-#import "filter/ItemSizeTest.h"
+#import "FileItemTest.h"
+#import "CompoundAndItemTest.h"
+#import "ItemNameTest.h"
+#import "ItemPathTest.h"
+#import "ItemSizeTest.h"
 
-#import "filter/MultiMatchStringTest.h"
-#import "filter/StringEqualityTest.h"
-#import "filter/StringContainmentTest.h"
-#import "filter/StringPrefixTest.h"
-#import "filter/StringSuffixTest.h"
+#import "MultiMatchStringTest.h"
+#import "StringEqualityTest.h"
+#import "StringContainmentTest.h"
+#import "StringPrefixTest.h"
+#import "StringSuffixTest.h"
 
 
 @interface EditFilterRuleWindowControl (PrivateMethods) 

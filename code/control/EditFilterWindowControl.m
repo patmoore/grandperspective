@@ -1,10 +1,10 @@
 #import "EditFilterWindowControl.h"
 
-#import "util/NotifyingDictionary.h"
+#import "NotifyingDictionary.h"
 
-#import "filter/FileItemTestRepository.h"
-#import "filter/CompoundOrItemTest.h"
-#import "filter/NotItemTest.h"
+#import "FileItemTestRepository.h"
+#import "CompoundOrItemTest.h"
+#import "NotItemTest.h"
 
 #import "EditFilterRuleWindowControl.h"
 
