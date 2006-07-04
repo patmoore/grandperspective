@@ -19,7 +19,6 @@
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
 - (void) maskWindowOkAction:(NSNotification*)notification;
-- (void) maskWindowClosingAction:(NSNotification*)notification;
 - (void) maskWindowDidBecomeKey:(NSNotification*)notification;
 
 @end
