@@ -83,9 +83,6 @@
 
 
 - (BOOL) validateMenuItem:(NSMenuItem *)anItem {
-  NSLog(@"mainWindow: %@", [[[NSApplication sharedApplication] mainWindow] title]);
-  NSLog(@"keyWindow: %@", [[[NSApplication sharedApplication] keyWindow] title]);
-
   if ( [anItem action]==@selector(duplicateDirectoryView:) ||
        [anItem action]==@selector(twinDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
@@ -171,7 +168,6 @@
   [[editFilterWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
-    NSLog(@"Okay.");
     // get rule from window
     NSObject <FileItemTest>  *fileItemTest =
       [editFilterWindowControl createFileItemTest];
@@ -179,7 +175,6 @@
     [self duplicateCurrentWindowSharingPath:NO filterTest:fileItemTest];
   }
   else {
-    NSLog(@"Aborted.");
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
   }
 }
@@ -240,7 +235,8 @@
         [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
       itemTree = [treeFilter filterItemTree:itemTree];
 
-      itemPathModel = [[ItemPathModel alloc] initWithTree:itemTree];
+      itemPathModel = 
+        [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
     }
     else {
       [oldControl itemPathModel];
@@ -260,8 +256,16 @@
     [windowManager addWindow:[newControl window] 
                      usingTitle:[[oldControl window] title]];
     
-    [newControl setFileItemMask: [oldControl fileItemMask]];
-    [newControl enableFileItemMask: [oldControl fileItemMaskEnabled]];
+    if (filterTest == nil) {
+      // Not filtered, so use same mask as old window.
+      [newControl setFileItemMask: [oldControl fileItemMask]];
+      [newControl enableFileItemMask: [oldControl fileItemMaskEnabled]];
+    }
+    else {
+      // void. Don't use a mask, as window is already filtered (and in all
+      // likelihood, the filter was based on the mask of the previous window,
+      // if it had one),
+    }
   }
 }
 

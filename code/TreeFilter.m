@@ -55,17 +55,22 @@
   
   // Add up the size of all file items that passed the test
   for (i = [fileChildren count]; --i >= 0; ) {
-    FileItem  *fileItem = [fileChildren objectAtIndex:i];
-    dirSize += [fileItem itemSize];
+    FileItem  *oldFileItem = [fileChildren objectAtIndex:i];
+    FileItem  *newFileItem = 
+      [[FileItem alloc] initWithName:[oldFileItem name] parent:newDirItem
+                          size:[oldFileItem itemSize]];
+      
+    [fileChildren replaceObjectAtIndex:i withObject:newFileItem];  
+    dirSize += [newFileItem itemSize];
   }
   
   // Filter the contents of all directory items
   for (i = [dirChildren count]; --i >= 0; ) {
-    DirectoryItem  *newChildDirItem = 
-      [self filterItemTree:[dirChildren objectAtIndex:i]];
+    DirectoryItem  *oldSubDirItem = [dirChildren objectAtIndex:i];
+    DirectoryItem  *newSubDirItem = [self filterItemTree:oldSubDirItem];
     
-    [dirChildren replaceObjectAtIndex:i withObject:newChildDirItem];
-    dirSize += [newChildDirItem itemSize];
+    [dirChildren replaceObjectAtIndex:i withObject:newSubDirItem];
+    dirSize += [newSubDirItem itemSize];
   }
   
   Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];

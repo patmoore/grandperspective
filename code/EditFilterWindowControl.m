@@ -319,7 +319,6 @@
 }
 
 - (int) browser:(NSBrowser *)sender numberOfRowsInColumn:(int)column {
-  NSLog(@"browser:numberOfRowsInColumn");
   NSAssert(column==0, @"Invalid column.");
   
   if (sender == filterTestsBrowser) {
@@ -571,7 +570,7 @@
     ( ([filterTestsBrowser selectedCell] != nil) &&
       filterTestsHighlighted )];
 
-  // [performFilterButton setEnabled: ([filterTests count] > 0)];
+  [okButton setEnabled: ([filterTests count] > 0)];
 }
 
 

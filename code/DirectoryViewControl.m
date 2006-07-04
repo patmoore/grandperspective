@@ -262,9 +262,6 @@
   [nc addObserver:self selector:@selector(maskWindowOkAction:)
         name:@"okPerformed" object:editMaskFilterWindowControl];
 
-  [nc addObserver:self selector:@selector(maskWindowClosingAction:)
-        name:@"NSWindowWillCloseNotification" 
-        object:[editMaskFilterWindowControl window]];
   [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
         name:@"NSWindowDidBecomeKeyNotification"
         object:[editMaskFilterWindowControl window]];
@@ -346,13 +343,11 @@
   [self maskWindowApplyAction:notification];
 }
 
-- (void) maskWindowClosingAction:(NSNotification*)notification {
-  // void. TODO: remove?
-}
-
 - (void) maskWindowDidBecomeKey:(NSNotification*)notification {
+  NSLog(@"maskWindowDidBecomeKey");
   [[self window] orderWindow:NSWindowBelow
                relativeTo:[[editMaskFilterWindowControl window] windowNumber]];
+  [[self window] makeMainWindow];
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)
