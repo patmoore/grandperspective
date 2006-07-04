@@ -67,7 +67,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
     NSObject <FileItemTest>  *hugeFileSizeTest = // 100M - ...
       [[[ItemSizeTest alloc] initWithLowerBound:104857600] autorelease];
-    [initialTestDictionary setObject:hugeFileSizeTest forKey:@"Huge files"];
+    [self addTest:hugeFileSizeTest toDictionary:initialTestDictionary 
+            withName:@"Huge files"];
 
     NSArray  *imageExtensions = 
       [NSArray arrayWithObjects:@".jpg", @".JPG", @".png", @".PNG", @".gif", 
