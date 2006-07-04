@@ -3,6 +3,38 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.95, 05-07-2006
+----------------------------------------------------------------------
+
+Changes since Version 0.94:
+
+- New functionality:
+  - Added ability to mask items. When an item is masked it is not
+    drawn, but still takes up space in the view. Masking files is 
+    handy for quickly spotting certain types of file.
+    - A mask can be quickly enabled or disabled.
+    - A test for masking can be created quickly by selecting one or
+      more existing rules.
+    - Existing rules can be edited and new ones can be created.
+    - Rules can take the name of the file into account, its size, and 
+      its path.
+    - Rules can be identified by their friendly name, but a full
+      description can optionally also be shown.
+
+- Tiny changes:
+  - Added coloring by "top directory" option as suggested by Adrian 
+    Sampson (ID 1501479).
+  - Made color-mapping choice in directory view a pop-up button.
+  - Added keyboard shortcuts for Re-scan and Filter commands.
+  - The SaveImageDialog is now centered.
+
+- Code cleanup:
+  - The code is now spread across various folders.
+  - Made implementation of TreeLayoutTraverser protocol explicit.
+  - Split BalancingTreeBuilder in two: TreeBuilder and TreeBalancer.
+
+
+----------------------------------------------------------------------
   Version 0.94, 09-05-2006
 ----------------------------------------------------------------------
 
