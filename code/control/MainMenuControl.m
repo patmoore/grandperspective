@@ -239,7 +239,7 @@
         [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
     }
     else {
-      [oldControl itemPathModel];
+      itemPathModel = [oldControl itemPathModel];
       if (!sharePathModel) {
         itemPathModel = [[itemPathModel copy] autorelease];
       }
