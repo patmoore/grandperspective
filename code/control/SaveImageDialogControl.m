@@ -90,6 +90,9 @@
     // Draw the image.
     ItemTreeDrawer  *treeDrawer = [[[ItemTreeDrawer alloc] init] autorelease];
     [treeDrawer setFileItemHashing:[dirViewControl fileItemHashing]];
+    if ([dirViewControl fileItemMaskEnabled]) {
+      [treeDrawer setFileItemMask:[dirViewControl fileItemMask]];
+    }
     NSImage  *image =
       [treeDrawer 
          drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]

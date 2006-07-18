@@ -31,11 +31,19 @@
   NSArray  *invisibleFileItemTargetPath; 
   NSArray  *visibleFileItemTargetPath;
   NSString  *fileItemHashingKey;
+  NSObject <FileItemTest>  *fileItemMask;
+  BOOL  fileItemMaskEnabled;
+  
+  // HACK. Should not really be needed
+  DirectoryViewControl  *dirViewControl;
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager
          targetPath:(ItemPathModel*)targetPath
          fileItemHashingKey:(NSString*)key;
+
+- (void) setFileItemMask:(NSObject <FileItemTest> *) mask;
+- (void) enableFileItemMask:(BOOL) flag;
 
 @end
 
@@ -120,6 +128,7 @@
 
 
 - (IBAction) rescanDirectoryView:(id)sender {
+  NSLog(@"rescan");
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -127,12 +136,16 @@
 
   if (itemPathModel != nil) {
     NSString  *dirName = [itemPathModel rootFilePathName];
+    NSObject <FileItemTest>  *fileItemMask = nil;
     
-    PostScanningWindowCreator  *windowCreator =
+    PostScanningCustomWindowCreator  *windowCreator =
       [[PostScanningCustomWindowCreator alloc] 
           initWithWindowManager:windowManager
             targetPath:itemPathModel 
             fileItemHashingKey:[oldControl fileItemHashingKey]];
+
+    [windowCreator setFileItemMask:[oldControl fileItemMask]];
+    [windowCreator enableFileItemMask:[oldControl fileItemMaskEnabled]];
     
     [scanTaskManager asynchronouslyRunTaskWithInput:dirName 
                        callBack:windowCreator
@@ -337,6 +350,9 @@
     visibleFileItemTargetPath = [[targetPath visibleFileItemPath] retain];
 
     fileItemHashingKey = [key retain];
+    
+    fileItemMask = nil;
+    fileItemMaskEnabled = NO;
   }
   return self;
 }
@@ -345,8 +361,33 @@
   [invisibleFileItemTargetPath release];
   [visibleFileItemTargetPath release];
   [fileItemHashingKey release];
+  [fileItemMask release];
+  
+  NSAssert(dirViewControl == nil, @"dirViewControl not nil.");
   
   [super dealloc];
+}
+
+- (void) setFileItemMask:(NSObject <FileItemTest> *) mask {
+  if (mask != fileItemMask) {
+    [fileItemMask release];
+    fileItemMask = [mask retain];
+  }
+}
+
+- (void) enableFileItemMask:(BOOL) flag {
+  fileItemMaskEnabled = flag;
+}
+
+
+- (void) createWindowForTree:(DirectoryItem*)itemTree {
+  [super createWindowForTree:itemTree];
+  
+  // Now the window is shown, apply the mask (if any)
+  [dirViewControl setFileItemMask: fileItemMask];
+  [dirViewControl enableFileItemMask: fileItemMaskEnabled];
+  [dirViewControl release];
+  dirViewControl = nil;
 }
 
 - (DirectoryViewControl*) 
@@ -388,9 +429,11 @@
         
   [path suppressItemPathChangedNotifications:NO];
 
-  return [[[DirectoryViewControl alloc] 
-              initWithItemTree:tree itemPathModel:path
-                fileItemHashingKey:fileItemHashingKey] autorelease];
+  dirViewControl = [[DirectoryViewControl alloc] 
+                       initWithItemTree:tree itemPathModel:path
+                       fileItemHashingKey:fileItemHashingKey];
+  
+  return dirViewControl;
 }
 
 @end // @implementation PostScanningCustomWindowCreator

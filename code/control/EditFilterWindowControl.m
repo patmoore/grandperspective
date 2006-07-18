@@ -168,16 +168,19 @@
 - (IBAction) addTestToRepository:(id)sender {
   EditFilterRuleWindowControl  *ruleWindowControl = 
     [EditFilterRuleWindowControl defaultInstance];
-
-  [ruleWindowControl representFileItemTest:nil];
   
+  // Ensure window is loaded before configuring its contents
+  NSWindow  *ruleWindow = [ruleWindowControl window];  
+
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
         initWithWindowControl:ruleWindowControl
           existingTests:((NSDictionary*)repositoryTestsByName)] autorelease];
 
-  int  status = [NSApp runModalForWindow:[ruleWindowControl window]];
-  [[ruleWindowControl window] close];
+  [ruleWindowControl representFileItemTest:nil];
+
+  int  status = [NSApp runModalForWindow:ruleWindow];
+  [ruleWindow close];
     
   if (status == NSRunStoppedResponse) {
     NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
@@ -210,7 +213,7 @@
     [((NSDictionary*)repositoryTestsByName) objectForKey:oldName];
 
   // Ensure window is loaded before configuring its contents
-  NSWindow  *ruleWindowControlWindow = [ruleWindowControl window];
+  NSWindow  *ruleWindow = [ruleWindowControl window];
 
   [ruleWindowControl representFileItemTest:oldTest];
   
@@ -220,8 +223,8 @@
           existingTests:((NSDictionary*)repositoryTestsByName)
           allowedName:oldName] autorelease];
 
-  int  status = [NSApp runModalForWindow:ruleWindowControlWindow];
-  [ruleWindowControlWindow close];
+  int  status = [NSApp runModalForWindow:ruleWindow];
+  [ruleWindow close];
     
   if (status == NSRunStoppedResponse) {
     NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];          
