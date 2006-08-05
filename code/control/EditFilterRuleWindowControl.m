@@ -77,8 +77,6 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
 
 
 - (void) windowDidLoad {
-  NSLog(@"windowDidLoad %@", [self window]);
-
   nameTestControls = [[StringBasedTestControls alloc]
                          initWithEnabledCheckBox: nameCheckBox
                          matchModePopUpButton: nameMatchPopUpButton
@@ -89,7 +87,7 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
                          targetsTextView: pathTargetsView];
 
   NSArray  *sizeUnits = [NSArray arrayWithObjects:@"bytes", @"kB", @"MB", 
-                                                  @"GB"];
+                                                  @"GB", nil];
   [sizeLowerBoundUnits removeAllItems];
   [sizeLowerBoundUnits addItemsWithTitles:sizeUnits];
   [sizeUpperBoundUnits removeAllItems];
