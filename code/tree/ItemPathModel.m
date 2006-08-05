@@ -25,7 +25,7 @@
   NSAssert(NO, @"Use -initWithTree instead.");
 }
 
-- (id) initWithTree:(FileItem*)itemTreeRoot {
+- (id) initWithTree:(DirectoryItem*)itemTreeRoot {
   if (self = [super init]) {
     path = [[NSMutableArray alloc] initWithCapacity:64];
 
@@ -33,6 +33,9 @@
 
     visibleTreeRootIndex = 0;
     lastFileItemIndex = 0;
+    
+    visibleItemPathLocked = NO;
+    lastNotifiedPathEndPoint = nil;
   }
   return self;
 }
@@ -55,6 +58,7 @@
   copy->visibleTreeRootIndex = visibleTreeRootIndex;
   copy->lastFileItemIndex = lastFileItemIndex;
   copy->visibleItemPathLocked = visibleItemPathLocked;
+  copy->lastNotifiedPathEndPoint = nil;
   
   return copy;
 }

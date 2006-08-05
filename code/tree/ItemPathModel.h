@@ -2,6 +2,7 @@
 
 @class Item;
 @class FileItem;
+@class DirectoryItem;
 
 @interface ItemPathModel : NSObject<NSCopying> {
   // Contains the FileItems from the root until the end of the path. It may
@@ -34,7 +35,7 @@
   BOOL  visibleItemPathLocked;
 }
 
-- (id) initWithTree:(FileItem*)itemTreeRoot;
+- (id) initWithTree:(DirectoryItem*)itemTreeRoot;
 
 // Returns the file items in the invisble part of the path until (inclusive)
 // root in view.
@@ -78,7 +79,7 @@
 - (void) extendVisibleItemPath:(Item*)nextItem;
 - (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name;
 
-- (FileItem*) itemTree;
+- (DirectoryItem*) itemTree;
 - (FileItem*) visibleItemTree;
 
 - (BOOL) canMoveTreeViewUp;
