@@ -116,6 +116,9 @@
   [filterActionButton addItemWithTitle:@"Show only"];
   [filterActionButton addItemWithTitle:@"Do not show"];
   
+  [testDescriptionDrawer setMinContentSize:NSMakeSize(237, 92)];
+  [testDescriptionDrawer setContentSize:NSMakeSize(237, 121)];
+  
   [self updateWindowState:nil];
 }
 
@@ -311,6 +314,7 @@
     [testDescriptionDrawer open];
   }
 }
+
 
 // Delegate methods for NSBrowser
 - (BOOL) browser:(NSBrowser*)sender isColumnValid:(int)column {
