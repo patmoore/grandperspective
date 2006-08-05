@@ -3,10 +3,12 @@
 #import "DirectoryItem.h"
 
 #import "DirectoryViewControl.h"
+#import "DirectoryViewControlSettings.h"
 #import "SaveImageDialogControl.h"
 #import "EditFilterWindowControl.h"
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
+#import "TreeHistory.h"
 
 #import "WindowManager.h"
 
@@ -14,7 +16,7 @@
 #import "ScanTaskExecutor.h"
 
 
-@interface PostScanningWindowCreator : NSObject {
+@interface PostScanWindowCreator : NSObject {
   WindowManager  *windowManager;
 }
 
@@ -27,23 +29,16 @@
 @end
 
 
-@interface PostScanningCustomWindowCreator : PostScanningWindowCreator {
-  NSArray  *invisibleFileItemTargetPath; 
-  NSArray  *visibleFileItemTargetPath;
-  NSString  *fileItemHashingKey;
-  NSObject <FileItemTest>  *fileItemMask;
-  BOOL  fileItemMaskEnabled;
-  
-  // HACK. Should not really be needed
-  DirectoryViewControl  *dirViewControl;
+@interface PostRescanWindowCreator : PostScanWindowCreator {
+  ItemPathModel  *targetPath;
+  NSObject <FileItemTest>  *filterTest;
+  DirectoryViewControlSettings  *settings;
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager
-         targetPath:(ItemPathModel*)targetPath
-         fileItemHashingKey:(NSString*)key;
-
-- (void) setFileItemMask:(NSObject <FileItemTest> *) mask;
-- (void) enableFileItemMask:(BOOL) flag;
+         targetPath: (ItemPathModel *)targetPath
+         filterTest: (NSObject <FileItemTest> *)filterTest
+         settings: (DirectoryViewControlSettings *)settings;
 
 @end
 
@@ -53,10 +48,8 @@
 - (void) editFilterWindowCancelAction:(NSNotification*)notification;
 - (void) editFilterWindowOkAction:(NSNotification*)notification;
 
-- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel;
-
-- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel 
-           filterTest:(NSObject <FileItemTest> *)filterTest;
+- (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
+- (void) duplicateCurrentWindowFiltered: (NSObject <FileItemTest> *)filterTest;
 
 @end
 
@@ -115,12 +108,12 @@
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
     
-    PostScanningWindowCreator  *windowCreator =
-      [[PostScanningWindowCreator alloc] initWithWindowManager:windowManager];
+    PostScanWindowCreator  *windowCreator =
+      [[PostScanWindowCreator alloc] initWithWindowManager: windowManager];
       
-    [scanTaskManager asynchronouslyRunTaskWithInput:dirName 
-                       callBack:windowCreator
-                       selector:@selector(createWindowForTree:)];
+    [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
+                       callBack: windowCreator
+                       selector: @selector(createWindowForTree:)];
                        
     [windowCreator release];
   }
@@ -136,20 +129,17 @@
 
   if (itemPathModel != nil) {
     NSString  *dirName = [itemPathModel rootFilePathName];
-    NSObject <FileItemTest>  *fileItemMask = nil;
+        
+    PostRescanWindowCreator  *windowCreator =
+      [[PostRescanWindowCreator alloc] 
+          initWithWindowManager: windowManager
+            targetPath: itemPathModel 
+            filterTest: [[oldControl treeHistory] fileItemFilter]
+            settings: [oldControl directoryViewControlSettings]];
     
-    PostScanningCustomWindowCreator  *windowCreator =
-      [[PostScanningCustomWindowCreator alloc] 
-          initWithWindowManager:windowManager
-            targetPath:itemPathModel 
-            fileItemHashingKey:[oldControl fileItemHashingKey]];
-
-    [windowCreator setFileItemMask:[oldControl fileItemMask]];
-    [windowCreator enableFileItemMask:[oldControl fileItemMaskEnabled]];
-    
-    [scanTaskManager asynchronouslyRunTaskWithInput:dirName 
-                       callBack:windowCreator
-                       selector:@selector(createWindowForTree:)];
+    [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
+                       callBack: windowCreator
+                       selector: @selector(createWindowForTree:)];
                        
     [windowCreator release];
   }
@@ -185,7 +175,7 @@
     NSObject <FileItemTest>  *fileItemTest =
       [editFilterWindowControl createFileItemTest];
 
-    [self duplicateCurrentWindowSharingPath:NO filterTest:fileItemTest];
+    [self duplicateCurrentWindowFiltered: fileItemTest];
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
@@ -226,66 +216,64 @@
 }
 
 
-- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel {
-  [self duplicateCurrentWindowSharingPath:sharePathModel filterTest:nil];
+- (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel {
+  DirectoryViewControl  *oldControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+
+  // Share or clone the path model.
+  ItemPathModel  *itemPathModel = [oldControl itemPathModel];
+
+  if (!sharePathModel) {
+    itemPathModel = [[itemPathModel copy] autorelease];
+  }
+
+  DirectoryViewControl  *newControl = 
+    [[DirectoryViewControl alloc] 
+        initWithItemPathModel: itemPathModel
+          history: [oldControl treeHistory]
+          settings: [oldControl directoryViewControlSettings]];
+  // Note: The control should auto-release itself when its window closes
+    
+  // Force loading (and showing) of the window.
+  [windowManager addWindow:[newControl window] 
+                   usingTitle:[[oldControl window] title]];
 }
 
-- (void) duplicateCurrentWindowSharingPath:(BOOL)sharePathModel 
-           filterTest:(NSObject <FileItemTest> *)filterTest {
+
+- (void) duplicateCurrentWindowFiltered: (NSObject <FileItemTest> *)filterTest {
            
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
-  DirectoryItem  *itemTree = [oldControl itemTree];
-  
-  if (itemTree!=nil) {
-    NSString  *fileItemHashingKey = [oldControl fileItemHashingKey];
 
-    // Share or clone the path model.
-    ItemPathModel  *itemPathModel = nil;
+  TreeFilter  *treeFilter = 
+    [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
+  DirectoryItem  *itemTree = 
+    [treeFilter filterItemTree:[[oldControl itemPathModel] itemTree]];
 
-    if (filterTest != nil) {
-      TreeFilter  *treeFilter = 
-        [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
-      itemTree = [treeFilter filterItemTree:itemTree];
+  ItemPathModel  *itemPathModel = 
+                   [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
 
-      itemPathModel = 
-        [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
-    }
-    else {
-      itemPathModel = [oldControl itemPathModel];
-      if (!sharePathModel) {
-        itemPathModel = [[itemPathModel copy] autorelease];
-      }
-    }
-        
-    DirectoryViewControl  *newControl = 
-      [[DirectoryViewControl alloc] 
-          initWithItemTree:itemTree 
-          itemPathModel:itemPathModel
-          fileItemHashingKey:fileItemHashingKey];          
-    // Note: The control should auto-release itself when its window closes
+  TreeHistory  *treeHistory = 
+    [[[oldControl treeHistory] historyAfterFiltering:filterTest] autorelease];
+
+  DirectoryViewControl  *newControl = 
+    [[DirectoryViewControl alloc] 
+        initWithItemPathModel: itemPathModel
+          history: treeHistory
+          settings: [oldControl directoryViewControlSettings]];
+  // Note: The control should auto-release itself when its window closes
     
-    // Force loading (and showing) of the window.
-    [windowManager addWindow:[newControl window] 
-                     usingTitle:[[oldControl window] title]];
-    
-    if (filterTest == nil) {
-      // Not filtered, so use same mask as old window.
-      [newControl setFileItemMask: [oldControl fileItemMask]];
-      [newControl enableFileItemMask: [oldControl fileItemMaskEnabled]];
-    }
-    else {
-      // void. Don't use a mask, as window is already filtered (and in all
-      // likelihood, the filter was based on the mask of the previous window,
-      // if it had one),
-    }
-  }
+  // Force loading (and showing) of the window.
+  [windowManager addWindow:[newControl window] 
+                   usingTitle:[[oldControl window] title]];
+
+  // TODO: add filter identifier to window title.
 }
 
 @end // @implementation MainMenuControl (PrivateMethods)
 
 
-@implementation PostScanningWindowCreator
+@implementation PostScanWindowCreator
 
 // Overrides designated initialiser.
 - (id) init {
@@ -331,67 +319,56 @@
   return [[[DirectoryViewControl alloc] initWithItemTree:tree] autorelease];
 }
 
-@end // @implementation PostScanningWindowCreator
+@end // @implementation PostScanWindowCreator
 
 
-@implementation PostScanningCustomWindowCreator
+@implementation PostRescanWindowCreator
 
 // Overrides designated initialiser.
 - (id) initWithWindowManager:(WindowManager*)windowManagerVal {
   NSAssert(NO, 
-    @"Use initWithWindowManager:targetPath:fileItemHashingKey instead.");
+    @"Use initWithWindowManager:targetPath:filter:settings instead.");
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal
-         targetPath:(ItemPathModel*)targetPath
-         fileItemHashingKey:(NSString*)key; {
+- (id) initWithWindowManager: (WindowManager *)windowManagerVal
+         targetPath: (ItemPathModel *)targetPathVal
+         filterTest: (NSObject <FileItemTest> *)filterTestVal
+         settings: (DirectoryViewControlSettings *)settingsVal {
+         
   if (self = [super initWithWindowManager:windowManagerVal]) {
-    invisibleFileItemTargetPath = [[targetPath invisibleFileItemPath] retain];
-    visibleFileItemTargetPath = [[targetPath visibleFileItemPath] retain];
-
-    fileItemHashingKey = [key retain];
-    
-    fileItemMask = nil;
-    fileItemMaskEnabled = NO;
+    targetPath = [targetPathVal retain];
+    filterTest = [filterTestVal retain];
+    settings = [settingsVal retain];
+    // Note: The state of both "targetPath" and "settings" may change during
+    // scanning (which happens in the background). This is okay though. When
+    // the scanning is done it will simply match the current settings of both. 
   }
   return self;
 }
 
 - (void) dealloc {
-  [invisibleFileItemTargetPath release];
-  [visibleFileItemTargetPath release];
-  [fileItemHashingKey release];
-  [fileItemMask release];
-  
-  NSAssert(dirViewControl == nil, @"dirViewControl not nil.");
+  [targetPath release];
+  [filterTest release];
+  [settings release];
   
   [super dealloc];
 }
 
-- (void) setFileItemMask:(NSObject <FileItemTest> *) mask {
-  if (mask != fileItemMask) {
-    [fileItemMask release];
-    fileItemMask = [mask retain];
-  }
-}
-
-- (void) enableFileItemMask:(BOOL) flag {
-  fileItemMaskEnabled = flag;
-}
-
-
-- (void) createWindowForTree:(DirectoryItem*)itemTree {
-  [super createWindowForTree:itemTree];
-  
-  // Now the window is shown, apply the mask (if any)
-  [dirViewControl setFileItemMask: fileItemMask];
-  [dirViewControl enableFileItemMask: fileItemMaskEnabled];
-  [dirViewControl release];
-  dirViewControl = nil;
-}
 
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree {
+  
+  TreeHistory  *history = [[[TreeHistory alloc] init] autorelease];
+  
+  // Apply the filter again.
+  if (filterTest != nil) {
+    TreeFilter  *treeFilter = 
+      [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
+     
+    tree = [treeFilter filterItemTree:tree];
+    history = [history historyAfterFiltering:filterTest];
+  }
+     
   // Try to match the path.
   ItemPathModel  *path = 
     [[[ItemPathModel alloc] initWithTree:tree] autorelease];
@@ -399,9 +376,10 @@
   [path suppressItemPathChangedNotifications:YES];
     
   BOOL  ok = YES;
-  NSEnumerator  *fileItemEnum = [invisibleFileItemTargetPath objectEnumerator];
+  NSEnumerator  *fileItemEnum = nil;
   FileItem  *fileItem;
-    
+  
+  fileItemEnum = [[targetPath invisibleFileItemPath] objectEnumerator];  
   [fileItemEnum nextObject]; // Skip the root.
   while (ok && (fileItem = [fileItemEnum nextObject])) {
     ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
@@ -411,10 +389,10 @@
     [path moveTreeViewDown];
   }
     
-  if (ok && visibleFileItemTargetPath != nil) {
+  if (ok && [targetPath visibleFileItemPath] != nil) {
     BOOL  hasVisibleItems = NO;
       
-    fileItemEnum = [visibleFileItemTargetPath objectEnumerator];
+    fileItemEnum = [[targetPath visibleFileItemPath] objectEnumerator];
     while (ok && (fileItem = [fileItemEnum nextObject])) {
       ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
       if (ok) {
@@ -429,11 +407,10 @@
         
   [path suppressItemPathChangedNotifications:NO];
 
-  dirViewControl = [[DirectoryViewControl alloc] 
-                       initWithItemTree:tree itemPathModel:path
-                       fileItemHashingKey:fileItemHashingKey];
-  
-  return dirViewControl;
+  return [[DirectoryViewControl alloc] 
+            initWithItemPathModel: path 
+            history: history
+            settings: settings];
 }
 
-@end // @implementation PostScanningCustomWindowCreator
+@end // @implementation PostRescanWindowCreator

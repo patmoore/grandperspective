@@ -5,7 +5,8 @@
 #import "ItemPathModel.h"
 #import "FileItemHashingOptions.h"
 #import "FileItemHashing.h"
-
+#import "DirectoryViewControlSettings.h"
+#import "TreeHistory.h"
 #import "EditFilterWindowControl.h"
 
 
@@ -26,131 +27,114 @@
 
 @implementation DirectoryViewControl
 
-- (id) initWithItemTree:(DirectoryItem*)root {
+- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithTree:root] autorelease];
+    [[[ItemPathModel alloc] initWithTree:itemTreeRoot] autorelease];
 
-  return [self initWithItemTree:root 
-                 itemPathModel:pathModel
-                 fileItemHashingKey:nil];
+  // Default settings
+  DirectoryViewControlSettings  *defaultSettings =
+    [[[DirectoryViewControlSettings alloc] init] autorelease];
+
+  TreeHistory  *defaultHistory = [[[TreeHistory alloc] init] autorelease];
+
+  return [self initWithItemPathModel: pathModel 
+                 history: defaultHistory
+                 settings: defaultSettings];
 }
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithItemTree:(DirectoryItem*)root 
-         itemPathModel:(ItemPathModel*)pathModel
-         fileItemHashingKey:(NSString*)fileItemHashingKey {
-         
+- (id) initWithItemPathModel: (ItemPathModel *)itemPathModelVal
+         history: (TreeHistory* )history
+         settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    itemTreeRoot = [root retain];
-    invisiblePathName = nil;
-    
+    itemPathModel = [itemPathModelVal retain];
+    initialSettings = [settings retain];
+    treeHistory = [history retain];
+
+    invisiblePathName = nil;    
     hashingOptions = 
       [[FileItemHashingOptions defaultFileItemHashingOptions] retain];
-    
-    initialHashingOptionKey = 
-      [ ((fileItemHashingKey == nil) ? [hashingOptions keyForDefaultHashing]
-                                     : fileItemHashingKey) 
-        retain ];
-    
-    itemPathModel = [pathModel retain];
   }
 
   return self;
 }
+
 
 - (void) dealloc {
   NSLog(@"DirectoryViewControl-dealloc");
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
-  [editMaskFilterWindowControl release];
-
-  [itemTreeRoot release];
   [itemPathModel release];
-  
-  [invisiblePathName release];
+  [initialSettings release];
+  [treeHistory release];
   
   [fileItemMask release];
-
+  
   [hashingOptions release];
-  [initialHashingOptionKey release];
+  
+  [editMaskFilterWindowControl release];
+
+  [invisiblePathName release];
   
   [super dealloc];
 }
 
 
-- (DirectoryItem*) itemTree {
-  return itemTreeRoot;
-}
-
-
-- (NSString*) fileItemHashingKey {
-  return [colorMappingPopUp titleOfSelectedItem];
-}
-
 - (FileItemHashing*) fileItemHashing {
   return [mainView fileItemHashing];
 }
-
 
 - (NSObject <FileItemTest> *) fileItemMask {
   return fileItemMask;
 }
 
-- (void) setFileItemMask:(NSObject <FileItemTest> *) mask {
-  if (mask != fileItemMask) {
-    [fileItemMask release];
-    fileItemMask = [mask retain];
-
-    if ([mainView fileItemMask] != nil) {
-      // Only let mainview immediately use it if it was already using a mask.
-      [mainView setFileItemMask:fileItemMask];
-    }
-  }
-}
-
-
 - (BOOL) fileItemMaskEnabled {
   return [mainView fileItemMask] != nil;
 }
-
-- (void) enableFileItemMask:(BOOL) flag {
-  if (flag) {
-    [maskCheckBox setState:NSOnState];
-
-    [mainView setFileItemMask:fileItemMask];
-  }
-  else {
-    [maskCheckBox setState:NSOffState];
-
-    [mainView setFileItemMask:nil];    
-  }
-}
-
 
 - (ItemPathModel*) itemPathModel {
   return itemPathModel;
 }
 
-
 - (DirectoryView*) directoryView {
   return mainView;
 }
 
+- (DirectoryViewControlSettings*) directoryViewControlSettings {
+  return [[[DirectoryViewControlSettings alloc]
+               initWithHashingKey: [colorMappingPopUp titleOfSelectedItem]
+               mask: fileItemMask
+               maskEnabled: [self fileItemMaskEnabled]] 
+                 autorelease];
+}
+
+- (TreeHistory*) treeHistory {
+  return treeHistory;
+}
+
 
 - (void) windowDidLoad {
+  [mainView setItemPathModel:itemPathModel];
+
   [colorMappingPopUp removeAllItems];
   [colorMappingPopUp addItemsWithTitles:
      [[hashingOptions allKeys] 
          sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
   
-  [colorMappingPopUp selectItemWithTitle:initialHashingOptionKey];
-  [initialHashingOptionKey release];
-  initialHashingOptionKey = nil;
+  [colorMappingPopUp 
+     selectItemWithTitle: ( [initialSettings fileItemHashingKey] != nil ?
+                              [initialSettings fileItemHashingKey] :
+                              [hashingOptions keyForDefaultHashing] ) ];
   [self colorMappingChanged:nil];
   
-  [mainView setItemPathModel:itemPathModel];
+  fileItemMask = [[initialSettings fileItemMask] retain];
+  if ([initialSettings fileItemMaskEnabled]) {
+    [mainView setFileItemMask:fileItemMask];
+  }
+  [initialSettings release];
+  initialSettings = nil;
   
   [super windowDidLoad];
   
@@ -238,11 +222,9 @@
 }
 
 - (IBAction) colorMappingChanged:(id)sender {
-  FileItemHashing  *hashingOption = 
+  [mainView setFileItemHashing: 
     [hashingOptions fileItemHashingForKey:
-                               [colorMappingPopUp titleOfSelectedItem]];
-      
-  [mainView setFileItemHashing:hashingOption];
+      [colorMappingPopUp titleOfSelectedItem]]];
 }
 
 @end // @implementation DirectoryViewControl
@@ -322,8 +304,9 @@
 
 - (void) maskWindowApplyAction:(NSNotification*)notification {
   [fileItemMask release];
+  
   fileItemMask = [[editMaskFilterWindowControl createFileItemTest] retain];
-
+  
   if (fileItemMask != nil) {
     // Automatically enable mask (doesn't matter if it's already enabled).
     [maskCheckBox setState:NSOnState];

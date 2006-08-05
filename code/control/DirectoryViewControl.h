@@ -7,6 +7,8 @@
 @class FileItemHashingOptions;
 @class FileItemHashing;
 @class EditFilterWindowControl;
+@class DirectoryViewControlSettings;
+@class TreeHistory;
 @protocol FileItemTest;
 
 @interface DirectoryViewControl : NSWindowController {
@@ -20,13 +22,13 @@
   IBOutlet NSButton  *openButton;
   IBOutlet NSButton  *maskCheckBox;
 
-  DirectoryItem  *itemTreeRoot;
   ItemPathModel  *itemPathModel;
-  
+  DirectoryViewControlSettings  *initialSettings;
+  TreeHistory  *treeHistory;
+
   NSObject <FileItemTest>  *fileItemMask;
 
   FileItemHashingOptions  *hashingOptions;
-  NSString  *initialHashingOptionKey;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
@@ -42,24 +44,23 @@
 
 - (IBAction) colorMappingChanged:(id)sender;
 
-- (id) initWithItemTree:(DirectoryItem*)itemTreeRoot;
-- (id) initWithItemTree:(DirectoryItem*)itemTreeRoot 
-         itemPathModel:(ItemPathModel*)itemPathModel
-         fileItemHashingKey:(NSString*)fileItemHashingKey;
+- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot;
+- (id) initWithItemPathModel: (ItemPathModel *)itemPathModel
+         history: (TreeHistory *)history
+         settings: (DirectoryViewControlSettings *)settings;
 
-- (DirectoryItem*) itemTree;
-
-- (NSString*) fileItemHashingKey;
 - (FileItemHashing*) fileItemHashing;
 
 - (NSObject <FileItemTest> *) fileItemMask;
-- (void) setFileItemMask:(NSObject <FileItemTest> *) mask;
-
 - (BOOL) fileItemMaskEnabled;
-- (void) enableFileItemMask:(BOOL) flag;
 
 - (ItemPathModel*) itemPathModel;
 
 - (DirectoryView*) directoryView;
+
+- (TreeHistory*) treeHistory;
+
+// Returns the current settings of the view.
+- (DirectoryViewControlSettings*) directoryViewControlSettings;
 
 @end
