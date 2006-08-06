@@ -572,8 +572,6 @@
   [removeTestFromFilterButton setEnabled: 
     ( ([filterTestsBrowser selectedCell] != nil) &&
       filterTestsHighlighted )];
-
-  [okButton setEnabled: ([filterTests count] > 0)];
 }
 
 
