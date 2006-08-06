@@ -8,7 +8,6 @@
                 maskAction = id; 
                 maskCheckBoxChanged = id; 
                 openFileInFinder = id; 
-                toggleDrawer = id; 
                 upAction = id; 
             }; 
             CLASS = DirectoryViewControl; 
@@ -19,8 +18,8 @@
                 drawer = NSDrawer; 
                 filterDescriptionTextView = NSTextView; 
                 filterNameField = NSTextField; 
-                itemNameLabel = NSTextField; 
-                itemSizeLabel = NSTextField; 
+                itemPathField = NSTextField; 
+                itemSizeField = NSTextField; 
                 mainView = DirectoryView; 
                 maskCheckBox = NSButton; 
                 openButton = NSButton; 

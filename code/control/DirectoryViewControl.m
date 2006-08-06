@@ -296,7 +296,7 @@
                           [itemPathModel canMoveTreeViewDown] ];
   [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
 
-  [itemSizeLabel setStringValue:
+  [itemSizeField setStringValue:
      [FileItem stringForFileItemSize:[[itemPathModel fileItemPathEndPoint] 
                                                        itemSize]]];
 
@@ -313,13 +313,13 @@
     [attributedName addAttribute: NSForegroundColorAttributeName
                       value: [NSColor darkGrayColor] 
                       range: NSMakeRange(invisLen, [name length] - invisLen) ];
-    [itemNameLabel setStringValue: ((id) attributedName) ];
+    [itemPathField setStringValue: ((id) attributedName) ];
 
     [attributedName release];
   }
   else {
     // There's no visible part, so can directly use "invisiblePathName"
-    [itemNameLabel setStringValue: invisiblePathName];
+    [itemPathField setStringValue: invisiblePathName];
   }
   
   [selectedFilePathTextView setString:

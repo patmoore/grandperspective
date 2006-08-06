@@ -14,8 +14,8 @@
 @interface DirectoryViewControl : NSWindowController {
 
   // Main window
-  IBOutlet NSTextField  *itemNameLabel;
-  IBOutlet NSTextField  *itemSizeLabel;
+  IBOutlet NSTextField  *itemPathField;
+  IBOutlet NSTextField  *itemSizeField;
   IBOutlet DirectoryView  *mainView;
   IBOutlet NSButton  *upButton;
   IBOutlet NSButton  *downButton;
