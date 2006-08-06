@@ -10,6 +10,9 @@
 @end
 
 
+static char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
+
+
 @implementation FileItem
 
 // Overrides super's designated initialiser.
@@ -66,8 +69,6 @@
 }
 
 
-char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
-
 + (NSString*) stringForFileItemSize:(ITEM_SIZE)filesize {
   if (filesize < 1024) {
     // Definitely don't want a decimal point here
@@ -76,7 +77,9 @@ char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
 
   double  n = (double)filesize / 1024;
   int  m = 0;
-  while (n > 1024 && m < 3) {
+  // Note: The threshold for "n" is chosen to cope with rounding, ensuring
+  // that the string for n = 1024^3 becomes "1.00 GB" instead of "1024 MB"
+  while (n > 1023.999 && m < 3) {
     m++;
     n /= 1024; 
   }
