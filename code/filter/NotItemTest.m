@@ -30,4 +30,15 @@
   return ! [subItemTest testFileItem:item];
 }
 
+- (NSString*) description {
+  NSString  *subDescr = [subItemTest description];
+  NSMutableString  *descr = 
+    [NSMutableString stringWithCapacity: [subDescr length] + 6];
+
+  [descr appendString: @"not ("];
+  [descr appendString: subDescr];
+  [descr appendString: @")"];  
+  return descr;
+}
+
 @end
