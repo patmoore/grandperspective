@@ -111,11 +111,7 @@
 - (void) windowDidLoad {
   [filterTestsBrowser setDelegate:self];
   [availableTestsBrowser setDelegate:self];
-  
-  [filterActionButton removeAllItems];
-  [filterActionButton addItemWithTitle:@"Show only"];
-  [filterActionButton addItemWithTitle:@"Do not show"];
-  
+    
   [testDescriptionDrawer setMinContentSize:NSMakeSize(237, 92)];
   [testDescriptionDrawer setContentSize:NSMakeSize(237, 121)];
   

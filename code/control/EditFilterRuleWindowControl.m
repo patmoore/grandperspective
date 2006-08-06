@@ -86,13 +86,6 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
                          matchModePopUpButton: pathMatchPopUpButton
                          targetsTextView: pathTargetsView];
 
-  NSArray  *sizeUnits = [NSArray arrayWithObjects:@"bytes", @"kB", @"MB", 
-                                                  @"GB", nil];
-  [sizeLowerBoundUnits removeAllItems];
-  [sizeLowerBoundUnits addItemsWithTitles:sizeUnits];
-  [sizeUpperBoundUnits removeAllItems];
-  [sizeUpperBoundUnits addItemsWithTitles:sizeUnits];
-
   [self updateEnabledState:nil];
 }
 
@@ -398,12 +391,6 @@ EditFilterRuleWindowControl  *defaultInstance = nil;
     enabledCheckBox = [checkBox retain];
     matchPopUpButton = [popUpButton retain];
     targetsTextView = [textView retain];
-    
-    [matchPopUpButton removeAllItems];
-    [matchPopUpButton addItemWithTitle:@"is"];
-    [matchPopUpButton addItemWithTitle:@"contains"];
-    [matchPopUpButton addItemWithTitle:@"starts with"];
-    [matchPopUpButton addItemWithTitle:@"ends with"];
   }
   
   return self;
