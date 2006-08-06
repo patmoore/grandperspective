@@ -136,6 +136,30 @@
   [initialSettings release];
   initialSettings = nil;
   
+  [treePathTextView setString: [[itemPathModel itemTree] name]];
+
+  if ( [treeHistory fileItemFilter] != nil ) {
+    [filterNameField setStringValue: [NSString stringWithFormat: @"Filter%d",
+                                        [treeHistory filterIdentifier]]];
+    [filterDescriptionTextView setString:
+       [[treeHistory fileItemFilter] description]];
+  }
+  else {
+    [filterNameField setStringValue: @"None"];
+    [filterDescriptionTextView setString: @""];
+  }
+  
+  [scanTimeField setStringValue: 
+    [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
+                              timeZone:nil locale:nil]];
+  [treeSizeField setStringValue: [NSString stringWithFormat: @"%qu bytes", 
+                                    [[itemPathModel itemTree] itemSize]]];
+
+  NSSize  drawerSize = NSMakeSize(301, 337);
+  [drawer setContentSize: drawerSize];  
+  [drawer setMinContentSize: drawerSize];
+  [drawer setMaxContentSize: drawerSize];
+
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
@@ -149,7 +173,7 @@
   [nc addObserver:self selector:@selector(visibleItemTreeChanged:)
         name:@"visibleItemTreeChanged" object:itemPathModel];
 
-  [self updateButtonState:nil];
+  [self visibleItemTreeChanged: nil];
 
   [[self window] makeFirstResponder:mainView];
   [[self window] makeKeyAndOrderFront:self];
@@ -255,6 +279,13 @@
   [invisiblePathName release];
   invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
 
+  [visibleFolderPathTextView setString:
+    [[itemPathModel rootFilePathName] stringByAppendingPathComponent:
+                                        invisiblePathName]];
+  [visibleFolderSizeField setStringValue:
+    [NSString stringWithFormat: @"%qu bytes", 
+                [[itemPathModel visibleItemTree] itemSize]]];
+
   [self updateButtonState:notification];
 }
 
@@ -296,6 +327,13 @@
   }
     
   [itemNameLabel setStringValue:attributedName];
+  
+  [selectedFilePathTextView setString:
+    [[visibleFolderPathTextView string] stringByAppendingPathComponent:
+                                          visiblePathName]];
+  [selectedFileSizeField setStringValue: 
+     [NSString stringWithFormat: @"%qu bytes", 
+                [[itemPathModel fileItemPathEndPoint] itemSize]]];
 
   [name release];
   [attributedName release]; 

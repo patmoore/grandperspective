@@ -8,6 +8,7 @@
                 maskAction = id; 
                 maskCheckBoxChanged = id; 
                 openFileInFinder = id; 
+                toggleDrawer = id; 
                 upAction = id; 
             }; 
             CLASS = DirectoryViewControl; 
@@ -15,12 +16,22 @@
             OUTLETS = {
                 colorMappingPopUp = NSPopUpButton; 
                 downButton = NSButton; 
+                drawer = NSDrawer; 
+                filterDescriptionTextView = NSTextView; 
+                filterNameField = NSTextField; 
                 itemNameLabel = NSTextField; 
                 itemSizeLabel = NSTextField; 
                 mainView = DirectoryView; 
                 maskCheckBox = NSButton; 
                 openButton = NSButton; 
+                scanTimeField = NSTextField; 
+                selectedFilePathTextView = NSTextView; 
+                selectedFileSizeField = NSTextField; 
+                treePathTextView = NSTextView; 
+                treeSizeField = NSTextField; 
                 upButton = NSButton; 
+                visibleFolderPathTextView = NSTextView; 
+                visibleFolderSizeField = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

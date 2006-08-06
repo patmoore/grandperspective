@@ -13,14 +13,32 @@
 
 @interface DirectoryViewControl : NSWindowController {
 
-  IBOutlet NSPopUpButton  *colorMappingPopUp;
+  // Main window
   IBOutlet NSTextField  *itemNameLabel;
   IBOutlet NSTextField  *itemSizeLabel;
   IBOutlet DirectoryView  *mainView;
   IBOutlet NSButton  *upButton;
   IBOutlet NSButton  *downButton;
   IBOutlet NSButton  *openButton;
+  
+  IBOutlet NSDrawer  *drawer;
+  
+  // "Display" drawer panel
+  IBOutlet NSPopUpButton  *colorMappingPopUp;
   IBOutlet NSButton  *maskCheckBox;
+
+  // "Info" drawer panel
+  IBOutlet NSTextView  *treePathTextView;
+  IBOutlet NSTextField  *filterNameField;
+  IBOutlet NSTextView  *filterDescriptionTextView;
+  IBOutlet NSTextField  *scanTimeField;
+  IBOutlet NSTextField  *treeSizeField;
+  
+  // "Focus" drawer panel
+  IBOutlet NSTextView  *visibleFolderPathTextView;
+  IBOutlet NSTextField  *visibleFolderSizeField;
+  IBOutlet NSTextView  *selectedFilePathTextView;
+  IBOutlet NSTextField  *selectedFileSizeField;
 
   ItemPathModel  *itemPathModel;
   DirectoryViewControlSettings  *initialSettings;
