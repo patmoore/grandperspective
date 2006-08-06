@@ -301,32 +301,26 @@
                                                        itemSize]]];
 
   NSString  *visiblePathName = [itemPathModel visibleFilePathName];
-  
-  NSMutableString  *name = 
-    [[NSMutableString alloc] 
-        initWithCapacity:[invisiblePathName length] +
-                         [visiblePathName length] + 32];
-  [name appendString:invisiblePathName];
 
-  int  visibleStartPos = 0;
-  if ([visiblePathName length] > 0) {
-    if ([name length] > 0) {
-      [name appendString:@"/"];
-    }
-    visibleStartPos = [name length];
-    [name appendString:visiblePathName];
-  }
-
-  id  attributedName = [[NSMutableAttributedString alloc] initWithString:name];
+  if ( [visiblePathName length] > 0) {
+    NSString  *name = [invisiblePathName stringByAppendingPathComponent:
+                         visiblePathName];
+    NSMutableAttributedString  *attributedName = 
+      [[NSMutableAttributedString alloc] initWithString: name];
    
-  if ([visiblePathName length] > 0) {
     // Mark invisible part of path
-    [attributedName addAttribute:NSForegroundColorAttributeName
-      value:[NSColor darkGrayColor] 
-      range:NSMakeRange(visibleStartPos, [name length] - visibleStartPos)];
+    int  invisLen = [invisiblePathName length];
+    [attributedName addAttribute: NSForegroundColorAttributeName
+                      value: [NSColor darkGrayColor] 
+                      range: NSMakeRange(invisLen, [name length] - invisLen) ];
+    [itemNameLabel setStringValue: ((id) attributedName) ];
+
+    [attributedName release];
   }
-    
-  [itemNameLabel setStringValue:attributedName];
+  else {
+    // There's no visible part, so can directly use "invisiblePathName"
+    [itemNameLabel setStringValue: invisiblePathName];
+  }
   
   [selectedFilePathTextView setString:
     [[visibleFolderPathTextView string] stringByAppendingPathComponent:
@@ -334,9 +328,6 @@
   [selectedFileSizeField setStringValue: 
      [NSString stringWithFormat: @"%qu bytes", 
                 [[itemPathModel fileItemPathEndPoint] itemSize]]];
-
-  [name release];
-  [attributedName release]; 
 }
 
 
