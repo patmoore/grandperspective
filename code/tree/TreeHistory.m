@@ -4,10 +4,14 @@
 #import "CompoundAndItemTest.h"
 
 
+static int  nextFilterId = 1;
+
+
 @interface TreeHistory (PrivateMethods)
 
 - (id) initWithScanTime: (NSDate *)scanTimeVal 
-         filter: (NSObject <FileItemTest> *)filter;
+         filter: (NSObject <FileItemTest> *)filter
+         filterId: (int) filterId;
 
 @end
 
@@ -20,7 +24,7 @@
 }
 
 - (id) initWithScanTime: (NSDate *)scanTimeVal {
-  return [self initWithScanTime:scanTimeVal filter:nil];
+  return [self initWithScanTime: scanTimeVal filter: nil filterId: 0];
 }
 
 - (void) dealloc {
@@ -32,6 +36,8 @@
 
 
 - (TreeHistory*) historyAfterFiltering: (NSObject <FileItemTest> *)newFilter {
+  NSAssert(newFilter!=nil, @"Filter should not be nil.");
+
   NSObject <FileItemTest>  *totalFilter = nil;
   if (filter == nil) {
     totalFilter = newFilter;
@@ -42,7 +48,20 @@
            [NSArray arrayWithObjects:filter, newFilter, nil]] autorelease];
   }
 
-  return [[TreeHistory alloc] initWithScanTime:scanTime filter:totalFilter];
+  return [[[TreeHistory alloc] initWithScanTime: scanTime 
+                                 filter: totalFilter
+                                 filterId: nextFilterId++] autorelease];
+}
+
+
+- (TreeHistory*) historyAfterRescanning {
+  return [self historyAfterRescanning: [NSDate date]];
+}
+
+- (TreeHistory*) historyAfterRescanning: (NSDate *)scanTimeVal {
+  return [[[TreeHistory alloc] initWithScanTime: scanTimeVal 
+                                 filter: filter
+                                 filterId: filterId] autorelease];
 }
 
 
@@ -54,16 +73,22 @@
   return filter;
 }
 
+- (int) filterIdentifier {
+  return filterId;
+}
+
 @end // TreeHistory
 
 
 @implementation TreeHistory (PrivateMethods)
 
 - (id) initWithScanTime: (NSDate *)scanTimeVal
-         filter: (NSObject <FileItemTest> *)filterVal {
+         filter: (NSObject <FileItemTest> *)filterVal 
+         filterId: (int) filterIdVal {
   if (self = [super init]) {
     scanTime = [scanTimeVal retain];
     filter = [filterVal retain];
+    filterId = filterIdVal;
   }
   
   return self;

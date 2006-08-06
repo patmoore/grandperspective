@@ -45,7 +45,7 @@
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithItemPathModel: (ItemPathModel *)itemPathModelVal
-         history: (TreeHistory* )history
+         history: (TreeHistory *)history
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
     itemPathModel = [itemPathModelVal retain];

@@ -31,13 +31,13 @@
 
 @interface PostRescanWindowCreator : PostScanWindowCreator {
   ItemPathModel  *targetPath;
-  NSObject <FileItemTest>  *filterTest;
+  TreeHistory  *history;
   DirectoryViewControlSettings  *settings;
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager
          targetPath: (ItemPathModel *)targetPath
-         filterTest: (NSObject <FileItemTest> *)filterTest
+         history: (TreeHistory *)history
          settings: (DirectoryViewControlSettings *)settings;
 
 @end
@@ -50,6 +50,8 @@
 
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
 - (void) duplicateCurrentWindowFiltered: (NSObject <FileItemTest> *)filterTest;
+
++ (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control;
 
 @end
 
@@ -134,7 +136,7 @@
       [[PostRescanWindowCreator alloc] 
           initWithWindowManager: windowManager
             targetPath: itemPathModel 
-            filterTest: [[oldControl treeHistory] fileItemFilter]
+            history: [oldControl treeHistory]
             settings: [oldControl directoryViewControlSettings]];
     
     [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
@@ -254,7 +256,7 @@
                    [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
 
   TreeHistory  *treeHistory = 
-    [[[oldControl treeHistory] historyAfterFiltering:filterTest] autorelease];
+    [[oldControl treeHistory] historyAfterFiltering:filterTest];
 
   DirectoryViewControl  *newControl = 
     [[DirectoryViewControl alloc] 
@@ -263,12 +265,30 @@
           settings: [oldControl directoryViewControlSettings]];
   // Note: The control should auto-release itself when its window closes
     
+  NSString  *title = [MainMenuControl windowTitleForDirectoryView: newControl];
+    
   // Force loading (and showing) of the window.
-  [windowManager addWindow:[newControl window] 
-                   usingTitle:[[oldControl window] title]];
-
-  // TODO: add filter identifier to window title.
+  [windowManager addWindow: [newControl window] usingTitle: title];
 }
+
+
+// Creates window title based on scan location, scan time and filter (if any).
++ (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
+  TreeHistory  *history = [control treeHistory];
+  NSString  *rootPathName = [[[control itemPathModel] itemTree] name];
+
+  NSString  *title = 
+    [NSString stringWithFormat:@"%@ - %@", rootPathName,
+                [[history scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
+                                      timeZone:nil locale:nil]];
+  if ([history filterIdentifier] != 0) {
+    title = [NSString stringWithFormat:@"%@ - Filter%d", title, 
+                        [history filterIdentifier]];
+  }
+
+  return title;
+}
+
 
 @end // @implementation MainMenuControl (PrivateMethods)
 
@@ -304,14 +324,11 @@
   DirectoryViewControl  *dirViewControl = 
     [[self createDirectoryViewControlForTree:itemTree] retain];
   
-  // Create window title based on scan location and time.
-  NSString*  title = 
-    [NSString stringWithFormat:@"%@ - %@", [itemTree name],
-                [[NSDate date] descriptionWithCalendarFormat:@"%H:%M:%S"
-                                 timeZone:nil locale:nil]];
-
+  NSString  *title = 
+    [MainMenuControl windowTitleForDirectoryView: dirViewControl];
+  
   // Force loading (and showing) of the window.
-  [windowManager addWindow:[dirViewControl window] usingTitle:title];
+  [windowManager addWindow: [dirViewControl window] usingTitle: title];
 }
 
 - (DirectoryViewControl*) 
@@ -332,23 +349,24 @@
 
 - (id) initWithWindowManager: (WindowManager *)windowManagerVal
          targetPath: (ItemPathModel *)targetPathVal
-         filterTest: (NSObject <FileItemTest> *)filterTestVal
+         history: (TreeHistory *)historyVal
          settings: (DirectoryViewControlSettings *)settingsVal {
          
   if (self = [super initWithWindowManager:windowManagerVal]) {
     targetPath = [targetPathVal retain];
-    filterTest = [filterTestVal retain];
+    // Note: The state of "targetPath" may change during scanning (which
+    // happens in the background). This is okay though. When the scanning is 
+    // done it will simply match the current state.
+     
+    history = [historyVal retain];
     settings = [settingsVal retain];
-    // Note: The state of both "targetPath" and "settings" may change during
-    // scanning (which happens in the background). This is okay though. When
-    // the scanning is done it will simply match the current settings of both. 
   }
   return self;
 }
 
 - (void) dealloc {
   [targetPath release];
-  [filterTest release];
+  [history release];
   [settings release];
   
   [super dealloc];
@@ -358,15 +376,16 @@
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree {
   
-  TreeHistory  *history = [[[TreeHistory alloc] init] autorelease];
+  TreeHistory  *newHistory = [history historyAfterRescanning]; 
   
   // Apply the filter again.
-  if (filterTest != nil) {
+  if ([history fileItemFilter] != nil) {
     TreeFilter  *treeFilter = 
-      [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
+      [[TreeFilter alloc] initWithFileItemTest: [history fileItemFilter]];
      
     tree = [treeFilter filterItemTree:tree];
-    history = [history historyAfterFiltering:filterTest];
+    
+    [treeFilter release];
   }
      
   // Try to match the path.
@@ -409,7 +428,7 @@
 
   return [[DirectoryViewControl alloc] 
             initWithItemPathModel: path 
-            history: history
+            history: newHistory
             settings: settings];
 }
 
