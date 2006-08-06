@@ -25,6 +25,7 @@
   
   // "Display" drawer panel
   IBOutlet NSPopUpButton  *colorMappingPopUp;
+  IBOutlet NSTextView  *maskDescriptionTextView;
   IBOutlet NSButton  *maskCheckBox;
 
   // "Info" drawer panel
@@ -53,14 +54,14 @@
   NSString  *invisiblePathName;
 }
 
-- (IBAction) upAction:(id)sender;
-- (IBAction) downAction:(id)sender;
-- (IBAction) openFileInFinder:(id)sender;
+- (IBAction) upAction: (id) sender;
+- (IBAction) downAction: (id) sender;
+- (IBAction) openFileInFinder: (id) sender;
 
-- (IBAction) maskCheckBoxChanged:(id)sender;
-- (IBAction) maskAction:(id)sender;
+- (IBAction) maskCheckBoxChanged: (id) sender;
+- (IBAction) editMask: (id) sender;
 
-- (IBAction) colorMappingChanged:(id)sender;
+- (IBAction) colorMappingChanged: (id) sender;
 
 - (id) initWithItemTree: (DirectoryItem *)itemTreeRoot;
 - (id) initWithItemPathModel: (ItemPathModel *)itemPathModel

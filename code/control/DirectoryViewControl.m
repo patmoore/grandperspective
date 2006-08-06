@@ -16,6 +16,7 @@
 
 - (void) updateButtonState:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
+- (void) maskChanged;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -130,9 +131,10 @@
   [self colorMappingChanged:nil];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
-  if ([initialSettings fileItemMaskEnabled]) {
-    [mainView setFileItemMask:fileItemMask];
-  }
+  [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
+                              ? NSOnState : NSOffState ) ];
+  [self maskChanged];  
+  
   [initialSettings release];
   initialSettings = nil;
   
@@ -155,7 +157,7 @@
   [treeSizeField setStringValue: [NSString stringWithFormat: @"%qu bytes", 
                                     [[itemPathModel itemTree] itemSize]]];
 
-  NSSize  drawerSize = NSMakeSize(301, 337);
+  NSSize  drawerSize = NSMakeSize(301, 317);
   [drawer setContentSize: drawerSize];  
   [drawer setMinContentSize: drawerSize];
   [drawer setMaxContentSize: drawerSize];
@@ -229,7 +231,7 @@
   }
 }
 
-- (IBAction) maskAction:(id)sender {
+- (IBAction) editMask:(id)sender {
   if (editMaskFilterWindowControl == nil) {
     // Lazily create the "edit mask" window.
     
@@ -331,16 +333,33 @@
 }
 
 
+- (void) maskChanged {
+  if (fileItemMask != nil) {
+    [maskCheckBox setEnabled: YES];
+    [maskDescriptionTextView setString: [fileItemMask description]];
+  }
+  else {
+    [maskDescriptionTextView setString: @""];
+    [maskCheckBox setEnabled: NO];
+    [maskCheckBox setState: NSOffState];
+  }
+  
+  [mainView setFileItemMask: 
+              (([maskCheckBox state] == NSOnState) ? fileItemMask : nil) ];
+}
+
+
 - (void) maskWindowApplyAction:(NSNotification*)notification {
   [fileItemMask release];
   
   fileItemMask = [[editMaskFilterWindowControl createFileItemTest] retain];
-  
+
   if (fileItemMask != nil) {
-    // Automatically enable mask (doesn't matter if it's already enabled).
-    [maskCheckBox setState:NSOnState];
+    // Automatically enable mask.
+    [maskCheckBox setState: NSOnState];
   }
-  [mainView setFileItemMask:fileItemMask];
+  
+  [self maskChanged];
 }
 
 - (void) maskWindowCancelAction:(NSNotification*)notification {
