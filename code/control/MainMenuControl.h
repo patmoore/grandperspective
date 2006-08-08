@@ -1,13 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
 @class WindowManager;
-@class AsynchronousTaskManager;
+@class VisibleAsynchronousTaskManager;
 @class EditFilterWindowControl;
 
 @interface MainMenuControl : NSObject {
   WindowManager  *windowManager;
   
-  AsynchronousTaskManager  *scanTaskManager;
+  VisibleAsynchronousTaskManager  *scanTaskManager;
   
   EditFilterWindowControl  *editFilterWindowControl;
 }

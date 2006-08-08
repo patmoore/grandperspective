@@ -3,6 +3,13 @@
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
             ACTIONS = {abort = id; }; 
+            CLASS = ProgressPanelControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {progressIndicator = NSProgressIndicator; progressText = NSTextField; }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {
+            ACTIONS = {abort = id; }; 
             CLASS = ScanProgressPanelControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {

@@ -168,8 +168,8 @@
     DrawTaskInput  *drawInput = 
       [[DrawTaskInput alloc] initWithItemTree:[pathModel visibleItemTree] 
                                bounds:[self bounds]];
-    [drawTaskManager asynchronouslyRunTaskWithInput:drawInput callBack:self 
-                       selector:@selector(itemTreeImageReady:)];
+    [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
+                       selector: @selector(itemTreeImageReady:)];
     [drawInput release];
   }
   else {

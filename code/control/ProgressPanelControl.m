@@ -1,15 +1,15 @@
-#import "ScanProgressPanelControl.h"
-
-#import "TreeBuilder.h"
-#import "DirectoryItem.h"
+#import "ProgressPanelControl.h"
 
 
-@implementation ScanProgressPanelControl
+@implementation ProgressPanelControl
 
 - (id) init {
-  if (self = [super initWithWindowNibName:@"ScanProgressPanel" owner:self]) {
-    // Trigger loading of window.
-    [self window];
+  return [self initWithTitle: nil];
+}
+
+- (id) initWithTitle: (NSString*) titleVal {
+  if (self = [super initWithWindowNibName: @"ProgressPanel" owner: self]) {
+    title = [titleVal retain];
   }
   
   return self;
@@ -17,42 +17,49 @@
 
 
 - (void) dealloc {
-  NSLog(@"ScanProgressPanelControl dealloc");
-  NSAssert(treeBuilder == nil, @"TreeBuilder should be nil.");
+  NSLog(@"ProgressPanelControl dealloc");
+  
+  [title release];
+  [cancelCallback release];
   
   [super dealloc];  
 }
 
 
-- (IBAction) abort:(id)sender {
-  [treeBuilder abort];
+- (void) taskStarted: (NSString *)taskDescription
+           cancelCallback: (NSObject *)callback selector: (SEL) selector {
+  NSAssert( cancelCallback==nil, @"Callback already set." );
+  
+  cancelCallback = [callback retain];
+  cancelCallbackSelector = selector;
+
+  [[self window] setTitle: title];
+
+  [progressText setStringValue: taskDescription];
+
+  [[self window] center];
+  [[self window] orderFront: self];
+
+  [progressIndicator startAnimation: self];
+}
+
+- (void) taskStopped {
+  NSAssert( cancelCallback!=nil, @"Callback already nil.");
+  
+  [cancelCallback release];
+  cancelCallback = nil;
+  
+  [progressIndicator stopAnimation: self];  
+  
+  [[self window] close];
 }
 
 
-- (DirectoryItem*) scanDirectory:(NSString*)dirName {
-  NSDate  *startTime = [NSDate date];
-  
-  [progressText setStringValue:[NSString stringWithFormat:@"Scanning %@", 
-                                           dirName]];
-  [[self window] center];
-  [[self window] orderFront:self];
-  
-  [progressIndicator startAnimation:nil];
-  
-  treeBuilder = [[TreeBuilder alloc] init];
-  
-  DirectoryItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
-  
-  [treeBuilder release];
-  treeBuilder = nil;
-  
-  [progressIndicator stopAnimation:nil];
-  NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
-        [itemTreeRoot itemSize], -[startTime timeIntervalSinceNow]);
-  
-  [[self window] close];
-  
-  return itemTreeRoot;
+- (IBAction) abort: (id) sender {
+  [cancelCallback performSelector: cancelCallbackSelector];
+ 
+  // No need to invoke "taskStopped". This is the responsibility of the caller
+  // of "taskStarted".
 }
 
 @end

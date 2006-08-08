@@ -55,7 +55,7 @@ enum {
   [settingsLock release];
   
   [nextTaskInput release];
-  [nextTaskCallBack release];
+  [nextTaskCallback release];
   
   [super dealloc];
 }
@@ -86,8 +86,8 @@ enum {
 }
 
 
-- (void) asynchronouslyRunTaskWithInput:(id)input callBack:(id)callBack 
-           selector:(SEL)selector {
+- (void) asynchronouslyRunTaskWithInput: (id) input callback: (id) callback 
+           selector: (SEL) selector {
 
   [settingsLock lock];
   NSAssert(alive, @"Disturbing a dead task manager.");
@@ -96,11 +96,11 @@ enum {
     [nextTaskInput release];
     nextTaskInput = [input retain];
   }
-  if (callBack != nextTaskCallBack) {
-    [nextTaskCallBack release];
-    nextTaskCallBack = [callBack retain];
+  if (callback != nextTaskCallback) {
+    [nextTaskCallback release];
+    nextTaskCallback = [callback retain];
   }
-  nextTaskCallBackSelector = selector;
+  nextTaskCallbackSelector = selector;
 
   if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
     // Abort task 
@@ -132,10 +132,10 @@ enum {
     if (alive) {
       NSAssert(nextTaskInput != nil, @"Task not set properly.");
       id  taskInput = [nextTaskInput autorelease];
-      id  taskCallBack = [nextTaskCallBack autorelease];
-      SEL  taskCallBackSelector = nextTaskCallBackSelector;
+      NSObject  *taskCallback = [nextTaskCallback autorelease];
+      SEL  taskCallbackSelector = nextTaskCallbackSelector;
       nextTaskInput = nil;
-      nextTaskCallBack = nil;
+      nextTaskCallback = nil;
       
       // The previous task may have been aborted. Make sure that the executor
       // is enabled again (it may be aborted again of course).
@@ -148,11 +148,9 @@ enum {
       id  taskOutput = [executor runTaskWithInput:taskInput];
       [settingsLock lock];
       
-      if (taskOutput != nil) {
-        [taskCallBack performSelectorOnMainThread:taskCallBackSelector
-                        withObject:taskOutput waitUntilDone:NO];
-      }
-      
+      [taskCallback performSelectorOnMainThread: taskCallbackSelector
+                      withObject: taskOutput waitUntilDone: NO];
+            
       if (alive && nextTaskInput==nil) {      
         [workLock unlockWithCondition:BACKGROUND_THREAD_IDLE];
       }

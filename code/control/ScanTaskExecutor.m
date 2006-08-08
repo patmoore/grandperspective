@@ -1,41 +1,56 @@
 #import "ScanTaskExecutor.h"
 
-#import "ScanProgressPanelControl.h"
-#import "FileItem.h"
+#import "TreeBuilder.h"
+#import "DirectoryItem.h"
 
 
 @implementation ScanTaskExecutor
 
 - (id) init {
   if (self = [super init]) {
-    scanProgressPanelControl = [[ScanProgressPanelControl alloc] init];
     enabled = YES;
   }
   return self;
 }
 
 - (void) dealloc {
-  [scanProgressPanelControl release];
+  [treeBuilder release];
   
   [super dealloc];
 }
 
 
-- (id) runTaskWithInput: (id)input {
-  if (enabled) {
-    NSString  *dirName = input;
-    return [scanProgressPanelControl scanDirectory:dirName];
-  }
-  else {
+- (id) runTaskWithInput: (id) input {
+  if (!enabled) {
     return nil;
   }
+  
+  NSDate  *startTime = [NSDate date];
+  
+  NSAssert( treeBuilder==nil, @"treeBuilder already set.");
+  treeBuilder = [[TreeBuilder alloc] init];
+  
+  NSString  *dirName = input;
+  DirectoryItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
+  
+  [treeBuilder release];
+  treeBuilder = nil;
+  
+  if (itemTreeRoot != nil) {
+    NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
+            [itemTreeRoot itemSize], -[startTime timeIntervalSinceNow]);
+  }
+  
+  return itemTreeRoot;
 }
 
 
 - (void) disable {
   enabled = NO;
-  [scanProgressPanelControl abort:self];
+
+  [treeBuilder abort];
 }
+
 
 - (void) enable {
   enabled = YES;

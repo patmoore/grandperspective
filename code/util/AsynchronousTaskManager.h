@@ -16,8 +16,8 @@
 
   // Settings for the next task to run
   id  nextTaskInput;
-  id  nextTaskCallBack;
-  SEL  nextTaskCallBackSelector; 
+  NSObject  *nextTaskCallback;
+  SEL  nextTaskCallbackSelector; 
 }
 
 
@@ -30,9 +30,9 @@
 - (void) dispose;
 
 // Note: input is assumed to be immutable. 
-// Note: Should be called from main thread, and callBack will be notified
+// Note: Should be called from main thread, and "callback" will be notified
 // from main thread as well.
-- (void) asynchronouslyRunTaskWithInput:(id)input callBack:(id)callBack 
-           selector:(SEL)selector;
+- (void) asynchronouslyRunTaskWithInput: (id) input callback: (id) callback 
+           selector: (SEL) selector;
 
 @end

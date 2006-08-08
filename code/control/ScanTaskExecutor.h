@@ -2,11 +2,11 @@
 
 #import "TaskExecutor.h"
 
-@class ScanProgressPanelControl;
+@class TreeBuilder;
 
 @interface ScanTaskExecutor : NSObject <TaskExecutor> {
-  ScanProgressPanelControl  *scanProgressPanelControl;
-  BOOL  enabled;
+  BOOL  enabled;  
+  TreeBuilder  *treeBuilder;
 }
 
 @end

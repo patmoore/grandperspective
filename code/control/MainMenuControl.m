@@ -12,6 +12,7 @@
 
 #import "WindowManager.h"
 
+#import "VisibleAsynchronousTaskManager.h"
 #import "AsynchronousTaskManager.h"
 #import "ScanTaskExecutor.h"
 
@@ -23,6 +24,7 @@
 - (id) initWithWindowManager:(WindowManager*)windowManager;
 
 - (void) createWindowForTree:(DirectoryItem*)itemTree;
+
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree;
 
@@ -62,9 +64,14 @@
   if (self = [super init]) {
     windowManager = [[WindowManager alloc] init];  
 
-    scanTaskManager = 
-      [[AsynchronousTaskManager alloc] initWithTaskExecutor:
-         [[[ScanTaskExecutor alloc] init] autorelease]];
+    AsynchronousTaskManager  *actualScanTaskManager = 
+      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
+          [[[ScanTaskExecutor alloc] init] autorelease]] autorelease];
+
+    scanTaskManager =
+      [[VisibleAsynchronousTaskManager alloc] 
+         initWithTaskManager: actualScanTaskManager 
+         panelTitle: @"Scanning in progress"];
   }
   return self;
 }
@@ -112,9 +119,11 @@
     
     PostScanWindowCreator  *windowCreator =
       [[PostScanWindowCreator alloc] initWithWindowManager: windowManager];
-      
+
     [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
-                       callBack: windowCreator
+                       description: [NSString stringWithFormat: @"Scanning %@",
+                                                dirName]
+                       callback: windowCreator
                        selector: @selector(createWindowForTree:)];
                        
     [windowCreator release];
@@ -140,7 +149,9 @@
             settings: [oldControl directoryViewControlSettings]];
     
     [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
-                       callBack: windowCreator
+                       description: [NSString stringWithFormat: @"Scanning %@",
+                                       dirName]
+                       callback: windowCreator
                        selector: @selector(createWindowForTree:)];
                        
     [windowCreator release];
