@@ -1,5 +1,6 @@
 #import "DrawTaskExecutor.h"
 
+#import "FileItem.h"
 #import "ItemTreeDrawer.h"
 #import "DrawTaskInput.h"
 #import "FileItemHashing.h"
@@ -59,12 +60,12 @@
 - (id) runTaskWithInput: (id)input {
   if (enabled) {
     // Always set, as it may have changed.
-    [treeDrawer setFileItemHashing:fileItemHashing];
-    [treeDrawer setFileItemMask:fileItemMask];
+    [treeDrawer setFileItemHashing: fileItemHashing];
+    [treeDrawer setFileItemMask: fileItemMask];
 
     DrawTaskInput  *drawingInput = input;
     
-    return [treeDrawer drawImageOfItemTree: [drawingInput itemTree] 
+    return [treeDrawer drawImageOfItemTree: [drawingInput itemSubTree] 
                          inRect: [drawingInput bounds]];
   }
   else {

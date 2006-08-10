@@ -1,15 +1,15 @@
 #import <Cocoa/Cocoa.h>
 
-@class Item;
+@class FileItem;
 
 @interface DrawTaskInput : NSObject {
-  Item  *itemTree;
+  FileItem  *itemTree;
   NSRect  bounds;
 }
 
-- (id) initWithItemTree:(Item*)itemTree bounds:(NSRect)bounds;
+- (id) initWithItemSubTree: (FileItem *)itemTree bounds: (NSRect) bounds;
 
-- (Item*) itemTree;
+- (FileItem*) itemSubTree;
 - (NSRect) bounds;
 
 @end

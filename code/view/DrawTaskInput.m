@@ -1,13 +1,18 @@
 #import "DrawTaskInput.h"
 
-#import "Item.h"
+#import "FileItem.h"
 
 
 @implementation DrawTaskInput
 
-- (id) initWithItemTree:(Item*)itemTreeVal bounds:(NSRect)boundsVal {
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithItemTree:bounds: instead");
+}
+
+- (id) initWithItemSubTree: (FileItem *)tree bounds: (NSRect) boundsVal {
   if (self = [super init]) {
-    itemTree = [itemTreeVal retain];
+    itemTree = [tree retain];
     bounds = boundsVal;
   }
   return self;
@@ -20,7 +25,7 @@
 }
 
 
-- (Item*) itemTree {
+- (FileItem*) itemSubTree {
   return itemTree;
 }
 

@@ -166,7 +166,7 @@
     
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
-      [[DrawTaskInput alloc] initWithItemTree:[pathModel visibleItemTree] 
+      [[DrawTaskInput alloc] initWithItemSubTree:[pathModel visibleItemTree] 
                                bounds:[self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
                        selector: @selector(itemTreeImageReady:)];
