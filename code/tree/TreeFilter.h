@@ -10,6 +10,8 @@
 
   TreeBalancer  *treeBalancer;
   NSObject <FileItemTest>  *itemTest;
+
+  BOOL  abort;
   
 @private
   NSMutableArray*  tmpDirItems;
@@ -20,5 +22,7 @@
 - (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest;
 
 - (DirectoryItem*) filterItemTree:(DirectoryItem*) dirItem;
+
+- (void) abort;
 
 @end

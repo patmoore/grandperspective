@@ -8,6 +8,8 @@
   WindowManager  *windowManager;
   
   VisibleAsynchronousTaskManager  *scanTaskManager;
+  VisibleAsynchronousTaskManager  *rescanTaskManager;
+  VisibleAsynchronousTaskManager  *filterTaskManager;
   
   EditFilterWindowControl  *editFilterWindowControl;
 }

@@ -7,11 +7,11 @@
 
 @interface TreeFilter (PrivateMethods)
 
-- (void) flattenAndFilterTree:(Item*)item
-           directoryItems:(NSMutableArray*)dirItems
-                fileItems:(NSMutableArray*)fileItems;
+- (void) flattenAndFilterSiblings: (Item *)item
+           directoryItems: (NSMutableArray *)dirItems
+                fileItems: (NSMutableArray *)fileItems;
 
-- (void) flattenAndFilterTree:(Item*)item;
+- (void) flattenAndFilterSiblings: (Item *)item;
 
 @end // @interface TreeFilter (PrivateMethods)
 
@@ -23,6 +23,8 @@
     itemTest = [itemTestVal retain];
     
     treeBalancer = [[TreeBalancer alloc] init];
+
+    abort = NO;
 
     tmpDirItems = nil;
     tmpFileItems = nil;
@@ -41,60 +43,78 @@
 
 - (DirectoryItem*) filterItemTree:(DirectoryItem*) dirItem {
   DirectoryItem  *newDirItem = 
-    [[[DirectoryItem alloc] initWithName:[dirItem name] 
-                              parent:[dirItem parentDirectory]] autorelease];
+    [[[DirectoryItem alloc] initWithName: [dirItem name] 
+                              parent: [dirItem parentDirectory]] autorelease];
 
-  NSMutableArray  *dirChildren = [[NSMutableArray alloc] initWithCapacity:64];
+  NSMutableArray  *dirChildren = [[NSMutableArray alloc] initWithCapacity: 64];
   NSMutableArray  *fileChildren = [[NSMutableArray alloc] initWithCapacity:512]; 
 
-  [self flattenAndFilterTree:[dirItem getContents] 
+  [self flattenAndFilterSiblings: [dirItem getContents] 
           directoryItems: dirChildren fileItems: fileChildren];
 
-  ITEM_SIZE  dirSize = 0; 
-  int  i;
+  if (!abort) { // Break recursion when task has been aborted.
+    ITEM_SIZE  dirSize = 0; 
+    int  i;
   
-  // Add up the size of all file items that passed the test
-  for (i = [fileChildren count]; --i >= 0; ) {
-    FileItem  *oldFileItem = [fileChildren objectAtIndex:i];
-    FileItem  *newFileItem = 
-      [[FileItem alloc] initWithName:[oldFileItem name] parent:newDirItem
-                          size:[oldFileItem itemSize]];
+    // Add up the size of all file items that passed the test
+    for (i = [fileChildren count]; --i >= 0; ) {
+      FileItem  *oldFileItem = [fileChildren objectAtIndex: i];
+      FileItem  *newFileItem = 
+        [[FileItem alloc] initWithName: [oldFileItem name] parent: newDirItem
+                            size: [oldFileItem itemSize]];
       
-    [fileChildren replaceObjectAtIndex:i withObject:newFileItem];  
-    dirSize += [newFileItem itemSize];
-  }
+      [fileChildren replaceObjectAtIndex:i withObject:newFileItem];  
+      dirSize += [newFileItem itemSize];
+    }
   
-  // Filter the contents of all directory items
-  for (i = [dirChildren count]; --i >= 0; ) {
-    DirectoryItem  *oldSubDirItem = [dirChildren objectAtIndex:i];
-    DirectoryItem  *newSubDirItem = [self filterItemTree:oldSubDirItem];
+    // Filter the contents of all directory items
+    for (i = [dirChildren count]; --i >= 0; ) {
+      DirectoryItem  *oldSubDirItem = [dirChildren objectAtIndex: i];
+      DirectoryItem  *newSubDirItem = [self filterItemTree: oldSubDirItem];
     
-    [dirChildren replaceObjectAtIndex:i withObject:newSubDirItem];
-    dirSize += [newSubDirItem itemSize];
-  }
+      if (newSubDirItem != nil) {
+        // Check to prevent inserting "nil" when filtering was aborted.
+        
+        [dirChildren replaceObjectAtIndex: i withObject: newSubDirItem];
+        dirSize += [newSubDirItem itemSize];
+      }
+      else {
+        // There's really no point in doing this, as the entire tree will
+        // be discarded anyway. But hey, omitting this feels wrong. ;-)
+        
+        dirSize += [oldSubDirItem itemSize];
+      }
+    }
   
-  Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];
-  Item  *dirTree = [treeBalancer createTreeForItems: dirChildren];
-  Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
-                                       second: dirTree];
+    Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];
+    Item  *dirTree = [treeBalancer createTreeForItems: dirChildren];
+    Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
+                                         second: dirTree];
                                        
+    [newDirItem setDirectoryContents: contentTree size: dirSize];
+  }
+
   [dirChildren release];
   [fileChildren release];
   
-  [newDirItem setDirectoryContents:contentTree size:dirSize];
-
-  return newDirItem;
+  // Must check "abort" flag again, as otherwise the returned tree could be 
+  // corrupt.
+  return (abort ? nil : newDirItem);
 }
 
+
+- (void) abort {
+  abort = YES;
+}
 
 @end
 
 
 @implementation TreeFilter (PrivateMethods)
 
-- (void) flattenAndFilterTree:(Item*)item
-           directoryItems:(NSMutableArray*)dirItems
-                fileItems:(NSMutableArray*)fileItems {
+- (void) flattenAndFilterSiblings: (Item *)item
+           directoryItems:(NSMutableArray *)dirItems
+                fileItems:(NSMutableArray *)fileItems {
   if (item == nil) {
     // All done.
     return;
@@ -106,16 +126,20 @@
   tmpDirItems = dirItems;
   tmpFileItems = fileItems;
   
-  [self flattenAndFilterTree:item];
+  [self flattenAndFilterSiblings: item];
   
   tmpDirItems = nil;
   tmpFileItems = nil;
 }
 
-- (void) flattenAndFilterTree:(Item*)item  {
+- (void) flattenAndFilterSiblings: (Item *)item  {
+  if (abort) {
+    return;
+  }
+
   if ([item isVirtual]) {
-    [self flattenAndFilterTree:[((CompoundItem*)item) getFirst]];
-    [self flattenAndFilterTree:[((CompoundItem*)item) getSecond]];
+    [self flattenAndFilterSiblings: [((CompoundItem*)item) getFirst]];
+    [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
   else if ([((FileItem*)item) isPlainFile]) {
     if ([itemTest testFileItem: ((FileItem*)item)] ) {

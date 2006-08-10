@@ -86,6 +86,14 @@ enum {
 }
 
 
+- (void) abortTask {
+  if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
+    // Abort task
+    [executor disable];
+  }
+}
+
+
 - (void) asynchronouslyRunTaskWithInput: (id) input callback: (id) callback 
            selector: (SEL) selector {
 

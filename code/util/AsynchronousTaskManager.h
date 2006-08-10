@@ -23,16 +23,19 @@
 
 - (id) initWithTaskExecutor: (NSObject <TaskExecutor>*)executor;
 
-- (NSObject <TaskExecutor>*) taskExecutor;
-
 // Call to free used resources (in particular the background thread that is 
 // being used).
 - (void) dispose;
+
+- (NSObject <TaskExecutor>*) taskExecutor;
+
+// Aborts the currently running task (if any)
+- (void) abortTask;
 
 // Note: input is assumed to be immutable. 
 // Note: Should be called from main thread, and "callback" will be notified
 // from main thread as well.
 - (void) asynchronouslyRunTaskWithInput: (id) input callback: (id) callback 
            selector: (SEL) selector;
-
+           
 @end

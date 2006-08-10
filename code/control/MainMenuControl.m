@@ -15,9 +15,13 @@
 #import "VisibleAsynchronousTaskManager.h"
 #import "AsynchronousTaskManager.h"
 #import "ScanTaskExecutor.h"
+#import "RescanTaskInput.h"
+#import "RescanTaskExecutor.h"
+#import "FilterTaskInput.h"
+#import "FilterTaskExecutor.h"
 
 
-@interface PostScanWindowCreator : NSObject {
+@interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
 }
 
@@ -28,10 +32,10 @@
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree;
 
-@end
+@end // @interface FreshDirViewWindowCreator
 
 
-@interface PostRescanWindowCreator : PostScanWindowCreator {
+@interface DerivedDirViewWindowCreator : FreshDirViewWindowCreator {
   ItemPathModel  *targetPath;
   TreeHistory  *history;
   DirectoryViewControlSettings  *settings;
@@ -42,7 +46,7 @@
          history: (TreeHistory *)history
          settings: (DirectoryViewControlSettings *)settings;
 
-@end
+@end // @interface DerivedDirViewWindowCreator
 
 
 @interface MainMenuControl (PrivateMethods)
@@ -51,11 +55,10 @@
 - (void) editFilterWindowOkAction:(NSNotification*)notification;
 
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
-- (void) duplicateCurrentWindowFiltered: (NSObject <FileItemTest> *)filterTest;
 
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control;
 
-@end
+@end // @interface MainMenuControl (PrivateMethods)
 
 
 @implementation MainMenuControl
@@ -71,7 +74,25 @@
     scanTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
          initWithTaskManager: actualScanTaskManager 
-         panelTitle: @"Scanning in progress"];
+           panelTitle: @"Scanning in progress"];
+    
+    AsynchronousTaskManager  *actualRescanTaskManager = 
+      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
+          [[[RescanTaskExecutor alloc] init] autorelease]] autorelease];
+
+    rescanTaskManager =
+      [[VisibleAsynchronousTaskManager alloc] 
+         initWithTaskManager: actualRescanTaskManager 
+           panelTitle: @"Rescanning in progress"];
+                   
+    AsynchronousTaskManager  *actualFilterTaskManager = 
+      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
+          [[[FilterTaskExecutor alloc] init] autorelease]] autorelease];
+
+    filterTaskManager =
+      [[VisibleAsynchronousTaskManager alloc] 
+         initWithTaskManager: actualFilterTaskManager 
+           panelTitle: @"Filtering in progress"];
   }
   return self;
 }
@@ -81,6 +102,10 @@
   
   [scanTaskManager dispose];
   [scanTaskManager release];
+  [rescanTaskManager dispose];
+  [rescanTaskManager release];
+  [filterTaskManager dispose];
+  [filterTaskManager release];
   
   [editFilterWindowControl release];
 
@@ -117,9 +142,15 @@
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
     
-    PostScanWindowCreator  *windowCreator =
-      [[PostScanWindowCreator alloc] initWithWindowManager: windowManager];
+    FreshDirViewWindowCreator  *windowCreator =
+      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
 
+    [rescanTaskManager abortTask];
+    // The TreeBuilder implementation is such that only one scan can happen
+    // at any one time. Therefore, we have to make sure that no rescan task
+    // is currently being carried out. Note: any ongoing scan task will be
+    // aborted implicitely by the scanTaskManager.
+    
     [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
                        description: [NSString stringWithFormat: @"Scanning %@",
                                                 dirName]
@@ -132,7 +163,6 @@
 
 
 - (IBAction) rescanDirectoryView:(id)sender {
-  NSLog(@"rescan");
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -140,55 +170,90 @@
 
   if (itemPathModel != nil) {
     NSString  *dirName = [itemPathModel rootFilePathName];
-        
-    PostRescanWindowCreator  *windowCreator =
-      [[PostRescanWindowCreator alloc] 
+    TreeHistory  *oldHistory = [oldControl treeHistory];
+    
+    
+    DerivedDirViewWindowCreator  *windowCreator =
+      [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
             targetPath: itemPathModel 
-            history: [oldControl treeHistory]
+            history: [oldHistory historyAfterRescanning]
             settings: [oldControl directoryViewControlSettings]];
     
-    [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
-                       description: [NSString stringWithFormat: @"Scanning %@",
+    RescanTaskInput  *input = 
+      [[RescanTaskInput alloc] initWithDirectoryName: dirName
+                                 filterTest: [oldHistory fileItemFilter]];
+    
+    [scanTaskManager abortTask];
+    // The TreeBuilder implementation is such that only one scan can happen
+    // at any one time. Therefore, we have to make sure that no scan task
+    // is currently being carried out. Note: any ongoing rescan task will be 
+    // aborted implicitely by the rescanTaskManager.
+    
+    [rescanTaskManager asynchronouslyRunTaskWithInput: input
+                         description: 
+                           [NSString stringWithFormat: @"Scanning %@",
                                        dirName]
-                       callback: windowCreator
-                       selector: @selector(createWindowForTree:)];
-                       
+                         callback: windowCreator
+                         selector: @selector(createWindowForTree:)];
+
+    [input release];                       
     [windowCreator release];
   }
 }
 
 
 - (IBAction) filterDirectoryView:(id)sender {
+  DirectoryViewControl  *oldControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+
   if (editFilterWindowControl == nil) {
     // Lazily create it
     editFilterWindowControl = [[EditFilterWindowControl alloc] init];
     
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(editFilterWindowCancelAction:)
-          name:@"cancelPerformed" object:editFilterWindowControl];
-    [nc addObserver:self selector:@selector(editFilterWindowOkAction:)
-          name:@"okPerformed" object:editFilterWindowControl];
+    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
+          name: @"cancelPerformed" object: editFilterWindowControl];
+    [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
+          name: @"okPerformed" object: editFilterWindowControl];
 
-    [[editFilterWindowControl window] setTitle:@"Apply filter"];
+    [[editFilterWindowControl window] setTitle: @"Apply filter"];
 
     [editFilterWindowControl removeApplyButton];    
-  }
+  }  
+  [editFilterWindowControl representFileItemTest: [oldControl fileItemMask]];
   
-  DirectoryViewControl  *viewControl = 
-    [[[NSApplication sharedApplication] mainWindow] windowController];
-
-  [editFilterWindowControl representFileItemTest:[viewControl fileItemMask]];
-  
-  int  status = [NSApp runModalForWindow:[editFilterWindowControl window]];
+  int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
   [[editFilterWindowControl window] close];
     
   if (status == NSRunStoppedResponse) {
     // get rule from window
-    NSObject <FileItemTest>  *fileItemTest =
+    NSObject <FileItemTest>  *filterTest =
       [editFilterWindowControl createFileItemTest];
+      
+    ItemPathModel  *oldPathModel = [oldControl itemPathModel];
 
-    [self duplicateCurrentWindowFiltered: fileItemTest];
+    DerivedDirViewWindowCreator  *windowCreator =
+      [[DerivedDirViewWindowCreator alloc] 
+          initWithWindowManager: windowManager
+            targetPath: oldPathModel
+            history: [[oldControl treeHistory] 
+                         historyAfterFiltering: filterTest]
+            settings: [oldControl directoryViewControlSettings]];
+    
+    FilterTaskInput  *input = 
+      [[FilterTaskInput alloc] initWithItemTree: [oldPathModel itemTree]
+                                 filterTest: filterTest];
+    
+    [filterTaskManager asynchronouslyRunTaskWithInput: input
+                         description: 
+                           [NSString stringWithFormat: @"Filtering %@",
+                                       [oldPathModel rootFilePathName]]
+                         callback: windowCreator
+                         selector: @selector(createWindowForTree:)];
+
+    [input release];
+    [windowCreator release];
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
@@ -253,36 +318,6 @@
 }
 
 
-- (void) duplicateCurrentWindowFiltered: (NSObject <FileItemTest> *)filterTest {
-           
-  DirectoryViewControl  *oldControl = 
-    [[[NSApplication sharedApplication] mainWindow] windowController];
-
-  TreeFilter  *treeFilter = 
-    [[[TreeFilter alloc] initWithFileItemTest:filterTest] autorelease];
-  DirectoryItem  *itemTree = 
-    [treeFilter filterItemTree:[[oldControl itemPathModel] itemTree]];
-
-  ItemPathModel  *itemPathModel = 
-                   [[[ItemPathModel alloc] initWithTree:itemTree] autorelease];
-
-  TreeHistory  *treeHistory = 
-    [[oldControl treeHistory] historyAfterFiltering:filterTest];
-
-  DirectoryViewControl  *newControl = 
-    [[DirectoryViewControl alloc] 
-        initWithItemPathModel: itemPathModel
-          history: treeHistory
-          settings: [oldControl directoryViewControlSettings]];
-  // Note: The control should auto-release itself when its window closes
-    
-  NSString  *title = [MainMenuControl windowTitleForDirectoryView: newControl];
-    
-  // Force loading (and showing) of the window.
-  [windowManager addWindow: [newControl window] usingTitle: title];
-}
-
-
 // Creates window title based on scan location, scan time and filter (if any).
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeHistory  *history = [control treeHistory];
@@ -304,7 +339,7 @@
 @end // @implementation MainMenuControl (PrivateMethods)
 
 
-@implementation PostScanWindowCreator
+@implementation FreshDirViewWindowCreator
 
 // Overrides designated initialiser.
 - (id) init {
@@ -347,15 +382,15 @@
   return [[[DirectoryViewControl alloc] initWithItemTree:tree] autorelease];
 }
 
-@end // @implementation PostScanWindowCreator
+@end // @implementation FreshDirViewWindowCreator
 
 
-@implementation PostRescanWindowCreator
+@implementation DerivedDirViewWindowCreator
 
 // Overrides designated initialiser.
 - (id) initWithWindowManager:(WindowManager*)windowManagerVal {
   NSAssert(NO, 
-    @"Use initWithWindowManager:targetPath:filter:settings instead.");
+    @"Use initWithWindowManager:targetPath:history:settings instead.");
 }
 
 - (id) initWithWindowManager: (WindowManager *)windowManagerVal
@@ -365,9 +400,10 @@
          
   if (self = [super initWithWindowManager:windowManagerVal]) {
     targetPath = [targetPathVal retain];
-    // Note: The state of "targetPath" may change during scanning (which
-    // happens in the background). This is okay though. When the scanning is 
-    // done it will simply match the current state.
+    // Note: The state of "targetPath" may change during scanning/filtering 
+    // (which happens in the background). This is okay and even desired. When 
+    // the callback occurs the path in the new window will match the current
+    // path in the original window.
      
     history = [historyVal retain];
     settings = [settingsVal retain];
@@ -386,19 +422,7 @@
 
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree {
-  
-  TreeHistory  *newHistory = [history historyAfterRescanning]; 
-  
-  // Apply the filter again.
-  if ([history fileItemFilter] != nil) {
-    TreeFilter  *treeFilter = 
-      [[TreeFilter alloc] initWithFileItemTest: [history fileItemFilter]];
-     
-    tree = [treeFilter filterItemTree:tree];
-    
-    [treeFilter release];
-  }
-     
+       
   // Try to match the path.
   ItemPathModel  *path = 
     [[[ItemPathModel alloc] initWithTree:tree] autorelease];
@@ -437,10 +461,9 @@
         
   [path suppressItemPathChangedNotifications:NO];
 
-  return [[DirectoryViewControl alloc] 
-            initWithItemPathModel: path 
-            history: newHistory
-            settings: settings];
+  return [[[DirectoryViewControl alloc] 
+             initWithItemPathModel: path history: history settings: settings]
+               autorelease];
 }
 
-@end // @implementation PostRescanWindowCreator
+@end // @implementation DerivedDirViewWindowCreator

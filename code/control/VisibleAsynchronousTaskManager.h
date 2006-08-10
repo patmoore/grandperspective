@@ -18,11 +18,14 @@
 - (id) initWithTaskManager: (AsynchronousTaskManager*) taskManager
          panelTitle: (NSString *)title;
 
+- (void) dispose;
+
+
+- (void) abortTask;
+
 - (void) asynchronouslyRunTaskWithInput: (id) input 
            description: (NSString *)description
            callback: (NSObject *)callback 
            selector: (SEL) selector;
-           
-- (void) dispose;
 
 @end

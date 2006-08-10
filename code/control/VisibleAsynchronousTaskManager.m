@@ -44,6 +44,20 @@
   [super dealloc];
 }
 
+- (void) dispose {
+  NSAssert( taskManager != nil, @"TaskManager already nil.");
+  [taskManager dispose];
+
+  // Set it to "nil" to prevent it from being disposed once more.
+  [taskManager release];
+  taskManager = nil;
+}
+
+
+- (void) abortTask {
+  [taskManager abortTask];
+}
+
 
 - (void) asynchronouslyRunTaskWithInput: (id) input 
            description: (NSString *)description
@@ -70,15 +84,6 @@
                  
   [callbackHandler release];
   [progressPanel release];
-}
-           
-- (void) dispose {
-  NSAssert( taskManager != nil, @"TaskManager already nil.");
-  [taskManager dispose];
-
-  // Set it to "nil" to prevent it from being disposed once more.
-  [taskManager release];
-  taskManager = nil;
 }
 
 @end // @implementation VisibleAsynchronousTaskManager
