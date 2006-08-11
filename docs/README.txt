@@ -23,12 +23,16 @@ rectangles as square as possible.
 
   This version of the application is still built for Macs with a
   PowerPC processor. Although the source code has already been
-  modified so that it should also compile and run properly on Intel
-  processors (thanks to Craig Hughes for his help with this), I do not
-  yet have the software to build Universal Binaries, nor easy access
-  to an Intel Mac to actually test it. This makes releasing an
-  "official" Universal Binary a bit cumbersome, but expect one soon
-  anyway.
+  modified so that it compiles and runs on Intel processors (thanks
+  to Craig Hughes for his help with this), I do not yet have the 
+  software to build Universal Binaries (donations for the required 
+  operating system upgrade are appreciated :-), nor easy access to
+  an Intel Mac to actually test it. This makes releasing an "official" 
+  Universal Binary a bit cumbersome. However, Martin Kahr has very 
+  kindly been making unofficial GrandPerspective Universal Binaries
+  available. See the GrandPerspective website for details on where to
+  download it.
+
 
 - Mac OS X, 10.2 or higher
   
