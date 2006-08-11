@@ -20,14 +20,14 @@
 
 @interface DirectoryView (PrivateMethods)
 
-- (void) itemTreeImageReady:(id)image;
+- (void) itemTreeImageReady: (id) image;
 
-- (void) visibleItemPathChanged:(NSNotification*)notification;
-- (void) visibleItemTreeChanged:(NSNotification*)notification;
-- (void) visibleItemPathLockingChanged:(NSNotification*)notification;
-- (void) windowMainStatusChangedNotification:(NSNotification*)notification;
+- (void) visibleItemPathChanged: (NSNotification *)notification;
+- (void) visibleItemTreeChanged: (NSNotification *)notification;
+- (void) visibleItemPathLockingChanged: (NSNotification *)notification;
+- (void) windowMainStatusChanged: (NSNotification *) notification;
 
-- (void) buildPathToMouseLoc:(NSPoint)point;
+- (void) buildPathToMouseLoc: (NSPoint) point;
 
 @end  
 
@@ -77,26 +77,26 @@
   pathModel = [pathModelVal retain];
 
   [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(visibleItemPathChanged:)
-      name:@"visibleItemPathChanged" object:pathModel];
+      addObserver: self selector: @selector(visibleItemPathChanged:)
+      name: @"visibleItemPathChanged" object: pathModel];
   [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(visibleItemTreeChanged:)
-      name:@"visibleItemTreeChanged" object:pathModel];
+      addObserver: self selector: @selector(visibleItemTreeChanged:)
+      name: @"visibleItemTreeChanged" object: pathModel];
   [[NSNotificationCenter defaultCenter]
-      addObserver:self selector:@selector(visibleItemPathLockingChanged:)
-      name:@"visibleItemPathLockingChanged" object:pathModel];
+      addObserver: self selector: @selector(visibleItemPathLockingChanged:)
+      name: @"visibleItemPathLockingChanged" object: pathModel];
           
-  pathBuilder = [[ItemPathBuilder alloc] initWithPathModel:pathModel];
+  pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
 
   [[self window] setAcceptsMouseMovedEvents: 
                    ![pathModel isVisibleItemPathLocked]];
   
   [[NSNotificationCenter defaultCenter]
-    addObserver:self selector:@selector(windowMainStatusChangedNotification:)
-    name:NSWindowDidBecomeMainNotification object:[self window]];
+    addObserver: self selector: @selector(windowMainStatusChanged:)
+    name: NSWindowDidBecomeMainNotification object: [self window]];
   [[NSNotificationCenter defaultCenter]
-    addObserver:self selector:@selector(windowMainStatusChangedNotification:)
-    name:NSWindowDidResignMainNotification object:[self window]];
+    addObserver: self selector: @selector(windowMainStatusChanged:)
+    name: NSWindowDidResignMainNotification object: [self window]];
   
   [self setNeedsDisplay:YES];
 }
@@ -196,7 +196,7 @@
 }
 
 
-- (void) mouseDown:(NSEvent*)theEvent {
+- (void) mouseDown: (NSEvent *)theEvent {
   // Toggle the path locking.
 
   BOOL  wasLocked = [pathModel isVisibleItemPathLocked];
@@ -205,23 +205,36 @@
     [pathModel setVisibleItemPathLocking:NO];
   }
 
-  [self buildPathToMouseLoc:
-          [self convertPoint:[theEvent locationInWindow] fromView:nil]];
+  NSPoint  loc = [theEvent locationInWindow];
+  [self buildPathToMouseLoc: [self convertPoint: loc fromView: nil]];
 
   if (!wasLocked) {
     // Now lock, after having updated path.
-    [pathModel setVisibleItemPathLocking:YES];
+    [pathModel setVisibleItemPathLocking: YES];
   }
 }
 
 
-- (void) mouseMoved:(NSEvent*)theEvent {
-  NSPoint  mouseLoc = 
-                  [self convertPoint:[theEvent locationInWindow] fromView:nil];
-    
-  BOOL isInside = [self mouse:mouseLoc inRect:[self bounds]];
+- (void) mouseMoved: (NSEvent *)theEvent {
+  if ([pathModel isVisibleItemPathLocked]) {
+    // Ignore mouseMoved events the the item path is locked.
+    //
+    // Note: Although this view stops accepting mouse moved events when the
+    // path becomes locked, these may be generated later on anyway, requested
+    // by other components. In particular, mousing over the NSTextViews in the
+    // drawer triggers mouse moved events again.
+    return;
+  }
+
+  NSPoint  loc = [[self window] mouseLocationOutsideOfEventStream];
+  // Note: not using the location returned by [theEvent locationInWindow] as
+  // this is incorrect after the drawer has been clicked on.
+
+  NSPoint  mouseLoc = [self convertPoint: loc fromView: nil];
+  BOOL isInside = [self mouse: mouseLoc inRect: [self bounds]];
+
   if (isInside) {
-    [self buildPathToMouseLoc:mouseLoc];
+    [self buildPathToMouseLoc: mouseLoc];
   }
   else {
     [pathModel clearVisibleItemPath];
@@ -233,30 +246,30 @@
 
 @implementation DirectoryView (PrivateMethods)
 
-
-- (void) itemTreeImageReady:(id)image {
+- (void) itemTreeImageReady: (id) image {
   // Note: This method is called from the main thread (even though it has been
   // triggered by the drawer's background thread). So calling setNeedsDisplay
   // directly is okay.
   [treeImage release];
   treeImage = [image retain];
   
-  [self setNeedsDisplay:YES];  
+  [self setNeedsDisplay: YES];  
 }
 
-- (void) visibleItemPathChanged:(NSNotification*)notification {
-  [self setNeedsDisplay:YES];
+
+- (void) visibleItemPathChanged: (NSNotification *)notification {
+  [self setNeedsDisplay: YES];
 }
 
-- (void) visibleItemTreeChanged:(NSNotification*)notification {
+- (void) visibleItemTreeChanged: (NSNotification *)notification {
   // Discard the existing image.
   [treeImage release];
   treeImage = nil;
   
-  [self setNeedsDisplay:YES];
+  [self setNeedsDisplay: YES];
 }
 
-- (void) visibleItemPathLockingChanged:(NSNotification*)notification {
+- (void) visibleItemPathLockingChanged: (NSNotification *)notification {
   BOOL  locked = [pathModel isVisibleItemPathLocked];
   
   // Update the item path drawer directly. Although the drawer could also
@@ -268,18 +281,17 @@
   [[self window] setAcceptsMouseMovedEvents: 
                    !locked && [[self window] isMainWindow]];
   
-  [self setNeedsDisplay:YES];
+  [self setNeedsDisplay: YES];
 }
 
-
-- (void) windowMainStatusChangedNotification:(NSNotification*)notification {
+- (void) windowMainStatusChanged: (NSNotification *)notification {
   [[self window] setAcceptsMouseMovedEvents: 
                    ![pathModel isVisibleItemPathLocked] && 
                    [[self window] isMainWindow]];
 }
 
 
-- (void) buildPathToMouseLoc:(NSPoint)point {
+- (void) buildPathToMouseLoc: (NSPoint) point {
   [pathBuilder buildVisibleItemPathToPoint: point
                        usingLayoutBuilder: treeLayoutBuilder
                        bounds: [self bounds]];
