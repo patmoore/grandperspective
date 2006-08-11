@@ -94,9 +94,9 @@ FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
     [NSMutableDictionary dictionaryWithCapacity:6];
 
   [colorings setObject:[[[HashingByTopDirectoryName alloc] init] autorelease]
-               forKey:@"top directory"];
+               forKey:@"top folder"];
   [colorings setObject:[[[HashingByDirectoryName alloc] init] autorelease]
-               forKey:@"directory"];
+               forKey:@"folder"];
   [colorings setObject:[[[HashingByExtension alloc] init] autorelease]
                forKey:@"extension"];
   [colorings setObject:[[[HashingByFilename alloc] init] autorelease]
@@ -106,7 +106,7 @@ FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
   [colorings setObject:[[[FileItemHashing alloc] init] autorelease]
                forKey:@"nothing"];
 
-  return [self initWithDictionary:colorings defaultKey:@"directory"];
+  return [self initWithDictionary:colorings defaultKey:@"folder"];
 }
 
 - (id) initWithDictionary:(NSDictionary*)dictionary {
