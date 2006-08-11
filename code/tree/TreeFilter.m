@@ -63,8 +63,10 @@
         [[FileItem alloc] initWithName: [oldFileItem name] parent: newDirItem
                             size: [oldFileItem itemSize]];
       
-      [fileChildren replaceObjectAtIndex:i withObject:newFileItem];  
+      [fileChildren replaceObjectAtIndex: i withObject: newFileItem];  
       dirSize += [newFileItem itemSize];
+      
+      [newFileItem release];
     }
   
     // Filter the contents of all directory items
