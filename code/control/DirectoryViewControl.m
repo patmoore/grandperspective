@@ -183,8 +183,6 @@
 
 // Invoked because the controller is the delegate for the window.
 - (void) windowDidBecomeMain:(NSNotification*)notification {
-  NSLog(@"windowDidBecomeMain %@", [[self window] title]);
-  
   if (editMaskFilterWindowControl != nil) {
     [[editMaskFilterWindowControl window] 
         orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
@@ -193,7 +191,6 @@
 
 // Invoked because the controller is the delegate for the window.
 - (void) windowWillClose:(NSNotification*)notification {
-  NSLog(@"windowWillClose");
   [self autorelease];
 }
 
@@ -374,7 +371,6 @@
 }
 
 - (void) maskWindowDidBecomeKey:(NSNotification*)notification {
-  NSLog(@"maskWindowDidBecomeKey");
   [[self window] orderWindow:NSWindowBelow
                relativeTo:[[editMaskFilterWindowControl window] windowNumber]];
   [[self window] makeMainWindow];

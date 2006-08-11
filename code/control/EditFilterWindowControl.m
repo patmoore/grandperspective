@@ -91,7 +91,7 @@
 }
 
 - (void) dealloc {
-  NSLog(@"EditFilterWindowControl dealloc");
+  NSLog(@"EditFilterWindowControl-dealloc");
 
   [[repositoryTestsByName notificationCenter] removeObserver:self];
 

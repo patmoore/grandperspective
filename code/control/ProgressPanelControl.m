@@ -17,7 +17,7 @@
 
 
 - (void) dealloc {
-  NSLog(@"ProgressPanelControl dealloc");
+  NSLog(@"ProgressPanelControl-dealloc");
   
   [title release];
   [cancelCallback release];
