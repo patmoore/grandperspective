@@ -134,7 +134,7 @@
   if (!abort) {
     NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
 
-    image = [[NSImage alloc] initWithSize:bounds.size];
+    image = [[[NSImage alloc] initWithSize:bounds.size] autorelease];
     [image addRepresentation:drawBitmap];
   }
   abort = NO; // Enable drawer again for next time.
