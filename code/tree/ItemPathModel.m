@@ -170,12 +170,12 @@
 }
 
 - (BOOL) clearVisibleItemPath {
-  NSAssert(!visibleItemPathLocked, @"Cannot change path when locked.");
-  
+  NSAssert(!visibleItemPathLocked, @"Cannot clear path when locked.");
+    
   int  num = [path count] - visibleTreeRootIndex - 1;
 
   if (num > 0) {
-    [path removeObjectsInRange:NSMakeRange(visibleTreeRootIndex + 1, num)];
+    [path removeObjectsInRange: NSMakeRange(visibleTreeRootIndex + 1, num)];
     lastFileItemIndex = visibleTreeRootIndex;
 
     if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
@@ -189,14 +189,14 @@
 }
 
 
-- (void) extendVisibleItemPath:(Item*)nextItem {
-  NSAssert(!visibleItemPathLocked, @"Cannot change path when locked.");
+- (void) extendVisibleItemPath: (Item *)nextItem {
+  NSAssert(!visibleItemPathLocked, @"Cannot extend path when locked.");
   
   if (! [nextItem isVirtual]) {
     lastFileItemIndex = [path count];
   }
   
-  [path addObject:nextItem];
+  [path addObject: nextItem];
   
   if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
     [self postVisibleItemPathChanged];
@@ -204,8 +204,8 @@
 }
 
 
-- (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name {
-  NSAssert(!visibleItemPathLocked, @"Cannot change path when locked.");
+- (BOOL) extendVisibleItemPathToFileItemWithName: (NSString *)name {
+  NSAssert(!visibleItemPathLocked, @"Cannot extend path when locked.");
   
   id  pathEndPoint = [path lastObject];
   
@@ -216,8 +216,8 @@
   
   DirectoryItem  *dirItem = (DirectoryItem*)pathEndPoint;
   
-  if (! [self extendPathToFileItemWithName:name 
-                fromItem:[dirItem getContents]] ) {
+  if (! [self extendPathToFileItemWithName: name 
+                fromItem: [dirItem getContents]] ) {
     // Failed to find a file item with the given name.
     return NO;
   }
