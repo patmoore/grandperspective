@@ -12,16 +12,16 @@ Changes since Version 0.95:
   - Added ability to filter a directory view window, which generates 
     a new window with a "filtered view". The filter determines which
     files are shown in the new window.
-    - If a filter has been applied then this is reflected in the 
-      window title.
-  - Added a drawer to each window. It has three panels:
+    - If a filter has been applied this is reflected in the window
+      title.
+  - Added a drawer to directory view windows. It has three panels:
     - An "Info" panel with details about the files that are shown
       in the view, including: 
       - the time of scan,
       - the folder that was scanned, and
       - details of the filter that has been applied (if any).
-    - A "Display" panel for configuring the way the way the view is
-      drawn. Here you can specify:
+    - A "Display" panel for configuring the way the view is drawn. 
+      Here you can specify:
       - how files are colored, and
       - the mask that is used (if any).
     - A "Focus" panel with details about:
@@ -33,16 +33,16 @@ Changes since Version 0.95:
     "Reveal" (it used to be "Show").
   - The file coloring options "directory" and "top directory" have 
     been renamed to "folder" and "top folder" respectively.
-  - The contents of PopUpButtons are now set in their nib file 
-    instead of programmatically.
-  - Simplified the code that creates attributed string for path of 
-    selected item.
   - Cosmetic changes to the "Edit Filter" window.
 
 - Code cleanup:
   - The progress panel has been refactored. It is now also used when
     filtering takes place.
   - All tasks and executors have been moved to a new "task" folder.
+  - Simplified the code that creates the attributed string for the 
+    selected file.
+  - The contents of PopUpButtons are now set in their nib file 
+    instead of programmatically.
 
 - Bug fix:
   - Plugged a memory leak in the image drawing code.
