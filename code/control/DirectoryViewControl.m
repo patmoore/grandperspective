@@ -140,21 +140,16 @@
   
   [treePathTextView setString: [[itemPathModel itemTree] name]];
 
-  if ( [treeHistory fileItemFilter] != nil ) {
-    [filterNameField setStringValue: [NSString stringWithFormat: @"Filter%d",
-                                        [treeHistory filterIdentifier]]];
-    [filterDescriptionTextView setString:
-       [[treeHistory fileItemFilter] description]];
-  }
-  else {
-    [filterNameField setStringValue: @"None"];
-    [filterDescriptionTextView setString: @""];
-  }
+  [filterNameField setStringValue: [treeHistory filterName]];
+  [filterDescriptionTextView setString: 
+                               ([treeHistory fileItemFilter] != nil 
+                                ? [[treeHistory fileItemFilter] description]
+                                : @"") ];
   
   [scanTimeField setStringValue: 
     [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
-  [treeSizeField setStringValue: [NSString stringWithFormat: @"%qu bytes", 
+  [treeSizeField setStringValue: [FileItem exactStringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
 
   NSSize  drawerSize = NSMakeSize(301, 317);
@@ -270,7 +265,8 @@
         name:@"NSWindowDidBecomeKeyNotification"
         object:[editMaskFilterWindowControl window]];
                   
-  [[editMaskFilterWindowControl window] setTitle:@"Edit mask"];
+  [[editMaskFilterWindowControl window] setTitle: 
+      NSLocalizedString( @"Edit mask", @"Window title" ) ];
 }
 
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
@@ -282,8 +278,8 @@
     [[itemPathModel rootFilePathName] stringByAppendingPathComponent:
                                         invisiblePathName]];
   [visibleFolderSizeField setStringValue:
-    [NSString stringWithFormat: @"%qu bytes", 
-                [[itemPathModel visibleItemTree] itemSize]]];
+     [FileItem exactStringForFileItemSize: 
+                 [[itemPathModel visibleItemTree] itemSize]]];
 
   [self updateButtonState:notification];
 }
@@ -325,8 +321,8 @@
     [[visibleFolderPathTextView string] stringByAppendingPathComponent:
                                           visiblePathName]];
   [selectedFileSizeField setStringValue: 
-     [NSString stringWithFormat: @"%qu bytes", 
-                [[itemPathModel fileItemPathEndPoint] itemSize]]];
+     [FileItem exactStringForFileItemSize: 
+                 [[itemPathModel fileItemPathEndPoint] itemSize]]];
 }
 
 

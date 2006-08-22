@@ -21,6 +21,12 @@
 #import "FilterTaskExecutor.h"
 
 
+NSString* scanActivityFormatString() {
+  return NSLocalizedString( @"Scanning %@", 
+                            @"Message in progress panel while scanning" );
+}
+
+
 @interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
 }
@@ -74,7 +80,8 @@
     scanTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
          initWithTaskManager: actualScanTaskManager 
-           panelTitle: @"Scanning in progress"];
+           panelTitle: NSLocalizedString ( @"Scanning in progress",
+                                           @"Title of progress panel." )];
     
     AsynchronousTaskManager  *actualRescanTaskManager = 
       [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
@@ -83,7 +90,8 @@
     rescanTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
          initWithTaskManager: actualRescanTaskManager 
-           panelTitle: @"Rescanning in progress"];
+           panelTitle: NSLocalizedString ( @"Rescanning in progress",
+                                           @"Title of progress panel." ) ];
                    
     AsynchronousTaskManager  *actualFilterTaskManager = 
       [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
@@ -92,7 +100,8 @@
     filterTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
          initWithTaskManager: actualFilterTaskManager 
-           panelTitle: @"Filtering in progress"];
+           panelTitle: NSLocalizedString ( @"Filtering in progress",
+                                           @"Title of progress panel." )];
   }
   return self;
 }
@@ -151,9 +160,10 @@
     // is currently being carried out. Note: any ongoing scan task will be
     // aborted implicitely by the scanTaskManager.
     
+    NSString  *format = scanActivityFormatString();
     [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
-                       description: [NSString stringWithFormat: @"Scanning %@",
-                                                dirName]
+                       description: 
+                         [NSString stringWithFormat: format, dirName]
                        callback: windowCreator
                        selector: @selector(createWindowForTree:)];
                        
@@ -190,10 +200,10 @@
     // is currently being carried out. Note: any ongoing rescan task will be 
     // aborted implicitely by the rescanTaskManager.
     
+    NSString  *format = scanActivityFormatString();
     [rescanTaskManager asynchronouslyRunTaskWithInput: input
                          description: 
-                           [NSString stringWithFormat: @"Scanning %@",
-                                       dirName]
+                           [NSString stringWithFormat: format, dirName]
                          callback: windowCreator
                          selector: @selector(createWindowForTree:)];
 
@@ -217,7 +227,8 @@
     [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
           name: @"okPerformed" object: editFilterWindowControl];
 
-    [[editFilterWindowControl window] setTitle: @"Apply filter"];
+    [[editFilterWindowControl window] setTitle: 
+        NSLocalizedString( @"Apply filter", @"Window title" ) ];
 
     [editFilterWindowControl removeApplyButton];    
   }  
@@ -244,10 +255,13 @@
     FilterTaskInput  *input = 
       [[FilterTaskInput alloc] initWithItemTree: [oldPathModel itemTree]
                                  filterTest: filterTest];
-    
+
+    NSString  *format = NSLocalizedString( 
+                          @"Filtering %@", 
+                          @"Message in progress panel while filtering" );
     [filterTaskManager asynchronouslyRunTaskWithInput: input
                          description: 
-                           [NSString stringWithFormat: @"Filtering %@",
+                           [NSString stringWithFormat: format,
                                        [oldPathModel rootFilePathName]]
                          callback: windowCreator
                          selector: @selector(createWindowForTree:)];
@@ -322,17 +336,19 @@
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeHistory  *history = [control treeHistory];
   NSString  *rootPathName = [[[control itemPathModel] itemTree] name];
-
-  NSString  *title = 
-    [NSString stringWithFormat:@"%@ - %@", rootPathName,
-                [[history scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
-                                      timeZone:nil locale:nil]];
-  if ([history filterIdentifier] != 0) {
-    title = [NSString stringWithFormat:@"%@ - Filter%d", title, 
-                        [history filterIdentifier]];
+                
+  NSString  *scanTimeString = 
+    [[history scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
+                          timeZone: nil locale: nil];
+  if ([history filterIdentifier] == 0) {
+    return [NSString stringWithFormat: @"%@ - %@", 
+                                         rootPathName, scanTimeString];
   }
-
-  return title;
+  else {
+    return [NSString stringWithFormat: @"%@ - %@ - %@", 
+                                         rootPathName, scanTimeString,
+                                         [history filterName] ];
+  }
 }
 
 

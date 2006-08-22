@@ -93,20 +93,28 @@ FileItemHashingOptions  *defaultFileItemHashingOptions = nil;
   NSMutableDictionary  *colorings = 
     [NSMutableDictionary dictionaryWithCapacity:6];
 
-  [colorings setObject:[[[HashingByTopDirectoryName alloc] init] autorelease]
-               forKey:@"top folder"];
-  [colorings setObject:[[[HashingByDirectoryName alloc] init] autorelease]
-               forKey:@"folder"];
-  [colorings setObject:[[[HashingByExtension alloc] init] autorelease]
-               forKey:@"extension"];
-  [colorings setObject:[[[HashingByFilename alloc] init] autorelease]
-               forKey:@"name"];
-  [colorings setObject:[[[HashingByDepth alloc] init] autorelease]
-               forKey:@"depth"];
-  [colorings setObject:[[[FileItemHashing alloc] init] autorelease]
-               forKey:@"nothing"];
+  NSString  *hashByDirNameKey = 
+               NSLocalizedString( @"folder", @"Coloring scheme name" );
 
-  return [self initWithDictionary:colorings defaultKey:@"folder"];
+  [colorings setObject:[[[HashingByTopDirectoryName alloc] init] autorelease]
+               forKey: NSLocalizedString( @"top folder",
+                                          @"Coloring scheme name" ) ];
+  [colorings setObject:[[[HashingByDirectoryName alloc] init] autorelease]
+               forKey: hashByDirNameKey];
+  [colorings setObject:[[[HashingByExtension alloc] init] autorelease]
+               forKey: NSLocalizedString( @"extension",
+                                          @"Coloring scheme name" ã) ];
+  [colorings setObject:[[[HashingByFilename alloc] init] autorelease]
+               forKey: NSLocalizedString( @"name",
+                                          @"Coloring scheme name" ) ];
+  [colorings setObject:[[[HashingByDepth alloc] init] autorelease]
+               forKey: NSLocalizedString( @"depth",
+                                          @"Coloring scheme name" ) ];
+  [colorings setObject:[[[FileItemHashing alloc] init] autorelease]
+               forKey: NSLocalizedString( @"nothing",
+                                          @"Coloring scheme name" ) ];
+
+  return [self initWithDictionary:colorings defaultKey: hashByDirNameKey];
 }
 
 - (id) initWithDictionary:(NSDictionary*)dictionary {

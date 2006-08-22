@@ -10,7 +10,15 @@
 @end
 
 
-static char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
+NSString* filesizeUnitString(int order) {
+  switch (order) {
+    case 0: return NSLocalizedString( @"kB", @"File size unit for kilobytes.");
+    case 1: return NSLocalizedString( @"MB", @"File size unit for megabytes.");
+    case 2: return NSLocalizedString( @"GB", @"File size unit for gigabytes.");
+    case 3: return NSLocalizedString( @"TB", @"File size unit for terabytes.");
+    default: return @""; // Should not happen, but cannot can NSAssert here.
+  }
+};
 
 
 @implementation FileItem
@@ -69,10 +77,12 @@ static char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
 }
 
 
-+ (NSString*) stringForFileItemSize:(ITEM_SIZE)filesize {
++ (NSString*) stringForFileItemSize: (ITEM_SIZE)filesize {
   if (filesize < 1024) {
     // Definitely don't want a decimal point here
-    return [NSString stringWithFormat:@"%qu B", filesize];
+    NSString  *byteSizeUnit = NSLocalizedString( @"B", 
+                                                 @"File size unit for bytes." );
+    return [NSString stringWithFormat:@"%qu %@", filesize, byteSizeUnit];
   }
 
   double  n = (double)filesize / 1024;
@@ -91,7 +101,9 @@ static char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
   // Ensure that only the three most-significant digits are shown.
   // Exception: If there are four digits before the decimal point, all four
   // are shown.
-  int  delPos = [s rangeOfString:@"."].location;
+  
+  // TODO: Check that searching for "." is fully internationalizable.
+  int  delPos = [s rangeOfString: @"."].location;
   if (delPos < 3) {
     // Keep one or more digits after the decimal point.
     delPos = 4;
@@ -101,10 +113,19 @@ static char BYTE_SIZE_ORDER[4] = { 'k', 'M', 'G', 'T'};
   }
   [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
 
-  [s appendFormat:@" %cB", BYTE_SIZE_ORDER[m]];
+  [s appendFormat:@" %@", filesizeUnitString(m) ];
 
   return s;
 }
+
+
++ (NSString*) exactStringForFileItemSize: (ITEM_SIZE)filesize {
+  NSString  *format = NSLocalizedString( @"%qu bytes", 
+                                         @"Exact file size (in bytes)." );
+
+  return [NSString stringWithFormat: format, filesize ];
+}
+
 
 @end // @implementation FileItem
 

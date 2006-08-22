@@ -20,6 +20,11 @@
 - (BOOL) isPlainFile;
 
 - (NSString*) stringForFileItemPath;
-+ (NSString*) stringForFileItemSize:(ITEM_SIZE)size;
+
+// Returns a short string, approximating the given size. E.g. "1.23 MB"
++ (NSString*) stringForFileItemSize: (ITEM_SIZE)size;
+
+// Returns a string, specifying the file size exactly. E.g. "12345678 bytes"
++ (NSString*) exactStringForFileItemSize: (ITEM_SIZE)size;
 
 @end

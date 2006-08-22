@@ -77,6 +77,19 @@ static int  nextFilterId = 1;
   return filterId;
 }
 
+- (NSString*) filterName {
+  if (filterId == 0) {
+    // There is no filter
+    return NSLocalizedString( @"None", 
+                              @"The filter name when there is no filter." );
+  }
+  else {
+    NSString  *format = NSLocalizedString( @"Filter%d", 
+                                           @"Filter naming template." );
+    return [NSString stringWithFormat: format, filterId];
+  }
+}
+
 @end // TreeHistory
 
 
