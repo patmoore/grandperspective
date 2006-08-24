@@ -7,8 +7,10 @@
   return [string isEqualToString:match];
 }
 
-- (NSString*) descriptionOfTest {
-  return @"equals";
+- (NSString*) descriptionFormat {
+  return NSLocalizedStringFromTable( 
+           @"%@ equals %@", @"tests",
+           @"String test with 1: subject, and 2: match targets" );
 }
 
 @end

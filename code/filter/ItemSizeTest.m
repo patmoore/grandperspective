@@ -50,21 +50,37 @@
 }
 
 - (NSString*) description {
-  // TODO: show "kB", "MB", or "GB" if needed.
-  
   if ([self hasLowerBound]) {
-    return [self hasUpperBound] ?
-      [NSString stringWithFormat:@"size is between %@ and %@", 
-                  [FileItem stringForFileItemSize:lowerBound],
-                  [FileItem stringForFileItemSize:upperBound]] :
-      [NSString stringWithFormat:@"size is larger than %@", 
-                  [FileItem stringForFileItemSize:lowerBound]];
+    if ([self hasUpperBound]) {
+      NSString  *fmt = 
+        NSLocalizedStringFromTable( 
+          @"size is between %@ and %@", @"tests", 
+          @"Size test with 1: lower bound, and 2: upper bound" );
+      return [NSString stringWithFormat: fmt, 
+                [FileItem stringForFileItemSize: lowerBound],
+                [FileItem stringForFileItemSize: upperBound] ];
+    }
+    else {
+      NSString  *fmt = 
+        NSLocalizedStringFromTable( @"size is larger than %@", @"tests", 
+                                    @"Size test with 1: lower bound" );
+      
+      return [NSString stringWithFormat: fmt,
+                [FileItem stringForFileItemSize:lowerBound] ];
+    }
   }
   else {
-    return [self hasUpperBound] ?
-      [NSString stringWithFormat:@"size is smaller than %@", 
-                  [FileItem stringForFileItemSize:upperBound]] :
-      @"any size";
+    if ([self hasUpperBound]) {
+      NSString  *fmt = 
+        NSLocalizedStringFromTable( @"size is smaller than %@", @"tests", 
+                                    @"Size test with 1: upper bound" );
+      return [NSString stringWithFormat: fmt,
+                [FileItem stringForFileItemSize:upperBound] ];
+    }
+    else {
+      return NSLocalizedStringFromTable( @"any size", @"tests", 
+                                         @"Size test without any bounds" );
+    }
   }
 }
 

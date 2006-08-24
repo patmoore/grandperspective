@@ -7,7 +7,11 @@
 - (BOOL) testString:(NSString*)string matches:(NSString*)match;
 
 // Not implemented. Needs to be provided by subclass.
-- (NSString*) descriptionOfTest;
+//
+// It should return a string with two "%@" arguments. The first for the
+// subject of the test and the second for the description of the match
+// targets.
+- (NSString*) descriptionFormat;
 
 @end
 
@@ -50,34 +54,39 @@
   return NO;
 }
 
-- (NSString*) descriptionWithSubject:(NSString*)subject {
-  NSMutableString*  descr = [NSMutableString stringWithCapacity:128];
-  
-  [descr setString:subject];
-  [descr appendString:@" "];
-  [descr appendString:[self descriptionOfTest]];
-  [descr appendString:@" "];
-  
-  NSEnumerator*  matchEnum = [matches objectEnumerator];
+
+- (NSString*) descriptionWithSubject: (NSString*)subject {
+  NSEnumerator  *matchEnum = [matches objectEnumerator];
 
   // Can assume there is always one.
-  [descr appendString:[matchEnum nextObject]];
+  NSString  *matchesDescr = [matchEnum nextObject];
 
-  NSString*  match = [matchEnum nextObject];
-
+  NSString  *match = [matchEnum nextObject];
   if (match) {
-    NSString*  prevMatch = match;
-  
+    // At least two match targets.
+    NSString  *pairTemplate = 
+      NSLocalizedStringFromTable( 
+        @"%@ or %@" , @"tests", 
+        @"Pair of match targets with 1: a target match, and 2: another target match" );
+      
+    matchesDescr = 
+      [NSString stringWithFormat: pairTemplate, match, matchesDescr];
+
+    NSString  *moreTemplate = 
+      NSLocalizedStringFromTable( 
+        @"%@, %@" , @"tests", 
+        @"Three or more match targets with 1: a target match, and 2: two or more other target matches" );
+
     while (match = [matchEnum nextObject]) {
-      [descr appendString:@", "];
-      [descr appendString:prevMatch];
-      prevMatch = match;
+      // Three or more
+      matchesDescr = 
+        [NSString stringWithFormat: moreTemplate, match, matchesDescr];
     }
-    [descr appendString:@" or "];
-    [descr appendString:prevMatch];
   }
 
-  return descr;
+  NSString  *format = [self descriptionFormat];
+  
+  return [NSString stringWithFormat: format, subject, matchesDescr];
 }
 
 @end

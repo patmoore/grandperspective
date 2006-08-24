@@ -16,21 +16,10 @@
   return YES;
 }
 
-- (NSString*) description {
-  NSMutableString  *descr = [NSMutableString stringWithCapacity:128];
-
-  int  max = [subTests count];
-  int  i = 0;
-  [descr appendString:@"("];
-  while (i < max) {
-    if (i > 0) {
-      [descr appendString:@") and ("];
-    }
-    [descr appendString: [[subTests objectAtIndex:i++] description]];
-  }
-  [descr appendString:@")"];
-    
-  return descr;
+- (NSString*) descriptionTemplate {
+  return NSLocalizedStringFromTable( 
+           @"(%@) and %@" , @"tests", 
+           @"AND-test with 1: sub test, and 2: other sub tests" );
 }
 
 @end

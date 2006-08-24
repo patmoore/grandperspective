@@ -7,8 +7,10 @@
   return [string hasSuffix:match];
 }
 
-- (NSString*) descriptionOfTest {
-  return @"ends with";
+- (NSString*) descriptionFormat {
+  return NSLocalizedStringFromTable( 
+           @"%@ ends with %@", @"tests",
+           @"String test with 1: subject, and 2: match targets" );
 }
 
 @end

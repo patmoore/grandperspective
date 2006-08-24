@@ -31,14 +31,11 @@
 }
 
 - (NSString*) description {
-  NSString  *subDescr = [subItemTest description];
-  NSMutableString  *descr = 
-    [NSMutableString stringWithCapacity: [subDescr length] + 6];
+  NSString  *fmt =
+    NSLocalizedStringFromTable( @"not (%@)" , @"tests", 
+                                @"NOT-test with 1: sub test" );
 
-  [descr appendString: @"not ("];
-  [descr appendString: subDescr];
-  [descr appendString: @")"];  
-  return descr;
+  return [NSString stringWithFormat: fmt, [subItemTest description]];
 }
 
 @end

@@ -17,7 +17,11 @@
 }
 
 - (NSString*) description {
-  return [stringTest descriptionWithSubject:@"path"];
+  NSString  *subject = 
+    NSLocalizedStringFromTable( @"path" , @"tests", 
+                                @"A pathname as the subject of a string test" );
+
+  return [stringTest descriptionWithSubject: subject];
 }
 
 @end

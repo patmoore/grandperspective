@@ -106,8 +106,11 @@
   
     if (! [imageData  writeToFile: filename atomically: NO] ) {
       NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-      [alert addButtonWithTitle:@"OK"];
-      [alert setMessageText:@"Failed to save the image."];
+
+      // TODO: Does button title need I18N?
+      [alert addButtonWithTitle: @"OK"];
+      [alert setMessageText: NSLocalizedString( @"Failed to save the image.", 
+                                                @"Alert message" )];
 
       [alert runModal];
     }

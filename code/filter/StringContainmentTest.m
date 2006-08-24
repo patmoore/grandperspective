@@ -7,8 +7,10 @@
   return [string rangeOfString:match].location != NSNotFound;
 }
 
-- (NSString*) descriptionOfTest {
-  return @"contains";
+- (NSString*) descriptionFormat {
+  return NSLocalizedStringFromTable( 
+           @"%@ contains %@", @"tests",
+           @"String test with 1: subject, and 2: match targets" );
 }
 
 @end

@@ -11,7 +11,11 @@
 }
 
 - (NSString*) description {
-  return [stringTest descriptionWithSubject:@"name"];
+  NSString  *subject = 
+    NSLocalizedStringFromTable( @"name" , @"tests", 
+                                @"A filename as the subject of a string test" );
+
+  return [stringTest descriptionWithSubject: subject];
 }
 
 @end

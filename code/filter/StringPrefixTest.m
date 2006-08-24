@@ -7,8 +7,10 @@
   return [string hasPrefix:match];
 }
 
-- (NSString*) descriptionOfTest {
-  return @"starts with";
+- (NSString*) descriptionFormat {
+  return NSLocalizedStringFromTable(
+           @"%@ starts with %@", @"tests",
+           @"String test with 1: subject, and 2: match targets" );
 }
 
 @end

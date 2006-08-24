@@ -147,15 +147,19 @@
 - (IBAction) removeTestFromRepository:(id)sender {
   NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
   
-  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+  NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
 
-  [alert addButtonWithTitle:@"OK"];
-  [alert addButtonWithTitle:@"Cancel"];
-  [alert setMessageText:
-           [NSString stringWithFormat:@"Remove the rule named \"%@\"?",
-              testName]];
-  [alert setInformativeText:
-           @"The rule will be irrevocably removed from the rule repository."];
+  // TODO: Do these button titles need I18N?
+  NSString  *fmt = NSLocalizedString( @"Remove the rule named \"%@\"?",
+                                      @"Alert message" );
+  NSString  *infoMsg = NSLocalizedString( 
+     @"The rule will be irrevocably removed from the rule repository.",
+     @"Alert informative text" );
+  
+  [alert addButtonWithTitle: @"OK"];
+  [alert addButtonWithTitle: @"Cancel"];
+  [alert setMessageText: [NSString stringWithFormat: fmt, testName]];
+  [alert setInformativeText: infoMsg];
 
   [alert beginSheetModalForWindow:[self window] modalDelegate:self
            didEndSelector:@selector(confirmTestRemovalAlertDidEnd: 
@@ -655,19 +659,22 @@
   NSString*  errorText = nil;
 
   if ([newName isEqualToString:@""]) {
-    errorText = @"The rule must have a name.";
+    errorText = NSLocalizedString( @"The rule must have a name.",
+                                   @"Alert message" );
   }
   else if ( ![allowedName isEqualToString:newName] &&
             [allTests objectForKey:newName] != nil) {
-    errorText = 
-      [NSString stringWithFormat:@"A rule named \"%@\" already exists.",
-                  newName];
+    NSString  *fmt = NSLocalizedString( @"A rule named \"%@\" already exists.",
+                                        @"Alert message" );
+            
+    errorText = [NSString stringWithFormat: fmt, newName];
   }
  
   if (errorText != nil) {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   
-    [alert addButtonWithTitle:@"OK"];
+    // TODO: Does button title need I18N?
+    [alert addButtonWithTitle: @"OK"];
     [alert setMessageText:errorText];
 
     [alert beginSheetModalForWindow:[windowControl window]
