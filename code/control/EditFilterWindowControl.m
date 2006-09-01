@@ -112,9 +112,6 @@
   [filterTestsBrowser setDelegate:self];
   [availableTestsBrowser setDelegate:self];
     
-  [testDescriptionDrawer setMinContentSize:NSMakeSize(237, 92)];
-  [testDescriptionDrawer setContentSize:NSMakeSize(237, 121)];
-  
   [self updateWindowState:nil];
 }
 

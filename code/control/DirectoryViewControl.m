@@ -152,11 +152,6 @@
   [treeSizeField setStringValue: [FileItem exactStringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
 
-  NSSize  drawerSize = NSMakeSize(301, 317);
-  [drawer setContentSize: drawerSize];  
-  [drawer setMinContentSize: drawerSize];
-  [drawer setMaxContentSize: drawerSize];
-
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
