@@ -102,16 +102,28 @@ NSString* filesizeUnitString(int order) {
   // Exception: If there are four digits before the decimal point, all four
   // are shown.
   
-  // TODO: Check that searching for "." is fully internationalizable.
-  int  delPos = [s rangeOfString: @"."].location;
-  if (delPos < 3) {
-    // Keep one or more digits after the decimal point.
-    delPos = 4;
+  NSRange  dotRange = [s rangeOfString: @"."];
+  if (dotRange.location != NSNotFound) {
+    int  delPos = ((dotRange.location < 3) ?
+                   4 : // Keep one or more digits after the decimal point.
+                   dotRange.location);
+                       // Keep only the digits before the decimal point.
+
+    [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
+    
+    if (dotRange.location < delPos) {
+      // The dot is still visible, so localise it
+      NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+      NSString  *sepString = [userDefaults stringForKey: NSDecimalSeparator];
+
+      [s replaceCharactersInRange: dotRange withString: sepString];
+    }
   }
   else {
-    // Keep all digits before the decimal point, drop the rest.
+    // Void. We always expect a dot (even if the user has set a different
+    // decimal separator in his I18N settings). So this should not really
+    // happen, but raise no fuss if it does anyway.
   }
-  [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
 
   [s appendFormat:@" %@", filesizeUnitString(m) ];
 
