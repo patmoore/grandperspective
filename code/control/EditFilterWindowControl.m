@@ -86,6 +86,8 @@
                          
     [availableTests
        addObjectsFromArray:[((NSDictionary*)repositoryTestsByName) allKeys]];
+       
+    allowEmptyFilter = NO; // Default
   }
   return self;
 }
@@ -122,6 +124,15 @@
     // [applyButton release];
     applyButton = nil;
   }
+}
+
+
+- (void) setAllowEmptyFilter: (BOOL) flag {
+  allowEmptyFilter = flag;
+}
+
+- (BOOL) allowEmptyFilter {
+  return allowEmptyFilter;
 }
 
 
@@ -597,6 +608,11 @@
   [removeTestFromFilterButton setEnabled: 
     ( ([filterTestsBrowser selectedCell] != nil) &&
       filterTestsHighlighted )];
+
+  BOOL  nonEmptyFilter = ([filterTests count] > 0);
+
+  [applyButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
+  [okButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
 }
 
 

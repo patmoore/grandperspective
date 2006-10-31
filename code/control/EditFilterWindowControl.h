@@ -46,6 +46,9 @@
   // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
   // notification has been fired already.
   BOOL  finalNotificationFired;
+  
+  // Controls if an empty filter (i.e. a filter without any tests) is allowed.
+  BOOL  allowEmptyFilter;
 }
 
 - (IBAction) applyAction:(id)sender;
@@ -67,6 +70,9 @@
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
 - (void) removeApplyButton;
+
+- (void) setAllowEmptyFilter: (BOOL) flag;
+- (BOOL) allowEmptyFilter;
 
 // Configures the window to represent the given test.
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test;

@@ -247,7 +247,9 @@
 
 - (void) createEditMaskFilterWindow {  
   editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
-    
+
+  [editMaskFilterWindowControl setAllowEmptyFilter: YES];
+
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(maskWindowApplyAction:)
         name:@"applyPerformed" object:editMaskFilterWindowControl];
@@ -260,7 +262,7 @@
   [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
         name:@"NSWindowDidBecomeKeyNotification"
         object:[editMaskFilterWindowControl window]];
-                  
+
   [[editMaskFilterWindowControl window] setTitle: 
       NSLocalizedString( @"Edit mask", @"Window title" ) ];
 }
