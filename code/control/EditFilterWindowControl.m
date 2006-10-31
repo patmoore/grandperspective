@@ -125,17 +125,41 @@
 }
 
 
+- (void)windowDidBecomeKey:(NSNotification *)aNotification {
+  NSLog(@"windowDidBecomeKey");
+  finalNotificationFired = NO;
+}
+
+- (void) windowWillClose:(NSNotification*)notification {
+  NSLog(@"windowWillClose");
+  
+  if (! finalNotificationFired ) {
+    // The window is closing while no "okPerformed" or "cancelPerformed" has
+    // been fired yet. This means that the user is closing the window using
+    // the window's red close button.
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"closePerformed"
+                                          object:self];
+  }
+}
+
 - (IBAction) applyAction:(id)sender {
   [[NSNotificationCenter defaultCenter] postNotificationName:@"applyPerformed"
                                           object:self];
 }
 
 - (IBAction) cancelAction:(id)sender {
+  NSAssert( !finalNotificationFired, @"Final notification already fired." );
+
+  finalNotificationFired = YES;
   [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
                                           object:self];
 }
 
 - (IBAction) okAction:(id)sender {
+  NSAssert( !finalNotificationFired, @"Final notification already fired." );
+
+  finalNotificationFired = YES;
   [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
                                           object:self];
 }
@@ -181,7 +205,7 @@
 
   int  status = [NSApp runModalForWindow:ruleWindow];
   [ruleWindow close];
-    
+
   if (status == NSRunStoppedResponse) {
     NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
     NSString*  testName = [test name];

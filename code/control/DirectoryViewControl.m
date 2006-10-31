@@ -255,6 +255,7 @@
         name:@"cancelPerformed" object:editMaskFilterWindowControl];
   [nc addObserver:self selector:@selector(maskWindowOkAction:)
         name:@"okPerformed" object:editMaskFilterWindowControl];
+  // Note: the "closePerformed" notification can be ignored here.
 
   [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
         name:@"NSWindowDidBecomeKeyNotification"

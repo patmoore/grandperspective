@@ -5,6 +5,16 @@
 @class FileItemTestRepository;
 @protocol FileItemTest;
 
+/**
+ * A control for an EditFilterWindow.
+ *
+ * The control fires "okPerformed", "cancelPerformed", "applyPerformed", and
+ * "closePerformed" notifications to signal that respectively the OK, Cancel,
+ * Apply and Close buttons have been pressed. This allows the window to be run 
+ * modally (e.g. when used to apply a Filter from the main menu), as well as 
+ * normally (e.g. when used to set/change a mask for a specific directory
+ * view window).
+ */
 @interface EditFilterWindowControl : NSWindowController {
 
   IBOutlet NSPopUpButton  *filterActionButton;
@@ -32,6 +42,10 @@
 
   NSString  *selectedTestName;
   NSString  *testNameToSelect;
+  
+  // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
+  // notification has been fired already.
+  BOOL  finalNotificationFired;
 }
 
 - (IBAction) applyAction:(id)sender;

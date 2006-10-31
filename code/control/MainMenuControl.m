@@ -224,13 +224,16 @@ NSString* scanActivityFormatString() {
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
     [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
           name: @"cancelPerformed" object: editFilterWindowControl];
+    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
+          name: @"closePerformed" object: editFilterWindowControl];
+          // Closing a window can be considered the same as cancelling.
     [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
           name: @"okPerformed" object: editFilterWindowControl];
 
     [[editFilterWindowControl window] setTitle: 
         NSLocalizedString( @"Apply filter", @"Window title" ) ];
 
-    [editFilterWindowControl removeApplyButton];    
+    [editFilterWindowControl removeApplyButton];
   }  
   [editFilterWindowControl representFileItemTest: [oldControl fileItemMask]];
   
