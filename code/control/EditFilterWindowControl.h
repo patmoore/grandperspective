@@ -65,8 +65,6 @@
 - (IBAction) filterActionChanged:(id)sender;
 - (IBAction) showTestDescriptionChanged:(id)sender;
 
-- (IBAction) handleTestsBrowserClick:(id)sender;
-
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
 - (void) removeApplyButton;

@@ -392,9 +392,9 @@
 }
 
 
-// HACK: Not sure why this works, but it does. The two delegate methods of
-// receiving selection events are only called in exceptional cases.
-- (IBAction)handleTestsBrowserClick:(id)sender {
+- (void) windowFirstResponderChanged: (NSNotification*) notification {
+  NSLog(@"windowFirstResponderChanged [delegate]");
+
   [self updateWindowState:nil];
 }
 
@@ -560,6 +560,7 @@
 
 
 - (void) updateWindowState:(NSNotification*)notification {
+  NSLog(@"First responder: %@", [[self window] firstResponder]);
 
   BOOL  filterTestsHighlighted = 
           ( [[self window] firstResponder]

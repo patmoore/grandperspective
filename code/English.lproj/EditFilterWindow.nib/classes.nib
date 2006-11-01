@@ -31,7 +31,8 @@
             }; 
             SUPERCLASS = NSWindowController; 
         }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NotifyingPanel; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }
     ); 
     IBVersion = 1; 
 }
