@@ -50,6 +50,8 @@
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
+- (void) clearBrowserSelection: (NSBrowser *)browser;
+
 @end // EditFilterWindowControl (PrivateMethods)
 
 
@@ -88,6 +90,8 @@
        addObjectsFromArray:[((NSDictionary*)repositoryTestsByName) allKeys]];
        
     allowEmptyFilter = NO; // Default
+
+    clearBrowserSelectionHack = NO; // Default mode. Only true in "hack" mode.
   }
   return self;
 }
@@ -360,6 +364,10 @@
 - (int) browser:(NSBrowser *)sender numberOfRowsInColumn:(int)column {
   NSAssert(column==0, @"Invalid column.");
   
+  if (clearBrowserSelectionHack) {
+    return 0;
+  }
+  
   if (sender == filterTestsBrowser) {
     return [filterTests count];
   }
@@ -392,11 +400,9 @@
 }
 
 
-// Note: This method is called because the EditFilterWindow is an instance of
-// the custom NotifyingPanel class, and this control is its delegate.
-- (void) windowFirstResponderChanged: (NSNotification*) notification {
-  NSLog(@"windowFirstResponderChanged [delegate]");
-
+// HACK: This is a brute force mechanism to track changes to the browser
+// selection. There does not seem to be another way.
+- (IBAction) handleTestsBrowserClick:(id)sender {
   [self updateWindowState:nil];
 }
 
@@ -564,6 +570,36 @@
 - (void) updateWindowState:(NSNotification*)notification {
   NSLog(@"First responder: %@", [[self window] firstResponder]);
 
+  if (! [[availableTestsBrowser selectedCell] isEnabled]) {
+    // The window is in an anomalous situation: a test is selected in the
+    // available tests browser, even though the test is disabled.
+    //
+    // This anomalous situation can occur as follows:
+    // 1. Create a mask, and press OK (to apply it and close the window).
+    // 2. Edit the mask. Remove one of the tests from the filter, but now
+    //    press Cancel (so that the mask remains unchanged, yet the window
+    //    closes)
+    // 3. Edit the mask again. Now the focus will still be on the test in the
+    //    available test window that had been moved in Step 2. However, as 
+    //    this change was undone by cancelling the mask, the test is actually
+    //    not available and thus disabled.
+    
+    if ([filterTestsBrowser selectedCell] == nil) {
+      // There is no cell selected in the filterTestsBrowser. Try to select 
+      // the test that is selected (but disabled) in the other browser.      
+      int  index = [filterTests indexOfObject: 
+                      [[availableTestsBrowser selectedCell] title]];
+      if (index != NSNotFound) {
+        [filterTestsBrowser selectRow: index inColumn: 0];
+      }
+    }
+
+    // Hack to clear selection
+    [self clearBrowserSelection: availableTestsBrowser];
+
+    [[self window] makeFirstResponder: filterTestsBrowser];
+  }
+
   BOOL  filterTestsHighlighted = 
           ( [[self window] firstResponder]
             == [filterTestsBrowser matrixInColumn: 0] );
@@ -573,40 +609,6 @@
 
   NSCell  *selectedFilterTest = [filterTestsBrowser selectedCell];
   NSCell  *selectedAvailableTest = [availableTestsBrowser selectedCell];
-            
-  if (availableTestsHighlighted && ![selectedAvailableTest isEnabled]) {
-    NSLog(@"Switching first responder.");
-    
-    // The window is in an anomalous situation: a test is selected in the
-    // available tests browser, even though the test is disabled. As the 
-    // limited browser API does not allow us to deselect the cell, simply 
-    // switch focus to the other browser (whose tests are always enabled, 
-    // so the problem cannot occur here). 
-    //
-    // By the way, this anomalous situation can occur as follows:
-    // 1. Create a mask, and press OK (to apply it and close the window).
-    // 2. Edit the mask. Remove one of the tests from the filter, but now
-    //    press Cancel (so that the mask remains unchanged, yet the window
-    //    closes)
-    // 3. Edit the mask again. Now the focus will still be on the test in the
-    //    available test window that had been moved in Step 2. However, as 
-    //    this change was undone by cancelling the mask, the test is actually
-    //    not available and thus disabled.
-    if (selectedFilterTest == nil) {
-      // If there's no cell selected in the filterTestsBrowser, try to select 
-      // the test that is selected (but disabled) in the other browser.      
-      int  index = [filterTests indexOfObject: [selectedAvailableTest title]];
-      if (index != NSNotFound) {
-        [filterTestsBrowser selectRow: index inColumn: 0];
-      }
-    }
-
-    [[self window] makeFirstResponder: filterTestsBrowser];
-
-    // Return immediately. The change of first responder will automatically
-    // trigger a callback to this method.
-    return;
-  } 
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
@@ -660,6 +662,17 @@
 
     // Rest of delete handled in response to notification event.
   }
+}
+
+
+- (void) clearBrowserSelection: (NSBrowser *)browser {
+  NSAssert(browser == filterTestsBrowser ||
+           browser == availableTestsBrowser, @"Unknown browser.");
+
+  clearBrowserSelectionHack = YES;
+  [browser validateVisibleColumns];
+  clearBrowserSelectionHack = NO;
+  [browser validateVisibleColumns];
 }
 
 @end
