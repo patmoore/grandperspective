@@ -2,13 +2,13 @@
 
 #import "FileItem.h"
 #import "FileItemHashing.h"
-#import "ColorPalette.h"
 #import "TreeLayoutBuilder.h"
 
 #import "FileItemTest.h"
 
 @interface ItemTreeDrawer (PrivateMethods)
 
+- (NSColorList*) defaultColorPalette;
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) calculateGradientColors;
@@ -23,14 +23,14 @@
            [[[FileItemHashing alloc] init] autorelease]];
 }
 
-- (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashingVal {
+- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashingVal {
   return [self initWithFileItemHashing: fileItemHashingVal
-                 colorPalette: [ColorPalette defaultColorPalette]
+                 colorPalette: [self defaultColorPalette]
                  layoutBuilder: [[[TreeLayoutBuilder alloc] init] autorelease]];
 }
 
 - (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashingVal
-         colorPalette: (ColorPalette*)colorPaletteVal
+         colorPalette: (NSColorList*)colorPaletteVal
          layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
   if (self = [super init]) {
     fileItemHashing = [fileItemHashingVal retain];
@@ -94,7 +94,7 @@
 }
 
 
-- (void) setColorPalette:(ColorPalette*)colorPaletteVal {
+- (void) setColorPalette: (NSColorList*)colorPaletteVal {
   if (colorPaletteVal != colorPalette) {
     [colorPalette release];
     colorPalette = colorPaletteVal;
@@ -170,6 +170,21 @@
 
 
 @implementation ItemTreeDrawer (PrivateMethods)
+
+- (NSColorList*) defaultColorPalette {
+  NSColorList  *colorList = [[NSColorList alloc] 
+                                initWithName: @"DefaultItemTreeDrawerPalette"];
+  [colorList insertColor: [NSColor blueColor]    key: @"blue"    atIndex: 0];
+  [colorList insertColor: [NSColor redColor]     key: @"red"     atIndex: 1];
+  [colorList insertColor: [NSColor greenColor]   key: @"green"   atIndex: 2];
+  [colorList insertColor: [NSColor cyanColor]    key: @"cyan"    atIndex: 3];
+  [colorList insertColor: [NSColor magentaColor] key: @"magenta" atIndex: 4];
+  [colorList insertColor: [NSColor orangeColor]  key: @"orange"  atIndex: 5];
+  [colorList insertColor: [NSColor yellowColor]  key: @"yellow"  atIndex: 6];
+  [colorList insertColor: [NSColor purpleColor]  key: @"purple"  atIndex: 7];
+
+  return [colorList autorelease];
+}
 
 - (void)drawBasicFilledRect:(NSRect)rect colorHash:(int)colorHash {
   UInt32  intColor = 
@@ -267,7 +282,8 @@
   NSAssert(colorPalette != nil, @"Color palette must be set.");
   free(gradientColors);
 
-  numGradientColors = [colorPalette numColors];
+  NSArray  *colorKeys = [colorPalette allKeys];
+  numGradientColors = [colorKeys count];
   gradientColors = malloc(sizeof(UInt32) * numGradientColors * 256);
   NSAssert(gradientColors != NULL, @"Failed to malloc gradientColors."); 
   
@@ -276,8 +292,8 @@
   int  i, j;
   UInt32  *pos = gradientColors;
   
-  for (i=0; i<[colorPalette numColors]; i++) {    
-    NSColor  *color = [colorPalette getColorForInt:i];
+  for (i=0; i<numGradientColors; i++) {    
+    NSColor  *color = [colorPalette colorWithKey: [colorKeys objectAtIndex: i]];
     
     // TODO: needed?
     // color = [color colorUsingColorSpaceName:NSDeviceRGBColorSpace];

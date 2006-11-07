@@ -10,7 +10,6 @@
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
 
-#import "ColorPalette.h"
 #import "TreeLayoutTraverser.h"
 
 #import "AsynchronousTaskManager.h"
