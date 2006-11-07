@@ -23,6 +23,8 @@ int compareBySize(id item1, id item2, void* context) {
 - (id) init {
   if (self = [super init]) {
     tmpArray = [[NSMutableArray alloc] initWithCapacity:1024];
+
+    excludeZeroSizedItems = YES;
   }
   
   return self;
@@ -35,8 +37,18 @@ int compareBySize(id item1, id item2, void* context) {
 }
 
 
+- (void) setExcludeZeroSizedItems: (BOOL)flag {
+  excludeZeroSizedItems = flag;
+}
+
+- (BOOL) excludeZeroSizedItems {
+  return excludeZeroSizedItems;
+}
+
+
+
 // Note: assumes that array may be modified for sorting!
-- (Item*) createTreeForItems:(NSMutableArray*)items {
+- (Item*) createTreeForItems: (NSMutableArray*)items {
 
   if ([items count]==0) {
     // No items, so nothing needs doing: return immediately.
@@ -48,6 +60,13 @@ int compareBySize(id item1, id item2, void* context) {
   // Not using auto-release to minimise size of auto-release pool.
   PeekingEnumerator  *sortedItems = 
     [[PeekingEnumerator alloc] initWithEnumerator:[items objectEnumerator]];
+
+  if (excludeZeroSizedItems) {
+    while ([sortedItems peekObject] != nil &&
+           [[sortedItems peekObject] itemSize] == 0) {
+      [sortedItems nextObject];
+    }
+  }
   
   NSMutableArray*  sortedBranches = tmpArray;
   NSAssert(tmpArray!=nil && [tmpArray count]==0, @"Temporary array not valid."); 
@@ -73,7 +92,8 @@ int compareBySize(id item1, id item2, void* context) {
         else {
           // We're finished building the tree
           
-          NSAssert(first != nil, @"First is nil.");
+          // Note: with "excludeZeroSizedItems" set to YES, first can actually
+          // be nil but that is okay.
           [first retain];
         
           // Clean up
