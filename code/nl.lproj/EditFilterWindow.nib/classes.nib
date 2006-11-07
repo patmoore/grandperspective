@@ -1,0 +1,38 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                addTestToFilter = id; 
+                addTestToRepository = id; 
+                applyAction = id; 
+                cancelAction = id; 
+                editTestInRepository = id; 
+                filterActionChanged = id; 
+                handleTestsBrowserClick = id; 
+                okAction = id; 
+                removeTestFromFilter = id; 
+                removeTestFromRepository = id; 
+                showTestDescriptionChanged = id; 
+            }; 
+            CLASS = EditFilterWindowControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                addTestToFilterButton = NSButton; 
+                applyButton = NSButton; 
+                availableTestsBrowser = NSBrowser; 
+                editTestInRepositoryButton = NSButton; 
+                filterActionButton = NSPopUpButton; 
+                filterTestsBrowser = NSBrowser; 
+                okButton = NSButton; 
+                removeTestFromFilterButton = NSButton; 
+                removeTestFromRepositoryButton = NSButton; 
+                testDescriptionDrawer = NSDrawer; 
+                testDescriptionView = NSTextView; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NotifyingPanel; LANGUAGE = ObjC; SUPERCLASS = NSPanel; }
+    ); 
+    IBVersion = 1; 
+}
