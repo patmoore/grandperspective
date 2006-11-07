@@ -16,10 +16,17 @@
   return NO;
 }
 
-- (NSString*) descriptionTemplate {
+
+- (NSString*) bootstrapDescriptionTemplate {
+  return NSLocalizedStringFromTable( 
+           @"(%@) or (%@)" , @"tests", 
+           @"OR-test with 1: sub test, and 2: another sub test" );
+}
+
+- (NSString*) repeatingDescriptionTemplate {
   return NSLocalizedStringFromTable( 
            @"(%@) or %@" , @"tests", 
-           @"OR-test with 1: sub test, and 2: other sub tests" );
+           @"OR-test with 1: sub test, and 2: two or more other sub tests" );
 }
 
 @end

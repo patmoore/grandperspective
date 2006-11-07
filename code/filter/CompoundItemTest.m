@@ -2,12 +2,22 @@
 
 @interface CompoundItemTest (PrivateMethods) 
 
-// Not implemented. Needs to be provided by subclass.
-//
-// It should return a string with two "%@" arguments. The first for the
-// description of the first sub-test, and the second for the description
-// of the remaining sub-tests. The template will be applied iteratively.
-- (NSString*) descriptionTemplate;
+/* Not implemented. Needs to be provided by subclass.
+ *
+ * It should return a template for describing a test consisting of two 
+ * sub-tests. The string should have two "%@" arguments. The first for the
+ * description of the first sub-test, and the second for the second sub-test.
+ */
+- (NSString*) bootstrapDescriptionTemplate;
+
+/* Not implemented. Needs to be provided by subclass.
+ *
+ * It should return a template for describing a test consisting of three or
+ * more sub-tests. The string should have two "%@" arguments. The first for the
+ * description of the first sub-test, and the second for the description
+ * of the remaining sub-tests. The template will be applied iteratively.
+ */
+- (NSString*) repeatingDescriptionTemplate;
 
 @end // CompoundItemTest (PrivateMethods) 
 
@@ -21,6 +31,9 @@
 
 - (id) initWithSubItemTests:(NSArray*)subTestsVal {
   if (self = [super init]) {
+    NSAssert([subTestsVal count] >= 2, 
+             @"Compound test should have two or more sub-tests");
+  
     // Make the array immutable
     subTests = [[NSArray alloc] initWithArray:subTestsVal];
   }
@@ -45,20 +58,17 @@
 
 
 - (NSString*) description {
-  NSString  *template = [self descriptionTemplate];
-  NSString  *descr = @"";
+  NSEnumerator  *subTestEnum = [subTests reverseObjectEnumerator];
 
-  int  i = 0;
-  int  max = [subTests count];
-    
-  while (i < max) {
-    NSString  *subTestDescr = [[subTests objectAtIndex:i++] description];
+  // Can assume that there are always two sub-tests.
+  NSString  *subTest = [subTestEnum nextObject]; // Last sub-test in array
+  NSString  *descr =
+    [NSString stringWithFormat: [self bootstrapDescriptionTemplate],
+                                [subTestEnum nextObject], subTest];
 
-    if ([subTestDescr length] > 0) {
-      descr = ( ([descr length] == 0) 
-                ? subTestDescr 
-                : [NSString stringWithFormat: template, subTestDescr, descr] );
-    }
+  while ( subTest = [subTestEnum nextObject] ) {
+    descr = [NSString stringWithFormat: [self repeatingDescriptionTemplate],
+                                        subTest, descr];
   }
     
   return descr;
