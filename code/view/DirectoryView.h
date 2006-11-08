@@ -26,6 +26,9 @@
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
 - (FileItemHashing*) fileItemHashing;
 
+- (void) setColorPalette:(NSColorList *)colorPalette;
+- (NSColorList*) colorPalette;
+
 - (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
 

@@ -5,6 +5,7 @@
 #import "ItemPathModel.h"
 #import "FileItemHashingOptions.h"
 #import "FileItemHashing.h"
+#import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeHistory.h"
 #import "EditFilterWindowControl.h"
@@ -56,6 +57,9 @@
     invisiblePathName = nil;    
     hashingOptions = 
       [[FileItemHashingOptions defaultFileItemHashingOptions] retain];
+      
+    colorPalettes = 
+      [[ColorListCollection defaultColorListCollection] retain];
   }
 
   return self;
@@ -74,6 +78,7 @@
   [fileItemMask release];
   
   [hashingOptions release];
+  [colorPalettes release];
   
   [editMaskFilterWindowControl release];
 
@@ -106,6 +111,7 @@
 - (DirectoryViewControlSettings*) directoryViewControlSettings {
   return [[[DirectoryViewControlSettings alloc]
                initWithHashingKey: [colorMappingPopUp titleOfSelectedItem]
+               colorPaletteKey: [colorPalettePopUp titleOfSelectedItem]
                mask: fileItemMask
                maskEnabled: [self fileItemMaskEnabled]] 
                  autorelease];
@@ -129,6 +135,15 @@
                               [initialSettings fileItemHashingKey] :
                               [hashingOptions keyForDefaultHashing] ) ];
   [self colorMappingChanged:nil];
+  
+  [colorPalettePopUp removeAllItems];
+  [colorPalettePopUp addItemsWithTitles: [colorPalettes allKeys]];
+
+  [colorPalettePopUp 
+    selectItemWithTitle: ( [initialSettings colorPaletteKey] != nil ?
+                              [initialSettings colorPaletteKey] :
+                              [colorPalettes keyForDefaultColorList] ) ];
+  [self colorPaletteChanged: nil];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
   [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
@@ -238,6 +253,14 @@
   [mainView setFileItemHashing: 
     [hashingOptions fileItemHashingForKey:
       [colorMappingPopUp titleOfSelectedItem]]];
+}
+
+
+- (IBAction) colorPaletteChanged: (id) sender {
+  [mainView setColorPalette: 
+    [colorPalettes colorListForKey:
+      [colorPalettePopUp titleOfSelectedItem]]];
+  
 }
 
 @end // @implementation DirectoryViewControl

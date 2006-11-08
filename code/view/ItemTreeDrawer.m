@@ -35,7 +35,8 @@
   if (self = [super init]) {
     fileItemHashing = [fileItemHashingVal retain];
     
-    colorPalette = [colorPaletteVal retain];
+    // Also calculates gradient color array.
+    [self setColorPalette: colorPaletteVal];
     
     layoutBuilder = [layoutBuilderVal retain];
     
@@ -97,20 +98,21 @@
 - (void) setColorPalette: (NSColorList*)colorPaletteVal {
   if (colorPaletteVal != colorPalette) {
     [colorPalette release];
-    colorPalette = colorPaletteVal;
+    colorPalette = [colorPaletteVal retain];
+
+    [self calculateGradientColors];
   }
+}
+
+
+- (NSColorList*) colorPalette {
+  return colorPalette;
 }
 
 
 - (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds {
   NSDate  *startTime = [NSDate date];
   
-  if (colorPalette!=nil) {
-    [self calculateGradientColors];
-    [colorPalette release];
-    colorPalette = nil;
-  }
-
   NSAssert(drawBitmap == nil, @"Bitmap should be nil.");
   drawBitmap =  
     [[NSBitmapImageRep alloc] 

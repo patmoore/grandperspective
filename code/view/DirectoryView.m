@@ -128,6 +128,29 @@
 }
 
 
+- (void) setColorPalette:(NSColorList *)colorPalette {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+  
+  if (colorPalette != [drawTaskExecutor colorPalette]) {
+    [drawTaskExecutor setColorPalette: colorPalette];
+
+    [self setNeedsDisplay:YES];
+
+    // Discard the existing image.
+    [treeImage release];
+    treeImage = nil;
+  }
+}
+
+- (NSColorList*) colorPalette {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+
+  return [drawTaskExecutor colorPalette];
+}
+
+
 - (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];

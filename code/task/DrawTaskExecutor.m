@@ -16,6 +16,7 @@
   if (self = [super init]) {
     treeDrawer = [treeDrawerVal retain];
     fileItemHashing = [[treeDrawer fileItemHashing] retain];
+    colorPalette = [[treeDrawer colorPalette] retain];
     fileItemMask = [[treeDrawer fileItemMask] retain];
 
     enabled = YES;
@@ -27,6 +28,7 @@
   [treeDrawer release];
   
   [fileItemHashing release];
+  [colorPalette release];
   [fileItemMask release];
   
   [super dealloc];
@@ -42,6 +44,18 @@
 
 - (FileItemHashing*) fileItemHashing {
   return fileItemHashing;
+}
+
+
+- (void) setColorPalette:(NSColorList *)colorPaletteVal {
+  if (colorPaletteVal != colorPalette) {
+    [colorPalette release];
+    colorPalette = [colorPaletteVal retain];
+  }
+}
+
+- (NSColorList*) colorPalette {
+  return colorPalette;
 }
 
 
@@ -61,6 +75,7 @@
   if (enabled) {
     // Always set, as it may have changed.
     [treeDrawer setFileItemHashing: fileItemHashing];
+    [treeDrawer setColorPalette: colorPalette];
     [treeDrawer setFileItemMask: fileItemMask];
 
     DrawTaskInput  *drawingInput = input;

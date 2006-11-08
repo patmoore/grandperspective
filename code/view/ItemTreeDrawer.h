@@ -15,7 +15,6 @@
   
   TreeLayoutBuilder  *layoutBuilder;
 
-  // Only set when it has not yet been loaded into the gradient array.
   NSColorList  *colorPalette;
   UInt32  *gradientColors;
   int  numGradientColors;
@@ -40,6 +39,7 @@
 - (FileItemHashing*) fileItemHashing;
 
 - (void) setColorPalette: (NSColorList*)colorPalette;
+- (NSColorList*) colorPalette;
 
 // The tree starting at "itemTreeRoot" should be immutable.
 - (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds;

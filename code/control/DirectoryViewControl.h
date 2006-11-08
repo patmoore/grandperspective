@@ -6,6 +6,7 @@
 @class ItemPathModel;
 @class FileItemHashingOptions;
 @class FileItemHashing;
+@class ColorListCollection;
 @class EditFilterWindowControl;
 @class DirectoryViewControlSettings;
 @class TreeHistory;
@@ -25,6 +26,7 @@
   
   // "Display" drawer panel
   IBOutlet NSPopUpButton  *colorMappingPopUp;
+  IBOutlet NSPopUpButton  *colorPalettePopUp;
   IBOutlet NSTextView  *maskDescriptionTextView;
   IBOutlet NSButton  *maskCheckBox;
 
@@ -48,6 +50,7 @@
   NSObject <FileItemTest>  *fileItemMask;
 
   FileItemHashingOptions  *hashingOptions;
+  ColorListCollection  *colorPalettes;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
@@ -62,6 +65,7 @@
 - (IBAction) editMask: (id) sender;
 
 - (IBAction) colorMappingChanged: (id) sender;
+- (IBAction) colorPaletteChanged: (id) sender;
 
 - (id) initWithItemTree: (DirectoryItem *)itemTreeRoot;
 - (id) initWithItemPathModel: (ItemPathModel *)itemPathModel
