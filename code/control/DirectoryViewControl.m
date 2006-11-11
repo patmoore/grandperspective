@@ -3,8 +3,8 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
-#import "FileItemHashingOptions.h"
 #import "FileItemHashing.h"
+#import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeHistory.h"
@@ -54,10 +54,10 @@
     initialSettings = [settings retain];
     treeHistory = [history retain];
 
-    invisiblePathName = nil;    
+    invisiblePathName = nil;
+       
     hashingOptions = 
-      [[FileItemHashingOptions defaultFileItemHashingOptions] retain];
-      
+      [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
     colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
   }

@@ -4,7 +4,7 @@
 @interface ColorListCollection : NSObject {
 
   NSMutableDictionary  *colorListDictionary;
-  NSString  *keyForDefaultColorList;
+  NSString  *defaultKey;
 }
 
 + (ColorListCollection*) defaultColorListCollection;

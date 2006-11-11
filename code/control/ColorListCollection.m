@@ -46,14 +46,14 @@ static ColorListCollection  *defaultInstance = nil;
 
 - (void) dealloc {
   [colorListDictionary release];
-  [keyForDefaultColorList release];
+  [defaultKey release];
 
   [super dealloc];
 }
 
 
 - (void) addColorList: (NSColorList *)colorList key: (NSString *)key {
-  if (keyForDefaultColorList == nil) {
+  if (defaultKey == nil) {
     [self setKeyForDefaultColorList: key];
   }
   [colorListDictionary setObject: colorList forKey: key];
@@ -64,9 +64,9 @@ static ColorListCollection  *defaultInstance = nil;
 }
 
 - (void) setKeyForDefaultColorList: (NSString *)key {
-  if (key != keyForDefaultColorList) {
-    [keyForDefaultColorList release];
-    keyForDefaultColorList = [key retain];
+  if (key != defaultKey) {
+    [defaultKey release];
+    defaultKey = [key retain];
   }
 }
 
@@ -76,7 +76,7 @@ static ColorListCollection  *defaultInstance = nil;
 }
 
 - (NSString*) keyForDefaultColorList {
-  return keyForDefaultColorList;
+  return defaultKey;
 }
 
 - (NSColorList*) colorListForKey: (NSString *)key {

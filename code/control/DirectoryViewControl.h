@@ -4,8 +4,8 @@
 @class DirectoryView;
 @class StartupControl;
 @class ItemPathModel;
-@class FileItemHashingOptions;
 @class FileItemHashing;
+@class FileItemHashingCollection;
 @class ColorListCollection;
 @class EditFilterWindowControl;
 @class DirectoryViewControlSettings;
@@ -49,7 +49,7 @@
 
   NSObject <FileItemTest>  *fileItemMask;
 
-  FileItemHashingOptions  *hashingOptions;
+  FileItemHashingCollection  *hashingOptions;
   ColorListCollection  *colorPalettes;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
