@@ -11,7 +11,7 @@
 - (NSColorList*) defaultColorPalette;
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
-- (void) calculateGradientColors;
+- (void) initGradientColors;
 
 @end
 
@@ -35,8 +35,8 @@
   if (self = [super init]) {
     fileItemHashing = [fileItemHashingVal retain];
     
-    // Also calculates gradient color array.
-    [self setColorPalette: colorPaletteVal];
+    colorPalette = [colorPaletteVal retain];
+    initGradientColors = YES;
     
     layoutBuilder = [layoutBuilderVal retain];
     
@@ -100,7 +100,7 @@
     [colorPalette release];
     colorPalette = [colorPaletteVal retain];
 
-    [self calculateGradientColors];
+    initGradientColors = YES;
   }
 }
 
@@ -126,6 +126,11 @@
       colorSpaceName: NSDeviceRGBColorSpace
       bytesPerRow: 0
       bitsPerPixel: 32];
+      
+  if (initGradientColors) {
+    [self initGradientColors];
+    initGradientColors = NO;
+  }
   
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
@@ -280,7 +285,7 @@
 }
 
 
-- (void) calculateGradientColors {
+- (void) initGradientColors {
   NSAssert(colorPalette != nil, @"Color palette must be set.");
   free(gradientColors);
 

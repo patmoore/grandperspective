@@ -16,6 +16,7 @@
   TreeLayoutBuilder  *layoutBuilder;
 
   NSColorList  *colorPalette;
+  BOOL  initGradientColors;
   UInt32  *gradientColors;
   int  numGradientColors;
 
