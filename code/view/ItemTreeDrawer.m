@@ -33,12 +33,9 @@
          colorPalette: (NSColorList*)colorPaletteVal
          layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
   if (self = [super init]) {
-    fileItemHashing = [fileItemHashingVal retain];
-    
-    colorPalette = [colorPaletteVal retain];
-    initGradientColors = YES;
-    
-    layoutBuilder = [layoutBuilderVal retain];
+    [self setFileItemHashing: fileItemHashingVal];
+    [self setColorPalette: colorPaletteVal];
+    [self setTreeLayoutBuilder: layoutBuilderVal];
     
     abort = NO;
   }
@@ -60,6 +57,9 @@
 
 
 - (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
+  NSAssert(layoutBuilderVal != nil,
+           @"Cannot set an invalid tree layout builder.");
+
   if (layoutBuilderVal != layoutBuilder) {
     [layoutBuilder release];
     layoutBuilder = [layoutBuilderVal retain];
@@ -72,6 +72,9 @@
 
 
 - (void) setFileItemHashing:(FileItemHashing*)fileItemHashingVal {
+  NSAssert(fileItemHashingVal != nil, 
+           @"Cannot set an invalid file hashing scheme.");
+
   if (fileItemHashingVal != fileItemHashing) {
     [fileItemHashing release];
     fileItemHashing = [fileItemHashingVal retain];
@@ -96,6 +99,9 @@
 
 
 - (void) setColorPalette: (NSColorList*)colorPaletteVal {
+  NSAssert(colorPaletteVal != nil && [[colorPaletteVal allKeys] count] > 0,
+           @"Cannot set an invalid color  palette.");
+
   if (colorPaletteVal != colorPalette) {
     [colorPalette release];
     colorPalette = [colorPaletteVal retain];
