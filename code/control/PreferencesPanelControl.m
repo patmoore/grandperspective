@@ -25,6 +25,8 @@
 }
 
 - (void) dealloc {
+  NSLog(@"PreferencesPanelControl-dealloc");
+
   [localisedColorMappingNamesReverseLookup release];
   [localisedColorPaletteNamesReverseLookup release];
   
@@ -35,6 +37,10 @@
 - (void) windowDidLoad {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
+  [[NSNotificationCenter defaultCenter]
+      addObserver:self selector:@selector(windowWillClose:)
+      name:@"NSWindowWillCloseNotification" object:[self window]];
+
   FileItemHashingCollection  *colorMappings = 
       [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
   ColorListCollection  *colorPalettes = 
@@ -57,6 +63,11 @@
         table: @"palettes"] retain];
 
   [self updateButtonState];
+}
+
+
+- (void) windowWillClose:(NSNotification*)notification {
+   [self autorelease];
 }
 
 

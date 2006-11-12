@@ -13,7 +13,6 @@
   VisibleAsynchronousTaskManager  *filterTaskManager;
   
   EditFilterWindowControl  *editFilterWindowControl;
-  PreferencesPanelControl  *preferencesPanelControl;
 }
 
 - (IBAction) openDirectoryView:(id)sender;

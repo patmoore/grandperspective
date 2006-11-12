@@ -118,7 +118,6 @@ NSString* scanActivityFormatString() {
   [filterTaskManager release];
   
   [editFilterWindowControl release];
-  [preferencesPanelControl release];
 
   [super dealloc];
 }
@@ -300,10 +299,10 @@ NSString* scanActivityFormatString() {
 }
 
 - (IBAction) editPreferences:(id)sender {
-  if (preferencesPanelControl == nil) {
-    preferencesPanelControl = [[PreferencesPanelControl alloc] init];
-  }
+  PreferencesPanelControl  *preferencesPanelControl = 
+    [[PreferencesPanelControl alloc] init];
   
+  // Panel auto-disposes when it is closed.
   [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
 
