@@ -299,11 +299,9 @@ NSString* scanActivityFormatString() {
 }
 
 - (IBAction) editPreferences:(id)sender {
+  // Panel auto-disposes when it is closed.
   PreferencesPanelControl  *preferencesPanelControl = 
     [[PreferencesPanelControl alloc] init];
-  
-  // Panel auto-disposes when it is closed.
-  [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
 
 @end // @implementation MainMenuControl

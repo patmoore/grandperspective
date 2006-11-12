@@ -19,6 +19,9 @@
   if (self = [super initWithWindowNibName: @"PreferencesPanel" owner: self]) {
     defaultColorMappingChanged = NO;
     defaultColorPaletteChanged = NO;
+    
+    // Trioger loading of the window
+    [self window];
   }
 
   return self;
@@ -63,6 +66,9 @@
         table: @"palettes"] retain];
 
   [self updateButtonState];
+  
+  [[self window] center];
+  [[self window] makeKeyAndOrderFront: self];
 }
 
 
