@@ -105,12 +105,12 @@
 }
 
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashing {
+- (void) setColorMapping:(FileItemHashing *)colorMapping {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
   
-  if (fileItemHashing != [drawTaskExecutor fileItemHashing]) {
-    [drawTaskExecutor setFileItemHashing:fileItemHashing];
+  if (colorMapping != [drawTaskExecutor colorMapping]) {
+    [drawTaskExecutor setColorMapping: colorMapping];
 
     [self setNeedsDisplay:YES];
 
@@ -120,11 +120,11 @@
   }
 }
 
-- (FileItemHashing*) fileItemHashing {
+- (FileItemHashing*) colorMapping {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
-  return [drawTaskExecutor fileItemHashing];
+  return [drawTaskExecutor colorMapping];
 }
 
 

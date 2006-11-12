@@ -23,8 +23,8 @@
 - (void) setItemPathModel:(ItemPathModel*)itemPath;
 - (ItemPathModel*) itemPathModel;
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
-- (FileItemHashing*) fileItemHashing;
+- (void) setColorMapping:(FileItemHashing *)colorMapping;
+- (FileItemHashing*) colorMapping;
 
 - (void) setColorPalette:(NSColorList *)colorPalette;
 - (NSColorList*) colorPalette;

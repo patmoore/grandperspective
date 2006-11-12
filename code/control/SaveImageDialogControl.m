@@ -89,7 +89,7 @@
     
     // Draw the image.
     ItemTreeDrawer  *treeDrawer = [[[ItemTreeDrawer alloc] init] autorelease];
-    [treeDrawer setFileItemHashing:[dirViewControl fileItemHashing]];
+    [treeDrawer setColorMapping: [dirViewControl colorMapping]];
     if ([dirViewControl fileItemMaskEnabled]) {
       [treeDrawer setFileItemMask:[dirViewControl fileItemMask]];
     }

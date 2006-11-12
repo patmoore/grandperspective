@@ -15,7 +15,7 @@
 - (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawerVal {
   if (self = [super init]) {
     treeDrawer = [treeDrawerVal retain];
-    fileItemHashing = [[treeDrawer fileItemHashing] retain];
+    colorMapping = [[treeDrawer colorMapping] retain];
     colorPalette = [[treeDrawer colorPalette] retain];
     fileItemMask = [[treeDrawer fileItemMask] retain];
 
@@ -27,7 +27,7 @@
 - (void) dealloc {
   [treeDrawer release];
   
-  [fileItemHashing release];
+  [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
   
@@ -35,15 +35,15 @@
 }
 
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashingVal {
-  if (fileItemHashingVal != fileItemHashing) {
-    [fileItemHashing release];
-    fileItemHashing = [fileItemHashingVal retain];
+- (void) setColorMapping: (FileItemHashing *)colorMappingVal {
+  if (colorMappingVal != colorMapping) {
+    [colorMapping release];
+    colorMapping = [colorMappingVal retain];
   }
 }
 
-- (FileItemHashing*) fileItemHashing {
-  return fileItemHashing;
+- (FileItemHashing*) colorMapping {
+  return colorMapping;
 }
 
 
@@ -74,7 +74,7 @@
 - (id) runTaskWithInput: (id)input {
   if (enabled) {
     // Always set, as it may have changed.
-    [treeDrawer setFileItemHashing: fileItemHashing];
+    [treeDrawer setColorMapping: colorMapping];
     [treeDrawer setColorPalette: colorPalette];
     [treeDrawer setFileItemMask: fileItemMask];
 

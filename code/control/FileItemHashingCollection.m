@@ -77,21 +77,30 @@
 
 @implementation FileItemHashingCollection
 
-FileItemHashingCollection  *defaultFileItemHashingCollectionInstance = nil;
++ (void) initialize {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+  NSDictionary *appDefaults = 
+    [NSDictionary
+       dictionaryWithObject: @"folder" forKey: @"defaultColorMapping"];
+
+  [defaults registerDefaults: appDefaults];
+}
 
 + (FileItemHashingCollection*) defaultFileItemHashingCollection {
+  static  FileItemHashingCollection  
+    *defaultFileItemHashingCollectionInstance = nil;
+
   if (defaultFileItemHashingCollectionInstance==nil) {
     FileItemHashingCollection  *instance = 
       [[[FileItemHashingCollection alloc] init] autorelease];
     
-    NSString  *hashByDirNameKey = @"folder";
-
     [instance addFileItemHashing:
                   [[[HashingByTopDirectoryName alloc] init] autorelease]
                 key: @"top folder"];
     [instance addFileItemHashing:
                   [[[HashingByDirectoryName alloc] init] autorelease]
-                key: hashByDirNameKey];
+                key: @"folder"];
     [instance addFileItemHashing:
                   [[[HashingByExtension alloc] init] autorelease]
                 key: @"extension"];
@@ -105,8 +114,6 @@ FileItemHashingCollection  *defaultFileItemHashingCollectionInstance = nil;
                   [[[FileItemHashing alloc] init] autorelease]
                 key: @"nothing"];
 
-    [instance setKeyForDefaultHashing: hashByDirNameKey];
-    
     defaultFileItemHashingCollectionInstance = [instance retain];
   }
   
@@ -120,31 +127,19 @@ FileItemHashingCollection  *defaultFileItemHashingCollectionInstance = nil;
 }
 
 - (id) initWithDictionary: (NSDictionary *)dictionary {
-  // Init with arbitrary key as default
-  return [self initWithDictionary: dictionary 
-                 defaultKey: [[dictionary keyEnumerator] nextObject]];
-}
-
-- (id) initWithDictionary: (NSDictionary *)dictionary 
-         defaultKey: (NSString *)defaultKeyVal {
   if (self = [super init]) {
     hashingDictionary = [dictionary retain];
-    defaultKey = [defaultKeyVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
   [hashingDictionary release];
-  [defaultKey release];
   
   [super dealloc];
 }
 
 - (void) addFileItemHashing: (FileItemHashing *)hashing key: (NSString *)key {
-  if (defaultKey == nil) {
-    [self setKeyForDefaultHashing: key];
-  }
   [hashingDictionary setObject: hashing forKey: key];
 }
 
@@ -152,19 +147,8 @@ FileItemHashingCollection  *defaultFileItemHashingCollectionInstance = nil;
   [hashingDictionary removeObjectForKey: key];
 }
 
-- (void) setKeyForDefaultHashing: (NSString *)key {
-  if (key != defaultKey) {
-    [defaultKey release];
-    defaultKey = [key retain];
-  }
-}
-
 - (NSArray*) allKeys {
   return [hashingDictionary allKeys];
-}
-
-- (NSString*) keyForDefaultHashing {
-  return defaultKey;
 }
 
 - (FileItemHashing*) fileItemHashingForKey: (NSString *)key {

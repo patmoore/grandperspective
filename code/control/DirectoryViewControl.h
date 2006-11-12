@@ -49,10 +49,10 @@
 
   NSObject <FileItemTest>  *fileItemMask;
 
-  FileItemHashingCollection  *hashingOptions;
+  FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   
-  NSDictionary  *localisedHashingNamesReverseLookup;
+  NSDictionary  *localisedColorMappingNamesReverseLookup;
   NSDictionary  *localisedColorPaletteNamesReverseLookup;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
@@ -75,7 +75,7 @@
          history: (TreeHistory *)history
          settings: (DirectoryViewControlSettings *)settings;
 
-- (FileItemHashing*) fileItemHashing;
+- (FileItemHashing*) colorMapping;
 
 - (NSObject <FileItemTest> *) fileItemMask;
 - (BOOL) fileItemMaskEnabled;

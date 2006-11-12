@@ -10,7 +10,7 @@
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
 
-  FileItemHashing  *fileItemHashing;
+  FileItemHashing  *colorMapping;
   NSObject<FileItemTest>  *fileItemMask;
   
   TreeLayoutBuilder  *layoutBuilder;
@@ -24,9 +24,9 @@
   BOOL  abort;
 }
 
-- (id) initWithFileItemHashing:(FileItemHashing*)fileItemHashing;
+- (id) initWithColorMapping: (FileItemHashing *)colorMapping;
 
-- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashing
+- (id) initWithColorMapping: (FileItemHashing *)colorMapping
          colorPalette: (NSColorList*)colorPalette
          layoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
 
@@ -36,8 +36,8 @@
 - (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
-- (FileItemHashing*) fileItemHashing;
+- (void) setColorMapping: (FileItemHashing *)colorMapping;
+- (FileItemHashing*) colorMapping;
 
 - (void) setColorPalette: (NSColorList*)colorPalette;
 - (NSColorList*) colorPalette;

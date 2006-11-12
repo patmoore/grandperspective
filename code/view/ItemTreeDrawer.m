@@ -19,21 +19,21 @@
 @implementation ItemTreeDrawer
 
 - (id) init {
-  return [self initWithFileItemHashing:
+  return [self initWithColorMapping:
            [[[FileItemHashing alloc] init] autorelease]];
 }
 
-- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashingVal {
-  return [self initWithFileItemHashing: fileItemHashingVal
+- (id) initWithColorMapping: (FileItemHashing *)colorMappingVal {
+  return [self initWithColorMapping: colorMappingVal
                  colorPalette: [self defaultColorPalette]
                  layoutBuilder: [[[TreeLayoutBuilder alloc] init] autorelease]];
 }
 
-- (id) initWithFileItemHashing: (FileItemHashing*)fileItemHashingVal
+- (id) initWithColorMapping: (FileItemHashing *)colorMappingVal
          colorPalette: (NSColorList*)colorPaletteVal
          layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
   if (self = [super init]) {
-    [self setFileItemHashing: fileItemHashingVal];
+    [self setColorMapping: colorMappingVal];
     [self setColorPalette: colorPaletteVal];
     [self setTreeLayoutBuilder: layoutBuilderVal];
     
@@ -44,7 +44,7 @@
 
 - (void) dealloc {
   [layoutBuilder release];
-  [fileItemHashing release];
+  [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
   
@@ -71,18 +71,18 @@
 }
 
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashingVal {
-  NSAssert(fileItemHashingVal != nil, 
-           @"Cannot set an invalid file hashing scheme.");
+- (void) setColorMapping: (FileItemHashing *)colorMappingVal {
+  NSAssert(colorMappingVal != nil, 
+           @"Cannot set an invalid color mapping.");
 
-  if (fileItemHashingVal != fileItemHashing) {
-    [fileItemHashing release];
-    fileItemHashing = [fileItemHashingVal retain];
+  if (colorMappingVal != colorMapping) {
+    [colorMapping release];
+    colorMapping = [colorMappingVal retain];
   }
 }
 
-- (FileItemHashing*) fileItemHashing {
-  return fileItemHashing;
+- (FileItemHashing*) colorMapping {
+  return colorMapping;
 }
 
 
@@ -100,7 +100,7 @@
 
 - (void) setColorPalette: (NSColorList*)colorPaletteVal {
   NSAssert(colorPaletteVal != nil && [[colorPaletteVal allKeys] count] > 0,
-           @"Cannot set an invalid color  palette.");
+           @"Cannot set an invalid color palette.");
 
   if (colorPaletteVal != colorPalette) {
     [colorPalette release];
@@ -170,8 +170,8 @@
     
     if ( [file isPlainFile] && ( fileItemMask==nil 
                                  || [fileItemMask testFileItem:file] ) ) {
-      [self drawGradientFilledRect:rect 
-              colorHash:[fileItemHashing hashForFileItem:file depth:depth]];
+      [self drawGradientFilledRect: rect 
+              colorHash: [colorMapping hashForFileItem: file depth: depth]];
     }
   }
 

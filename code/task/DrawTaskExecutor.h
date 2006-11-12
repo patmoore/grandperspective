@@ -10,7 +10,7 @@
 @interface DrawTaskExecutor : NSObject <TaskExecutor> {
   ItemTreeDrawer  *treeDrawer;
   
-  FileItemHashing  *fileItemHashing;
+  FileItemHashing  *colorMapping;
   NSColorList  *colorPalette;
   NSObject<FileItemTest>  *fileItemMask;
   
@@ -19,8 +19,8 @@
 
 - (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawer;
 
-- (void) setFileItemHashing:(FileItemHashing*)fileItemHashing;
-- (FileItemHashing*) fileItemHashing;
+- (void) setColorMapping:(FileItemHashing *)colorMapping;
+- (FileItemHashing*) colorMapping;
 
 - (void) setColorPalette:(NSColorList *)colorPalette;
 - (NSColorList*) colorPalette;

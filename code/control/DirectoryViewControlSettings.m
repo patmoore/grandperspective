@@ -4,16 +4,16 @@
 @implementation DirectoryViewControlSettings
 
 - (id) init {
-  return [self initWithHashingKey:nil colorPaletteKey:nil mask:nil 
-                 maskEnabled:NO];
+  return [self initWithColorMappingKey: nil colorPaletteKey: nil mask: nil 
+                 maskEnabled: NO];
 }
 
-- (id) initWithHashingKey: (NSString *)hashingKeyVal 
+- (id) initWithColorMappingKey: (NSString *)colorMappingKeyVal 
          colorPaletteKey: (NSString *)colorPaletteKeyVal
          mask: (NSObject <FileItemTest> *)maskVal
          maskEnabled: (BOOL) maskEnabledVal {
   if (self = [super init]) {
-    hashingKey = [hashingKeyVal retain];
+    colorMappingKey = [colorMappingKeyVal retain];
     colorPaletteKey = [colorPaletteKeyVal retain];
     mask = [maskVal retain];
     maskEnabled = maskEnabledVal;
@@ -23,7 +23,7 @@
 }
 
 - (void) dealloc {
-  [hashingKey release];
+  [colorMappingKey release];
   [colorPaletteKey release];
   [mask release];
 
@@ -31,8 +31,8 @@
 }
 
 
-- (NSString*) fileItemHashingKey {
-  return hashingKey;
+- (NSString*) colorMappingKey {
+  return colorMappingKey;
 }
 
 - (NSString*) colorPaletteKey {

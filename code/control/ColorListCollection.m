@@ -1,11 +1,22 @@
 #import "ColorListCollection.h"
 
 
-static ColorListCollection  *defaultColorListCollectionInstance = nil;
-
 @implementation ColorListCollection
 
++ (void) initialize {
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+  NSDictionary *appDefaults = 
+    [NSDictionary
+       dictionaryWithObject: @"CoffeeBeans" forKey: @"defaultColorPalette"];
+
+  [defaults registerDefaults: appDefaults];
+}
+
+
 + (ColorListCollection*) defaultColorListCollection {
+  static ColorListCollection  *defaultColorListCollectionInstance = nil;
+
   if (defaultColorListCollectionInstance == nil) {
     ColorListCollection  *instance = 
       [[[ColorListCollection alloc] init] autorelease];
@@ -43,16 +54,12 @@ static ColorListCollection  *defaultColorListCollectionInstance = nil;
 
 - (void) dealloc {
   [colorListDictionary release];
-  [defaultKey release];
 
   [super dealloc];
 }
 
 
 - (void) addColorList: (NSColorList *)colorList key: (NSString *)key {
-  if (defaultKey == nil) {
-    [self setKeyForDefaultColorList: key];
-  }
   [colorListDictionary setObject: colorList forKey: key];
 }
 
@@ -60,20 +67,9 @@ static ColorListCollection  *defaultColorListCollectionInstance = nil;
   [colorListDictionary removeObjectForKey: key];
 }
 
-- (void) setKeyForDefaultColorList: (NSString *)key {
-  if (key != defaultKey) {
-    [defaultKey release];
-    defaultKey = [key retain];
-  }
-}
-
 
 - (NSArray*) allKeys {
   return [colorListDictionary allKeys];
-}
-
-- (NSString*) keyForDefaultColorList {
-  return defaultKey;
 }
 
 - (NSColorList*) colorListForKey: (NSString *)key {

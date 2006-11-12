@@ -15,7 +15,7 @@
 
 + (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
                     names: (NSArray *)names
-                    defaultName: (NSString *)defaultName
+                    selectName: (NSString *)defaultName
                     table: (NSString *)tableName;
                    
 - (void) createEditMaskFilterWindow;
@@ -61,7 +61,7 @@
 
     invisiblePathName = nil;
        
-    hashingOptions = 
+    colorMappings = 
       [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
     colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
@@ -82,10 +82,10 @@
   
   [fileItemMask release];
   
-  [hashingOptions release];
+  [colorMappings release];
   [colorPalettes release];
   
-  [localisedHashingNamesReverseLookup release];
+  [localisedColorMappingNamesReverseLookup release];
   [localisedColorPaletteNamesReverseLookup release];
   
   [editMaskFilterWindowControl release];
@@ -96,8 +96,8 @@
 }
 
 
-- (FileItemHashing*) fileItemHashing {
-  return [mainView fileItemHashing];
+- (FileItemHashing*) colorMapping {
+  return [mainView colorMapping];
 }
 
 - (NSObject <FileItemTest> *) fileItemMask {
@@ -117,15 +117,15 @@
 }
 
 - (DirectoryViewControlSettings*) directoryViewControlSettings {
-  NSString  *hashingKey = 
-    [localisedHashingNamesReverseLookup 
+  NSString  *colorMappingKey = 
+    [localisedColorMappingNamesReverseLookup 
        objectForKey: [colorMappingPopUp titleOfSelectedItem]];
   NSString  *colorPaletteKey = 
     [localisedColorPaletteNamesReverseLookup
        objectForKey: [colorPalettePopUp titleOfSelectedItem]];
 
   return [[[DirectoryViewControlSettings alloc]
-              initWithHashingKey: hashingKey
+              initWithColorMappingKey: colorMappingKey
               colorPaletteKey: colorPaletteKey
               mask: fileItemMask
               maskEnabled: [self fileItemMaskEnabled]] 
@@ -140,26 +140,31 @@
 - (void) windowDidLoad {
   [mainView setItemPathModel:itemPathModel];
 
-  [colorMappingPopUp removeAllItems];
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
-  localisedHashingNamesReverseLookup =
+  [colorMappingPopUp removeAllItems];  
+  NSString  *selectedMappingName = 
+    ( [initialSettings colorMappingKey] != nil ?
+         [initialSettings colorMappingKey] :
+         [userDefaults stringForKey: @"defaultColorMapping"] );
+  localisedColorMappingNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: colorMappingPopUp
-        names: [hashingOptions allKeys]
-        defaultName: ( [initialSettings fileItemHashingKey] != nil ?
-                          [initialSettings fileItemHashingKey] :
-                          [hashingOptions keyForDefaultHashing] )
-        table: @"hashing"] retain];
+        names: [colorMappings allKeys]
+        selectName: selectedMappingName 
+        table: @"mappings"] retain];
   [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
+  NSString  *selectedPaletteName =
+    ( [initialSettings colorPaletteKey] != nil ?
+         [initialSettings colorPaletteKey] :
+         [userDefaults stringForKey: @"defaultColorPalette"] );
   localisedColorPaletteNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: colorPalettePopUp
         names: [colorPalettes allKeys]
-        defaultName:  ( [initialSettings colorPaletteKey] != nil ?
-                           [initialSettings colorPaletteKey] :
-                           [colorPalettes keyForDefaultColorList] )
+        selectName: selectedPaletteName  
         table: @"palettes"] retain];
   [self colorPaletteChanged: nil];
   
@@ -270,11 +275,11 @@
 - (IBAction) colorMappingChanged: (id) sender {
   NSString  *localisedName = [colorMappingPopUp titleOfSelectedItem];
   NSString  *name = 
-    [localisedHashingNamesReverseLookup objectForKey: localisedName];
-  FileItemHashing  *hashing = [hashingOptions fileItemHashingForKey: name];
+    [localisedColorMappingNamesReverseLookup objectForKey: localisedName];
+  FileItemHashing  *mapping = [colorMappings fileItemHashingForKey: name];
 
-  if (hashing != nil) {
-    [mainView setFileItemHashing: hashing];
+  if (mapping != nil) {
+    [mainView setColorMapping: mapping];
   }
 }
 
@@ -297,7 +302,7 @@
 
 + (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
                     names: (NSArray *)names
-                    defaultName: (NSString *)defaultName
+                    selectName: (NSString *)selectName
                     table: (NSString *)tableName {
                    
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -308,7 +313,7 @@
 
   NSEnumerator  *enumerator = [names objectEnumerator];
   NSString  *name;
-  NSString  *localisedDefault = nil;
+  NSString  *localisedSelect = nil;
   
   while (name = [enumerator nextObject]) {
     NSString  *localisedName = 
@@ -317,8 +322,8 @@
     NSLog(@"%@ -> %@", name, localisedName);
     
     [reverseLookup setObject: name forKey: localisedName];
-    if ([name isEqualToString: defaultName]) {
-      localisedDefault = localisedName;
+    if ([name isEqualToString: selectName]) {
+      localisedSelect = localisedName;
     }
   }
   
@@ -326,8 +331,8 @@
      [[reverseLookup allKeys] 
          sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)]];
   
-  if (localisedDefault != nil) {
-    [popUp selectItemWithTitle: localisedDefault];
+  if (localisedSelect != nil) {
+    [popUp selectItemWithTitle: localisedSelect];
   }
   
   return reverseLookup;
