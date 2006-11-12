@@ -52,6 +52,9 @@
   FileItemHashingCollection  *hashingOptions;
   ColorListCollection  *colorPalettes;
   
+  NSDictionary  *localisedHashingNamesReverseLookup;
+  NSDictionary  *localisedColorPaletteNamesReverseLookup;
+  
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
   NSString  *invisiblePathName;

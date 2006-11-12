@@ -13,6 +13,11 @@
 
 @interface DirectoryViewControl (PrivateMethods)
 
++ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
+                    names: (NSArray *)names
+                    defaultName: (NSString *)defaultName
+                    table: (NSString *)tableName;
+                   
 - (void) createEditMaskFilterWindow;
 
 - (void) updateButtonState:(NSNotification*)notification;
@@ -80,6 +85,9 @@
   [hashingOptions release];
   [colorPalettes release];
   
+  [localisedHashingNamesReverseLookup release];
+  [localisedColorPaletteNamesReverseLookup release];
+  
   [editMaskFilterWindowControl release];
 
   [invisiblePathName release];
@@ -109,12 +117,19 @@
 }
 
 - (DirectoryViewControlSettings*) directoryViewControlSettings {
+  NSString  *hashingKey = 
+    [localisedHashingNamesReverseLookup 
+       objectForKey: [colorMappingPopUp titleOfSelectedItem]];
+  NSString  *colorPaletteKey = 
+    [localisedColorPaletteNamesReverseLookup
+       objectForKey: [colorPalettePopUp titleOfSelectedItem]];
+
   return [[[DirectoryViewControlSettings alloc]
-               initWithHashingKey: [colorMappingPopUp titleOfSelectedItem]
-               colorPaletteKey: [colorPalettePopUp titleOfSelectedItem]
-               mask: fileItemMask
-               maskEnabled: [self fileItemMaskEnabled]] 
-                 autorelease];
+              initWithHashingKey: hashingKey
+              colorPaletteKey: colorPaletteKey
+              mask: fileItemMask
+              maskEnabled: [self fileItemMaskEnabled]] 
+                autorelease];
 }
 
 - (TreeHistory*) treeHistory {
@@ -126,23 +141,26 @@
   [mainView setItemPathModel:itemPathModel];
 
   [colorMappingPopUp removeAllItems];
-  [colorMappingPopUp addItemsWithTitles:
-     [[hashingOptions allKeys] 
-         sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)]];
   
-  [colorMappingPopUp 
-     selectItemWithTitle: ( [initialSettings fileItemHashingKey] != nil ?
-                              [initialSettings fileItemHashingKey] :
-                              [hashingOptions keyForDefaultHashing] ) ];
-  [self colorMappingChanged:nil];
+  localisedHashingNamesReverseLookup =
+    [[DirectoryViewControl
+        addLocalisedNamesToPopUp: colorMappingPopUp
+        names: [hashingOptions allKeys]
+        defaultName: ( [initialSettings fileItemHashingKey] != nil ?
+                          [initialSettings fileItemHashingKey] :
+                          [hashingOptions keyForDefaultHashing] )
+        table: @"hashing"] retain];
+  [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
-  [colorPalettePopUp addItemsWithTitles: [colorPalettes allKeys]];
-
-  [colorPalettePopUp 
-    selectItemWithTitle: ( [initialSettings colorPaletteKey] != nil ?
-                              [initialSettings colorPaletteKey] :
-                              [colorPalettes keyForDefaultColorList] ) ];
+  localisedColorPaletteNamesReverseLookup =
+    [[DirectoryViewControl
+        addLocalisedNamesToPopUp: colorPalettePopUp
+        names: [colorPalettes allKeys]
+        defaultName:  ( [initialSettings colorPaletteKey] != nil ?
+                           [initialSettings colorPaletteKey] :
+                           [colorPalettes keyForDefaultColorList] )
+        table: @"palettes"] retain];
   [self colorPaletteChanged: nil];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
@@ -249,24 +267,71 @@
   [[editMaskFilterWindowControl window] makeKeyWindow];
 }
 
-- (IBAction) colorMappingChanged:(id)sender {
-  [mainView setFileItemHashing: 
-    [hashingOptions fileItemHashingForKey:
-      [colorMappingPopUp titleOfSelectedItem]]];
+- (IBAction) colorMappingChanged: (id) sender {
+  NSString  *localisedName = [colorMappingPopUp titleOfSelectedItem];
+  NSString  *name = 
+    [localisedHashingNamesReverseLookup objectForKey: localisedName];
+  FileItemHashing  *hashing = [hashingOptions fileItemHashingForKey: name];
+
+  if (hashing != nil) {
+    [mainView setFileItemHashing: hashing];
+  }
 }
 
 
 - (IBAction) colorPaletteChanged: (id) sender {
-  [mainView setColorPalette: 
-    [colorPalettes colorListForKey:
-      [colorPalettePopUp titleOfSelectedItem]]];
-  
+  NSString  *localisedName = [colorPalettePopUp titleOfSelectedItem];
+  NSString  *name = 
+    [localisedColorPaletteNamesReverseLookup objectForKey: localisedName];
+  NSColorList  *palette = [colorPalettes colorListForKey: name];
+
+  if (palette != nil) {
+    [mainView setColorPalette: palette];
+  }
 }
 
 @end // @implementation DirectoryViewControl
 
 
 @implementation DirectoryViewControl (PrivateMethods)
+
++ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
+                    names: (NSArray *)names
+                    defaultName: (NSString *)defaultName
+                    table: (NSString *)tableName {
+                   
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  
+  // Localize options
+  NSMutableDictionary  *reverseLookup = 
+    [NSMutableDictionary dictionaryWithCapacity: [names count]];
+
+  NSEnumerator  *enumerator = [names objectEnumerator];
+  NSString  *name;
+  NSString  *localisedDefault = nil;
+  
+  while (name = [enumerator nextObject]) {
+    NSString  *localisedName = 
+      [mainBundle localizedStringForKey: name value: nil table: tableName];
+      
+    NSLog(@"%@ -> %@", name, localisedName);
+    
+    [reverseLookup setObject: name forKey: localisedName];
+    if ([name isEqualToString: defaultName]) {
+      localisedDefault = localisedName;
+    }
+  }
+  
+  [popUp addItemsWithTitles:
+     [[reverseLookup allKeys] 
+         sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)]];
+  
+  if (localisedDefault != nil) {
+    [popUp selectItemWithTitle: localisedDefault];
+  }
+  
+  return reverseLookup;
+}
 
 - (void) createEditMaskFilterWindow {  
   editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];

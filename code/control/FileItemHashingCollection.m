@@ -83,32 +83,26 @@ FileItemHashingCollection  *defaultInstance = nil;
   if (defaultInstance==nil) {
     defaultInstance = [[FileItemHashingCollection alloc] init];
     
-    NSString  *hashByDirNameKey = 
-                 NSLocalizedString( @"folder", @"Coloring scheme name" );
+    NSString  *hashByDirNameKey = @"folder";
 
     [defaultInstance addFileItemHashing:
                          [[[HashingByTopDirectoryName alloc] init] autorelease]
-                       key: NSLocalizedString( @"top folder",
-                                               @"Coloring scheme name" ) ];
+                       key: @"top folder"];
     [defaultInstance addFileItemHashing:
                          [[[HashingByDirectoryName alloc] init] autorelease]
                        key: hashByDirNameKey];
     [defaultInstance addFileItemHashing:
                          [[[HashingByExtension alloc] init] autorelease]
-                       key: NSLocalizedString( @"extension",
-                                               @"Coloring scheme name") ];
+                       key: @"extension"];
     [defaultInstance addFileItemHashing:
                          [[[HashingByFilename alloc] init] autorelease]
-                       key: NSLocalizedString( @"name",
-                                               @"Coloring scheme name" ) ];
+                       key: @"name"];
     [defaultInstance addFileItemHashing:
                          [[[HashingByDepth alloc] init] autorelease]
-                       key: NSLocalizedString( @"depth",
-                                               @"Coloring scheme name" ) ];
+                       key: @"depth"];
     [defaultInstance addFileItemHashing:
                          [[[FileItemHashing alloc] init] autorelease]
-                       key: NSLocalizedString( @"nothing",
-                                               @"Coloring scheme name" ) ];
+                       key: @"nothing"];
 
     [defaultInstance setKeyForDefaultHashing: hashByDirNameKey];
   }
