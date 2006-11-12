@@ -1,37 +1,34 @@
 #import "ColorListCollection.h"
 
 
-static ColorListCollection  *defaultInstance = nil;
+static ColorListCollection  *defaultColorListCollectionInstance = nil;
 
 @implementation ColorListCollection
 
 + (ColorListCollection*) defaultColorListCollection {
-  if (defaultInstance == nil) {
-    defaultInstance = [[ColorListCollection alloc] init];
+  if (defaultColorListCollectionInstance == nil) {
+    ColorListCollection  *instance = 
+      [[[ColorListCollection alloc] init] autorelease];
     
     NSBundle  *bundle = [NSBundle mainBundle];
-    //NSLog( @"Main bundle: %@", bundle );
-    //NSLog( @"Path: %@", [bundle bundlePath] );
     NSArray  *colorListPaths = [bundle pathsForResourcesOfType: @".clr"
                                           inDirectory: nil];
     NSEnumerator  *pathEnum = [colorListPaths objectEnumerator];
     NSString  *path;
     while (path = [pathEnum nextObject]) {
-      NSLog( @"Color list : %@", path );
-
       NSString  *name = 
         [[path lastPathComponent] stringByDeletingPathExtension];
-
-      NSLog( @"Name: %@", name );
 
       NSColorList  *colorList = 
         [[NSColorList alloc] initWithName: name fromFile: path];
          
-      [defaultInstance addColorList: colorList key: name];
+      [instance addColorList: colorList key: name];
     }
+    
+    defaultColorListCollectionInstance = [instance retain];
   }
   
-  return defaultInstance;
+  return defaultColorListCollectionInstance;
 }
 
 

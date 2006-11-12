@@ -77,37 +77,40 @@
 
 @implementation FileItemHashingCollection
 
-FileItemHashingCollection  *defaultInstance = nil;
+FileItemHashingCollection  *defaultFileItemHashingCollectionInstance = nil;
 
 + (FileItemHashingCollection*) defaultFileItemHashingCollection {
-  if (defaultInstance==nil) {
-    defaultInstance = [[FileItemHashingCollection alloc] init];
+  if (defaultFileItemHashingCollectionInstance==nil) {
+    FileItemHashingCollection  *instance = 
+      [[[FileItemHashingCollection alloc] init] autorelease];
     
     NSString  *hashByDirNameKey = @"folder";
 
-    [defaultInstance addFileItemHashing:
-                         [[[HashingByTopDirectoryName alloc] init] autorelease]
-                       key: @"top folder"];
-    [defaultInstance addFileItemHashing:
-                         [[[HashingByDirectoryName alloc] init] autorelease]
-                       key: hashByDirNameKey];
-    [defaultInstance addFileItemHashing:
-                         [[[HashingByExtension alloc] init] autorelease]
-                       key: @"extension"];
-    [defaultInstance addFileItemHashing:
-                         [[[HashingByFilename alloc] init] autorelease]
-                       key: @"name"];
-    [defaultInstance addFileItemHashing:
-                         [[[HashingByDepth alloc] init] autorelease]
-                       key: @"depth"];
-    [defaultInstance addFileItemHashing:
-                         [[[FileItemHashing alloc] init] autorelease]
-                       key: @"nothing"];
+    [instance addFileItemHashing:
+                  [[[HashingByTopDirectoryName alloc] init] autorelease]
+                key: @"top folder"];
+    [instance addFileItemHashing:
+                  [[[HashingByDirectoryName alloc] init] autorelease]
+                key: hashByDirNameKey];
+    [instance addFileItemHashing:
+                  [[[HashingByExtension alloc] init] autorelease]
+                key: @"extension"];
+    [instance addFileItemHashing:
+                  [[[HashingByFilename alloc] init] autorelease]
+                key: @"name"];
+    [instance addFileItemHashing:
+                  [[[HashingByDepth alloc] init] autorelease]
+                key: @"depth"];
+    [instance addFileItemHashing:
+                  [[[FileItemHashing alloc] init] autorelease]
+                key: @"nothing"];
 
-    [defaultInstance setKeyForDefaultHashing: hashByDirNameKey];
+    [instance setKeyForDefaultHashing: hashByDirNameKey];
+    
+    defaultFileItemHashingCollectionInstance = [instance retain];
   }
   
-  return defaultInstance;
+  return defaultFileItemHashingCollectionInstance;
 }
 
 // Overrides super's designated initialiser.
