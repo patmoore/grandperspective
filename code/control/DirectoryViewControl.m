@@ -12,11 +12,6 @@
 
 
 @interface DirectoryViewControl (PrivateMethods)
-
-+ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
-                    names: (NSArray *)names
-                    selectName: (NSString *)defaultName
-                    table: (NSString *)tableName;
                    
 - (void) createEditMaskFilterWindow;
 
@@ -295,10 +290,6 @@
   }
 }
 
-@end // @implementation DirectoryViewControl
-
-
-@implementation DirectoryViewControl (PrivateMethods)
 
 + (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
                     names: (NSArray *)names
@@ -307,7 +298,6 @@
                    
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
-  // Localize options
   NSMutableDictionary  *reverseLookup = 
     [NSMutableDictionary dictionaryWithCapacity: [names count]];
 
@@ -318,9 +308,7 @@
   while (name = [enumerator nextObject]) {
     NSString  *localisedName = 
       [mainBundle localizedStringForKey: name value: nil table: tableName];
-      
-    NSLog(@"%@ -> %@", name, localisedName);
-    
+
     [reverseLookup setObject: name forKey: localisedName];
     if ([name isEqualToString: selectName]) {
       localisedSelect = localisedName;
@@ -337,6 +325,11 @@
   
   return reverseLookup;
 }
+
+@end // @implementation DirectoryViewControl
+
+
+@implementation DirectoryViewControl (PrivateMethods)
 
 - (void) createEditMaskFilterWindow {  
   editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];

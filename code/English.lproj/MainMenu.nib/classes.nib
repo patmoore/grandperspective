@@ -16,6 +16,7 @@
         {
             ACTIONS = {
                 duplicateDirectoryView = id; 
+                editPreferences = id; 
                 filterDirectoryView = id; 
                 openDirectoryView = id; 
                 rescanDirectoryView = id; 

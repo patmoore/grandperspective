@@ -89,4 +89,10 @@
 // Returns the current settings of the view.
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
 
+// TO DO: Move somewhere more appropriate?
++ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
+                    names: (NSArray *)names
+                    selectName: (NSString *)defaultName
+                    table: (NSString *)tableName;
+
 @end

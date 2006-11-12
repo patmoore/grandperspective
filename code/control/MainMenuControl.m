@@ -6,6 +6,7 @@
 #import "DirectoryViewControlSettings.h"
 #import "SaveImageDialogControl.h"
 #import "EditFilterWindowControl.h"
+#import "PreferencesPanelControl.h"
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
 #import "TreeHistory.h"
@@ -117,6 +118,7 @@ NSString* scanActivityFormatString() {
   [filterTaskManager release];
   
   [editFilterWindowControl release];
+  [preferencesPanelControl release];
 
   [super dealloc];
 }
@@ -295,6 +297,14 @@ NSString* scanActivityFormatString() {
   SaveImageDialogControl  *saveImageDialogControl = 
     [[SaveImageDialogControl alloc] 
         initWithDirectoryViewControl: dirViewControl];
+}
+
+- (IBAction) editPreferences:(id)sender {
+  if (preferencesPanelControl == nil) {
+    preferencesPanelControl = [[PreferencesPanelControl alloc] init];
+  }
+  
+  [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
 
 @end // @implementation MainMenuControl
