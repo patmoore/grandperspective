@@ -3,6 +3,40 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.97, 14-11-2006
+----------------------------------------------------------------------
+
+New functionality:
+- There is now a choice of color palettes.
+  - The palettes that can be chosen have been taken from the 
+    ColorSchemer gallery at http://www.colorschemer.com/schemes/.
+    Thanks to the following users for providing one or more color 
+    schemes: copperblue, tumuchtime, Jalle, Nemoflow, and rageforst.
+- Preferences can now be changed and stored. This means that you
+  can change the default color mapping and default color palette.
+- The application has been fully internationalized. This means that
+  localized versions can now be generated.
+  - See LOCALIZATION.TXT for details on how you can help to make
+    GrandPerspective available in your language.
+
+Minor improvements:
+- Zero-sized items are not included in the tree anymore. This 
+  reduces the memory footprint and stops tree paths from being 
+  drawn when the tree has a total size of zero.
+
+Code clean-up:
+- Renamed FileItemHashingOptions to FileItemHashingCollection and
+  more generally made it match the new ColorListCollection class.
+  Also renamed instances of FileItemHashing to colorMapping.
+
+Bug fixes:
+- Closing Filter Window would freeze application (see 1562627)
+- Selecting an empty filter would throw an assertion (see 1562627).
+- It used to be possible for a test that was not available to be 
+  selected anyway, which could cause various anomalous behaviours.
+
+
+----------------------------------------------------------------------
   Version 0.96, 12-08-2006
 ----------------------------------------------------------------------
 
