@@ -44,31 +44,36 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
     NSObject <FileItemTest>  *tinyFileSizeTest = // 0 - 1k
       [[[ItemSizeTest alloc] initWithUpperBound:1024] autorelease];
-    [self addTest:tinyFileSizeTest toDictionary:initialTestDictionary 
-            withName:@"Tiny files"];
+    [self addTest: tinyFileSizeTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Tiny files", @"tests",
+                                                 @"Name of a test") ];
     
     NSObject <FileItemTest>  *smallFileSizeTest = // 1k - 10k
       [[[ItemSizeTest alloc] initWithLowerBound:1024
                                      upperBound:10240] autorelease];
-    [self addTest:smallFileSizeTest toDictionary:initialTestDictionary 
-            withName:@"Small files"];
+    [self addTest: smallFileSizeTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Small files", @"tests",
+                                                 @"Name of a test") ];
 
     NSObject <FileItemTest>  *mediumFileSizeTest = // 10k - 1M
       [[[ItemSizeTest alloc] initWithLowerBound:10240
                                      upperBound:1048576] autorelease];
-    [self addTest:mediumFileSizeTest toDictionary:initialTestDictionary 
-            withName:@"Medium files"];
+    [self addTest: mediumFileSizeTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Medium files", @"tests",
+                                                 @"Name of a test") ];
 
     NSObject <FileItemTest>  *largeFileSizeTest = // 1M - 100M
       [[[ItemSizeTest alloc] initWithLowerBound:1048576
                                      upperBound:104857600] autorelease];
-    [self addTest:largeFileSizeTest toDictionary:initialTestDictionary 
-            withName:@"Large files"];
+    [self addTest: largeFileSizeTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Large files", @"tests",
+                                                 @"Name of a test") ];
 
     NSObject <FileItemTest>  *hugeFileSizeTest = // 100M - ...
       [[[ItemSizeTest alloc] initWithLowerBound:104857600] autorelease];
-    [self addTest:hugeFileSizeTest toDictionary:initialTestDictionary 
-            withName:@"Huge files"];
+    [self addTest: hugeFileSizeTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Huge files", @"tests",
+                                                 @"Name of a test") ];
 
     NSArray  *imageExtensions = 
       [NSArray arrayWithObjects:@".jpg", @".JPG", @".png", @".PNG", @".gif", 
@@ -79,8 +84,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *imageNameTest =
       [[[ItemNameTest alloc] initWithStringTest:imageStringTest]
            autorelease];
-    [self addTest:imageNameTest toDictionary:initialTestDictionary 
-            withName:@"Images"];
+    [self addTest: imageNameTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Images", @"tests",
+                                                 @"Name of a test") ];
     
     NSArray  *musicExtensions = 
       [NSArray arrayWithObjects:@".mp3", @".MP3", @".wav", @".WAV", nil];
@@ -90,8 +96,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *musicNameTest =
       [[[ItemNameTest alloc] initWithStringTest:musicStringTest]
            autorelease];
-    [self addTest:musicNameTest toDictionary:initialTestDictionary 
-            withName:@"Music"];
+    [self addTest: musicNameTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Music", @"tests",
+                                                 @"Name of a test") ];
                 
     NSArray  *versionControlFolders = 
       [NSArray arrayWithObjects:@"/CVS/", @"/.svn/", nil];
@@ -101,8 +108,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *versionControlPathTest =
       [[[ItemPathTest alloc] initWithStringTest:versionControlStringTest]
            autorelease];
-    [self addTest:versionControlPathTest toDictionary:initialTestDictionary 
-            withName:@"Version control"];
+    [self addTest: versionControlPathTest toDictionary: initialTestDictionary 
+            withName: NSLocalizedStringFromTable(@"Version control", @"tests",
+                                                 @"Name of a test") ];
 
     testsByName = [[NotifyingDictionary alloc] 
                     initWithCapacity:16 initialContents:initialTestDictionary];
