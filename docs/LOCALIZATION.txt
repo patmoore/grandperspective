@@ -1,0 +1,19 @@
+----------------------------------------------------------------------
+  GrandPerspective, LOCALIZATION
+----------------------------------------------------------------------
+
+From Version 0.97 onwards GrandPerspective is fully internationalized.
+This means that it can be localized to support languages other than
+English. I can manage the translation into Dutch, but for any other
+language, I will need your help.
+
+So, hereby a call for volunteers. If you want to help out with making
+GrandPerspective available in your mother tongue, or any other 
+languages you speak fluently, check out the GrandPerspective website 
+to see how you could help:
+
+  http://grandperspectiv.sourceforge.net
+
+Thanks,
+
+Erwin Bonsma
