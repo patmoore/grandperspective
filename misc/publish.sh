@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VERSION="0.94"
-VERSION_ID="0_94"
+VERSION="0.95"
+VERSION_ID="0_95"
 TEXT_PATH="/Users/erwin/svn/GrandPerspective/docs"
-BUILD_PATH="/Users/erwin/temp/Xcode-builds"
+BUILD_PATH="/Users/erwin/svn-tmp/branches/release-0_95-preparation/code/build"
 TEMP_PARENT_PATH="/Users/erwin/temp"
 
 APP_DIR="GrandPerspective.app"
@@ -43,7 +43,7 @@ do
   > $base_f
 done
 
-svn export /Users/erwin/svn/GrandPerspective/code raw-src
+svn export /Users/erwin/svn-tmp/branches/release-0_95-preparation/code raw-src
 
 mkdir src
 
@@ -52,7 +52,15 @@ mkdir src
 OBJECTIVE_C_SRC=`find raw-src -name \*.[hm]`
 for f in ${OBJECTIVE_C_SRC}
 do
-  base_f=${f##?*/}
+  base_f=${f#raw-src/}
+  tmp="/"$base_f
+  tmp=${tmp%/*}
+  subdir=${tmp#/}
+  if [ ! -e src/$subdir ]
+  then
+    mkdir src/$subdir
+  fi
+  # echo $f "->" $base_f "[" $subdir "]"
   cat $f \
     | sed "1,1 s|^|/* GrandPerspective, Version ${VERSION} \\
  *   A utility for Mac OS X that graphically shows disk usage. \\
