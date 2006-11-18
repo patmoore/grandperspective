@@ -1,9 +1,9 @@
 #!/bin/bash
 
-VERSION="0.95"
-VERSION_ID="0_95"
+VERSION="0.96"
+VERSION_ID="0_96"
 TEXT_PATH="/Users/erwin/svn/GrandPerspective/docs"
-BUILD_PATH="/Users/erwin/svn-tmp/branches/release-0_95-preparation/code/build"
+BUILD_PATH="/Users/erwin/svn/GrandPerspective/code/build"
 TEMP_PARENT_PATH="/Users/erwin/temp"
 
 APP_DIR="GrandPerspective.app"
@@ -43,7 +43,7 @@ do
   > $base_f
 done
 
-svn export /Users/erwin/svn-tmp/branches/release-0_95-preparation/code raw-src
+svn export /Users/erwin/svn/GrandPerspective/code raw-src
 
 mkdir src
 
@@ -86,7 +86,7 @@ done
 
 # Copy remaining (useful) source files.
 #
-tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --exclude "TODO.txt" --exclude "*.xcode" --exclude "*.icns" . | tar xf - -C src
+tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --exclude "TODO.txt" --exclude "*.xcode" --exclude "*.icns" --exclude "version.plist" . | tar xf - -C src
 
 # Copy application from build directory.
 # 
