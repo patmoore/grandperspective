@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.92"
-VERSION_ID="0_92"
+VERSION="0.93"
+VERSION_ID="0_93"
 TEXT_PATH="/Users/erwin/svn/erwin/GrandPerspective/trunk/docs"
 BUILD_PATH="/Users/erwin/temp/Xcode-builds"
 TEMP_PARENT_PATH="/Users/erwin/temp"
@@ -82,7 +82,7 @@ tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --ex
 
 # Copy application from build directory.
 # 
-tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" | tar xf - -C .
+tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" | tar xf - -C .
 
 # Create source TGZ file.
 # 
