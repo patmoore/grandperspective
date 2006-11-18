@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VERSION="0.93"
-VERSION_ID="0_93"
-TEXT_PATH="/Users/erwin/svn/erwin/GrandPerspective/trunk/docs"
+VERSION="0.94"
+VERSION_ID="0_94"
+TEXT_PATH="/Users/erwin/svn/GrandPerspective/docs"
 BUILD_PATH="/Users/erwin/temp/Xcode-builds"
 TEMP_PARENT_PATH="/Users/erwin/temp"
 
@@ -43,7 +43,7 @@ do
   > $base_f
 done
 
-svn export /Users/erwin/svn/erwin/GrandPerspective/trunk/code raw-src
+svn export /Users/erwin/svn/GrandPerspective/code raw-src
 
 mkdir src
 
