@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.96"
-VERSION_ID="0_96"
+VERSION="0.97"
+VERSION_ID="0_97"
 TEXT_PATH="/Users/erwin/svn/GrandPerspective/docs"
 BUILD_PATH="/Users/erwin/svn/GrandPerspective/code/build"
 TEMP_PARENT_PATH="/Users/erwin/temp"
@@ -10,6 +10,7 @@ APP_DIR="GrandPerspective.app"
 OUTER_DIR="GrandPerspective-${VERSION_ID}"
 OUT_SRC_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 OUT_DMG_FILE="GrandPerspective-${VERSION_ID}.dmg"
+OUT_NL_FILE="GrandPerspective-${VERSION_ID}-NL.tgz"
 
 CURRENT_PATH=`pwd`
 
@@ -44,6 +45,7 @@ do
 done
 
 svn export /Users/erwin/svn/GrandPerspective/code raw-src
+rm -rf raw-src/nl.lproj
 
 mkdir src
 
@@ -90,7 +92,11 @@ tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --ex
 
 # Copy application from build directory.
 # 
-tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" | tar xf - -C .
+tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" | tar xf - -C .
+
+# Copy localized Dutch resources from build directory.
+#
+tar cf - -C ${BUILD_PATH}/${APP_DIR}/Contents/Resources nl.lproj --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" | tar xf - -C .
 
 # Create source TGZ file.
 # 
@@ -101,5 +107,9 @@ tar czf ${CURRENT_PATH}/${OUT_SRC_FILE} ${OUTER_DIR}/*.txt ${OUTER_DIR}/src
 #
 /Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 1 -compressionLevel 9 ${OUTER_DIR}/*.txt ${OUTER_DIR}/${APP_DIR}
 
-rm -rf ${OUTER_DIR}
+# Create Dutch resources TGZ file.
+#
+tar czf ${CURRENT_PATH}/${OUT_NL_FILE} -C ${OUTER_DIR} nl.lproj
+
+# rm -rf ${OUTER_DIR}
 cd ${CURRENT_DIR}
