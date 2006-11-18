@@ -1,9 +1,8 @@
 #!/bin/bash
 
-VERSION="0.91"
-VERSION_ID="0_91"
-TEXT_PATH="/Users/erwin/data/projects/GrandPerspective/text"
-SOURCE_PATH="/Users/erwin/Data/cocoa/GrandPerspective"
+VERSION="0.92"
+VERSION_ID="0_92"
+TEXT_PATH="/Users/erwin/svn/erwin/GrandPerspective/trunk/docs"
 BUILD_PATH="/Users/erwin/temp/Xcode-builds"
 TEMP_PARENT_PATH="/Users/erwin/temp"
 
@@ -14,7 +13,7 @@ OUT_DMG_FILE="GrandPerspective-${VERSION_ID}.dmg"
 
 CURRENT_PATH=`pwd`
 
-for f in ${OUT_SRC_FILE} ${OUT_DMG_FILE}
+for f in xx${OUT_SRC_FILE} xx${OUT_DMG_FILE}
 do
   if [ -e $f ]
   then 
@@ -44,18 +43,20 @@ do
   > $base_f
 done
 
+svn export /Users/erwin/svn/erwin/GrandPerspective/trunk/code raw-src
+
 mkdir src
 
 # Copy Objective C source files. Also add header to each file.
 #
-OBJECTIVE_C_SRC=`find ${SOURCE_PATH} -name \*.[hm]`
+OBJECTIVE_C_SRC=`find raw-src -name \*.[hm]`
 for f in ${OBJECTIVE_C_SRC}
 do
   base_f=${f##?*/}
   cat $f \
     | sed "1,1 s|^|/* GrandPerspective, Version ${VERSION} \\
  *   A utility for Mac OS X that graphically shows disk usage. \\
- * Copyright (C) 2005, Eriban Software \\
+ * Copyright (C) 2005-2006, Eriban Software \\
  * \\
  * This program is free software; you can redistribute it and/or modify it \\
  * under the terms of the GNU General Public License as published by the Free \\
@@ -64,7 +65,7 @@ do
  * \\
  * This program is distributed in the hope that it will be useful, but WITHOUT \\
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or \\
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for \\
+ * FITNESS FOR A cPARTICULAR PURPOSE.  See the GNU General Public License for \\
  * more details. \\
  * \\
  * You should have received a copy of the GNU General Public License along \\
@@ -77,11 +78,11 @@ done
 
 # Copy remaining (useful) source files.
 #
-tar cf - -C ${SOURCE_PATH} --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --exclude "TODO.txt" --exclude "*.xcode" . | tar xf - -C src
+tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --exclude "TODO.txt" --exclude "*.xcode" --exclude "*.icns" . | tar xf - -C src
 
 # Copy application from build directory.
 # 
-tar cf - -C ${BUILD_PATH} ${APP_DIR} | tar xf - -C .
+tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" | tar xf - -C .
 
 # Create source TGZ file.
 # 
