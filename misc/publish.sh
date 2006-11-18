@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.90"
-VERSION_ID="0_90"
+VERSION="0.91"
+VERSION_ID="0_91"
 TEXT_PATH="/Users/erwin/data/projects/GrandPerspective/text"
 SOURCE_PATH="/Users/erwin/Data/cocoa/GrandPerspective"
 BUILD_PATH="/Users/erwin/temp/Xcode-builds"
@@ -92,5 +92,5 @@ tar czf ${CURRENT_PATH}/${OUT_SRC_FILE} ${OUTER_DIR}/*.txt ${OUTER_DIR}/src
 #
 /Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 1 -compressionLevel 9 ${OUTER_DIR}/*.txt ${OUTER_DIR}/${APP_DIR}
 
-# rm -rf ${OUTER_DIR}
-# cd ${CURRENT_DIR}
+rm -rf ${OUTER_DIR}
+cd ${CURRENT_DIR}
