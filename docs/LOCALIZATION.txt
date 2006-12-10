@@ -1,5 +1,5 @@
 ----------------------------------------------------------------------
-  GrandPerspective, LOCALIZATION
+  GrandPerspective Localization
 ----------------------------------------------------------------------
 
 From Version 0.97 onwards GrandPerspective is fully internationalized.
