@@ -1,0 +1,55 @@
+{
+    IBClasses = (
+        {CLASS = DirectoryView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {
+            ACTIONS = {
+                colorMappingChanged = id; 
+                colorPaletteChanged = id; 
+                downAction = id; 
+                editMask = id; 
+                maskCheckBoxChanged = id; 
+                openFileInFinder = id; 
+                upAction = id; 
+            }; 
+            CLASS = DirectoryViewControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                colorMappingPopUp = NSPopUpButton; 
+                colorPalettePopUp = NSPopUpButton; 
+                downButton = NSButton; 
+                drawer = NSDrawer; 
+                filterDescriptionTextView = NSTextView; 
+                filterNameField = NSTextField; 
+                itemPathField = NSTextField; 
+                itemSizeField = NSTextField; 
+                mainView = DirectoryView; 
+                maskCheckBox = NSButton; 
+                maskDescriptionTextView = NSTextView; 
+                openButton = NSButton; 
+                scanTimeField = NSTextField; 
+                selectedFilePathTextView = NSTextView; 
+                selectedFileSizeField = NSTextField; 
+                treePathTextView = NSTextView; 
+                treeSizeField = NSTextField; 
+                upButton = NSButton; 
+                visibleFolderPathTextView = NSTextView; 
+                visibleFolderSizeField = NSTextField; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = DummyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {abort = id; }; 
+            CLASS = StartupControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                progressIndicator = NSProgressIndicator; 
+                progressPanel = NSPanel; 
+                progressText = NSTextField; 
+            }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
