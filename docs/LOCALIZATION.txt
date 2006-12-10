@@ -14,6 +14,12 @@ to see how you could help:
 
   http://grandperspectiv.sourceforge.net
 
+The following localizations have been provided so far:
+
+  * Japanese (Version 0.97), by Chris Li
+  * German (Version 0.97), by Helge Bauman
+  * Dutch (Version 0.97), by Erwin Bonsma 
+
 Thanks,
 
 Erwin Bonsma
