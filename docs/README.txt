@@ -35,16 +35,11 @@ rectangles as square as possible.
 
 
 - Mac OS X, 10.2 or higher
-  
-  Note: The dependency on functionality introduced after Mac OS X 10.0
-  is minimal. If you have access to Mac OS X 10.0, feel free to try to 
-  make the modifications required to get it to run there. I would 
-  gratefully receive any patches. :-)
 
 
 * CONTENTS
 
-This version of GrandPerspective is released as two separate files:
+This version of GrandPerspective is released as three separate files:
 
   * GrandPerspective-GRANDPERSPECTIVE_SOFTWARE_VERSION_ID.dmg
  
@@ -59,6 +54,18 @@ This version of GrandPerspective is released as two separate files:
       This contains the source code of the application. It consists of
       the Objective C source code, as well as various auxiliary files,
       such as the nib files that are used to construct the GUI.
+
+  * GrandPerspective-GRANDPERSPECTIVE_SOFTWARE_VERSION_ID-local.dmg
+ 
+      This is the localized version of GrandPerspective. It includes
+      support for languages other than English. The translations have 
+      been provided by various users of GrandPerspective. See the
+      GrandPerspective website for details on how you can help out to 
+      make the application available in your mother tongue.
+
+      Note: The localized version of GrandPerpective is typically 
+      released a short while after the main release in order for the
+      localized resources to be updated as necessary.
 
 
 * LICENSE
