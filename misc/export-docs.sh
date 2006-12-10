@@ -17,7 +17,9 @@ VERSION=$4
 VERSION_ID=$5
 
 TEMP_PARENT_DIR="/Users/erwin/temp"
-TEMP_DIR=${TEMP_PARENT_DIR}"/export-docs.tmp"
+TEMP_DIR=${TEMP_PARENT_DIR}/export-docs-$$
+
+SVN_URL=https://194.121.182.66/svn/erwin/GrandPerspective
 
 if [ ! -e $DEST_DIR ]
 then
@@ -25,7 +27,7 @@ then
   exit -2
 fi
 
-svn export -r $SVN_REV https://194.121.182.66/svn/erwin/GrandPerspective/$SVN_PATH $TEMP_DIR
+svn export -q -r $SVN_REV $SVN_URL/$SVN_PATH $TEMP_DIR
 
 for f in ${TEMP_DIR}/*.txt
 do
