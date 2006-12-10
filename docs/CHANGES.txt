@@ -3,6 +3,16 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.97 (localized), 10-12-2006
+----------------------------------------------------------------------
+
+New localizations:
+- Japanese, by Chris Li
+- German, by Helge Baumann
+- Dutch, by Erwin Bonsma
+
+
+----------------------------------------------------------------------
   Version 0.97, 14-11-2006
 ----------------------------------------------------------------------
 
@@ -34,7 +44,6 @@ Bug fixes:
 - Selecting an empty filter would throw an assertion (see 1562627).
 - It used to be possible for a test that was not available to be 
   selected anyway, which could cause various anomalous behaviours.
-
 
 ----------------------------------------------------------------------
   Version 0.96, 12-08-2006
