@@ -21,6 +21,7 @@
 #import "FilterTaskInput.h"
 #import "FilterTaskExecutor.h"
 
+#import "FileItemTestRepository.h"
 
 NSString* scanActivityFormatString() {
   return NSLocalizedString( @"Scanning %@", 
@@ -108,6 +109,8 @@ NSString* scanActivityFormatString() {
 }
 
 - (void) dealloc {
+  NSLog(@"MainMenuControl-dealloc");
+
   [windowManager release];
   
   [scanTaskManager dispose];
@@ -118,7 +121,7 @@ NSString* scanActivityFormatString() {
   [filterTaskManager release];
   
   [editFilterWindowControl release];
-
+  
   [super dealloc];
 }
 
@@ -126,6 +129,12 @@ NSString* scanActivityFormatString() {
   [self openDirectoryView:self];
 }
 
+- (void) applicationWillTerminate:(NSNotification *)notification {
+  [[FileItemTestRepository defaultFileItemTestRepository]
+       storeUserCreatedTestsInUserDefaults];
+       
+  [self release];
+}
 
 - (BOOL) validateMenuItem:(NSMenuItem *)anItem {
   if ( [anItem action]==@selector(duplicateDirectoryView:) ||

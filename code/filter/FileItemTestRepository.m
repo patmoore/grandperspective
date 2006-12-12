@@ -18,9 +18,8 @@
 
 @interface FileItemTestRepository (PrivateMethods) 
 
-- (void) addTest:(NSObject <FileItemTest> *) test
-           toDictionary:(NSMutableDictionary*) dict
-           withName:(NSString*) name;
+- (void) addTestDictsFromArray: (NSArray *) testDicts
+           toTestDictionary: (NSMutableDictionary*) testsByName;
 
 @end
 
@@ -43,21 +42,22 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSMutableDictionary*  initialTestDictionary = 
                              [[NSMutableDictionary alloc] initWithCapacity: 16];    
     
+    // Load default tests from information properties file.
     NSBundle  *bundle = [NSBundle mainBundle];
-    NSArray  *fileItemTestDicts = 
-      [bundle objectForInfoDictionaryKey: @"GPDefaultFileItemTests"];
+      
+    [self addTestDictsFromArray: 
+              [bundle objectForInfoDictionaryKey: @"GPDefaultFileItemTests"]
+            toTestDictionary: initialTestDictionary];
+    defaultTests = 
+      [[NSDictionary alloc] initWithDictionary: initialTestDictionary];
 
-    NSDictionary  *fileItemTestDict;
-    NSEnumerator  *fileItemTestDictEnum = [fileItemTestDicts objectEnumerator];
+    // Load additional user-created tests from preferences
+    NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+    [self addTestDictsFromArray: 
+              [userDefaults arrayForKey: @"fileItemTests"]
+            toTestDictionary: initialTestDictionary];
 
-    while ((fileItemTestDict = [fileItemTestDictEnum nextObject]) != nil) {
-      NSObject <FileItemTest>  *fileItemTest =
-        [FileItemTestRepository fileItemTestFromDictionary: fileItemTestDict];
-
-      [initialTestDictionary setObject: fileItemTest 
-                               forKey: [fileItemTest name]];
-    }
-    
+    // Store tests in a NotifyingDictionary
     testsByName = [[NotifyingDictionary alloc] 
                     initWithCapacity: 16 
                     initialContents: initialTestDictionary];
@@ -66,8 +66,40 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   return self;
 }
 
+- (void) dealloc {
+  [testsByName release];
+
+  [super dealloc];
+}
+
+
 - (NotifyingDictionary*) testsByNameAsNotifyingDictionary {
   return testsByName;
+}
+
+
+- (void) storeUserCreatedTestsInUserDefaults {
+  NSLog(@"StoringUserCreatedTestsInUserDefaults");
+  
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  
+  NSMutableArray  *testsArray = 
+    [NSMutableArray arrayWithCapacity: [((NSDictionary*)testsByName) count]];
+
+  NSString  *name;
+  NSEnumerator  *testNameEnum = [((NSDictionary*)testsByName) keyEnumerator];
+
+  while ((name = [testNameEnum nextObject]) != nil) {
+    NSObject <FileItemTest>  *fileItemTest = 
+      [((NSDictionary*)testsByName) objectForKey: name];
+
+    if (fileItemTest != [defaultTests objectForKey: name]) {
+      [testsArray addObject: [fileItemTest dictionaryForObject]];
+    }
+  }
+    
+  [userDefaults setObject: testsArray forKey: @"fileItemTests"];
+  [userDefaults synchronize];
 }
 
 
@@ -121,11 +153,17 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
 @implementation FileItemTestRepository (PrivateMethods) 
 
-- (void) addTest:(NSObject <FileItemTest> *) test
-           toDictionary:(NSMutableDictionary*) dict
-           withName:(NSString*) name {
-  [test setName:name];
-  [dict setObject:test forKey:name];
+- (void) addTestDictsFromArray: (NSArray *) testDicts
+           toTestDictionary: (NSMutableDictionary*) testsByNameVal {
+  NSDictionary  *fileItemTestDict;
+  NSEnumerator  *fileItemTestDictEnum = [testDicts objectEnumerator];
+
+  while ((fileItemTestDict = [fileItemTestDictEnum nextObject]) != nil) {
+    NSObject <FileItemTest>  *fileItemTest =
+      [FileItemTestRepository fileItemTestFromDictionary: fileItemTestDict];
+
+    [testsByNameVal setObject: fileItemTest forKey: [fileItemTest name]];
+  }
 }
 
 @end //  FileItemTestRepository (PrivateMethods) 
