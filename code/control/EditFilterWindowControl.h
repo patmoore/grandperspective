@@ -40,7 +40,10 @@
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
 
+  // Non-localized name of currently selected test.
   NSString  *selectedTestName;
+  
+  // Non-localized name of test to select.
   NSString  *testNameToSelect;
   
   // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"

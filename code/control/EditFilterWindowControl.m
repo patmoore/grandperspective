@@ -40,6 +40,12 @@
 - (NSArray *) filterTests;
 - (NSPopUpButton *) filterActionButton;
 
+// Returns the non-localized name of the selected available test (if any).
+- (NSString *) selectedAvailableTestName;
+
+// Returns the non-localized name of the selected filter test (if any).
+- (NSString *) selectedFilterTestName;
+
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
 - (void) testUpdatedInRepository:(NSNotification*)notification;
@@ -181,7 +187,7 @@
 
 
 - (IBAction) removeTestFromRepository:(id)sender {
-  NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
+  NSString  *testName = [self selectedAvailableTestName];
   
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
 
@@ -197,10 +203,10 @@
   [alert setMessageText: [NSString stringWithFormat: fmt, testName]];
   [alert setInformativeText: infoMsg];
 
-  [alert beginSheetModalForWindow:[self window] modalDelegate:self
-           didEndSelector:@selector(confirmTestRemovalAlertDidEnd: 
-                                      returnCode:contextInfo:) 
-           contextInfo:testName];
+  [alert beginSheetModalForWindow: [self window] modalDelegate: self
+           didEndSelector: @selector(confirmTestRemovalAlertDidEnd: 
+                                       returnCode:contextInfo:) 
+           contextInfo: testName];
 }
 
 
@@ -247,22 +253,22 @@
   EditFilterRuleWindowControl  *ruleWindowControl = 
     [EditFilterRuleWindowControl defaultInstance];
 
-  NSString  *oldName = [[availableTestsBrowser selectedCell] stringValue];
+  NSString  *oldName = [self selectedAvailableTestName];
   NSObject <FileItemTest>  *oldTest = 
-    [((NSDictionary*)repositoryTestsByName) objectForKey:oldName];
+    [((NSDictionary*)repositoryTestsByName) objectForKey: oldName];
 
   // Ensure window is loaded before configuring its contents
   NSWindow  *ruleWindow = [ruleWindowControl window];
 
-  [ruleWindowControl representFileItemTest:oldTest];
+  [ruleWindowControl representFileItemTest: oldTest];
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
-        initWithWindowControl:ruleWindowControl
-          existingTests:((NSDictionary*)repositoryTestsByName)
-          allowedName:oldName] autorelease];
+        initWithWindowControl: ruleWindowControl
+          existingTests: ((NSDictionary*)repositoryTestsByName)
+          allowedName: oldName] autorelease];
 
-  int  status = [NSApp runModalForWindow:ruleWindow];
+  int  status = [NSApp runModalForWindow: ruleWindow];
   [ruleWindow close];
     
   if (status == NSRunStoppedResponse) {
@@ -271,19 +277,19 @@
 
     // The terminationControl should have ensured that this check succeeds.
     NSAssert( 
-      [newName isEqualToString:oldName] ||
-      [((NSDictionary*)repositoryTestsByName) objectForKey:newName] == nil,
+      [newName isEqualToString: oldName] ||
+      [((NSDictionary*)repositoryTestsByName) objectForKey: newName] == nil,
       @"Duplicate name check failed.");
                 
-    if (! [newName isEqualToString:oldName]) {
+    if (! [newName isEqualToString: oldName]) {
       // Handle name change.
-      [repositoryTestsByName moveObjectFromKey:oldName toKey:newName];
+      [repositoryTestsByName moveObjectFromKey: oldName toKey: newName];
           
       // Rest of rename handled in response to update notification event.
     }
         
     // Test itself has changed as well.
-    [repositoryTestsByName updateObject:newTest forKey:newName];
+    [repositoryTestsByName updateObject: newTest forKey: newName];
 
     // Rest of update handled in response to update notification event.
   }
@@ -294,46 +300,46 @@
 
 
 - (IBAction) addTestToFilter:(id)sender {
-  NSString  *testName = [[availableTestsBrowser selectedCell] stringValue];
+  NSString  *testName = [self selectedAvailableTestName];
   
   if (testName != nil) {
     NSObject  *test = 
-      [((NSDictionary*)repositoryTestsByName) objectForKey:testName];
+      [((NSDictionary*)repositoryTestsByName) objectForKey: testName];
     NSAssert(test != nil, @"Test not found in repository.");
 
-    [filterTests addObject:testName];
-    [filterTestsByName setObject:test forKey:testName];
+    [filterTests addObject: testName];
+    [filterTestsByName setObject: test forKey: testName];
     
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
     
     // Select the newly added test.
-    [filterTestsBrowser selectRow:[filterTests indexOfObject:testName]
-                          inColumn:0];
-    [[self window] makeFirstResponder:filterTestsBrowser];
+    [filterTestsBrowser selectRow: [filterTests indexOfObject:testName]
+                          inColumn: 0];
+    [[self window] makeFirstResponder: filterTestsBrowser];
 
-    [self updateWindowState:nil];
+    [self updateWindowState: nil];
   }
 }
 
 - (IBAction) removeTestFromFilter:(id)sender {
-  NSString  *testName = [[filterTestsBrowser selectedCell] stringValue];
+  NSString  *testName = [self selectedFilterTestName];
   
   if (testName != nil) {
-    [filterTests removeObject:testName];
-    [filterTestsByName removeObjectForKey:testName];
+    [filterTests removeObject: testName];
+    [filterTestsByName removeObjectForKey: testName];
 
     [filterTestsBrowser validateVisibleColumns];
     [availableTestsBrowser validateVisibleColumns];
     
     // Select the test in the repository (if it still exists there)
-    int  index = [availableTests indexOfObject:testName];
+    int  index = [availableTests indexOfObject: testName];
     if (index != NSNotFound) {
-      [availableTestsBrowser selectRow:index inColumn:0];
-      [[self window] makeFirstResponder:availableTestsBrowser];
+      [availableTestsBrowser selectRow: index inColumn: 0];
+      [[self window] makeFirstResponder: availableTestsBrowser];
     }
     
-    [self updateWindowState:nil];
+    [self updateWindowState: nil];
   }
 }
 
@@ -382,14 +388,23 @@
 - (void) browser:(NSBrowser *)sender willDisplayCell:(id)cell atRow:(int)row 
            column:(int)column {
   NSAssert(column==0, @"Invalid column.");
+
+  NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (sender == filterTestsBrowser) {
-    [cell setStringValue:[filterTests objectAtIndex:row]];
+    NSString  *name = [filterTests objectAtIndex:row];
+    NSString  *localizedName = 
+      [mainBundle localizedStringForKey: name value: nil table: @"tests"];
+
+    [cell setStringValue: localizedName];
   }
   else if (sender == availableTestsBrowser) {
-    NSString  *testName = [availableTests objectAtIndex:row]; 
-    [cell setStringValue:testName];
-    [cell setEnabled: ([filterTestsByName objectForKey:testName] == nil)];
+    NSString  *name = [availableTests objectAtIndex:row]; 
+    NSString  *localizedName = 
+      [mainBundle localizedStringForKey: name value: nil table: @"tests"];
+
+    [cell setStringValue: localizedName];
+    [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
   }
   else {
     NSAssert(NO, @"Unexpected sender.");
@@ -501,6 +516,20 @@
   return filterActionButton;
 }
 
+// Returns the non-localized name of the selected available test (if any).
+- (NSString *) selectedAvailableTestName {
+  int  index = [availableTestsBrowser selectedRowInColumn: 0];
+  
+  return (index < 0) ? nil : [availableTests objectAtIndex: index];
+}
+
+// Returns the non-localized name of the selected filter test (if any).
+- (NSString *) selectedFilterTestName {
+  int  index = [filterTestsBrowser selectedRowInColumn: 0];
+  
+  return (index < 0) ? nil : [filterTests objectAtIndex: index];
+}
+
 
 - (void) testAddedToRepository:(NSNotification*)notification {        
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
@@ -536,39 +565,39 @@
 
 
 - (void) testUpdatedInRepository:(NSNotification*)notification {
-  NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+  NSString  *testName = [[notification userInfo] objectForKey: @"key"];
 
-  if ([selectedTestName isEqualToString:testName]) {
+  if ([selectedTestName isEqualToString: testName]) {
     // Invalidate the selected test description text (as it may have changed).
     [selectedTestName release];
     selectedTestName = nil;
   }
   
-  [self updateWindowState:nil];
+  [self updateWindowState: nil];
 }
 
 
-- (void) testRenamedInRepository:(NSNotification*)notification {
-  NSString  *oldTestName = [[notification userInfo] objectForKey:@"oldkey"];
-  NSString  *newTestName = [[notification userInfo] objectForKey:@"newkey"];
+- (void) testRenamedInRepository: (NSNotification *)notification {
+  NSString  *oldTestName = [[notification userInfo] objectForKey: @"oldkey"];
+  NSString  *newTestName = [[notification userInfo] objectForKey: @"newkey"];
 
-  int  index = [availableTests indexOfObject:oldTestName];
+  int  index = [availableTests indexOfObject: oldTestName];
   NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
-  NSString  *oldSelectedName = [[availableTestsBrowser selectedCell] title];
+  NSString  *oldSelectedName = [self selectedAvailableTestName];
 
-  [availableTests replaceObjectAtIndex:index withObject:newTestName];    
+  [availableTests replaceObjectAtIndex: index withObject: newTestName];    
   [availableTestsBrowser validateVisibleColumns];
     
-  if ([oldSelectedName isEqualToString:oldTestName]) {
+  if ([oldSelectedName isEqualToString: oldTestName]) {
     // It was selected, so make sure it still is.
-    [availableTestsBrowser selectRow:index inColumn:0];
+    [availableTestsBrowser selectRow: index inColumn: 0];
   }
 }
 
 
-- (void) updateWindowState:(NSNotification*)notification {
-  NSLog(@"First responder: %@", [[self window] firstResponder]);
+- (void) updateWindowState: (NSNotification *)notification {
+  // NSLog(@"First responder: %@", [[self window] firstResponder]);
 
   if (! [[availableTestsBrowser selectedCell] isEnabled]) {
     // The window is in an anomalous situation: a test is selected in the
@@ -588,7 +617,7 @@
       // There is no cell selected in the filterTestsBrowser. Try to select 
       // the test that is selected (but disabled) in the other browser.      
       int  index = [filterTests indexOfObject: 
-                      [[availableTestsBrowser selectedCell] title]];
+                                  [self selectedAvailableTestName]];
       if (index != NSNotFound) {
         [filterTestsBrowser selectRow: index inColumn: 0];
       }
@@ -607,18 +636,18 @@
           ( [[self window] firstResponder]
             == [availableTestsBrowser matrixInColumn: 0] );
 
-  NSCell  *selectedFilterTest = [filterTestsBrowser selectedCell];
-  NSCell  *selectedAvailableTest = [availableTestsBrowser selectedCell];
+  NSString  *selectedFilterTestName = [self selectedFilterTestName];
+  NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
   NSObject <FileItemTest>  *newSelectedTest = nil;
   if (filterTestsHighlighted) {
-    newSelectedTestName = [selectedFilterTest title];
+    newSelectedTestName = selectedFilterTestName;
     newSelectedTest = [filterTestsByName objectForKey: newSelectedTestName];
   }
   else if (availableTestsHighlighted) {
-    newSelectedTestName = [selectedAvailableTest title];
+    newSelectedTestName = selectedAvailableTestName;
     newSelectedTest = [((NSDictionary*)repositoryTestsByName) 
                            objectForKey: newSelectedTestName];
   }
@@ -638,14 +667,14 @@
   
   // Update enabled status of buttons with context-dependent actions.
   BOOL  availableTestHighlighted = 
-          ( selectedAvailableTest != nil && availableTestsHighlighted );
+          ( selectedAvailableTestName != nil && availableTestsHighlighted );
 
   [removeTestFromRepositoryButton setEnabled: availableTestHighlighted];
   [editTestInRepositoryButton setEnabled: availableTestHighlighted];
   [addTestToFilterButton setEnabled: availableTestHighlighted];
 
   [removeTestFromFilterButton setEnabled: 
-    ( selectedFilterTest != nil && filterTestsHighlighted )];
+    ( selectedFilterTestName != nil && filterTestsHighlighted )];
 
   BOOL  nonEmptyFilter = ([filterTests count] > 0);
 
