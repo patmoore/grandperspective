@@ -26,5 +26,110 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+    <key>GPDefaultFileItemTests</key>
+    <array>
+		<dict>
+			<key>name</key>
+			<string>Tiny files</string>
+			<key>class</key>
+			<string>ItemSizeTest</string>
+			<key>upperBound</key>
+			<integer>1024</integer>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Small files</string>
+			<key>class</key>
+			<string>ItemSizeTest</string>
+			<key>lowerBound</key>
+			<integer>1024</integer>
+			<key>upperBound</key>
+			<integer>10240</integer>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Medium files</string>
+			<key>class</key>
+			<string>ItemSizeTest</string>
+			<key>lowerBound</key>
+			<integer>10240</integer>
+			<key>upperBound</key>
+			<integer>1048576</integer>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Large files</string>
+			<key>class</key>
+			<string>ItemSizeTest</string>
+			<key>lowerBound</key>
+			<integer>1048576</integer>
+			<key>upperBound</key>
+			<integer>104857600</integer>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Huge files</string>
+			<key>class</key>
+			<string>ItemSizeTest</string>
+			<key>lowerBound</key>
+			<integer>104857600</integer>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Images</string>
+			<key>class</key>
+			<string>ItemNameTest</string>
+			<key>stringTest</key>
+			<dict>
+				<key>class</key>
+				<string>StringSuffixTest</string>
+				<key>caseSensitive</key>
+				<true/>
+				<key>matches</key>
+				<array>
+					<string>.jpg</string>
+					<string>.jpeg</string>
+					<string>.png</string>
+					<string>.gif</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Music</string>
+			<key>class</key>
+			<string>ItemNameTest</string>
+			<key>stringTest</key>
+			<dict>
+				<key>class</key>
+				<string>StringSuffixTest</string>
+				<key>caseSensitive</key>
+				<true/>
+				<key>matches</key>
+				<array>
+					<string>.mp3</string>
+					<string>.wav</string>
+				</array>
+			</dict>
+		</dict>
+		<dict>
+			<key>name</key>
+			<string>Version control</string>
+			<key>class</key>
+			<string>ItemPathTest</string>
+			<key>stringTest</key>
+			<dict>
+				<key>class</key>
+				<string>StringContainmentTest</string>
+				<key>caseSensitive</key>
+				<true/>
+				<key>matches</key>
+				<array>
+					<string>/CVS/</string>
+					<string>/.svn/</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 </dict>
 </plist>

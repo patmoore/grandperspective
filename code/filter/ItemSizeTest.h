@@ -26,4 +26,6 @@
 - (ITEM_SIZE) lowerBound;
 - (ITEM_SIZE) upperBound;
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end

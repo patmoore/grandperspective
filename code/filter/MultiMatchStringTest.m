@@ -37,6 +37,35 @@
 }
 
 
+// Note: Special case. Does not call own designated initialiser. It should
+// be overridden and only called by initialisers with the same signature.
+- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+  if (self = [super init]) {
+    NSArray  *tmpMatches = [dict objectForKey: @"matches"];
+    
+    // Make the array immutable
+    matches = [[NSArray alloc] initWithArray: tmpMatches];
+  }
+  
+  return self;
+}
+
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  [dict setObject: matches forKey: @"matches"];
+  
+  [dict setObject: [NSNumber numberWithBool: YES] forKey: @"caseSensitive"];
+}
+
+
+- (NSDictionary *) dictionaryForObject {
+  NSMutableDictionary  *dict = [NSMutableDictionary dictionaryWithCapacity: 8];
+  
+  [self addPropertiesToDictionary: dict];
+  
+  return dict;
+}
+
+
 - (NSArray*) matchTargets {
   return matches;
 }

@@ -7,4 +7,6 @@
 
 }
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end

@@ -5,4 +5,6 @@
 @interface StringSuffixTest : MultiMatchStringTest {
 }
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end

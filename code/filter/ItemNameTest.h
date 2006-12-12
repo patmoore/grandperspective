@@ -9,4 +9,6 @@
 @interface ItemNameTest : ItemStringTest {
 }
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end

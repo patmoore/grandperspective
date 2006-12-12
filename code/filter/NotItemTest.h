@@ -3,11 +3,13 @@
 #import "AbstractFileItemTest.h"
 
 @interface NotItemTest : AbstractFileItemTest {
-  NSObject <FileItemTest>  *subItemTest;
+  NSObject <FileItemTest>  *subTest;
 }
 
-- (id) initWithSubItemTest:(NSObject<FileItemTest> *)subItemTest;
+- (id) initWithSubItemTest: (NSObject<FileItemTest> *)subTest;
 
 - (NSObject <FileItemTest> *) subItemTest;
+
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
 
 @end

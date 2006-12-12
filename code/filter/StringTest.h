@@ -7,4 +7,7 @@
 
 - (NSString*) descriptionWithSubject:(NSString*)subject;
 
+// Used for storing object to preferences.
+- (NSDictionary *) dictionaryForObject;
+
 @end

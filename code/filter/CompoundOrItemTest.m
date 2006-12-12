@@ -3,6 +3,13 @@
 
 @implementation CompoundOrItemTest
 
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  [super addPropertiesToDictionary: dict];
+  
+  [dict setObject: @"CompoundOrItemTest" forKey: @"class"];
+}
+
+
 - (BOOL) testFileItem:(FileItem*)item {
   int  max = [subTests count];
   int  i = 0;
@@ -27,6 +34,16 @@
   return NSLocalizedStringFromTable( 
            @"(%@) or %@" , @"tests", 
            @"OR-test with 1: sub test, and 2: two or more other sub tests" );
+}
+
+
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
+  NSAssert([[dict objectForKey: @"class"] 
+             isEqualToString: @"CompoundOrItemTest"],
+             @"Incorrect value for class in dictionary.");
+
+  return [[[CompoundOrItemTest alloc] initWithPropertiesFromDictionary: dict]
+           autorelease];
 }
 
 @end

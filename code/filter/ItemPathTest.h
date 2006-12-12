@@ -9,4 +9,6 @@
 @interface ItemPathTest : ItemStringTest {
 }
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end

@@ -3,6 +3,13 @@
 
 @implementation StringEqualityTest
 
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  [super addPropertiesToDictionary: dict];
+  
+  [dict setObject: @"StringEqualityTest" forKey: @"class"];
+}
+
+
 - (BOOL) testString:(NSString*)string matches:(NSString*)match {
   return [string isEqualToString:match];
 }
@@ -11,6 +18,16 @@
   return NSLocalizedStringFromTable( 
            @"%@ equals %@", @"tests",
            @"String test with 1: subject, and 2: match targets" );
+}
+
+
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
+  NSAssert([[dict objectForKey: @"class"] 
+             isEqualToString: @"StringEqualityTest"],
+             @"Incorrect value for class in dictionary.");
+
+  return [[[StringEqualityTest alloc] initWithPropertiesFromDictionary: dict]
+           autorelease];
 }
 
 @end

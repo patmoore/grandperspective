@@ -2,6 +2,7 @@
 
 #import "FileItem.h"
 
+
 @implementation ItemSizeTest
 
 // Overrides designated initialiser
@@ -26,6 +27,40 @@
   
   return self;
 }
+
+
+// Note: Special case. Does not call own designated initialiser. It should
+// be overridden and only called by initialisers with the same signature.
+- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+  if (self = [super initWithPropertiesFromDictionary: dict]) {
+    id  object;
+    
+    object = [dict objectForKey: @"lowerBound"];
+    lowerBound = (object == nil) ? 0 : [object unsignedLongLongValue];
+     
+    object = [dict objectForKey: @"upperBound"];
+    upperBound = (object == nil) ? ULONG_LONG_MAX : 
+                                       [object unsignedLongLongValue];
+  }
+  
+  return self;
+}
+
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  [super addPropertiesToDictionary: dict];
+  
+  [dict setObject: @"ItemSizeTest" forKey: @"class"];
+  
+  if ([self hasLowerBound]) {
+    [dict setObject: [NSNumber numberWithLongLong: lowerBound]
+            forKey: @"lowerBound"];
+  }
+  if ([self hasUpperBound]) {
+    [dict setObject: [NSNumber numberWithLongLong: upperBound]
+            forKey: @"upperBound"];
+  }
+}
+
 
 - (BOOL) hasLowerBound {
   return (lowerBound > 0);
@@ -84,4 +119,15 @@
   }
 }
 
-@end
+
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
+  NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemSizeTest"],
+             @"Incorrect value for class in dictionary.");
+
+  return [[[ItemSizeTest alloc] initWithPropertiesFromDictionary: dict]
+           autorelease];
+}
+
+@end // @implementation ItemSizeTest
+
+

@@ -1,5 +1,7 @@
 #import "CompoundItemTest.h"
 
+#import "FileItemTestRepository.h"
+
 @interface CompoundItemTest (PrivateMethods) 
 
 /* Not implemented. Needs to be provided by subclass.
@@ -46,6 +48,45 @@
   
   [super dealloc];
 }
+
+
+// Note: Special case. Does not call own designated initialiser. It should
+// be overridden and only called by initialisers with the same signature.
+- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+  if (self = [super initWithPropertiesFromDictionary: dict]) {
+    NSArray  *subTestDicts = [dict objectForKey: @"subTests"];
+    
+    NSMutableArray  *tmpSubTests = 
+      [NSMutableArray arrayWithCapacity: [subTestDicts count]];
+    NSEnumerator  *subTestsDictsEnum = [subTestDicts objectEnumerator];
+    NSDictionary  *subTestDict;
+    while ((subTestDict = [subTestsDictsEnum nextObject]) != nil) {
+      [tmpSubTests addObject: 
+        [FileItemTestRepository fileItemTestFromDictionary: subTestDict]];
+    }
+    
+    // Make the array immutable
+    subTests = [[NSArray alloc] initWithArray: tmpSubTests];
+  }
+  
+  return self;
+}
+
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  [super addPropertiesToDictionary: dict];
+  
+  NSMutableArray  *subTestsDicts = 
+    [NSMutableArray arrayWithCapacity: [subTests count]];
+  NSEnumerator  *subTestsEnum = [subTests objectEnumerator];
+  NSObject <FileItemTest> *subTest;
+
+  while ((subTest = [subTestsEnum nextObject]) != nil) {
+    [subTestsDicts addObject: [subTest dictionaryForObject]];
+  }
+
+  [dict setObject: subTestsDicts forKey: @"subTests"];
+}
+
 
 - (NSArray*) subItemTests {
   return subTests;

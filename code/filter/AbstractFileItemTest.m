@@ -18,6 +18,32 @@
   [super dealloc];
 }
 
+
+// Note: Special case. Does not call own designated initialiser. It should
+// be overridden and only called by initialisers with the same signature.
+- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+  if (self = [super init]) {
+    name = [dict objectForKey: @"name"];
+  }
+  
+  return self;
+}
+
+- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+  if (name != nil) {
+    [dict setObject:name forKey: @"name"];
+  }
+}
+
+
+- (NSDictionary *) dictionaryForObject {
+  NSMutableDictionary  *dict = [NSMutableDictionary dictionaryWithCapacity: 8];
+  
+  [self addPropertiesToDictionary: dict];
+  
+  return dict;
+}
+
 - (void) setName:(NSString*)nameVal {
   if (nameVal != name) {
     [name release];
@@ -34,4 +60,4 @@
   return NO;
 }
 
-@end
+@end // @implementation AbstractFileItemTest

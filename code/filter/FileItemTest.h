@@ -4,9 +4,12 @@
 
 @protocol FileItemTest
 
-- (BOOL) testFileItem:(FileItem*)item;
+- (BOOL) testFileItem: (FileItem *)item;
 
-- (NSString*) name;
-- (void) setName:(NSString*)name;
+- (NSString *) name;
+- (void) setName: (NSString *)name;
+
+// Used for storing object to preferences.
+- (NSDictionary *) dictionaryForObject;
 
 @end

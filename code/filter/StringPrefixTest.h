@@ -5,4 +5,6 @@
 @interface StringPrefixTest : MultiMatchStringTest {
 }
 
++ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
+
 @end
