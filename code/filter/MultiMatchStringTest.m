@@ -61,7 +61,8 @@
 - (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
   [dict setObject: matches forKey: @"matches"];
   
-  [dict setObject: [NSNumber numberWithBool: YES] forKey: @"caseSensitive"];
+  [dict setObject: [NSNumber numberWithBool: caseSensitive] 
+          forKey: @"caseSensitive"];
 }
 
 

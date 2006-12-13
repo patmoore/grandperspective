@@ -32,11 +32,13 @@
   NSButton  *enabledCheckBox;
   NSPopUpButton  *matchPopUpButton;
   NSTextView  *targetsTextView;
+  NSButton  *caseInsensitiveCheckBox;
 }
-
-- (id) initWithEnabledCheckBox:(NSButton*)checkBox 
-         matchModePopUpButton:(NSPopUpButton*)popUpButton
-         targetsTextView:(NSTextView*)textView;
+ 
+- (id) initWithEnabledCheckBox: (NSButton *)checkBox 
+         matchModePopUpButton: (NSPopUpButton *)popUpButton
+         targetsTextView: (NSTextView *)textView
+         caseInsensitiveCheckBox: (NSButton *)caseCheckBox;
 
 - (void) resetState;
 
@@ -81,11 +83,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   nameTestControls = [[StringBasedTestControls alloc]
                          initWithEnabledCheckBox: nameCheckBox
                          matchModePopUpButton: nameMatchPopUpButton
-                         targetsTextView: nameTargetsView];
+                         targetsTextView: nameTargetsView
+                         caseInsensitiveCheckBox: nameCaseInsensitiveCheckBox];
   pathTestControls = [[StringBasedTestControls alloc]
                          initWithEnabledCheckBox: pathCheckBox
                          matchModePopUpButton: pathMatchPopUpButton
-                         targetsTextView: pathTargetsView];
+                         targetsTextView: pathTargetsView
+                         caseInsensitiveCheckBox: pathCaseInsensitiveCheckBox];
 
   [self updateEnabledState:nil];
 }
@@ -280,17 +284,17 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 
-- (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test {
+- (void) updateStateBasedOnItemNameTest: (ItemNameTest *)test {
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
-  [nameTestControls updateStateBasedOnStringTest:stringTest];
+  [nameTestControls updateStateBasedOnStringTest: stringTest];
 }
 
 
-- (void) updateStateBasedOnItemPathTest:(ItemPathTest*)test {
+- (void) updateStateBasedOnItemPathTest: (ItemPathTest *)test {
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
-  [pathTestControls updateStateBasedOnStringTest:stringTest];
+  [pathTestControls updateStateBasedOnStringTest: stringTest];
 }
 
 
@@ -387,11 +391,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 - (id) initWithEnabledCheckBox:(NSButton*)checkBox 
          matchModePopUpButton:(NSPopUpButton*)popUpButton
-         targetsTextView:(NSTextView*)textView {
+         targetsTextView:(NSTextView*)textView
+         caseInsensitiveCheckBox: (NSButton *)caseCheckBox; {
   if (self = [super init]) {
     enabledCheckBox = [checkBox retain];
     matchPopUpButton = [popUpButton retain];
     targetsTextView = [textView retain];
+    caseInsensitiveCheckBox = [caseCheckBox retain];
   }
   
   return self;
@@ -401,19 +407,21 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [enabledCheckBox release];
   [matchPopUpButton release];
   [targetsTextView release];
+  [caseInsensitiveCheckBox release];
 
   [super dealloc];
 }
 
 
 - (void) resetState {
-  [enabledCheckBox setState:NSOffState];
-  [matchPopUpButton selectItemAtIndex:3]; // Suffix
-  [targetsTextView setString:@""];
+  [enabledCheckBox setState: NSOffState];
+  [matchPopUpButton selectItemAtIndex: 3]; // Suffix
+  [targetsTextView setString: @""];
+  [caseInsensitiveCheckBox setState: NSOffState];
 }
 
 
-- (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test {
+- (void) updateStateBasedOnStringTest: (MultiMatchStringTest *)test {
   [enabledCheckBox setState: NSOnState];
 
   int  index = -1;
@@ -444,7 +452,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     [targetText appendString:@"\n"];
   }
   
-  [targetsTextView setString: targetText];  
+  [targetsTextView setString: targetText];
+  
+  [caseInsensitiveCheckBox setState:
+     ([test isCaseSensitive] ? NSOffState : NSOnState)];
 }
 
 
@@ -481,7 +492,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
         case 3: stringTest = [StringSuffixTest alloc]; break;
         default: NSAssert(NO, @"Unexpected matching index.");
       }
-      stringTest = [[stringTest initWithMatchTargets:targets] autorelease];
+      
+      BOOL  caseSensitive = ([caseInsensitiveCheckBox state] == NSOffState);
+      stringTest = [[stringTest initWithMatchTargets: targets
+                                  caseSensitive: caseSensitive] autorelease];
       
       return stringTest;
     }

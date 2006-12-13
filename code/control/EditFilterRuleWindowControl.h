@@ -10,11 +10,13 @@
   IBOutlet NSButton  *nameCheckBox;
   IBOutlet NSPopUpButton  *nameMatchPopUpButton;
   IBOutlet NSTextView  *nameTargetsView;
-
+  IBOutlet NSButton  *nameCaseInsensitiveCheckBox;
+  
   IBOutlet NSButton  *pathCheckBox;
   IBOutlet NSPopUpButton  *pathMatchPopUpButton;
   IBOutlet NSTextView  *pathTargetsView;
-
+  IBOutlet NSButton  *pathCaseInsensitiveCheckBox;
+  
   IBOutlet NSButton  *sizeLowerBoundCheckBox;
   IBOutlet NSTextField  *sizeLowerBoundField;
   IBOutlet NSPopUpButton  *sizeLowerBoundUnits;
