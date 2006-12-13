@@ -30,8 +30,8 @@
 - (void) dealloc {
   NSLog(@"PreferencesPanelControl-dealloc");
 
-  [localisedColorMappingNamesReverseLookup release];
-  [localisedColorPaletteNamesReverseLookup release];
+  [localizedColorMappingNamesReverseLookup release];
+  [localizedColorPaletteNamesReverseLookup release];
   
   [super dealloc];
 }
@@ -50,7 +50,7 @@
       [[ColorListCollection defaultColorListCollection] retain];
   
   [defaultColorMappingPopUp removeAllItems];  
-  localisedColorMappingNamesReverseLookup =
+  localizedColorMappingNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: defaultColorMappingPopUp
         names: [colorMappings allKeys]
@@ -58,7 +58,7 @@
         table: @"mappings"] retain];
 
   [defaultColorPalettePopUp removeAllItems];
-  localisedColorPaletteNamesReverseLookup =
+  localizedColorPaletteNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: defaultColorPalettePopUp
         names: [colorPalettes allKeys]
@@ -87,9 +87,9 @@
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
   if (defaultColorMappingChanged) {
-    NSString  *localisedName = [defaultColorMappingPopUp titleOfSelectedItem];
+    NSString  *localizedName = [defaultColorMappingPopUp titleOfSelectedItem];
     NSString  *name = 
-      [localisedColorMappingNamesReverseLookup objectForKey: localisedName];
+      [localizedColorMappingNamesReverseLookup objectForKey: localizedName];
 
     [userDefaults setObject: name forKey: @"defaultColorMapping"];
     
@@ -97,9 +97,9 @@
   }
   
   if (defaultColorPaletteChanged) {
-    NSString  *localisedName = [defaultColorPalettePopUp titleOfSelectedItem];
+    NSString  *localizedName = [defaultColorPalettePopUp titleOfSelectedItem];
     NSString  *name = 
-      [localisedColorPaletteNamesReverseLookup objectForKey: localisedName];
+      [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
     
     [userDefaults setObject: name forKey: @"defaultColorPalette"];
       

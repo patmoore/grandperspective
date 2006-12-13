@@ -26,7 +26,7 @@
 // A unique identifier for the filter. Returns "0" iff there is no filter.
 - (int) filterIdentifier;
 
-// Returns a localised string, based on the filter identifier.
+// Returns a localized string, based on the filter identifier.
 - (NSString*) filterName;
 
 @end

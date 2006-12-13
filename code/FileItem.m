@@ -112,7 +112,7 @@ NSString* filesizeUnitString(int order) {
     [s deleteCharactersInRange:NSMakeRange(delPos, [s length] - delPos)];
     
     if (dotRange.location < delPos) {
-      // The dot is still visible, so localise it
+      // The dot is still visible, so localize it
       NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
       NSString  *sepString = [userDefaults stringForKey: NSDecimalSeparator];
 

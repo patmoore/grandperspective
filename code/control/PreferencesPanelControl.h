@@ -8,8 +8,8 @@
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
-  NSDictionary  *localisedColorMappingNamesReverseLookup;
-  NSDictionary  *localisedColorPaletteNamesReverseLookup;
+  NSDictionary  *localizedColorMappingNamesReverseLookup;
+  NSDictionary  *localizedColorPaletteNamesReverseLookup;
   
   BOOL  defaultColorMappingChanged;
   BOOL  defaultColorPaletteChanged;

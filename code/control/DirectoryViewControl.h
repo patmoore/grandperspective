@@ -52,8 +52,8 @@
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   
-  NSDictionary  *localisedColorMappingNamesReverseLookup;
-  NSDictionary  *localisedColorPaletteNamesReverseLookup;
+  NSDictionary  *localizedColorMappingNamesReverseLookup;
+  NSDictionary  *localizedColorPaletteNamesReverseLookup;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
