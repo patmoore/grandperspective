@@ -147,7 +147,7 @@
         addLocalisedNamesToPopUp: colorMappingPopUp
         names: [colorMappings allKeys]
         selectName: selectedMappingName 
-        table: @"mappings"] retain];
+        table: @"MappingNames"] retain];
   [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
@@ -160,7 +160,7 @@
         addLocalisedNamesToPopUp: colorPalettePopUp
         names: [colorPalettes allKeys]
         selectName: selectedPaletteName  
-        table: @"palettes"] retain];
+        table: @"PaletteNames"] retain];
   [self colorPaletteChanged: nil];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
