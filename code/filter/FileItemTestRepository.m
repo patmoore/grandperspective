@@ -42,16 +42,16 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSMutableDictionary*  initialTestDictionary = 
                              [[NSMutableDictionary alloc] initWithCapacity: 16];    
     
-    // Load default tests from information properties file.
+    // Load application-provided tests from the information properties file.
     NSBundle  *bundle = [NSBundle mainBundle];
       
     [self addTestDictsFromArray: 
               [bundle objectForInfoDictionaryKey: @"GPDefaultFileItemTests"]
             toTestDictionary: initialTestDictionary];
-    defaultTests = 
+    applicationProvidedTests = 
       [[NSDictionary alloc] initWithDictionary: initialTestDictionary];
 
-    // Load additional user-created tests from preferences
+    // Load additional user-created tests from preferences.
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
     [self addTestDictsFromArray: 
               [userDefaults arrayForKey: @"fileItemTests"]
@@ -68,6 +68,7 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
 - (void) dealloc {
   [testsByName release];
+  [applicationProvidedTests release];
 
   [super dealloc];
 }
@@ -78,8 +79,13 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 }
 
 
-- (void) storeUserCreatedTestsInUserDefaults {
-  NSLog(@"StoringUserCreatedTestsInUserDefaults");
+- (BOOL) isApplicationProvidedTest: (NSString *)testName; {
+  return [applicationProvidedTests objectForKey: testName] != nil;
+}
+
+
+- (void) storeUserCreatedTests {
+  NSLog(@"storeUserCreatedTests");
   
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
@@ -93,7 +99,7 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     NSObject <FileItemTest>  *fileItemTest = 
       [((NSDictionary*)testsByName) objectForKey: name];
 
-    if (fileItemTest != [defaultTests objectForKey: name]) {
+    if (fileItemTest != [applicationProvidedTests objectForKey: name]) {
       [testsArray addObject: [fileItemTest dictionaryForObject]];
     }
   }

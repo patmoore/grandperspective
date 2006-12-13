@@ -7,15 +7,17 @@
 @interface FileItemTestRepository : NSObject {
   NotifyingDictionary  *testsByName;
 
-  // Contains the default tests, as initially created.
-  NSDictionary  *defaultTests;
+  // Contains the tests provided by the application.
+  NSDictionary  *applicationProvidedTests;
 }
 
 + (FileItemTestRepository*) defaultFileItemTestRepository;
 
 - (NotifyingDictionary*) testsByNameAsNotifyingDictionary;
 
-- (void) storeUserCreatedTestsInUserDefaults;
+- (BOOL) isApplicationProvidedTest: (NSString *)testName;
+
+- (void) storeUserCreatedTests;
 
 + (NSObject <FileItemTest> *) fileItemTestFromDictionary: (NSDictionary *)dict;
 + (NSObject <StringTest> *) stringTestFromDictionary: (NSDictionary *)dict;

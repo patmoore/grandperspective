@@ -71,8 +71,9 @@
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithTestRepository:(FileItemTestRepository*)testRepository {
+- (id) initWithTestRepository: (FileItemTestRepository *)testRepositoryVal {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
+    testRepository = [testRepositoryVal retain];
     repositoryTestsByName = 
       [[testRepository testsByNameAsNotifyingDictionary] retain];
 
@@ -105,6 +106,8 @@
 
 - (void) dealloc {
   NSLog(@"EditFilterWindowControl-dealloc");
+
+  [testRepository release];
 
   [[repositoryTestsByName notificationCenter] removeObserver:self];
 
@@ -194,13 +197,21 @@
 
   NSString  *fmt = NSLocalizedString( @"Remove the rule named \"%@\"?",
                                       @"Alert message" );
-  NSString  *infoMsg = NSLocalizedString( 
-     @"The rule will be irrevocably removed from the rule repository.",
-     @"Alert informative text" );
+  NSString  *infoMsg = ([testRepository isApplicationProvidedTest: testName]) ?
+    NSLocalizedString(
+      @"The default rule with this name will reappear the next time you run the application.",
+      @"Alert informative text" ) :
+    NSLocalizedString( 
+      @"The rule will be irrevocably removed from the rule repository.",
+      @"Alert informative text" );
+
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  NSString  *localizedName = 
+    [mainBundle localizedStringForKey: testName value: nil table: @"TestNames"];
   
   [alert addButtonWithTitle: OK_BUTTON_TITLE];
   [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
-  [alert setMessageText: [NSString stringWithFormat: fmt, testName]];
+  [alert setMessageText: [NSString stringWithFormat: fmt, localizedName]];
   [alert setInformativeText: infoMsg];
 
   [alert beginSheetModalForWindow: [self window] modalDelegate: self

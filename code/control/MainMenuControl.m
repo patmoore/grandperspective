@@ -131,7 +131,7 @@ NSString* scanActivityFormatString() {
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
   [[FileItemTestRepository defaultFileItemTestRepository]
-       storeUserCreatedTestsInUserDefaults];
+       storeUserCreatedTests];
        
   [self release];
 }

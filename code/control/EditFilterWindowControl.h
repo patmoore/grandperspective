@@ -34,6 +34,8 @@
   IBOutlet NSBrowser  *filterTestsBrowser;
   IBOutlet NSBrowser  *availableTestsBrowser;
   
+  FileItemTestRepository  *testRepository;
+  
   NotifyingDictionary  *repositoryTestsByName;
   NSMutableDictionary  *filterTestsByName;
     
