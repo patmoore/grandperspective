@@ -10,8 +10,10 @@
 }
 
 
-- (BOOL) testString:(NSString*)string matches:(NSString*)match {
-  return [string rangeOfString:match].location != NSNotFound;
+- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+  return [string rangeOfString: match
+                   options: (caseSensitive ? 0 : NSCaseInsensitiveSearch)
+                   ].location != NSNotFound;
 }
 
 - (NSString*) descriptionFormat {

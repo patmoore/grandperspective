@@ -18,13 +18,19 @@
 
 @implementation MultiMatchStringTest
 
-- (id) initWithMatchTargets:(NSArray*)matchesVal {
+- (id) initWithMatchTargets: (NSArray *)matchesVal {
+  return [self initWithMatchTargets: matchesVal caseSensitive: YES];
+}
+  
+- (id) initWithMatchTargets: (NSArray *)matchesVal
+         caseSensitive: (BOOL)caseFlag {
   if (self = [super init]) {
     NSAssert([matchesVal count] >= 1, 
              @"There must at least be one possible match.");
 
     // Make the array immutable
     matches = [[NSArray alloc] initWithArray:matchesVal];
+    caseSensitive = caseFlag;
   }
   
   return self;
@@ -45,6 +51,8 @@
     
     // Make the array immutable
     matches = [[NSArray alloc] initWithArray: tmpMatches];
+    
+    caseSensitive = [[dict objectForKey: @"caseSensitive"] boolValue];
   }
   
   return self;
@@ -70,12 +78,15 @@
   return matches;
 }
 
+- (BOOL) isCaseSensitive {
+  return caseSensitive;
+}
 
-- (BOOL) testString:(NSString*)string {
-  NSEnumerator*  matchEnum = [matches objectEnumerator];
-  NSString*  match;
-  while (match = [matchEnum nextObject]) {
-    if ([self testString:string matches:match]) {
+
+- (BOOL) testString: (NSString *)string {
+  int  i = [matches count];
+  while (--i >= 0) {
+    if ([self testString: string matches: [matches objectAtIndex: i]]) {
       return YES;
     }
   }
@@ -118,4 +129,5 @@
   return [NSString stringWithFormat: format, subject, matchesDescr];
 }
 
-@end
+@end // @implementation MultiMatchStringTest
+

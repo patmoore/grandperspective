@@ -10,8 +10,19 @@
 }
 
 
-- (BOOL) testString:(NSString*)string matches:(NSString*)match {
-  return [string hasPrefix:match];
+- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+  int  stringLen = [string length];
+  int  matchLen = [match length];
+  
+  if (stringLen < matchLen) {
+    return NO;
+  }
+  else {
+    return [string compare: match 
+                     options: (caseSensitive ? 0 : NSCaseInsensitiveSearch)
+                     range: NSMakeRange( 0, matchLen)
+                     ] == NSOrderedSame;
+  }
 }
 
 - (NSString*) descriptionFormat {

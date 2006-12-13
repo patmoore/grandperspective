@@ -10,8 +10,13 @@
 }
 
 
-- (BOOL) testString:(NSString*)string matches:(NSString*)match {
-  return [string isEqualToString:match];
+- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+  if (caseSensitive) {
+    return [string isEqualToString: match];
+  }
+  else {
+    return [string caseInsensitiveCompare: match] == NSOrderedSame;
+  }
 }
 
 - (NSString*) descriptionFormat {
