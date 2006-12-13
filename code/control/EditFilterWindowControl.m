@@ -394,14 +394,14 @@
   if (sender == filterTestsBrowser) {
     NSString  *name = [filterTests objectAtIndex:row];
     NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"tests"];
+      [mainBundle localizedStringForKey: name value: nil table: @"TestNames"];
 
     [cell setStringValue: localizedName];
   }
   else if (sender == availableTestsBrowser) {
     NSString  *name = [availableTests objectAtIndex:row]; 
     NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"tests"];
+      [mainBundle localizedStringForKey: name value: nil table: @"TestNames"];
 
     [cell setStringValue: localizedName];
     [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
