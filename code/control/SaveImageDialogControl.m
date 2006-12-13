@@ -1,5 +1,7 @@
 #import "SaveImageDialogControl.h"
 
+#import "ControlConstants.h"
+
 #import "DirectoryView.h"
 #import "DirectoryViewControl.h"
 #import "ItemTreeDrawer.h"
@@ -107,8 +109,7 @@
     if (! [imageData  writeToFile: filename atomically: NO] ) {
       NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
-      // TODO: Does button title need I18N?
-      [alert addButtonWithTitle: @"OK"];
+      [alert addButtonWithTitle: OK_BUTTON_TITLE];
       [alert setMessageText: NSLocalizedString( @"Failed to save the image.", 
                                                 @"Alert message" )];
 

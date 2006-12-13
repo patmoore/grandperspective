@@ -1,5 +1,6 @@
 #import "EditFilterWindowControl.h"
 
+#import "ControlConstants.h"
 #import "NotifyingDictionary.h"
 
 #import "FileItemTestRepository.h"
@@ -191,15 +192,14 @@
   
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
 
-  // TODO: Do these button titles need I18N?
   NSString  *fmt = NSLocalizedString( @"Remove the rule named \"%@\"?",
                                       @"Alert message" );
   NSString  *infoMsg = NSLocalizedString( 
      @"The rule will be irrevocably removed from the rule repository.",
      @"Alert informative text" );
   
-  [alert addButtonWithTitle: @"OK"];
-  [alert addButtonWithTitle: @"Cancel"];
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
   [alert setMessageText: [NSString stringWithFormat: fmt, testName]];
   [alert setInformativeText: infoMsg];
 
@@ -788,9 +788,8 @@
   if (errorText != nil) {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   
-    // TODO: Does button title need I18N?
-    [alert addButtonWithTitle: @"OK"];
-    [alert setMessageText:errorText];
+    [alert addButtonWithTitle: OK_BUTTON_TITLE];
+    [alert setMessageText: errorText];
 
     [alert beginSheetModalForWindow:[windowControl window]
              modalDelegate:self 
