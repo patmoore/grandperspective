@@ -290,27 +290,26 @@
       postNotificationName:@"visibleItemPathLockingChanged" object:self];
 }
 
-- (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end {
+- (NSString*) buildPathNameFromIndex: (int)start toIndex: (int)end {
   NSMutableString  *s = 
-    [[[NSMutableString alloc] initWithCapacity:128] autorelease];
+    [[[NSMutableString alloc] initWithCapacity: 128] autorelease];
 
   int  i = start; // Skip the root
   while (i < end) {
-    Item*  item = [path objectAtIndex:i]; 
+    Item*  item = [path objectAtIndex: i]; 
 
-    if (![item isVirtual]) {
+    if (! [item isVirtual]) {
       if ([s length] > 0) {
-        [s appendString:@"/"];
+        [s appendString: @"/"];
       }
       
-      id  fileitem = item;
-      [s appendString:[fileitem name]];
+      [s appendString: [((FileItem*)item) name]];
     }
     i++;
   }
 
   // Return an immutable string.
-  return  [NSString stringWithString:s];
+  return  [NSString stringWithString: s];
 }
 
 
