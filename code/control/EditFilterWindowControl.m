@@ -190,20 +190,21 @@
 }
 
 
-- (IBAction) removeTestFromRepository:(id)sender {
+- (IBAction) removeTestFromRepository: (id)sender {
   NSString  *testName = [self selectedAvailableTestName];
   
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
 
   NSString  *fmt = NSLocalizedString( @"Remove the rule named \"%@\"?",
                                       @"Alert message" );
-  NSString  *infoMsg = ([testRepository isApplicationProvidedTest: testName]) ?
-    NSLocalizedString(
-      @"The default rule with this name will reappear the next time you run the application.",
-      @"Alert informative text" ) :
-    NSLocalizedString( 
-      @"The rule will be irrevocably removed from the rule repository.",
-      @"Alert informative text" );
+  NSString  *infoMsg = 
+    ([testRepository applicationProvidedTestForName: testName] != nil) ?
+      NSLocalizedString(
+        @"The rule will be replaced by the default rule with this name.",
+        @"Alert informative text" ) :
+      NSLocalizedString( 
+        @"The rule will be irrevocably removed from the rule repository.",
+        @"Alert informative text" );
 
   NSBundle  *mainBundle = [NSBundle mainBundle];
   NSString  *localizedName = 
@@ -680,10 +681,16 @@
   BOOL  availableTestHighlighted = 
           ( selectedAvailableTestName != nil && availableTestsHighlighted );
 
-  [removeTestFromRepositoryButton setEnabled: availableTestHighlighted];
   [editTestInRepositoryButton setEnabled: availableTestHighlighted];
   [addTestToFilterButton setEnabled: availableTestHighlighted];
-
+  
+  // Cannot remove an application-provided tess (it would automatically
+  // re-appear anyway).
+  [removeTestFromRepositoryButton setEnabled: 
+    (availableTestHighlighted && 
+      (newSelectedTest != [testRepository applicationProvidedTestForName: 
+                                            selectedAvailableTestName])) ];
+                          
   [removeTestFromFilterButton setEnabled: 
     ( selectedFilterTestName != nil && filterTestsHighlighted )];
 
@@ -698,7 +705,18 @@
           returnCode:(int)returnCode contextInfo:(void *)testName {
   if (returnCode == NSAlertFirstButtonReturn) {
     // Delete confirmed.
-    [repositoryTestsByName removeObjectForKey:testName];
+    
+    NSObject <FileItemTest>  *defaultTest = 
+      [testRepository applicationProvidedTestForName: testName];
+    
+    if (defaultTest == nil) {
+      [repositoryTestsByName removeObjectForKey:testName];
+    }
+    else {
+      // Replace it by the application-provided test with the same name
+      // (this would happen anyway when the application is restarted).
+      [repositoryTestsByName updateObject: defaultTest forKey: testName];
+    }
 
     // Rest of delete handled in response to notification event.
   }

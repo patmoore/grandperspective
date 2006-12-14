@@ -79,8 +79,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 }
 
 
-- (BOOL) isApplicationProvidedTest: (NSString *)testName; {
-  return [applicationProvidedTests objectForKey: testName] != nil;
+- (NSObject <FileItemTest> *) applicationProvidedTestForName: (NSString *)name {
+  return [applicationProvidedTests objectForKey: name];
 }
 
 

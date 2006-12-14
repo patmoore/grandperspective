@@ -15,7 +15,7 @@
 
 - (NotifyingDictionary*) testsByNameAsNotifyingDictionary;
 
-- (BOOL) isApplicationProvidedTest: (NSString *)testName;
+- (NSObject <FileItemTest> *) applicationProvidedTestForName: (NSString *)name;
 
 - (void) storeUserCreatedTests;
 
