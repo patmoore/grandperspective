@@ -182,7 +182,7 @@
   [scanTimeField setStringValue: 
     [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
-  [treeSizeField setStringValue: [FileItem exactStringForFileItemSize: 
+  [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
 
   [super windowDidLoad];
@@ -361,9 +361,13 @@
   [visibleFolderPathTextView setString:
     [[itemPathModel rootFilePathName] stringByAppendingPathComponent:
                                         invisiblePathName]];
+
+  ITEM_SIZE  itemSize = [[itemPathModel visibleItemTree] itemSize];
+  [visibleFolderExactSizeField setStringValue:
+     [FileItem exactStringForFileItemSize: itemSize]];
   [visibleFolderSizeField setStringValue:
-     [FileItem exactStringForFileItemSize: 
-                 [[itemPathModel visibleItemTree] itemSize]]];
+     [NSString stringWithFormat: @"(%@)", 
+                 [FileItem stringForFileItemSize: itemSize]]];
 
   [self updateButtonState:notification];
 }
@@ -375,9 +379,10 @@
                           [itemPathModel canMoveTreeViewDown] ];
   [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
 
-  [itemSizeField setStringValue:
-     [FileItem stringForFileItemSize:[[itemPathModel fileItemPathEndPoint] 
-                                                       itemSize]]];
+  ITEM_SIZE  itemSize = [[itemPathModel fileItemPathEndPoint] itemSize];
+  NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
+
+  [itemSizeField setStringValue: itemSizeString];
 
   NSString  *visiblePathName = [itemPathModel visibleFilePathName];
 
@@ -404,9 +409,11 @@
   [selectedFilePathTextView setString:
     [[visibleFolderPathTextView string] stringByAppendingPathComponent:
                                           visiblePathName]];
+
+  [selectedFileExactSizeField setStringValue: 
+     [FileItem exactStringForFileItemSize: itemSize]];
   [selectedFileSizeField setStringValue: 
-     [FileItem exactStringForFileItemSize: 
-                 [[itemPathModel fileItemPathEndPoint] itemSize]]];
+     [NSString stringWithFormat: @"(%@)", itemSizeString]];
 }
 
 

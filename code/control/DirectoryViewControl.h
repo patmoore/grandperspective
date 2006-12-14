@@ -39,8 +39,10 @@
   
   // "Focus" drawer panel
   IBOutlet NSTextView  *visibleFolderPathTextView;
+  IBOutlet NSTextField  *visibleFolderExactSizeField;
   IBOutlet NSTextField  *visibleFolderSizeField;
   IBOutlet NSTextView  *selectedFilePathTextView;
+  IBOutlet NSTextField  *selectedFileExactSizeField;
   IBOutlet NSTextField  *selectedFileSizeField;
 
   ItemPathModel  *itemPathModel;
