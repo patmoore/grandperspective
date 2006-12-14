@@ -6,12 +6,15 @@
 @class TreeLayoutBuilder;
 @class FileItemHashing;
 @class ColorPalette;
+@class FileItemPathStringCache;
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
 
   FileItemHashing  *colorMapping;
   NSObject<FileItemTest>  *fileItemMask;
+  
+  FileItemPathStringCache  *fileItemPathStringCache;
   
   TreeLayoutBuilder  *layoutBuilder;
 

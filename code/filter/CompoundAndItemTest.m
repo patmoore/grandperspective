@@ -10,11 +10,11 @@
 }
 
 
-- (BOOL) testFileItem:(FileItem*)item {
+- (BOOL) testFileItem: (FileItem *)item context: (id)context {
   int  max = [subTests count];
   int  i = 0;
   while (i < max) {
-    if (! [[subTests objectAtIndex:i++] testFileItem:item]) {
+    if (! [[subTests objectAtIndex: i++] testFileItem: item context: context]) {
       // Short-circuit evaluation.
       return NO;
     }

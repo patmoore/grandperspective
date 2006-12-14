@@ -2,13 +2,7 @@
 
 #import "DirectoryItem.h"
 #import "StringTest.h"
-
-
-@interface ItemPathTest (PrivateMethods)
-
-- (NSMutableString*) stringForFileItemPath:(FileItem*)item;
-
-@end
+#import "FileItemPathStringCache.h"
 
 @implementation ItemPathTest
 
@@ -19,9 +13,15 @@
 }
 
 
-- (BOOL) testFileItem: (FileItem *)item {
+- (BOOL) testFileItem: (FileItem *)item context: (id)context {
   return [stringTest testString: 
-            [[item parentDirectory] stringForFileItemPath]];
+            [context pathStringForFileItem: [item parentDirectory]]];
+  // Note: For performance reasons, it does not get the string for the item's 
+  // path from the item itself, but uses the context instead. The context, it 
+  // is assumed, supports the pathStringForFileItem: method as provided by the 
+  // FileItemPathStringCache class. This way, path items do not constantly need
+  // to be rebuilt from scratch, nor do they need to be maintained longer than 
+  // needed.
 }
 
 - (NSString*) description {

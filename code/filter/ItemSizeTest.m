@@ -79,7 +79,7 @@
 }
 
                                     
-- (BOOL) testFileItem:(FileItem*)item {
+- (BOOL) testFileItem: (FileItem *)item context: (id)context {
   return ([item itemSize] >= lowerBound && 
           [item itemSize] <= upperBound);
 }

@@ -55,7 +55,7 @@
   return name;
 }
 
-- (BOOL) testFileItem:(FileItem*)item {
+- (BOOL) testFileItem: (FileItem *)item context: (id)context {
   NSAssert(NO, @"This method must be overridden.");
   return NO;
 }

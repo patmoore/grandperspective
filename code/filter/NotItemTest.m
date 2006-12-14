@@ -52,8 +52,8 @@
   return subTest;
 }
 
-- (BOOL) testFileItem:(FileItem*)item {
-  return ! [subTest testFileItem: item];
+- (BOOL) testFileItem: (FileItem *)item context: (id)context {
+  return ! [subTest testFileItem: item context: context];
 }
 
 - (NSString*) description {

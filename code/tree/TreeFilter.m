@@ -4,6 +4,7 @@
 #import "CompoundItem.h"
 #import "TreeBalancer.h"
 #import "FileItemTest.h"
+#import "FileItemPathStringCache.h"
 
 @interface TreeFilter (PrivateMethods)
 
@@ -23,6 +24,9 @@
     itemTest = [itemTestVal retain];
     
     treeBalancer = [[TreeBalancer alloc] init];
+    
+    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
+    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
 
     abort = NO;
 
@@ -35,8 +39,9 @@
 
 
 - (void) dealloc {
-  [treeBalancer release];
   [itemTest release];
+  [treeBalancer release];
+  [fileItemPathStringCache release];
   
   [super dealloc];
 }
@@ -144,7 +149,8 @@
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
   else if ([((FileItem*)item) isPlainFile]) {
-    if ([itemTest testFileItem: ((FileItem*)item)] ) {
+    if ([itemTest testFileItem: ((FileItem*)item)
+                    context: fileItemPathStringCache] ) {
       // File item passed the test, so include it 
       [tmpFileItems addObject: item];
     }

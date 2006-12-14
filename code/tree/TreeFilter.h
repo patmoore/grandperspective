@@ -3,6 +3,7 @@
 
 @class TreeBalancer;
 @class DirectoryItem;
+@class FileItemPathStringCache;
 @protocol FileItemTest;
 
 
@@ -10,6 +11,8 @@
 
   TreeBalancer  *treeBalancer;
   NSObject <FileItemTest>  *itemTest;
+
+  FileItemPathStringCache  *fileItemPathStringCache;
 
   BOOL  abort;
   

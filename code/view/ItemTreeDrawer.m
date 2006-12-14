@@ -3,6 +3,7 @@
 #import "FileItem.h"
 #import "FileItemHashing.h"
 #import "TreeLayoutBuilder.h"
+#import "FileItemPathStringCache.h"
 
 #import "FileItemTest.h"
 
@@ -37,6 +38,9 @@
     [self setColorPalette: colorPaletteVal];
     [self setTreeLayoutBuilder: layoutBuilderVal];
     
+    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
+    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
+    
     abort = NO;
   }
   return self;
@@ -47,6 +51,8 @@
   [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
+  
+  [fileItemPathStringCache release];
   
   free(gradientColors);
   
@@ -140,7 +146,8 @@
   
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  [layoutBuilder layoutItemTree:itemTreeRoot inRect:bounds traverser:self];
+  [layoutBuilder layoutItemTree: itemTreeRoot inRect: bounds traverser: self];
+  [fileItemPathStringCache clearCache];
 
   NSImage  *image = nil;
 
@@ -168,8 +175,10 @@
   if (![item isVirtual]) {
     FileItem*  file = (FileItem*)item;
     
-    if ( [file isPlainFile] && ( fileItemMask==nil 
-                                 || [fileItemMask testFileItem:file] ) ) {
+    if ( [file isPlainFile]
+         && ( fileItemMask==nil 
+              || [fileItemMask testFileItem: file 
+                                 context: fileItemPathStringCache] ) ) {
       [self drawGradientFilledRect: rect 
               colorHash: [colorMapping hashForFileItem: file depth: depth]];
     }
