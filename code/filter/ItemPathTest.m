@@ -1,6 +1,6 @@
 #import "ItemPathTest.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 #import "StringTest.h"
 
 
@@ -19,8 +19,9 @@
 }
 
 
-- (BOOL) testFileItem:(FileItem*)item {
-  return [stringTest testString:[item stringForFileItemPath]];
+- (BOOL) testFileItem: (FileItem *)item {
+  return [stringTest testString: 
+            [[item parentDirectory] stringForFileItemPath]];
 }
 
 - (NSString*) description {

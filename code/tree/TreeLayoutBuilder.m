@@ -64,9 +64,13 @@
   else if (![((FileItem *)root) isPlainFile]) { 
     Item*  sub = [((DirectoryItem *)root) getContents];		
 
-    if (sub!=nil) {
+    if (sub != nil) {
       [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];
     }
+    
+    // The cache may have been useful when traversing the sub-tree. However,
+    // empty it now in order to reduce the memory footprint of the entire tree.
+    [((DirectoryItem *)root) clearFileItemPathStringCache];
   }
 }
 

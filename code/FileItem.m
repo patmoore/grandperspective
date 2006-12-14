@@ -3,13 +3,6 @@
 #import "DirectoryItem.h"
 
 
-@interface FileItem (PrivateMethods)
-
-- (NSMutableString*) mutableStringForFileItemPath;
-
-@end
-
-
 NSString* filesizeUnitString(int order) {
   switch (order) {
     case 0: return NSLocalizedString( @"kB", @"File size unit for kilobytes.");
@@ -70,10 +63,10 @@ NSString* filesizeUnitString(int order) {
 
 
 - (NSString*) stringForFileItemPath {
-  // Although the string could be made immutable before returning it, this is 
-  // not done for performance. Furthermore, the returned string is only used by 
-  // the callee, so who cares what he does with it...
-  return [self mutableStringForFileItemPath];
+  return
+    (parent != nil) ?
+       [[parent stringForFileItemPath] stringByAppendingPathComponent: name] :
+    name;
 }
 
 
@@ -140,22 +133,3 @@ NSString* filesizeUnitString(int order) {
 
 
 @end // @implementation FileItem
-
-
-@implementation FileItem (PrivateMethods)
-
-- (NSMutableString*) mutableStringForFileItemPath {
-  NSMutableString*  s = 
-    ((parent != nil) ? [parent mutableStringForFileItemPath]
-                     : [NSMutableString stringWithCapacity:64]);
-
-  if (! [self isPlainFile]) {
-    [s appendString:name];
-    [s appendString:@"/"];
-  }
-  // TODO: check if stringByAppendingPathComponent: can be used instead.
-  
-  return s;
-}
-
-@end

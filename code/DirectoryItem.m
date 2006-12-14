@@ -5,6 +5,7 @@
 
 - (void) dealloc {
   [contents release];
+  [fileItemPathStringCache release];
 
   [super dealloc];
 }
@@ -30,6 +31,19 @@
 
 - (Item*) getContents {
   return contents;
+}
+
+- (NSString*) stringForFileItemPath {
+  if (fileItemPathStringCache == nil) {
+    fileItemPathStringCache = [[super stringForFileItemPath] retain];
+  }
+
+  return fileItemPathStringCache;
+}
+
+- (void) clearFileItemPathStringCache {
+  [fileItemPathStringCache release];
+  fileItemPathStringCache = nil;
 }
 
 @end
