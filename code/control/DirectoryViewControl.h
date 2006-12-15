@@ -78,6 +78,7 @@
          settings: (DirectoryViewControlSettings *)settings;
 
 - (FileItemHashing*) colorMapping;
+- (NSColorList*) colorPalette;
 
 - (NSObject <FileItemTest> *) fileItemMask;
 - (BOOL) fileItemMaskEnabled;

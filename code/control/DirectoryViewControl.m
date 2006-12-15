@@ -95,6 +95,10 @@
   return [mainView colorMapping];
 }
 
+- (NSColorList*) colorPalette {
+  return [mainView colorPalette];
+}
+
 - (NSObject <FileItemTest> *) fileItemMask {
   return fileItemMask;
 }
