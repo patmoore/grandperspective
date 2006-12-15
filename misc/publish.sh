@@ -1,115 +1,60 @@
 #!/bin/bash
 
-VERSION="0.97"
-VERSION_ID="0_97"
+VERSION="0.98"
+VERSION_ID="0_98"
 TEXT_PATH="/Users/erwin/svn/GrandPerspective/docs"
-BUILD_PATH="/Users/erwin/svn/GrandPerspective/code/build"
+BUILD_PATH="/Users/erwin/svn/GrandPerspective/build"
 TEMP_PARENT_PATH="/Users/erwin/temp"
+TEMP_PATH=`mktemp -d ${TEMP_PARENT_PATH}/publish-XXXXXX` || exit -1
+
+echo "Output to" $TEMP_PATH
 
 APP_DIR="GrandPerspective.app"
 OUTER_DIR="GrandPerspective-${VERSION_ID}"
+OUTER_DIR_PATH=$TEMP_PATH/$OUTER_DIR
 OUT_SRC_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 OUT_DMG_FILE="GrandPerspective-${VERSION_ID}.dmg"
 OUT_NL_FILE="GrandPerspective-${VERSION_ID}-NL.tgz"
 
-CURRENT_PATH=`pwd`
-
-for f in xx${OUT_SRC_FILE} xx${OUT_DMG_FILE}
-do
-  if [ -e $f ]
-  then 
-    echo "Output file $f already exists. Aborting"
-    exit -1
-  fi
-done
-
-cd ${TEMP_PARENT_PATH}
-if [ -e ${OUTER_DIR} ]
+if [ $# -ne "1" ]
 then
-  echo "Temporary directory ${TEMP_PARENT_PATH}/${OUTER_DIR} already exists. Aborting"
+  echo "Script requires one argument."
   exit -1
 fi
 
-mkdir ${OUTER_DIR}
-cd ${OUTER_DIR}
+DEST_PATH=$1
 
-# Copy common text files (license, README, etc)
-#
-for f in ${TEXT_PATH}/*.txt
-do
-  base_f=${f##?*/}
-  cat $f \
-    | sed "s/GRANDPERSPECTIVE_SOFTWARE_VERSION_ID/${VERSION_ID}/g" \
-    | sed "s/GRANDPERSPECTIVE_SOFTWARE_VERSION/Version ${VERSION}/g" \
-  > $base_f
-done
+mkdir ${OUTER_DIR_PATH}
 
-svn export /Users/erwin/svn/GrandPerspective/code raw-src
-rm -rf raw-src/nl.lproj
+echo "Exporting text files."
+./export-docs.sh trunk/docs 286 $OUTER_DIR_PATH $VERSION $VERSION_ID
 
-mkdir src
-
-# Copy Objective C source files. Also add header to each file.
-#
-OBJECTIVE_C_SRC=`find raw-src -name \*.[hm]`
-for f in ${OBJECTIVE_C_SRC}
-do
-  base_f=${f#raw-src/}
-  tmp="/"$base_f
-  tmp=${tmp%/*}
-  subdir=${tmp#/}
-  if [ ! -e src/$subdir ]
-  then
-    mkdir src/$subdir
-  fi
-  # echo $f "->" $base_f "[" $subdir "]"
-  cat $f \
-    | sed "1,1 s|^|/* GrandPerspective, Version ${VERSION} \\
- *   A utility for Mac OS X that graphically shows disk usage. \\
- * Copyright (C) 2005-2006, Eriban Software \\
- * \\
- * This program is free software; you can redistribute it and/or modify it \\
- * under the terms of the GNU General Public License as published by the Free \\
- * Software Foundation; either version 2 of the License, or (at your option) \\
- * any later version. \\
- * \\
- * This program is distributed in the hope that it will be useful, but WITHOUT \\
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or \\
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for \\
- * more details. \\
- * \\
- * You should have received a copy of the GNU General Public License along \\
- * with this program; if not, write to the Free Software Foundation, Inc., \\
- * 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. \\
- */\\
-\\
-|" > src/${base_f}
-done
-
-# Copy remaining (useful) source files.
-#
-tar cf - -C raw-src --exclude "*.[mh]" --exclude "*.pch" --exclude "*~.nib" --exclude "TODO.txt" --exclude "*.xcode" --exclude "*.icns" --exclude "version.plist" . | tar xf - -C src
+mkdir $OUTER_DIR_PATH/src
+echo "Exporting source code."
+./export-source.sh trunk/code 286 $OUTER_DIR_PATH/src $VERSION
 
 # Copy application from build directory.
 # 
-tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" | tar xf - -C .
+tar cf - -C ${BUILD_PATH} ${APP_DIR} --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" | tar xf - -C $OUTER_DIR_PATH
 
 # Copy localized Dutch resources from build directory.
 #
-tar cf - -C ${BUILD_PATH}/${APP_DIR}/Contents/Resources nl.lproj --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" | tar xf - -C .
+tar cf - -C ${BUILD_PATH}/${APP_DIR}/Contents/Resources nl.lproj --exclude ".svn" --exclude "classes.nib" --exclude "info.nib" | tar xf - -C $OUTER_DIR_PATH
 
 # Create source TGZ file.
 # 
-cd ${TEMP_PARENT_PATH}
-tar czf ${CURRENT_PATH}/${OUT_SRC_FILE} ${OUTER_DIR}/*.txt ${OUTER_DIR}/src
+pushd $TEMP_PATH > /dev/null
+tar czf $DEST_PATH/$OUT_SRC_FILE ${OUTER_DIR}/*.txt ${OUTER_DIR}/src
+popd > /dev/null
 
 # Create application DMG file.
 #
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 1 -compressionLevel 9 ${OUTER_DIR}/*.txt ${OUTER_DIR}/${APP_DIR}
+pushd $DEST_PATH > /dev/null
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 1 -compressionLevel 9 ${OUTER_DIR_PATH}/*.txt ${OUTER_DIR_PATH}/${APP_DIR}
+popd > /dev/null
 
 # Create Dutch resources TGZ file.
 #
-tar czf ${CURRENT_PATH}/${OUT_NL_FILE} -C ${OUTER_DIR} nl.lproj
+tar czf $DEST_PATH/$OUT_NL_FILE -C ${OUTER_DIR_PATH} nl.lproj
 
-# rm -rf ${OUTER_DIR}
-cd ${CURRENT_DIR}
+echo rm -rf $TEMP_PATH
