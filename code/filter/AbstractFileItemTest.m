@@ -23,7 +23,7 @@
 // be overridden and only called by initialisers with the same signature.
 - (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
   if (self = [super init]) {
-    name = [dict objectForKey: @"name"];
+    name = [[dict objectForKey: @"name"] retain];
   }
   
   return self;
