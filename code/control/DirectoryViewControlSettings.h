@@ -17,9 +17,15 @@
          maskEnabled: (BOOL) maskEnabled;
 
 - (NSString*) colorMappingKey;
+- (void) setColorMappingKey: (NSString *)key;
+
 - (NSString*) colorPaletteKey;
+- (void) setColorPaletteKey: (NSString *)key;
 
 - (NSObject <FileItemTest>*) fileItemMask;
+- (void) setFileItemMask: (NSObject <FileItemTest> *)mask;
+
 - (BOOL) fileItemMaskEnabled;
+- (void) setFileItemMaskEnabled: (BOOL)flag;
 
 @end

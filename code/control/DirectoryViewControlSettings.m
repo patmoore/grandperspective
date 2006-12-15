@@ -35,8 +35,22 @@
   return colorMappingKey;
 }
 
+- (void) setColorMappingKey: (NSString *)key {
+  if (key != colorMappingKey) {
+    [colorMappingKey release];
+    colorMappingKey = [key retain];
+  }
+}
+
+
 - (NSString*) colorPaletteKey {
   return colorPaletteKey;
+}
+- (void) setColorPaletteKey: (NSString *)key {
+  if (key != colorPaletteKey) {
+    [colorPaletteKey release];
+    colorPaletteKey = [key retain];
+  }
 }
 
 
@@ -44,8 +58,20 @@
   return mask;
 }
 
+- (void) setFileItemMask: (NSObject <FileItemTest> *)maskVal {
+  if (maskVal != mask) {
+    [mask release];
+    mask = [maskVal retain];
+  }
+}
+
+
 - (BOOL) fileItemMaskEnabled {
   return maskEnabled;
+}
+
+- (void) setFileItemMaskEnabled: (BOOL)flag {
+  maskEnabled = flag;
 }
 
 @end
