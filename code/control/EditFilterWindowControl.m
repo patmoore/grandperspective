@@ -355,6 +355,16 @@
   }
 }
 
+- (IBAction) removeAllTestsFromFilter:(id)sender {
+  [filterTests removeAllObjects];
+  [filterTestsByName removeAllObjects];
+  
+  [filterTestsBrowser validateVisibleColumns];
+  [availableTestsBrowser validateVisibleColumns];
+
+  [self updateWindowState: nil];
+}
+
 - (IBAction) filterActionChanged:(id)sender {
   // void
 }
@@ -682,20 +692,21 @@
           ( selectedAvailableTestName != nil && availableTestsHighlighted );
 
   [editTestInRepositoryButton setEnabled: availableTestHighlighted];
-  [addTestToFilterButton setEnabled: availableTestHighlighted];
-  
   // Cannot remove an application-provided tess (it would automatically
   // re-appear anyway).
   [removeTestFromRepositoryButton setEnabled: 
     (availableTestHighlighted && 
       (newSelectedTest != [testRepository applicationProvidedTestForName: 
                                             selectedAvailableTestName])) ];
-                          
+
+  [addTestToFilterButton setEnabled: availableTestHighlighted];
   [removeTestFromFilterButton setEnabled: 
     ( selectedFilterTestName != nil && filterTestsHighlighted )];
 
   BOOL  nonEmptyFilter = ([filterTests count] > 0);
 
+  [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
+  
   [applyButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
   [okButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
 }

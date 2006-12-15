@@ -30,6 +30,7 @@
 
   IBOutlet NSButton  *addTestToFilterButton;
   IBOutlet NSButton  *removeTestFromFilterButton;
+  IBOutlet NSButton  *removeAllTestsFromFilterButton;
   
   IBOutlet NSBrowser  *filterTestsBrowser;
   IBOutlet NSBrowser  *availableTestsBrowser;
@@ -69,6 +70,7 @@
 
 - (IBAction) addTestToFilter:(id)sender;
 - (IBAction) removeTestFromFilter:(id)sender;
+- (IBAction) removeAllTestsFromFilter:(id)sender;
 
 - (IBAction) filterActionChanged:(id)sender;
 - (IBAction) showTestDescriptionChanged:(id)sender;

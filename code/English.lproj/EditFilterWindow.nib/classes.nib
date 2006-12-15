@@ -10,6 +10,7 @@
                 filterActionChanged = id; 
                 handleTestsBrowserClick = id; 
                 okAction = id; 
+                removeAllTestsFromFilter = id; 
                 removeTestFromFilter = id; 
                 removeTestFromRepository = id; 
                 showTestDescriptionChanged = id; 
@@ -24,6 +25,7 @@
                 filterActionButton = NSPopUpButton; 
                 filterTestsBrowser = NSBrowser; 
                 okButton = NSButton; 
+                removeAllTestsFromFilterButton = NSButton; 
                 removeTestFromFilterButton = NSButton; 
                 removeTestFromRepositoryButton = NSButton; 
                 testDescriptionDrawer = NSDrawer; 
