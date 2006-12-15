@@ -34,6 +34,9 @@
          colorPalette: (NSColorList*)colorPaletteVal
          layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
   if (self = [super init]) {
+    colorMapping = nil;
+    colorPalette = nil;
+    layoutBuilder = nil;
     [self setColorMapping: colorMappingVal];
     [self setColorPalette: colorPaletteVal];
     [self setTreeLayoutBuilder: layoutBuilderVal];
