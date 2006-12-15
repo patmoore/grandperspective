@@ -3,6 +3,40 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.98, 15-12-2006
+----------------------------------------------------------------------
+
+New functionality:
+- Masking and filtering rules that are created (or modified) by the 
+  user are now stored in the user preferences so that they are
+  available next time the application is run.
+- The default file item tests are now read from the information
+  properties file, instead of being hardcoded in the application.
+- String tests support case-insensitive matching.
+- Now also showing human-friendly file sizes in the Info and Focus
+  panels.
+- Added button for removing all tests from the filter in the
+  "Edit Filter" window.
+
+Minor improvements:
+- The path test now applies to path of the folder where the file item
+  resides (excluding the name of the file itself). This way it better
+  complements the name test.
+- Path strings are cached during filtering or drawing of the file
+  item tree for improved performance.
+- Changed size of main window to 640x480.
+- Internationalized the OK and Cancel buttons of alert panels.
+
+Bug fix:
+- When an image was saved, the "Clown Barf" palette was always used, 
+  irrespective of the palette used by the view. This has been fixed.
+- The CFBundleSignature, CFBundleIdentifier, and CFBundleVersion 
+  properties in Info.plist were not set correctly. This, for instance,
+  meant that preferences were incorrectly associated with the 
+  example com.apple.myCocoaApp application. This has been fixed.
+
+
+----------------------------------------------------------------------
   Version 0.97 (localized), 10-12-2006
 ----------------------------------------------------------------------
 
