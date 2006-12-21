@@ -15,9 +15,11 @@
             LANGUAGE = ObjC; 
             OUTLETS = {
                 doneButton = NSButton; 
+                nameCaseInsensitiveCheckBox = NSButton; 
                 nameCheckBox = NSButton; 
                 nameMatchPopUpButton = NSPopUpButton; 
                 nameTargetsView = NSTextView; 
+                pathCaseInsensitiveCheckBox = NSButton; 
                 pathCheckBox = NSButton; 
                 pathMatchPopUpButton = NSPopUpButton; 
                 pathTargetsView = NSTextView; 

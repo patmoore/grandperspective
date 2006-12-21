@@ -27,11 +27,13 @@
                 maskDescriptionTextView = NSTextView; 
                 openButton = NSButton; 
                 scanTimeField = NSTextField; 
+                selectedFileExactSizeField = NSTextField; 
                 selectedFilePathTextView = NSTextView; 
                 selectedFileSizeField = NSTextField; 
                 treePathTextView = NSTextView; 
                 treeSizeField = NSTextField; 
                 upButton = NSButton; 
+                visibleFolderExactSizeField = NSTextField; 
                 visibleFolderPathTextView = NSTextView; 
                 visibleFolderSizeField = NSTextField; 
             }; 
