@@ -1,4 +1,7 @@
 #!/bin/bash
+#
+# Script that generates commands for tagging a release of GrandPerspective.
+# Modify as needed before tagging a new release.
 
 SVN_URL=https://194.121.182.66/svn/erwin/GrandPerspective
 VERSION="0.98"
