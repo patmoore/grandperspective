@@ -16,9 +16,9 @@ to see how you could help:
 
 The following localizations have been provided so far:
 
-  * Japanese (Version 0.97), by Chris Li
-  * German (Version 0.97), by Helge Baumann
-  * Dutch (Version 0.97), by Erwin Bonsma 
+  * Japanese (Version 0.97 and up), by Chris Li
+  * German (Version 0.97 and up), by Helge Baumann
+  * Dutch (Version 0.97 and up), by Erwin Bonsma 
 
 Thanks,
 
