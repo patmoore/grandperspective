@@ -5,8 +5,8 @@
 # it copies the application directly from it. Release text files and the
 # localized resources are taken from the SVN repository.
 
-VERSION="0.97"
-VERSION_ID="0_97"
+VERSION="0.98"
+VERSION_ID="0_98"
 
 TEMP_PARENT_PATH="/Users/erwin/temp"
 TEMP_PATH=`mktemp -d ${TEMP_PARENT_PATH}/publish-local-XXXXXX` || exit -1
@@ -25,12 +25,12 @@ echo "Copying basic application."
 tar cf - -C /Volumes/GrandPerspective-${VERSION_ID} $APP_DIR | tar xf - -C $DEST_PATH
 
 echo "Exporting text files."
-./export-docs.sh trunk/docs 256 $DEST_PATH $VERSION $VERSION_ID
+./export-docs.sh trunk/docs 310 $DEST_PATH $VERSION $VERSION_ID
 
 for loc in nl de ja
 do
   echo "Exporting" $loc "resources."
-  svn export -q -r 256 $SVN_URL/trunk/code/${loc}.lproj $RESOURCES_PATH/${loc}.lproj
+  svn export -q -r 310 $SVN_URL/trunk/code/${loc}.lproj $RESOURCES_PATH/${loc}.lproj
 done
 
 # Remove unneeded nib files.
