@@ -210,7 +210,7 @@
   NSString  *localizedName = 
     [mainBundle localizedStringForKey: testName value: nil table: @"TestNames"];
   
-  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert addButtonWithTitle: REMOVE_BUTTON_TITLE];
   [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
   [alert setMessageText: [NSString stringWithFormat: fmt, localizedName]];
   [alert setInformativeText: infoMsg];
