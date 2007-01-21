@@ -9,6 +9,9 @@
 #import "FileItem.h"
 
 
+#define MINIMUM_SIZE 16
+
+
 @implementation SaveImageDialogControl
 
 - (id) init {
@@ -61,28 +64,33 @@
 }
 
 
-// Makes sure the width/height fields contain a (minimum) numeric value.
+// Auto-corrects the width/height fields so that they contain a valid
+// numeric value.
 - (IBAction)valueEntered:(id)sender {
   int  value = [sender intValue];
   
-  if (value < 16) {
-    value = 16;
+  if (value < MINIMUM_SIZE) {
+    [sender setIntValue: MINIMUM_SIZE];
   }
-  
-  [sender setIntValue: value];
 }
 
 
 - (IBAction)cancelSaveImage:(id)sender {
   [[self window] close];
 }
-           
+
+
 - (IBAction)saveImage:(id)sender {
   [[self window] close];
 
-  // Retrieve the desired size of the image.  
+  // Retrieve the desired size of the image.
+  // Note: Cannot rely on valueEntered: for making sure that the size is 
+  //   valid. The action event is not fired when the user modifies a text field
+  //   and directly clicks OK. Therefore using MAX to ensure that both 
+  //   dimensions are positive.
   NSRect  bounds = 
-            NSMakeRect(0, 0, [widthCell intValue], [heightCell intValue]);
+            NSMakeRect(0, 0, MAX(MINIMUM_SIZE, [widthCell intValue]),
+                             MAX(MINIMUM_SIZE, [heightCell intValue]));
 
   // Get a filename for the image.
   NSSavePanel  *savePanel = [NSSavePanel savePanel];  
