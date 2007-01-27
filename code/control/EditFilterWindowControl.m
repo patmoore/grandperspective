@@ -240,20 +240,23 @@
   [ruleWindow close];
 
   if (status == NSRunStoppedResponse) {
-    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];    
-    NSString*  testName = [test name];
+    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];
+    
+    if (test != nil) {
+      NSString*  testName = [test name];
 
-    // The terminationControl should have ensured that this check succeeds.
-    NSAssert( 
-      [((NSDictionary*)repositoryTestsByName) objectForKey:testName] == nil,
-      @"Duplicate name check failed.");
+      // The terminationControl should have ensured that this check succeeds.
+      NSAssert( 
+        [((NSDictionary*)repositoryTestsByName) objectForKey:testName] == nil,
+        @"Duplicate name check failed.");
 
-    [testNameToSelect release];
-    testNameToSelect = [testName retain];
+      [testNameToSelect release];
+      testNameToSelect = [testName retain];
 
-    [repositoryTestsByName addObject:test forKey:testName];
+      [repositoryTestsByName addObject:test forKey:testName];
         
-    // Rest of addition handled in response to notification event.
+      // Rest of addition handled in response to notification event.
+    }
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
@@ -284,26 +287,29 @@
   [ruleWindow close];
     
   if (status == NSRunStoppedResponse) {
-    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];          
-    NSString  *newName = [newTest name];
+    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];
+    
+    if (newTest != nil) {
+      NSString  *newName = [newTest name];
 
-    // The terminationControl should have ensured that this check succeeds.
-    NSAssert( 
-      [newName isEqualToString: oldName] ||
-      [((NSDictionary*)repositoryTestsByName) objectForKey: newName] == nil,
-      @"Duplicate name check failed.");
-                
-    if (! [newName isEqualToString: oldName]) {
-      // Handle name change.
-      [repositoryTestsByName moveObjectFromKey: oldName toKey: newName];
+      // The terminationControl should have ensured that this check succeeds.
+      NSAssert( 
+        [newName isEqualToString: oldName] ||
+        [((NSDictionary*)repositoryTestsByName) objectForKey: newName] == nil,
+        @"Duplicate name check failed.");
+
+      if (! [newName isEqualToString: oldName]) {
+        // Handle name change.
+        [repositoryTestsByName moveObjectFromKey: oldName toKey: newName];
           
-      // Rest of rename handled in response to update notification event.
-    }
+        // Rest of rename handled in response to update notification event.
+      }
         
-    // Test itself has changed as well.
-    [repositoryTestsByName updateObject: newTest forKey: newName];
+      // Test itself has changed as well.
+      [repositoryTestsByName updateObject: newTest forKey: newName];
 
-    // Rest of update handled in response to update notification event.
+      // Rest of update handled in response to update notification event.
+    }
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
