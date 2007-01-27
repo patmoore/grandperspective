@@ -178,7 +178,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 
-// Makes sure the lower/upper bounds fields contain a (positive) numeric value.
+// Auto-corrects the lower/upper bound fields so that they contain a valid
+// numeric value.
 - (IBAction)valueEntered:(id)sender {
   int  value = [sender intValue];
   
@@ -301,9 +302,12 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   if ([test hasLowerBound]) {
     ITEM_SIZE  bound = [test lowerBound];
     int  i = 0;
-    while (i < 3 && (bound % 1024)==0) {
-      i++;
-      bound /= 1024;
+    
+    if (bound > 0) {
+      while (i < 3 && (bound % 1024)==0) {
+        i++;
+        bound /= 1024;
+      }
     }
     
     [sizeLowerBoundCheckBox setState:NSOnState];    
@@ -314,9 +318,12 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   if ([test hasUpperBound]) {
     ITEM_SIZE  bound = [test upperBound];
     int  i = 0;
-    while (i < 3 && (bound % 1024)==0) {
-      i++;
-      bound /= 1024;
+          
+    if (bound > 0) {
+      while (i < 3 && (bound % 1024)==0) {
+        i++;
+        bound /= 1024;
+      }
     }
     
     [sizeUpperBoundCheckBox setState:NSOnState];
@@ -363,7 +370,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     upperBound *= 1024;
   }
   
-  if ([sizeLowerBoundCheckBox state]==NSOnState) {
+  if ([sizeLowerBoundCheckBox state]==NSOnState && lowerBound>0) {
     if ([sizeUpperBoundCheckBox state]==NSOnState) {
       return [[[ItemSizeTest alloc] 
                   initWithLowerBound:lowerBound upperBound:upperBound] 
