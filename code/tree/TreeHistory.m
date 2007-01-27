@@ -9,7 +9,8 @@ static int  nextFilterId = 1;
 
 @interface TreeHistory (PrivateMethods)
 
-- (id) initWithScanTime: (NSDate *)scanTimeVal 
+- (id) initWithFileSizeType: (int)fileSizeTypeVal
+         scanTime: (NSDate *)scanTimeVal 
          filter: (NSObject <FileItemTest> *)filter
          filterId: (int) filterId;
 
@@ -20,11 +21,17 @@ static int  nextFilterId = 1;
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithScanTime:[NSDate date]];
+  NSAssert(NO, @"Use initWithFileSizeType: instead.");
 }
 
-- (id) initWithScanTime: (NSDate *)scanTimeVal {
-  return [self initWithScanTime: scanTimeVal filter: nil filterId: 0];
+- (id) initWithFileSizeType: (int)fileSizeTypeVal {
+  return [self initWithFileSizeType: fileSizeTypeVal scanTime: [NSDate date]];
+}
+
+- (id) initWithFileSizeType: (int)fileSizeTypeVal 
+         scanTime: (NSDate *)scanTimeVal {
+  return [self initWithFileSizeType: fileSizeTypeVal scanTime: scanTimeVal 
+                 filter: nil filterId: 0];
 }
 
 - (void) dealloc {
@@ -48,7 +55,8 @@ static int  nextFilterId = 1;
            [NSArray arrayWithObjects:filter, newFilter, nil]] autorelease];
   }
 
-  return [[[TreeHistory alloc] initWithScanTime: scanTime 
+  return [[[TreeHistory alloc] initWithFileSizeType: fileSizeType
+                                 scanTime: scanTime 
                                  filter: totalFilter
                                  filterId: nextFilterId++] autorelease];
 }
@@ -59,11 +67,16 @@ static int  nextFilterId = 1;
 }
 
 - (TreeHistory*) historyAfterRescanning: (NSDate *)scanTimeVal {
-  return [[[TreeHistory alloc] initWithScanTime: scanTimeVal 
+  return [[[TreeHistory alloc] initWithFileSizeType: fileSizeType
+                                 scanTime: scanTimeVal 
                                  filter: filter
                                  filterId: filterId] autorelease];
 }
 
+
+- (int) fileSizeType {
+  return fileSizeType;
+}
 
 - (NSDate*) scanTime {
   return scanTime;
@@ -95,10 +108,12 @@ static int  nextFilterId = 1;
 
 @implementation TreeHistory (PrivateMethods)
 
-- (id) initWithScanTime: (NSDate *)scanTimeVal
+- (id) initWithFileSizeType: (int)fileSizeTypeVal
+         scanTime: (NSDate *)scanTimeVal
          filter: (NSObject <FileItemTest> *)filterVal 
          filterId: (int) filterIdVal {
   if (self = [super init]) {
+    fileSizeType = fileSizeTypeVal;
     scanTime = [scanTimeVal retain];
     filter = [filterVal retain];
     filterId = filterIdVal;

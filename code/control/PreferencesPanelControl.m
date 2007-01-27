@@ -17,10 +17,9 @@
 // NSWindowController's case
 - (id) init {
   if (self = [super initWithWindowNibName: @"PreferencesPanel" owner: self]) {
-    defaultColorMappingChanged = NO;
-    defaultColorPaletteChanged = NO;
+    changeSet = [[NSMutableSet alloc] initWithCapacity: 4];
     
-    // Trioger loading of the window
+    // Trigger loading of the window
     [self window];
   }
 
@@ -33,6 +32,8 @@
   [localizedColorMappingNamesReverseLookup release];
   [localizedColorPaletteNamesReverseLookup release];
   
+  [changeSet release];
+  
   [super dealloc];
 }
 
@@ -43,6 +44,9 @@
   [[NSNotificationCenter defaultCenter]
       addObserver:self selector:@selector(windowWillClose:)
       name:@"NSWindowWillCloseNotification" object:[self window]];
+
+  [fileSizeTypePopUp selectItemAtIndex:
+    ([userDefaults boolForKey: @"useLogicalFileSizes"] ? 0 : 1)];
 
   FileItemHashingCollection  *colorMappings = 
       [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
@@ -86,37 +90,36 @@
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
-  if (defaultColorMappingChanged) {
+  if ([changeSet containsObject: fileSizeTypePopUp]) {
+    [userDefaults setBool: ([fileSizeTypePopUp indexOfSelectedItem] == 0)
+                    forKey: @"useLogicalFileSizes"];
+  }
+
+  if ([changeSet containsObject: defaultColorMappingPopUp]) {
     NSString  *localizedName = [defaultColorMappingPopUp titleOfSelectedItem];
     NSString  *name = 
       [localizedColorMappingNamesReverseLookup objectForKey: localizedName];
 
     [userDefaults setObject: name forKey: @"defaultColorMapping"];
-    
-    defaultColorMappingChanged = NO;
   }
   
-  if (defaultColorPaletteChanged) {
+  if ([changeSet containsObject: defaultColorPalettePopUp]) {
     NSString  *localizedName = [defaultColorPalettePopUp titleOfSelectedItem];
     NSString  *name = 
       [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
     
     [userDefaults setObject: name forKey: @"defaultColorPalette"];
-      
-    defaultColorPaletteChanged = NO;
   }
+  
+  [changeSet removeAllObjects];
   
   [self updateButtonState];
 }
 
 
-- (IBAction) defaultColorMappingChanged: (id) sender {
-  defaultColorMappingChanged = YES;
-  [self updateButtonState];
-}
+- (IBAction) valueChanged: (id) sender {
+  [changeSet addObject: sender];
 
-- (IBAction) defaultColorPaletteChanged: (id) sender {
-  defaultColorPaletteChanged = YES;
   [self updateButtonState];
 }
 
@@ -126,8 +129,7 @@
 @implementation PreferencesPanelControl (PrivateMethods)
 
 - (void) updateButtonState {
-  [okButton setEnabled: (defaultColorMappingChanged || 
-                         defaultColorPaletteChanged)];
+  [okButton setEnabled: [changeSet count] > 0];
 }
 
 @end // @implementation PreferencesPanelControl (PrivateMethods)

@@ -2,6 +2,7 @@
 
 #import "TreeBuilder.h"
 #import "DirectoryItem.h"
+#import "ScanTaskInput.h"
 
 
 @implementation ScanTaskExecutor
@@ -25,13 +26,16 @@
     return nil;
   }
   
+  ScanTaskInput  *myInput = input;
+  
   NSDate  *startTime = [NSDate date];
   
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
   treeBuilder = [[TreeBuilder alloc] init];
+  [treeBuilder setFileSizeType: [myInput fileSizeType]];
   
-  NSString  *dirName = input;
-  DirectoryItem*  itemTreeRoot = [treeBuilder buildTreeForPath: dirName];
+  DirectoryItem*  itemTreeRoot = 
+    [treeBuilder buildTreeForPath: [myInput directoryName]];
   
   [treeBuilder release];
   treeBuilder = nil;

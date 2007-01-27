@@ -1,17 +1,17 @@
 #import <Cocoa/Cocoa.h>
 
+#import "ScanTaskInput.h"
+
 @protocol FileItemTest;
 
 
-@interface RescanTaskInput : NSObject {
-  NSString  *dirName;
+@interface RescanTaskInput : ScanTaskInput {
   NSObject <FileItemTest>  *filterTest;
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
+         fileSizeType: (int)fileSizeType
          filterTest: (NSObject <FileItemTest> *)test;
-
-- (NSString*) directoryName;
 
 - (NSObject <FileItemTest> *) filterTest;
 

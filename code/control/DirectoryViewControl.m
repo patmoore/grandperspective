@@ -29,7 +29,8 @@
 
 @implementation DirectoryViewControl
 
-- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot {
+- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot
+         history: (TreeHistory *)history {
   ItemPathModel  *pathModel = 
     [[[ItemPathModel alloc] initWithTree:itemTreeRoot] autorelease];
 
@@ -37,10 +38,8 @@
   DirectoryViewControlSettings  *defaultSettings =
     [[[DirectoryViewControlSettings alloc] init] autorelease];
 
-  TreeHistory  *defaultHistory = [[[TreeHistory alloc] init] autorelease];
-
   return [self initWithItemPathModel: pathModel 
-                 history: defaultHistory
+                 history: history
                  settings: defaultSettings];
 }
 
@@ -186,6 +185,7 @@
   [scanTimeField setStringValue: 
     [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
+  [fileSizeTypeField setStringValue: @"TO DO"];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
 

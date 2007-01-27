@@ -31,6 +31,7 @@
   
   // First scan ...
   treeBuilder = [[TreeBuilder alloc] init];
+  [treeBuilder setFileSizeType: [myInput fileSizeType]];
   
   DirectoryItem*  itemTree = 
     [treeBuilder buildTreeForPath: [myInput directoryName]];

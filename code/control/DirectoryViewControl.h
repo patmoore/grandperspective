@@ -35,6 +35,7 @@
   IBOutlet NSTextField  *filterNameField;
   IBOutlet NSTextView  *filterDescriptionTextView;
   IBOutlet NSTextField  *scanTimeField;
+  IBOutlet NSTextField  *fileSizeTypeField;
   IBOutlet NSTextField  *treeSizeField;
   
   // "Focus" drawer panel
@@ -72,7 +73,8 @@
 - (IBAction) colorMappingChanged: (id) sender;
 - (IBAction) colorPaletteChanged: (id) sender;
 
-- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot;
+- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot
+         history: (TreeHistory *)history;
 - (id) initWithItemPathModel: (ItemPathModel *)itemPathModel
          history: (TreeHistory *)history
          settings: (DirectoryViewControlSettings *)settings;

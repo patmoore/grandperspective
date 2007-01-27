@@ -5,20 +5,20 @@
 
   IBOutlet NSButton  *okButton;
 
+  IBOutlet NSPopUpButton  *fileSizeTypePopUp;
+
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
   NSDictionary  *localizedColorMappingNamesReverseLookup;
   NSDictionary  *localizedColorPaletteNamesReverseLookup;
   
-  BOOL  defaultColorMappingChanged;
-  BOOL  defaultColorPaletteChanged;
+  NSMutableSet  *changeSet;
 }
 
 - (IBAction) cancelAction: (id)sender;
 - (IBAction) okAction: (id)sender;
 
-- (IBAction) defaultColorMappingChanged: (id)sender;
-- (IBAction) defaultColorPaletteChanged: (id)sender;
+- (IBAction) valueChanged: (id)sender;
 
 @end

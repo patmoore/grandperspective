@@ -18,6 +18,7 @@
                 colorPalettePopUp = NSPopUpButton; 
                 downButton = NSButton; 
                 drawer = NSDrawer; 
+                fileSizeTypeField = NSTextField; 
                 filterDescriptionTextView = NSTextView; 
                 filterNameField = NSTextField; 
                 itemPathField = NSTextField; 

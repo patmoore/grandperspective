@@ -6,13 +6,14 @@
 
 @interface TreeHistory : NSObject {
   NSDate  *scanTime;
+  int  fileSizeType;
   NSObject <FileItemTest>  *filter;
   int  filterId;
 }
 
 // Scan time defaults to "now".
-- (id) init;
-- (id) initWithScanTime: (NSDate *)scanTimeVal;
+- (id) initWithFileSizeType: (int)type;
+- (id) initWithFileSizeType: (int)type scanTime: (NSDate *)scanTimeVal;
 
 - (TreeHistory*) historyAfterFiltering: (NSObject <FileItemTest> *)filter;
 
@@ -20,6 +21,7 @@
 - (TreeHistory*) historyAfterRescanning;
 - (TreeHistory*) historyAfterRescanning: (NSDate *)scanTimeVal;
 
+- (int) fileSizeType;
 - (NSDate*) scanTime;
 - (NSObject <FileItemTest>*) fileItemFilter;
 

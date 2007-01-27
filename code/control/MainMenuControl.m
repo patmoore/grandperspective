@@ -10,11 +10,13 @@
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
 #import "TreeHistory.h"
+#import "TreeBuilder.h"
 
 #import "WindowManager.h"
 
 #import "VisibleAsynchronousTaskManager.h"
 #import "AsynchronousTaskManager.h"
+#import "ScanTaskInput.h"
 #import "ScanTaskExecutor.h"
 #import "RescanTaskInput.h"
 #import "RescanTaskExecutor.h"
@@ -31,9 +33,11 @@ NSString* scanActivityFormatString() {
 
 @interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
+  TreeHistory  *history;
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManager;
+- (id) initWithWindowManager:(WindowManager*)windowManager
+         history: (TreeHistory *)history;
 
 - (void) createWindowForTree:(DirectoryItem*)itemTree;
 
@@ -45,13 +49,12 @@ NSString* scanActivityFormatString() {
 
 @interface DerivedDirViewWindowCreator : FreshDirViewWindowCreator {
   ItemPathModel  *targetPath;
-  TreeHistory  *history;
   DirectoryViewControlSettings  *settings;
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager
-         targetPath: (ItemPathModel *)targetPath
          history: (TreeHistory *)history
+         targetPath: (ItemPathModel *)targetPath
          settings: (DirectoryViewControlSettings *)settings;
 
 @end // @interface DerivedDirViewWindowCreator
@@ -159,10 +162,22 @@ NSString* scanActivityFormatString() {
   [openPanel setAllowsMultipleSelection:NO];
 
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
+    NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
+    int  fileSizeType = ([userDefaults boolForKey: @"useLogicalFileSizes"] ?
+                            LOGICAL_FILE_SIZE : PHYSICAL_FILE_SIZE);
+                            
+    TreeHistory  *history = 
+      [[[TreeHistory alloc] initWithFileSizeType: fileSizeType] autorelease];
+    
     
     FreshDirViewWindowCreator  *windowCreator =
-      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
+      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager
+                                           history: history];
+    ScanTaskInput  *input = 
+      [[ScanTaskInput alloc] initWithDirectoryName: dirName
+                               fileSizeType: fileSizeType];
 
     [rescanTaskManager abortTask];
     // The TreeBuilder implementation is such that only one scan can happen
@@ -171,12 +186,13 @@ NSString* scanActivityFormatString() {
     // aborted implicitely by the scanTaskManager.
     
     NSString  *format = scanActivityFormatString();
-    [scanTaskManager asynchronouslyRunTaskWithInput: dirName 
+    [scanTaskManager asynchronouslyRunTaskWithInput: input
                        description: 
                          [NSString stringWithFormat: format, dirName]
                        callback: windowCreator
                        selector: @selector(createWindowForTree:)];
                        
+    [input release];
     [windowCreator release];
   }
 }
@@ -196,12 +212,13 @@ NSString* scanActivityFormatString() {
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
-            targetPath: itemPathModel 
             history: [oldHistory historyAfterRescanning]
+            targetPath: itemPathModel 
             settings: [oldControl directoryViewControlSettings]];
     
     RescanTaskInput  *input = 
       [[RescanTaskInput alloc] initWithDirectoryName: dirName
+                                 fileSizeType: [oldHistory fileSizeType]
                                  filterTest: [oldHistory fileItemFilter]];
     
     [scanTaskManager abortTask];
@@ -260,9 +277,9 @@ NSString* scanActivityFormatString() {
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
-            targetPath: oldPathModel
             history: [[oldControl treeHistory] 
                          historyAfterFiltering: filterTest]
+            targetPath: oldPathModel
             settings: [oldControl directoryViewControlSettings]];
     
     FilterTaskInput  *input = 
@@ -381,15 +398,18 @@ NSString* scanActivityFormatString() {
   NSAssert(NO, @"Use initWithWindowManager: instead.");
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal {
+- (id) initWithWindowManager:(WindowManager*)windowManagerVal
+         history: (TreeHistory *)historyVal {
   if (self = [super init]) {
     windowManager = [windowManagerVal retain];
+    history = [historyVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
   [windowManager release];
+  [history release];
   
   [super dealloc];
 }
@@ -403,7 +423,7 @@ NSString* scanActivityFormatString() {
 
   // Note: The control should auto-release itself when its window closes  
   DirectoryViewControl  *dirViewControl = 
-    [[self createDirectoryViewControlForTree:itemTree] retain];
+    [[self createDirectoryViewControlForTree: itemTree] retain];
   
   NSString  *title = 
     [MainMenuControl windowTitleForDirectoryView: dirViewControl];
@@ -414,7 +434,8 @@ NSString* scanActivityFormatString() {
 
 - (DirectoryViewControl*) 
      createDirectoryViewControlForTree:(DirectoryItem*)tree {
-  return [[[DirectoryViewControl alloc] initWithItemTree:tree] autorelease];
+  return [[[DirectoryViewControl alloc] 
+              initWithItemTree: tree  history: history] autorelease];
 }
 
 @end // @implementation FreshDirViewWindowCreator
@@ -429,18 +450,17 @@ NSString* scanActivityFormatString() {
 }
 
 - (id) initWithWindowManager: (WindowManager *)windowManagerVal
-         targetPath: (ItemPathModel *)targetPathVal
          history: (TreeHistory *)historyVal
+         targetPath: (ItemPathModel *)targetPathVal
          settings: (DirectoryViewControlSettings *)settingsVal {
          
-  if (self = [super initWithWindowManager:windowManagerVal]) {
+  if (self = [super initWithWindowManager: windowManagerVal history: history]) {
     targetPath = [targetPathVal retain];
     // Note: The state of "targetPath" may change during scanning/filtering 
     // (which happens in the background). This is okay and even desired. When 
     // the callback occurs the path in the new window will match the current
     // path in the original window.
      
-    history = [historyVal retain];
     settings = [settingsVal retain];
   }
   return self;
@@ -448,7 +468,6 @@ NSString* scanActivityFormatString() {
 
 - (void) dealloc {
   [targetPath release];
-  [history release];
   [settings release];
   
   [super dealloc];
