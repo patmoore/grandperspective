@@ -351,13 +351,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (ItemSizeTest*) itemSizeTestBasedOnState {
-  ITEM_SIZE  lowerBound = [sizeLowerBoundField intValue];
+  ITEM_SIZE  lowerBound = MAX(0, [sizeLowerBoundField intValue]);
   int  i = [sizeLowerBoundUnits indexOfSelectedItem];
   while (i-- > 0) {
     lowerBound *= 1024;
   }
 
-  ITEM_SIZE  upperBound = [sizeUpperBoundField intValue];
+  ITEM_SIZE  upperBound = MAX(0, [sizeUpperBoundField intValue]);
   i = [sizeUpperBoundUnits indexOfSelectedItem];
   while (i-- > 0) {
     upperBound *= 1024;
