@@ -42,6 +42,8 @@
 
 - (void) resetState;
 
+- (void) setEnabled: (BOOL)enabled;
+
 - (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test;
 - (MultiMatchStringTest*) stringTestBasedOnState;
 
@@ -228,12 +230,9 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
   BOOL  lowerBoundTestUsed = [sizeLowerBoundCheckBox state]==NSOnState;
   BOOL  upperBoundTestUsed = [sizeUpperBoundCheckBox state]==NSOnState;
-    
-  [nameMatchPopUpButton setEnabled:nameTestUsed];
-  [nameTargetsView setEditable:nameTestUsed];
-  
-  [pathMatchPopUpButton setEnabled:pathTestUsed];
-  [pathTargetsView setEditable:pathTestUsed];
+
+  [nameTestControls setEnabled: nameTestUsed];
+  [pathTestControls setEnabled: pathTestUsed];
   
   [sizeLowerBoundField setEnabled:lowerBoundTestUsed];
   [sizeLowerBoundUnits setEnabled:lowerBoundTestUsed];
@@ -418,6 +417,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [matchPopUpButton selectItemAtIndex: 3]; // Suffix
   [targetsTextView setString: @""];
   [caseInsensitiveCheckBox setState: NSOffState];
+}
+
+
+- (void) setEnabled: (BOOL)enabled {
+  [matchPopUpButton setEnabled: enabled];
+  [targetsTextView setEditable: enabled];
+  [caseInsensitiveCheckBox setEnabled: enabled];
 }
 
 
