@@ -5,12 +5,11 @@
 
   IBOutlet NSButton  *okButton;
 
-  IBOutlet NSPopUpButton  *fileSizeTypePopUp;
-
+  IBOutlet NSPopUpButton  *fileSizeMeasurePopUp;
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
-  NSDictionary  *localizedFileSizeTypesReverseLookup;
+  NSDictionary  *localizedFileSizeMeasureNamesReverseLookup;
   NSDictionary  *localizedColorMappingNamesReverseLookup;
   NSDictionary  *localizedColorPaletteNamesReverseLookup;
   

@@ -8,7 +8,7 @@
             OUTLETS = {
                 defaultColorMappingPopUp = NSPopUpButton; 
                 defaultColorPalettePopUp = NSPopUpButton; 
-                fileSizeTypePopUp = NSPopUpButton; 
+                fileSizeMeasurePopUp = NSPopUpButton; 
                 okButton = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 

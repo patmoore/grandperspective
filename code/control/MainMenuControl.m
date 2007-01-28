@@ -7,6 +7,8 @@
 #import "SaveImageDialogControl.h"
 #import "EditFilterWindowControl.h"
 #import "PreferencesPanelControl.h"
+#import "FileSizeMeasureCollection.h"
+
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
 #import "TreeHistory.h"
@@ -162,21 +164,28 @@ NSString* scanActivityFormatString() {
   [openPanel setAllowsMultipleSelection:NO];
 
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
-    NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
-    NSString  *fileSizeType = [userDefaults stringForKey: @"fileSizeType"];
-                            
-    TreeHistory  *history = 
-      [[[TreeHistory alloc] initWithFileSizeType: fileSizeType] autorelease];
+
+    // Note: The collection class sets the application default, so its
+    // singleton instance needs to be created before looking up the key.
+    FileSizeMeasureCollection  *fileSizeMeasures = 
+      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
+    NSString  *fileSizeMeasureKey =
+                [[NSUserDefaults standardUserDefaults] 
+                    stringForKey: @"fileSizeMeasure"];
+    int  fileSizeMeasure = 
+           [fileSizeMeasures fileSizeMeasureForKey: fileSizeMeasureKey];
     
+    TreeHistory  *history = 
+      [[[TreeHistory alloc] initWithFileSizeMeasure: fileSizeMeasureKey] 
+           autorelease];
     
     FreshDirViewWindowCreator  *windowCreator =
       [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager
                                            history: history];
     ScanTaskInput  *input = 
       [[ScanTaskInput alloc] initWithDirectoryName: dirName
-                               fileSizeType: fileSizeType];
+                               fileSizeMeasure: fileSizeMeasure ];
 
     [rescanTaskManager abortTask];
     // The TreeBuilder implementation is such that only one scan can happen
@@ -213,10 +222,16 @@ NSString* scanActivityFormatString() {
             history: [oldHistory historyAfterRescanning]
             targetPath: itemPathModel 
             settings: [oldControl directoryViewControlSettings]];
+
+    FileSizeMeasureCollection  *fileSizeMeasures = 
+      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
+    int  fileSizeMeasure = 
+           [fileSizeMeasures fileSizeMeasureForKey:
+              [oldHistory fileSizeMeasure]];
     
     RescanTaskInput  *input = 
       [[RescanTaskInput alloc] initWithDirectoryName: dirName
-                                 fileSizeType: [oldHistory fileSizeType]
+                                 fileSizeMeasure: fileSizeMeasure
                                  filterTest: [oldHistory fileItemFilter]];
     
     [scanTaskManager abortTask];

@@ -186,8 +186,8 @@
   [scanTimeField setStringValue: 
     [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
-  [fileSizeTypeField setStringValue: 
-    [mainBundle localizedStringForKey: [treeHistory fileSizeType] value: nil 
+  [fileSizeMeasureField setStringValue: 
+    [mainBundle localizedStringForKey: [treeHistory fileSizeMeasure] value: nil
                   table: @"Names"]];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];

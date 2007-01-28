@@ -30,12 +30,7 @@
   
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
   treeBuilder = [[TreeBuilder alloc] init];
-  if ([[myInput fileSizeType] isEqualToString: @"logical"]) {
-    [treeBuilder setFileSizeType: LOGICAL_FILE_SIZE];
-  }
-  else if ([[myInput fileSizeType] isEqualToString: @"physical"]) {
-    [treeBuilder setFileSizeType: PHYSICAL_FILE_SIZE];
-  }
+  [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
   
   NSDate  *startTime = [NSDate date];
   

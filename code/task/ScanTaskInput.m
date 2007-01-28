@@ -5,21 +5,20 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithDirectoryName:fileSizeType: instead");
+  NSAssert(NO, @"Use initWithDirectoryName:fileSizeMeasure: instead");
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeType: (NSString *)fileSizeTypeVal {
+         fileSizeMeasure: (int) measure {
   if (self = [super init]) {
     dirName = [name retain];
-    fileSizeType = [fileSizeTypeVal retain];
+    fileSizeMeasure = measure;
   }
   return self;
 }
 
 - (void) dealloc {
   [dirName release];
-  [fileSizeType release];
   
   [super dealloc];
 }
@@ -29,8 +28,8 @@
   return dirName;
 }
 
-- (NSString*) fileSizeType {
-  return fileSizeType;
+- (int) fileSizeMeasure {
+  return fileSizeMeasure;
 }
 
 @end

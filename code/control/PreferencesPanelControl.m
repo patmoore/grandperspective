@@ -3,7 +3,7 @@
 #import "DirectoryViewControl.h"
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
-
+#import "FileSizeMeasureCollection.h"
 
 @interface PreferencesPanelControl (PrivateMethods)
 
@@ -29,6 +29,7 @@
 - (void) dealloc {
   NSLog(@"PreferencesPanelControl-dealloc");
 
+  [localizedFileSizeMeasureNamesReverseLookup release];
   [localizedColorMappingNamesReverseLookup release];
   [localizedColorPaletteNamesReverseLookup release];
   
@@ -45,17 +46,21 @@
       addObserver:self selector:@selector(windowWillClose:)
       name:@"NSWindowWillCloseNotification" object:[self window]];
 
+  // Note: These collections take care of setting the application default, so
+  // they should be initialised before the defaults are retrieved.
   FileItemHashingCollection  *colorMappings = 
-      [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
+      [FileItemHashingCollection defaultFileItemHashingCollection];
   ColorListCollection  *colorPalettes = 
-      [[ColorListCollection defaultColorListCollection] retain];
+      [ColorListCollection defaultColorListCollection];
+  FileSizeMeasureCollection  *fileSizeMeasures = 
+      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
 
-  [fileSizeTypePopUp removeAllItems];
-  localizedFileSizeTypesReverseLookup =
+  [fileSizeMeasurePopUp removeAllItems];
+  localizedFileSizeMeasureNamesReverseLookup =
     [[DirectoryViewControl
-        addLocalisedNamesToPopUp: fileSizeTypePopUp
-        names: [NSArray arrayWithObjects: @"logical", @"physical", nil]
-        selectName: [userDefaults stringForKey: @"fileSizeType"]
+        addLocalisedNamesToPopUp: fileSizeMeasurePopUp
+        names: [fileSizeMeasures allKeys]
+        selectName: [userDefaults stringForKey: @"fileSizeMeasure"]
         table: @"Names"] retain];
 
   [defaultColorMappingPopUp removeAllItems];  
@@ -95,12 +100,12 @@
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
-  if ([changeSet containsObject: fileSizeTypePopUp]) {
-    NSString  *localizedName = [fileSizeTypePopUp titleOfSelectedItem];
+  if ([changeSet containsObject: fileSizeMeasurePopUp]) {
+    NSString  *localizedName = [fileSizeMeasurePopUp titleOfSelectedItem];
     NSString  *name = 
-      [localizedFileSizeTypesReverseLookup objectForKey: localizedName];
+      [localizedFileSizeMeasureNamesReverseLookup objectForKey: localizedName];
 
-    [userDefaults setObject: name forKey: @"fileSizeType"];
+    [userDefaults setObject: name forKey: @"fileSizeMeasure"];
   }
 
   if ([changeSet containsObject: defaultColorMappingPopUp]) {

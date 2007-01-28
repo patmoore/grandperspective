@@ -35,7 +35,7 @@
   IBOutlet NSTextField  *filterNameField;
   IBOutlet NSTextView  *filterDescriptionTextView;
   IBOutlet NSTextField  *scanTimeField;
-  IBOutlet NSTextField  *fileSizeTypeField;
+  IBOutlet NSTextField  *fileSizeMeasureField;
   IBOutlet NSTextField  *treeSizeField;
   
   // "Focus" drawer panel

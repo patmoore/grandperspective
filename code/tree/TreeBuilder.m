@@ -69,7 +69,7 @@ static struct {
   if (self = [super init]) {
     treeBalancer = [[TreeBalancer alloc] init];
     abort = NO;
-    fileSizeType = LOGICAL_FILE_SIZE;
+    fileSizeMeasure = LOGICAL_FILE_SIZE;
   }
   return self;
 }
@@ -82,15 +82,15 @@ static struct {
 }
 
 
-- (int) fileSizeType {
-  return fileSizeType;
+- (int) fileSizeMeasure {
+  return fileSizeMeasure;
 }
 
-- (void) setFileSizeType: (int)type {
-  NSAssert(type==LOGICAL_FILE_SIZE || type==PHYSICAL_FILE_SIZE, 
-           @"Invalid file size type.");
+- (void) setFileSizeMeasure: (int)measure {
+  NSAssert(measure==LOGICAL_FILE_SIZE || measure==PHYSICAL_FILE_SIZE, 
+           @"Invalid file size measure.");
            
-  fileSizeType = type;
+  fileSizeMeasure = measure;
 }
 
 
@@ -186,7 +186,7 @@ static struct {
             // A file node.
             
             ITEM_SIZE  childSize = 
-              (fileSizeType == LOGICAL_FILE_SIZE ? 
+              (fileSizeMeasure == LOGICAL_FILE_SIZE ? 
                 (bulkCatalogInfo.catalogInfoArray[i].dataLogicalSize +
                  bulkCatalogInfo.catalogInfoArray[i].rsrcLogicalSize) :
                 (bulkCatalogInfo.catalogInfoArray[i].dataPhysicalSize +

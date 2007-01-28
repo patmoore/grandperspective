@@ -10,7 +10,7 @@
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeType: (NSString *)type
+         fileSizeMeasure: (int) measure
          filterTest: (NSObject <FileItemTest> *)test;
 
 - (NSObject <FileItemTest> *) filterTest;

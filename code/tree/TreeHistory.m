@@ -9,10 +9,10 @@ static int  nextFilterId = 1;
 
 @interface TreeHistory (PrivateMethods)
 
-- (id) initWithFileSizeType: (NSString *)fileSizeTypeVal
-         scanTime: (NSDate *)scanTimeVal 
+- (id) initWithFileSizeMeasure: (NSString *)measure
+         scanTime: (NSDate *)time 
          filter: (NSObject <FileItemTest> *)filter
-         filterId: (int) filterId;
+         filterId: (int) id;
 
 @end
 
@@ -24,18 +24,18 @@ static int  nextFilterId = 1;
   NSAssert(NO, @"Use initWithFileSizeType: instead.");
 }
 
-- (id) initWithFileSizeType: (NSString *)fileSizeTypeVal {
-  return [self initWithFileSizeType: fileSizeTypeVal scanTime: [NSDate date]];
+- (id) initWithFileSizeMeasure: (NSString *)measure {
+  return [self initWithFileSizeMeasure: measure scanTime: [NSDate date]];
 }
 
-- (id) initWithFileSizeType: (NSString *)fileSizeTypeVal 
-         scanTime: (NSDate *)scanTimeVal {
-  return [self initWithFileSizeType: fileSizeTypeVal scanTime: scanTimeVal 
+- (id) initWithFileSizeMeasure: (NSString *)measure 
+         scanTime: (NSDate *)time {
+  return [self initWithFileSizeMeasure: measure scanTime: time 
                  filter: nil filterId: 0];
 }
 
 - (void) dealloc {
-  [fileSizeType release];
+  [fileSizeMeasure release];
   [scanTime release];
   [filter release];
 
@@ -56,7 +56,7 @@ static int  nextFilterId = 1;
            [NSArray arrayWithObjects:filter, newFilter, nil]] autorelease];
   }
 
-  return [[[TreeHistory alloc] initWithFileSizeType: fileSizeType
+  return [[[TreeHistory alloc] initWithFileSizeMeasure: fileSizeMeasure
                                  scanTime: scanTime 
                                  filter: totalFilter
                                  filterId: nextFilterId++] autorelease];
@@ -68,15 +68,15 @@ static int  nextFilterId = 1;
 }
 
 - (TreeHistory*) historyAfterRescanning: (NSDate *)scanTimeVal {
-  return [[[TreeHistory alloc] initWithFileSizeType: fileSizeType
+  return [[[TreeHistory alloc] initWithFileSizeMeasure: fileSizeMeasure
                                  scanTime: scanTimeVal 
                                  filter: filter
                                  filterId: filterId] autorelease];
 }
 
 
-- (NSString*) fileSizeType {
-  return fileSizeType;
+- (NSString*) fileSizeMeasure {
+  return fileSizeMeasure;
 }
 
 - (NSDate*) scanTime {
@@ -109,12 +109,12 @@ static int  nextFilterId = 1;
 
 @implementation TreeHistory (PrivateMethods)
 
-- (id) initWithFileSizeType: (NSString *)fileSizeTypeVal
+- (id) initWithFileSizeMeasure: (NSString *)fileSizeMeasureVal
          scanTime: (NSDate *)scanTimeVal
          filter: (NSObject <FileItemTest> *)filterVal 
          filterId: (int) filterIdVal {
   if (self = [super init]) {
-    fileSizeType = [fileSizeTypeVal retain];
+    fileSizeMeasure = [fileSizeMeasureVal retain];
     scanTime = [scanTimeVal retain];
     filter = [filterVal retain];
     filterId = filterIdVal;

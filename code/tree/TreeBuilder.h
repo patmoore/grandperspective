@@ -11,7 +11,7 @@
 
 @interface TreeBuilder : NSObject {
 
-  BOOL  fileSizeType;
+  int  fileSizeMeasure;
   BOOL  abort;
   TreeBalancer  *treeBalancer;
 
@@ -21,8 +21,8 @@
 
 - (void) abort;
 
-- (int) fileSizeType;
-- (void) setFileSizeType: (int)type;
+- (int) fileSizeMeasure;
+- (void) setFileSizeMeasure: (int) measure;
 
 - (DirectoryItem*) buildTreeForPath:(NSString*)path;
 
