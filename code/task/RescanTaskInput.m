@@ -5,17 +5,17 @@
 
 // Overrides designated initialiser
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeType: (int)fileSizeTypeVal {
+         fileSizeType: (NSString *)type {
   NSAssert(NO, @"Use initWithDirectoryName:fileSizeType:filterTest: instead");
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeType: (int)fileSizeTypeVal
+         fileSizeType: (NSString *)type
          filterTest: (NSObject <FileItemTest> *)test {
-  if (self = [super initWithDirectoryName: name 
-                      fileSizeType: fileSizeTypeVal]) {
+  if (self = [super initWithDirectoryName: name fileSizeType: type]) {
     filterTest = [test retain];
   }
+  
   return self;
 }
 

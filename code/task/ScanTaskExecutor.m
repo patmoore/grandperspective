@@ -28,11 +28,16 @@
   
   ScanTaskInput  *myInput = input;
   
-  NSDate  *startTime = [NSDate date];
-  
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
   treeBuilder = [[TreeBuilder alloc] init];
-  [treeBuilder setFileSizeType: [myInput fileSizeType]];
+  if ([[myInput fileSizeType] isEqualToString: @"logical"]) {
+    [treeBuilder setFileSizeType: LOGICAL_FILE_SIZE];
+  }
+  else if ([[myInput fileSizeType] isEqualToString: @"physical"]) {
+    [treeBuilder setFileSizeType: PHYSICAL_FILE_SIZE];
+  }
+  
+  NSDate  *startTime = [NSDate date];
   
   DirectoryItem*  itemTreeRoot = 
     [treeBuilder buildTreeForPath: [myInput directoryName]];

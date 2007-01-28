@@ -45,14 +45,19 @@
       addObserver:self selector:@selector(windowWillClose:)
       name:@"NSWindowWillCloseNotification" object:[self window]];
 
-  [fileSizeTypePopUp selectItemAtIndex:
-    ([userDefaults boolForKey: @"useLogicalFileSizes"] ? 0 : 1)];
-
   FileItemHashingCollection  *colorMappings = 
       [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
   ColorListCollection  *colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
-  
+
+  [fileSizeTypePopUp removeAllItems];
+  localizedFileSizeTypesReverseLookup =
+    [[DirectoryViewControl
+        addLocalisedNamesToPopUp: fileSizeTypePopUp
+        names: [NSArray arrayWithObjects: @"logical", @"physical", nil]
+        selectName: [userDefaults stringForKey: @"fileSizeType"]
+        table: @"Names"] retain];
+
   [defaultColorMappingPopUp removeAllItems];  
   localizedColorMappingNamesReverseLookup =
     [[DirectoryViewControl
@@ -91,8 +96,11 @@
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
   if ([changeSet containsObject: fileSizeTypePopUp]) {
-    [userDefaults setBool: ([fileSizeTypePopUp indexOfSelectedItem] == 0)
-                    forKey: @"useLogicalFileSizes"];
+    NSString  *localizedName = [fileSizeTypePopUp titleOfSelectedItem];
+    NSString  *name = 
+      [localizedFileSizeTypesReverseLookup objectForKey: localizedName];
+
+    [userDefaults setObject: name forKey: @"fileSizeType"];
   }
 
   if ([changeSet containsObject: defaultColorMappingPopUp]) {

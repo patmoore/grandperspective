@@ -9,16 +9,17 @@
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeType: (int)fileSizeTypeVal {
+         fileSizeType: (NSString *)fileSizeTypeVal {
   if (self = [super init]) {
     dirName = [name retain];
-    fileSizeType = fileSizeTypeVal;
+    fileSizeType = [fileSizeTypeVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
   [dirName release];
+  [fileSizeType release];
   
   [super dealloc];
 }
@@ -28,7 +29,7 @@
   return dirName;
 }
 
-- (int) fileSizeType {
+- (NSString*) fileSizeType {
   return fileSizeType;
 }
 

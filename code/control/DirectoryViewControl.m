@@ -139,6 +139,7 @@
   [mainView setItemPathModel:itemPathModel];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSBundle  *mainBundle = [NSBundle mainBundle];
   
   [colorMappingPopUp removeAllItems];  
   NSString  *selectedMappingName = 
@@ -185,7 +186,9 @@
   [scanTimeField setStringValue: 
     [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
-  [fileSizeTypeField setStringValue: @"TO DO"];
+  [fileSizeTypeField setStringValue: 
+    [mainBundle localizedStringForKey: [treeHistory fileSizeType] value: nil 
+                  table: @"Names"]];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
 

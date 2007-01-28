@@ -1,14 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
-#import "TaskExecutor.h"
+#import "ScanTaskExecutor.h"
 
-@class TreeBuilder;
 @class TreeFilter;
 
 
-@interface RescanTaskExecutor : NSObject <TaskExecutor> {
-  BOOL  enabled;  
-  TreeBuilder  *treeBuilder;
+@interface RescanTaskExecutor : ScanTaskExecutor {
   TreeFilter  *treeFilter;
 }
 

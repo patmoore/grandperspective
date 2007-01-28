@@ -10,6 +10,7 @@
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
+  NSDictionary  *localizedFileSizeTypesReverseLookup;
   NSDictionary  *localizedColorMappingNamesReverseLookup;
   NSDictionary  *localizedColorPaletteNamesReverseLookup;
   

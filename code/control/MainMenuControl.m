@@ -165,8 +165,7 @@ NSString* scanActivityFormatString() {
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
-    int  fileSizeType = ([userDefaults boolForKey: @"useLogicalFileSizes"] ?
-                            LOGICAL_FILE_SIZE : PHYSICAL_FILE_SIZE);
+    NSString  *fileSizeType = [userDefaults stringForKey: @"fileSizeType"];
                             
     TreeHistory  *history = 
       [[[TreeHistory alloc] initWithFileSizeType: fileSizeType] autorelease];
