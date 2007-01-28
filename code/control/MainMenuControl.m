@@ -207,7 +207,6 @@ NSString* scanActivityFormatString() {
     NSString  *dirName = [itemPathModel rootFilePathName];
     TreeHistory  *oldHistory = [oldControl treeHistory];
     
-    
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
@@ -453,7 +452,8 @@ NSString* scanActivityFormatString() {
          targetPath: (ItemPathModel *)targetPathVal
          settings: (DirectoryViewControlSettings *)settingsVal {
          
-  if (self = [super initWithWindowManager: windowManagerVal history: history]) {
+  if (self = [super initWithWindowManager: windowManagerVal 
+                      history: historyVal]) {
     targetPath = [targetPathVal retain];
     // Note: The state of "targetPath" may change during scanning/filtering 
     // (which happens in the background). This is okay and even desired. When 
