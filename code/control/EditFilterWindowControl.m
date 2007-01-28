@@ -208,7 +208,7 @@
 
   NSBundle  *mainBundle = [NSBundle mainBundle];
   NSString  *localizedName = 
-    [mainBundle localizedStringForKey: testName value: nil table: @"TestNames"];
+    [mainBundle localizedStringForKey: testName value: nil table: @"Names"];
   
   [alert addButtonWithTitle: REMOVE_BUTTON_TITLE];
   [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
@@ -422,14 +422,14 @@
   if (sender == filterTestsBrowser) {
     NSString  *name = [filterTests objectAtIndex:row];
     NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"TestNames"];
+      [mainBundle localizedStringForKey: name value: nil table: @"Names"];
 
     [cell setStringValue: localizedName];
   }
   else if (sender == availableTestsBrowser) {
     NSString  *name = [availableTests objectAtIndex:row]; 
     NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"TestNames"];
+      [mainBundle localizedStringForKey: name value: nil table: @"Names"];
 
     [cell setStringValue: localizedName];
     [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
