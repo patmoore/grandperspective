@@ -64,7 +64,7 @@
         addLocalisedNamesToPopUp: defaultColorMappingPopUp
         names: [colorMappings allKeys]
         selectName: [userDefaults stringForKey: @"defaultColorMapping"]
-        table: @"MappingNames"] retain];
+        table: @"Names"] retain];
 
   [defaultColorPalettePopUp removeAllItems];
   localizedColorPaletteNamesReverseLookup =
@@ -72,7 +72,7 @@
         addLocalisedNamesToPopUp: defaultColorPalettePopUp
         names: [colorPalettes allKeys]
         selectName: [userDefaults stringForKey: @"defaultColorPalette"] 
-        table: @"PaletteNames"] retain];
+        table: @"Names"] retain];
 
   [self updateButtonState];
   
