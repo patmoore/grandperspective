@@ -26,6 +26,10 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
+    <key>CFBundleHelpBookFolder</key>
+    <string>GrandPerspective Help</string>
+    <key>CFBundleHelpBookName</key>
+    <string>GrandPerspective Help</string>
     <key>GPDefaultFileItemTests</key>
     <array>
 		<dict>
