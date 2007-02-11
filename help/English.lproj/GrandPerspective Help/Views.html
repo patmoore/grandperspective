@@ -1,170 +1,32 @@
 <html>
 <head>
 <title>GrandPerspective views</title>
-<meta name="description" content="How to use GrandPerspective views">
-<meta name="keywords" content="GrandPerspective, views, file, folder, size" >
+<meta name="description" content="How do the GrandPerspective views work?">
+<meta name="keywords" content="GrandPerspective, views, file, folder, size, rectangle" >
 </head>
 <body>
 
-<h1>GrandPerspective Views</h1>
-
-<h2>About views</h2>
+<h1>GrandPerspective views</h1>
 
 <p>
+GrandPerspective visualises disk usage using so-called tree maps.
+A view window shows the contents of a given folder.
 Each rectangle in the view window represents a file in the folder. 
 The area of the rectangle is proportional to the file's size. 
 Files in the same folder appear together, but their placement is otherwise arbitrary.
-You can select a file by hovering the mouse pointer over it. 
-The name of the file, together with its size, is then shown at the bottom of the window.
+You can focus on a file by hovering the mouse pointer over it. 
+The name of the file, together with its size, is then shown at the bottom of the view window.
 </p>
 
-<p>
-Clicking on a file locks the selection so that it does not change when you move the mouse. 
-Click once more, anywhere in the view, to unlocks the selection.
-When the selection is locked, you can change the folder that is shown in the view. 
-By clicking the <b>Down</b> button, you descend into the first subfolder on the path to the selected file. 
-You can keep going down, until you've reached the file itself. 
-Clicking <b>Up</b> will take you back up, one level at the time. 
-When the selection is locked, you can show the file in Finder using the <b>Reveal</b> button. 
-There you can examine the selected file, rename it, delete it, etc.
-</p>
-
-<!-- AppleSegStart="View panels" -->
-<a name="ViewPanels"></a>
-<!-- AppleSegDescription="More about the panels in the view's drawer" -->
-<!-- AppleKeywords="view, drawer, panel, info, display, focus" -->
-<h2>More about the view</h2>
+<h2>Find out more</h2>
 
 <p>
-At the bottom right of the view window there is a <b>More...</b> button.
-Click on it, and a drawer will appear (click once more, and it disappears again).
-The drawer contains three panels.
-</p>
-
-<h3>The Info panel</h3>
-
-<p>
-The <b>Info</b> panel gives information about the folder that has been scanned.
-It shows the name of the folder, and also the time when it was scanned.
-When a <a href="MasksAndFilters.html">filter</a> has been applied, it will also show details of this.
-It also shows which <a href="FileSizeMeasures.html">file size measure</a> has been used, and the total size of the folder is scanned.
-</p>
-
-<h3>The Display panel</h3>
-
-<p>
-The <b>Display</b> panel enables you to change how the view is drawn.
-You can choose from various file coloring options:
-
 <ul>
-
-<li>
-<b>Depth</b>: 
-The number of sub-folders in the path of each file, relative to the folder that is currently shown in the view, determines the color. 
-All files at the same "depth" have the same color.
-</li>
-
-<li>
-<b>Extension</b>: 
-All files with the same extension have the same color.
-</li> 
-
-<li>
-<b>Folder</b>: 
-All files in the same folder have the same color.
-</li> 
-
-<li>
-<b>Name</b>: 
-Files with the same name will have the same color.
-</li>
-
-<li>
-<b>Nothing</b>:
-All files will have the same color.
-</li>
-
-<li>
-<b>Top Folder</b>:
-The first sub-folder in the path of each file, relative to the folder that is currently shown in the view, determines the color.
-All files that appear in the same "top folder" have the same color.
-</li>
-
+<li><a href="NavigatingViews.html">How to navigate views?</a></li>
+<li><a href="ViewDrawer.html">How to use the view's drawer?</a></li>
+<li><a href="CreatingViews.html">All the ways to create new view windows</a></li>
 </ul>
 </p>
-
-<p>
-Next to that, you can also select on of the various color palette that is provided with the application. 
-Just pick one that you suits your taste.
-</p>
-
-<p>
-You can also configure a mask. 
-When you use a mask, only certain files are shown. 
-Files that are masked, on the other hand, still take up space but are not drawn. 
-Masking can be useful for quickly identifying certain (types of) files, and can also be useful step before applying a <a href="MasksAndFilters.html">filter</a>. 
-Press the <b>Edit</b> button to start editing the <a href="MasksAndFilters.html">mask</a>.
-</p> 
-
-<h3>The Focus panel</h3>
-
-<p>
-The <b>Focus</b> panel shows the name and size of the folder that is currently shown in the view. 
-This is not necessarily the folder that was scanned, because you can navigate down into subfolders.
-</p>
-
-<p>
-The path of the file that is currently selected is also shown, together with its size. 
-Even though this is information is also displayed at the bottom of the view, it is repeated here as long paths may not entirely fit under the view. Furthermore, here you can find the exact size.
-</p>
-
-<!-- AppleSegEnd -->
-
-<!-- AppleSegStart="Creating views" -->
-<a id="CreatingViews" name="CreatingViews"></a>
-<!-- AppleSegDescription="How to create GrandPerspective views?" -->
-<!-- AppleKeywords="create, view, scan, rescan, duplicate, twin, filter" -->
-<h2>Creating views</h2>
-
-<p>
-When the application starts it prompts you to select a folder. 
-After you have selected a folder, the folder is scanned to determine the size of all files in it (including the files in sub-folders). 
-Once the scanning is finished, which may take a short while when the folder contains a large number of files, a tree map of the scanned folder is shown in a new view window.
-</p>
-
-There are various other ways in which you can create a view:
-
-<ul>
-
-<li>
-The <b>Scan Folder...</b> command from the "File" menu lets you scan another folder.
-</li>
-
-<li>
-The <b>Re-scan</b> command from the "File" menu lets you generate an up-to-date version of the current view. 
-This is useful when the folder contents have changed, for example because you deleted one or more files. 
-The new view will use the same settings as the current view.
-</li>
-
-<li>
-The <b>Duplicate</b> command from the "Window" menu lets you duplicate the current view. 
-A new view is created similar to the current one. 
-You can subsequently change its display settings to see the tree map in different ways at the same time.
-</li>
-
-<li>
-The <b>Twin</b> command from the "Window" menu lets you twin the current view.
-Twinning a view is very similar to duplicating it, except that navigation is synchronized as well.
-</li>
-
-<li>
-The <b>Filter...</b> command from the "Window" menu lets you apply a <a href="MasksAndFilters.html">filter</a> to the current view.
-</li>
-
-</ul>
-</p>
-
-<!-- AppleSegEnd -->
 
 </body>
 </html>
