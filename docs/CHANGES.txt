@@ -3,6 +3,35 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.99, 24-02-2007
+----------------------------------------------------------------------
+
+New build set-up:
+- The application has been released as a Universal Binary. I still can't
+  build Universal Binaries these from my own machine, but now have access 
+  to one that can.
+
+New functionality:
+- Added choice of file size measure. You can choose between logical file 
+  size (the default), and physical file size.
+- Added help. Hopefully rarely needed, but it is there anyway.
+
+Minor changes:
+- Enlarged bounding box of text fields where there was room (to
+  facilitate localization)
+- Made title of OK button in remove-rule-confirmation alert panel more 
+  specific. It is now called "Remove".
+
+Bug fixes:
+- Enabling a filename or path test without specifying any strings does not
+  give an error anymore.
+- It was possible to specify a negative file size bound, which resulted 
+  in a very large size. Not any more.
+- It was possible (to attempt) to save an image with a dimension that was 
+  zero or negative. This resulted in an exception. Not anymore.
+
+
+----------------------------------------------------------------------
   Version 0.98 (localized), 09-01-2007
 ----------------------------------------------------------------------
 

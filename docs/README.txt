@@ -19,20 +19,19 @@ rectangles as square as possible.
 
 * SYSTEM REQUIREMENTS
 
-- PowerPC processor
+- PowerPC/Intel processor
 
-  This version of the application is still built for Macs with a
-  PowerPC processor. Although the source code has already been
-  modified so that it compiles and runs on Intel processors (thanks
-  to Craig Hughes for his help with this), I do not yet have the 
-  software to build Universal Binaries (donations for the required 
-  operating system upgrade are appreciated :-), nor easy access to
-  an Intel Mac to actually test it. This makes releasing an "official" 
-  Universal Binary a bit cumbersome. However, Martin Kahr has very 
-  kindly been making unofficial GrandPerspective Universal Binaries
-  available. See the GrandPerspective website for details on where to
-  download it.
+  This version of the application has released as a Universal Binary.
+  This was possible, because I had access to a machine that can build 
+  these. However, I still cannot build Universal Binaries from my own
+  machine. So, donations to support the required upgrade of my
+  operating system are greatly appreciated (you can find how to make 
+  a donation from the GrandPerspective website).
 
+  Many thanks to Martin Kahr who has been making Universal Binaries
+  available for earlier releases of GrandPerspective. Also thanks
+  to Craig Hughes who initially helped me to make the source code
+  Intel-compatible.
 
 - Mac OS X, 10.2 or higher
 
@@ -74,13 +73,12 @@ The GrandPerspective application has been released as Open Source
 under the GNU General Public License. See COPYING.txt for details.
 
 
-* THE WEB SITE
+* THE WEBSITE
 
 For more information about the application, please visit the website
 at http://grandperspectiv.sourceforge.net. From there, you can 
 download the latest release of the software. It is also possible to
-report bugs, request additional features, or provide more general 
-feedback.
+report bugs, make a donation, request additional features, provide more general feedback, etc.
 
 
 * CONTACT DETAILS
