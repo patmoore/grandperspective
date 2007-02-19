@@ -23,7 +23,7 @@
     
     NSBundle  *bundle = [NSBundle mainBundle];
     NSArray  *colorListPaths = [bundle pathsForResourcesOfType: @".clr"
-                                          inDirectory: nil];
+                                          inDirectory: @"Palettes"];
     NSEnumerator  *pathEnum = [colorListPaths objectEnumerator];
     NSString  *path;
     while (path = [pathEnum nextObject]) {
