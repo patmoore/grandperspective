@@ -175,8 +175,8 @@
 				8D1107310486CEB800E47090,
 				089C165CFE840E0CC02AAC07,
 				AA8FEB290B6CC2D80049FF42,
-				AAF9F87F0B30301C00FA4C51,
 				AA7C64D50AFE71DC007B8CD2,
+				AADD34910B8B902000AC2C97,
 				AAD8DFC60B077FCF0060DADA,
 				AAB35D840A330BE8006535FF,
 				AAB35D3F0A33057E006535FF,
@@ -323,10 +323,10 @@
 				AAB35D850A330BE8006535FF,
 				AA7C64D60AFE71DC007B8CD2,
 				AAD8DFC70B077FCF0060DADA,
-				AAF9F8810B30301C00FA4C51,
 				AA8FEB2B0B6CC2D90049FF42,
 				AAC9B6490B7FA94A002B3ECE,
 				AA13BAD30B8A5747000AEAA9,
+				AADD34930B8B902000AC2C97,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1075,14 +1075,6 @@
 			lastKnownFileType = text.plist.strings;
 			name = fy;
 			path = fy.lproj/Localizable.strings;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA59781C0B344CB600EF3248 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = fy;
-			path = fy.lproj/tests.strings;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2260,6 +2252,49 @@
 			settings = {
 			};
 		};
+		AADD34910B8B902000AC2C97 = {
+			children = (
+				AADD34920B8B902000AC2C97,
+				AADD349A0B8B905900AC2C97,
+				AADD34A30B8B906900AC2C97,
+			);
+			isa = PBXVariantGroup;
+			name = Tests.strings;
+			path = "";
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AADD34920B8B902000AC2C97 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = English;
+			path = English.lproj/Tests.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AADD34930B8B902000AC2C97 = {
+			fileRef = AADD34910B8B902000AC2C97;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AADD349A0B8B905900AC2C97 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = nl;
+			path = nl.lproj/Tests.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AADD34A30B8B906900AC2C97 = {
+			isa = PBXFileReference;
+			lastKnownFileType = text.plist.strings;
+			name = fy;
+			path = fy.lproj/Tests.strings;
+			refType = 4;
+			sourceTree = "<group>";
+		};
 		AAEF5E240AFE79FA00C7134A = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.nib;
@@ -2330,41 +2365,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = ControlConstants.h;
 			path = control/ControlConstants.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AAF9F87F0B30301C00FA4C51 = {
-			children = (
-				AAF9F8800B30301C00FA4C51,
-				AAF9F8840B30302900FA4C51,
-				AA59781C0B344CB600EF3248,
-			);
-			isa = PBXVariantGroup;
-			name = tests.strings;
-			path = "";
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AAF9F8800B30301C00FA4C51 = {
-			fileEncoding = 10;
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = English;
-			path = English.lproj/tests.strings;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AAF9F8810B30301C00FA4C51 = {
-			fileRef = AAF9F87F0B30301C00FA4C51;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AAF9F8840B30302900FA4C51 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = nl;
-			path = nl.lproj/tests.strings;
 			refType = 4;
 			sourceTree = "<group>";
 		};
