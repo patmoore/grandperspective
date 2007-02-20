@@ -28,8 +28,13 @@ fi
 
 svn export -q -r $SVN_REV $SVN_URL/$SVN_PATH $TEMP_DIR
 
-# Exclude all localizations except the English
+# Exclude all localizations except the English and Dutch
+mv $TEMP_DIR/nl.lproj $TEMP_DIR/Dutch.lproj
 rm -rf $TEMP_DIR/??.lproj
+mv $TEMP_DIR/Dutch.lproj $TEMP_DIR/nl.lproj
+
+# Exclude sources files that are not part of the release
+rm -rf $TEMP_DIR/xutil
 
 # Copy Objective C source files. Also add header to each file.
 #
@@ -68,8 +73,8 @@ do
 |" > $DEST_DIR/${base_f}
 done
 
-# Copy remaining (useful) source files.
+# Copy remaining source files.
 #
-tar cf - -C $TEMP_DIR --exclude "*.[mh]" --exclude "*.pch" --exclude "*.icns" --exclude "version.plist" . | tar xf - -C $DEST_DIR
+tar cf - -C $TEMP_DIR --exclude "*.[mh]" . | tar xf - -C $DEST_DIR
 
 rm -rf $TEMP_DIR
