@@ -1070,14 +1070,6 @@
 			settings = {
 			};
 		};
-		AA59779D0B343CCF00EF3248 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = fy;
-			path = fy.lproj/Localizable.strings;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		AA5D629D0982E72600DD76E8 = {
 			children = (
 				AA59434109803E83007A8673,
@@ -1609,7 +1601,6 @@
 			children = (
 				AA7C64CA0AFE717A007B8CD2,
 				AA7C64E90AFE734A007B8CD2,
-				AA59779D0B343CCF00EF3248,
 			);
 			isa = PBXVariantGroup;
 			name = Localizable.strings;
@@ -1676,7 +1667,6 @@
 			children = (
 				AA8FEB2A0B6CC2D80049FF42,
 				AA8FEB650B6CD2390049FF42,
-				AA8FEBBA0B6CDFB50049FF42,
 			);
 			isa = PBXVariantGroup;
 			name = Names.strings;
@@ -1718,14 +1708,6 @@
 			lastKnownFileType = wrapper.nib;
 			name = nl;
 			path = nl.lproj/PreferencesPanel.nib;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA8FEBBA0B6CDFB50049FF42 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = fy;
-			path = fy.lproj/Names.strings;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2256,7 +2238,6 @@
 			children = (
 				AADD34920B8B902000AC2C97,
 				AADD349A0B8B905900AC2C97,
-				AADD34A30B8B906900AC2C97,
 			);
 			isa = PBXVariantGroup;
 			name = Tests.strings;
@@ -2284,14 +2265,6 @@
 			lastKnownFileType = text.plist.strings;
 			name = nl;
 			path = nl.lproj/Tests.strings;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AADD34A30B8B906900AC2C97 = {
-			isa = PBXFileReference;
-			lastKnownFileType = text.plist.strings;
-			name = fy;
-			path = fy.lproj/Tests.strings;
 			refType = 4;
 			sourceTree = "<group>";
 		};
