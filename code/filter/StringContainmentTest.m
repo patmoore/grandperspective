@@ -18,7 +18,7 @@
 
 - (NSString*) descriptionFormat {
   return NSLocalizedStringFromTable( 
-           @"%@ contains %@", @"tests",
+           @"%@ contains %@", @"Tests",
            @"String test with 1: subject, and 2: match targets" );
 }
 

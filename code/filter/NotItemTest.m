@@ -58,7 +58,7 @@
 
 - (NSString*) description {
   NSString  *fmt =
-    NSLocalizedStringFromTable( @"not (%@)" , @"tests", 
+    NSLocalizedStringFromTable( @"not (%@)" , @"Tests", 
                                 @"NOT-test with 1: sub test" );
 
   return [NSString stringWithFormat: fmt, [subTest description]];

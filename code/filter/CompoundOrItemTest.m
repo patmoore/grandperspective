@@ -26,13 +26,13 @@
 
 - (NSString*) bootstrapDescriptionTemplate {
   return NSLocalizedStringFromTable( 
-           @"(%@) or (%@)" , @"tests", 
+           @"(%@) or (%@)" , @"Tests", 
            @"OR-test with 1: sub test, and 2: another sub test" );
 }
 
 - (NSString*) repeatingDescriptionTemplate {
   return NSLocalizedStringFromTable( 
-           @"(%@) or %@" , @"tests", 
+           @"(%@) or %@" , @"Tests", 
            @"OR-test with 1: sub test, and 2: two or more other sub tests" );
 }
 

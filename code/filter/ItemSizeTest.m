@@ -89,7 +89,7 @@
     if ([self hasUpperBound]) {
       NSString  *fmt = 
         NSLocalizedStringFromTable( 
-          @"size is between %@ and %@", @"tests", 
+          @"size is between %@ and %@", @"Tests", 
           @"Size test with 1: lower bound, and 2: upper bound" );
       return [NSString stringWithFormat: fmt, 
                 [FileItem stringForFileItemSize: lowerBound],
@@ -97,7 +97,7 @@
     }
     else {
       NSString  *fmt = 
-        NSLocalizedStringFromTable( @"size is larger than %@", @"tests", 
+        NSLocalizedStringFromTable( @"size is larger than %@", @"Tests", 
                                     @"Size test with 1: lower bound" );
       
       return [NSString stringWithFormat: fmt,
@@ -107,13 +107,13 @@
   else {
     if ([self hasUpperBound]) {
       NSString  *fmt = 
-        NSLocalizedStringFromTable( @"size is smaller than %@", @"tests", 
+        NSLocalizedStringFromTable( @"size is smaller than %@", @"Tests", 
                                     @"Size test with 1: upper bound" );
       return [NSString stringWithFormat: fmt,
                 [FileItem stringForFileItemSize:upperBound] ];
     }
     else {
-      return NSLocalizedStringFromTable( @"any size", @"tests", 
+      return NSLocalizedStringFromTable( @"any size", @"Tests", 
                                          @"Size test without any bounds" );
     }
   }

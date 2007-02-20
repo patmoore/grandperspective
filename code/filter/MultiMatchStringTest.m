@@ -107,7 +107,7 @@
     // At least two match targets.
     NSString  *pairTemplate = 
       NSLocalizedStringFromTable( 
-        @"%@ or %@" , @"tests", 
+        @"%@ or %@" , @"Tests", 
         @"Pair of match targets with 1: a target match, and 2: another target match" );
       
     matchesDescr = 
@@ -115,7 +115,7 @@
 
     NSString  *moreTemplate = 
       NSLocalizedStringFromTable( 
-        @"%@, %@" , @"tests", 
+        @"%@, %@" , @"Tests", 
         @"Three or more match targets with 1: a target match, and 2: two or more other target matches" );
 
     while (match = [matchEnum nextObject]) {

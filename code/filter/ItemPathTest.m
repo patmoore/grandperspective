@@ -26,7 +26,7 @@
 
 - (NSString*) description {
   NSString  *subject = 
-    NSLocalizedStringFromTable( @"path" , @"tests", 
+    NSLocalizedStringFromTable( @"path" , @"Tests", 
                                 @"A pathname as the subject of a string test" );
 
   return [stringTest descriptionWithSubject: subject];
