@@ -6,15 +6,18 @@
   Version 0.99, 24-02-2007
 ----------------------------------------------------------------------
 
-Changes to build and release process:
-- The application has been released as a Universal Binary.
-- The application's project file has been cleaned up, and is now 
-  included with the source.
-
 New functionality:
 - Added choice of file size measure. You can choose between logical
   file size (the default), and physical file size.
 - Added help. Hopefully rarely needed, but at least it exists.
+
+Changes to the release files:
+- The application has been released as a Universal Binary.
+- The source release has been extended, and now includes everything
+  needed to build the application. Newly included:
+  - The (cleaned up) project file.
+  - The help documentation.
+  - All Dutch resources (as an example for other localizers).
 
 Tiny changes:
 - Made titles of various panels and their default buttons more
