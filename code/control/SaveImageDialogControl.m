@@ -95,6 +95,8 @@
   // Get a filename for the image.
   NSSavePanel  *savePanel = [NSSavePanel savePanel];  
   [savePanel setRequiredFileType: @"tiff"];
+  [savePanel setTitle: 
+     NSLocalizedString( @"Save image", @"Title of save panel") ];
   
   if ([savePanel runModal] == NSOKButton) {
     NSString  *filename = [savePanel filename];

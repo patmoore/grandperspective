@@ -159,9 +159,15 @@ NSString* scanActivityFormatString() {
 
 - (IBAction) openDirectoryView:(id)sender {
   NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
-  [openPanel setCanChooseFiles:NO];
-  [openPanel setCanChooseDirectories:YES];
-  [openPanel setAllowsMultipleSelection:NO];
+  [openPanel setCanChooseFiles: NO];
+  [openPanel setCanChooseDirectories: YES];
+  [openPanel setAllowsMultipleSelection: NO];
+  
+  NSString  *scanString = 
+  [openPanel setTitle: 
+     NSLocalizedString(@"Scan folder", @"Title of open panel") ];
+  [openPanel setPrompt: 
+     NSLocalizedString(@"Scan", @"Prompt in open panel") ];
 
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
