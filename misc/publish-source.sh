@@ -23,15 +23,15 @@ DEST_PATH=$1
 mkdir $OUTER_DIR_PATH
 
 echo "Exporting text files."
-./export-docs.sh trunk/docs 376 $OUTER_DIR_PATH $VERSION $VERSION_ID
+./export-docs.sh trunk/docs 383 $OUTER_DIR_PATH $VERSION $VERSION_ID
 
 mkdir $OUTER_DIR_PATH/src
 echo "Exporting source code."
-./export-source.sh trunk/code 381 $OUTER_DIR_PATH/src $VERSION
+./export-source.sh trunk/code 385 $OUTER_DIR_PATH/src $VERSION
 
 echo "Exporting help documentation."
-./export-help.sh trunk/help 376 $OUTER_DIR_PATH/src English
-./export-help.sh trunk/help 376 $OUTER_DIR_PATH/src nl
+./export-help.sh trunk/help 390 $OUTER_DIR_PATH/src English
+./export-help.sh trunk/help 390 $OUTER_DIR_PATH/src nl
 
 echo "Generating help indexes."
 ./update-help-index.sh $OUTER_DIR_PATH/src/English.lproj/$HELP_FOLDER English
@@ -50,4 +50,4 @@ pushd $TEMP_PATH > /dev/null
 tar czf $DEST_PATH/$OUT_FILE ${OUTER_DIR}
 popd > /dev/null
 
-echo rm -rf $TEMP_PATH
+rm -rf $TEMP_PATH
