@@ -103,7 +103,8 @@ static struct {
   FSRef  rootRef;
   Boolean  isDir;
 
-  OSStatus  status = FSPathMakeRef( [path UTF8String], &rootRef, &isDir );
+  OSStatus  status = 
+    FSPathMakeRef( [path fileSystemRepresentation], &rootRef, &isDir );
   
   NSAssert(isDir, @"Root is not a directory.");
   
