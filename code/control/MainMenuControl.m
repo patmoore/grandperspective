@@ -163,7 +163,6 @@ NSString* scanActivityFormatString() {
   [openPanel setCanChooseDirectories: YES];
   [openPanel setAllowsMultipleSelection: NO];
   
-  NSString  *scanString = 
   [openPanel setTitle: 
      NSLocalizedString(@"Scan folder", @"Title of open panel") ];
   [openPanel setPrompt: 

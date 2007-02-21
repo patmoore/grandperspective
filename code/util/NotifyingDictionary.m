@@ -39,6 +39,8 @@ static NSDictionary  *immutableDict = nil;
 - (void) dealloc {
   [dict release];
   [notificationCenter release];
+  
+  [super dealloc];
 }
 
 

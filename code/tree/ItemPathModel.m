@@ -233,7 +233,7 @@
   return YES;
 }
 
-- (FileItem*) itemTree {
+- (DirectoryItem*) itemTree {
   return [path objectAtIndex:0];
 }
 
