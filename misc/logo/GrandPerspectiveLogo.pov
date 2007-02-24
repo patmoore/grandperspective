@@ -59,13 +59,6 @@ light_source {
   color rgb <1, 1, 1>  * 1.2// light's color
   translate <3, 8, 5>  * 0.2
 }
-// ----------------------------------------
-/*
-plane {
-  y, -1
-  pigment { White }
-}
-*/
 
 // box { <0, 0, 0>, <0.5, 1, 0.5> }
 union {
@@ -135,26 +128,3 @@ union {
     finish { phong 0.9 phong_size 60 }
   }
 }
-
-
-
-/*  
-sphere {
-  0.0, 1
-  texture {
-    pigment {
-      radial
-      frequency 8
-      color_map {
-        [0.00 color rgb <1.0,0.4,0.2> ]
-        [0.33 color rgb <0.2,0.4,1.0> ]
-        [0.66 color rgb <0.4,1.0,0.2> ]
-        [1.00 color rgb <1.0,0.4,0.2> ]
-      }
-    }
-    finish{
-      specular 0.6
-    }
-  }
-}
-*/
