@@ -36,7 +36,7 @@ done
 # Remove unneeded nib files.
 find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
 
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $TEMP_PARENT_PATH -volSize 1 -compressionLevel 9 ${DEST_PATH}/*.txt ${DEST_PATH}/${APP_DIR}
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $TEMP_PARENT_PATH -volSize 2 -compressionLevel 9 ${DEST_PATH}/*.txt ${DEST_PATH}/${APP_DIR}
 
 # rm -rf $TEMP_PATH
 
