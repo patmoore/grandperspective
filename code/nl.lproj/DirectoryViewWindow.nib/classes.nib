@@ -21,6 +21,7 @@
                 fileSizeMeasureField = NSTextField; 
                 filterDescriptionTextView = NSTextView; 
                 filterNameField = NSTextField; 
+                freeSpaceField = NSTextField; 
                 itemPathField = NSTextField; 
                 itemSizeField = NSTextField; 
                 mainView = DirectoryView; 

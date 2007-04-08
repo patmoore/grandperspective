@@ -37,6 +37,7 @@
   IBOutlet NSTextField  *scanTimeField;
   IBOutlet NSTextField  *fileSizeMeasureField;
   IBOutlet NSTextField  *treeSizeField;
+  IBOutlet NSTextField  *freeSpaceField;
   
   // "Focus" drawer panel
   IBOutlet NSTextView  *visibleFolderPathTextView;

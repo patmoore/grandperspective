@@ -193,7 +193,8 @@
                   table: @"Names"]];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
-
+  [freeSpaceField setStringValue: [FileItem stringForFileItemSize: 
+                                    [treeHistory freeSpace]]];
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
