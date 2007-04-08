@@ -5,6 +5,10 @@
 #import "TreeBalancer.h"
 
 
+NSString  *LogicalFileSize = @"logical";
+NSString  *PhysicalFileSize = @"physical";
+
+
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
  * pages. This is a good balance between the iteration I/O overhead and the 
  * risk of incurring additional I/O from additional memory allocation.
@@ -69,7 +73,8 @@ static struct {
   if (self = [super init]) {
     treeBalancer = [[TreeBalancer alloc] init];
     abort = NO;
-    fileSizeMeasure = LOGICAL_FILE_SIZE;
+
+    [self setFileSizeMeasure: LogicalFileSize];
   }
   return self;
 }
@@ -77,20 +82,28 @@ static struct {
 
 - (void) dealloc {
   [treeBalancer release];
+  [fileSizeMeasure release];
   
   [super dealloc];
 }
 
 
-- (int) fileSizeMeasure {
+- (NSString *) fileSizeMeasure {
   return fileSizeMeasure;
 }
 
-- (void) setFileSizeMeasure: (int)measure {
-  NSAssert(measure==LOGICAL_FILE_SIZE || measure==PHYSICAL_FILE_SIZE, 
-           @"Invalid file size measure.");
-           
-  fileSizeMeasure = measure;
+- (void) setFileSizeMeasure: (NSString *)measure {
+  if ([measure isEqualToString: LogicalFileSize]) {
+    useLogicalFileSize = YES;
+  }
+  else if ([measure isEqualToString: PhysicalFileSize]) {
+    useLogicalFileSize = NO;
+  }
+  else {
+    NSAssert(NO, @"Invalid file size measure.");
+  }
+  
+  fileSizeMeasure = [measure retain];
 }
 
 
@@ -187,7 +200,7 @@ static struct {
             // A file node.
             
             ITEM_SIZE  childSize = 
-              (fileSizeMeasure == LOGICAL_FILE_SIZE ? 
+              (useLogicalFileSize ? 
                 (bulkCatalogInfo.catalogInfoArray[i].dataLogicalSize +
                  bulkCatalogInfo.catalogInfoArray[i].rsrcLogicalSize) :
                 (bulkCatalogInfo.catalogInfoArray[i].dataPhysicalSize +

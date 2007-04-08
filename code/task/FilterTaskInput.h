@@ -1,18 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
-@class DirectoryItem;
+@class TreeHistory;
 @protocol FileItemTest;
 
 
 @interface FilterTaskInput : NSObject {
-  DirectoryItem  *itemTree;
+  TreeHistory  *oldHistory;
   NSObject <FileItemTest>  *filterTest;
 }
 
-- (id) initWithItemTree: (DirectoryItem *)tree 
+- (id) initWithOldHistory: (TreeHistory *)history 
          filterTest: (NSObject <FileItemTest> *)test;
 
-- (DirectoryItem*) itemTree;
+- (TreeHistory *) oldHistory;
 
 - (NSObject <FileItemTest> *) filterTest;
 

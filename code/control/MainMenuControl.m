@@ -35,16 +35,14 @@ NSString* scanActivityFormatString() {
 
 @interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
-  TreeHistory  *history;
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManager
-         history: (TreeHistory *)history;
+- (id) initWithWindowManager: (WindowManager *)windowManager;
 
-- (void) createWindowForTree:(DirectoryItem*)itemTree;
+- (void) createWindowForTree: (TreeHistory *)treeHistory;
 
-- (DirectoryViewControl*) 
-     createDirectoryViewControlForTree:(DirectoryItem*)tree;
+- (DirectoryViewControl *) 
+     createDirectoryViewControlForTree: (TreeHistory *)treeHistory;
 
 @end // @interface FreshDirViewWindowCreator
 
@@ -55,7 +53,6 @@ NSString* scanActivityFormatString() {
 }
 
 - (id) initWithWindowManager:(WindowManager*)windowManager
-         history: (TreeHistory *)history
          targetPath: (ItemPathModel *)targetPath
          settings: (DirectoryViewControlSettings *)settings;
 
@@ -175,19 +172,11 @@ NSString* scanActivityFormatString() {
     // singleton instance needs to be created before looking up the key.
     FileSizeMeasureCollection  *fileSizeMeasures = 
       [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
-    NSString  *fileSizeMeasureKey =
-                [[NSUserDefaults standardUserDefaults] 
-                    stringForKey: @"fileSizeMeasure"];
-    int  fileSizeMeasure = 
-           [fileSizeMeasures fileSizeMeasureForKey: fileSizeMeasureKey];
-    
-    TreeHistory  *history = 
-      [[[TreeHistory alloc] initWithFileSizeMeasure: fileSizeMeasureKey] 
-           autorelease];
-    
+    NSString  *fileSizeMeasure =
+      [[NSUserDefaults standardUserDefaults] stringForKey: @"fileSizeMeasure"];
+
     FreshDirViewWindowCreator  *windowCreator =
-      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager
-                                           history: history];
+      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
     ScanTaskInput  *input = 
       [[ScanTaskInput alloc] initWithDirectoryName: dirName
                                fileSizeMeasure: fileSizeMeasure ];
@@ -219,25 +208,15 @@ NSString* scanActivityFormatString() {
 
   if (itemPathModel != nil) {
     NSString  *dirName = [itemPathModel rootFilePathName];
-    TreeHistory  *oldHistory = [oldControl treeHistory];
     
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
-            history: [oldHistory historyAfterRescanning]
             targetPath: itemPathModel 
             settings: [oldControl directoryViewControlSettings]];
 
-    FileSizeMeasureCollection  *fileSizeMeasures = 
-      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
-    int  fileSizeMeasure = 
-           [fileSizeMeasures fileSizeMeasureForKey:
-              [oldHistory fileSizeMeasure]];
-    
     RescanTaskInput  *input = 
-      [[RescanTaskInput alloc] initWithDirectoryName: dirName
-                                 fileSizeMeasure: fileSizeMeasure
-                                 filterTest: [oldHistory fileItemFilter]];
+      [[RescanTaskInput alloc] initWithOldHistory: [oldControl treeHistory]];
     
     [scanTaskManager abortTask];
     // The TreeBuilder implementation is such that only one scan can happen
@@ -295,13 +274,11 @@ NSString* scanActivityFormatString() {
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
-            history: [[oldControl treeHistory] 
-                         historyAfterFiltering: filterTest]
             targetPath: oldPathModel
             settings: [oldControl directoryViewControlSettings]];
     
     FilterTaskInput  *input = 
-      [[FilterTaskInput alloc] initWithItemTree: [oldPathModel itemTree]
+      [[FilterTaskInput alloc] initWithOldHistory: [oldControl treeHistory]
                                  filterTest: filterTest];
 
     NSString  *format = NSLocalizedString( 
@@ -375,8 +352,8 @@ NSString* scanActivityFormatString() {
 
   DirectoryViewControl  *newControl = 
     [[DirectoryViewControl alloc] 
-        initWithItemPathModel: itemPathModel
-          history: [oldControl treeHistory]
+        initWithTreeHistory: [oldControl treeHistory]
+          pathModel: itemPathModel
           settings: [oldControl directoryViewControlSettings]];
   // Note: The control should auto-release itself when its window closes
     
@@ -416,32 +393,29 @@ NSString* scanActivityFormatString() {
   NSAssert(NO, @"Use initWithWindowManager: instead.");
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal
-         history: (TreeHistory *)historyVal {
+- (id) initWithWindowManager:(WindowManager*)windowManagerVal {
   if (self = [super init]) {
     windowManager = [windowManagerVal retain];
-    history = [historyVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
   [windowManager release];
-  [history release];
   
   [super dealloc];
 }
 
 
-- (void) createWindowForTree:(DirectoryItem*)itemTree {
-  if (itemTree == nil) {
+- (void) createWindowForTree: (TreeHistory *)treeHistory {
+  if (treeHistory == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
   }
 
   // Note: The control should auto-release itself when its window closes  
   DirectoryViewControl  *dirViewControl = 
-    [[self createDirectoryViewControlForTree: itemTree] retain];
+    [[self createDirectoryViewControlForTree: treeHistory] retain];
   
   NSString  *title = 
     [MainMenuControl windowTitleForDirectoryView: dirViewControl];
@@ -451,9 +425,9 @@ NSString* scanActivityFormatString() {
 }
 
 - (DirectoryViewControl*) 
-     createDirectoryViewControlForTree:(DirectoryItem*)tree {
+     createDirectoryViewControlForTree: (TreeHistory *)treeHistory {
   return [[[DirectoryViewControl alloc] 
-              initWithItemTree: tree  history: history] autorelease];
+              initWithTreeHistory: treeHistory] autorelease];
 }
 
 @end // @implementation FreshDirViewWindowCreator
@@ -468,12 +442,10 @@ NSString* scanActivityFormatString() {
 }
 
 - (id) initWithWindowManager: (WindowManager *)windowManagerVal
-         history: (TreeHistory *)historyVal
          targetPath: (ItemPathModel *)targetPathVal
          settings: (DirectoryViewControlSettings *)settingsVal {
          
-  if (self = [super initWithWindowManager: windowManagerVal 
-                      history: historyVal]) {
+  if (self = [super initWithWindowManager: windowManagerVal]) {
     targetPath = [targetPathVal retain];
     // Note: The state of "targetPath" may change during scanning/filtering 
     // (which happens in the background). This is okay and even desired. When 
@@ -494,11 +466,11 @@ NSString* scanActivityFormatString() {
 
 
 - (DirectoryViewControl*) 
-     createDirectoryViewControlForTree:(DirectoryItem*)tree {
+     createDirectoryViewControlForTree: (TreeHistory *)treeHistory {
        
   // Try to match the path.
   ItemPathModel  *path = 
-    [[[ItemPathModel alloc] initWithTree:tree] autorelease];
+    [[[ItemPathModel alloc] initWithTree: [treeHistory itemTree]] autorelease];
 
   [path suppressItemPathChangedNotifications:YES];
     
@@ -535,8 +507,8 @@ NSString* scanActivityFormatString() {
   [path suppressItemPathChangedNotifications:NO];
 
   return [[[DirectoryViewControl alloc] 
-             initWithItemPathModel: path history: history settings: settings]
-               autorelease];
+             initWithTreeHistory: treeHistory pathModel: path 
+               settings: settings] autorelease];
 }
 
 @end // @implementation DerivedDirViewWindowCreator

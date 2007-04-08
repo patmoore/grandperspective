@@ -2,6 +2,7 @@
 
 #import "TreeBuilder.h"
 #import "DirectoryItem.h"
+#import "TreeHistory.h"
 #import "ScanTaskInput.h"
 
 
@@ -34,18 +35,30 @@
   
   NSDate  *startTime = [NSDate date];
   
-  DirectoryItem*  itemTreeRoot = 
+  DirectoryItem*  itemTree = 
     [treeBuilder buildTreeForPath: [myInput directoryName]];
   
   [treeBuilder release];
   treeBuilder = nil;
   
-  if (itemTreeRoot != nil) {
-    NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
-            [itemTreeRoot itemSize], -[startTime timeIntervalSinceNow]);
+  if (itemTree == nil) {
+    // Scanning was aborted.
+    return nil;
   }
   
-  return itemTreeRoot;
+  // Establish the free space (at time of scan)  
+  NSFileManager  *manager = [NSFileManager defaultManager];
+  NSDictionary  *fsattrs = 
+    [manager fileSystemAttributesAtPath: [myInput directoryName]];
+  unsigned long long  freeSpace = 
+    [[fsattrs objectForKey: NSFileSystemFreeSize] unsignedLongLongValue];
+
+  NSLog(@"Done scanning. Total size=%qu, Free space=%qu, Time taken=%f", 
+          [itemTree itemSize], freeSpace, -[startTime timeIntervalSinceNow]);
+  
+  return [[[TreeHistory alloc] 
+              initWithTree: itemTree freeSpace: freeSpace
+              fileSizeMeasure: [myInput fileSizeMeasure]] autorelease];
 }
 
 

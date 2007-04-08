@@ -2,17 +2,16 @@
 
 #import "ScanTaskInput.h"
 
-@protocol FileItemTest;
+
+@class TreeHistory;
 
 
 @interface RescanTaskInput : ScanTaskInput {
-  NSObject <FileItemTest>  *filterTest;
+  TreeHistory  *oldHistory;
 }
 
-- (id) initWithDirectoryName: (NSString *)name 
-         fileSizeMeasure: (int) measure
-         filterTest: (NSObject <FileItemTest> *)test;
+- (id) initWithOldHistory: (TreeHistory *) oldHistory;
 
-- (NSObject <FileItemTest> *) filterTest;
+- (TreeHistory *) oldHistory;
 
 @end

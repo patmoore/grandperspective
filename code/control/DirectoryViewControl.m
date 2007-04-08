@@ -29,29 +29,31 @@
 
 @implementation DirectoryViewControl
 
-- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot
-         history: (TreeHistory *)history {
+- (id) initWithTreeHistory: (TreeHistory *)history {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithTree:itemTreeRoot] autorelease];
+    [[[ItemPathModel alloc] initWithTree: [history itemTree]] autorelease];
 
   // Default settings
   DirectoryViewControlSettings  *defaultSettings =
     [[[DirectoryViewControlSettings alloc] init] autorelease];
 
-  return [self initWithItemPathModel: pathModel 
-                 history: history
+  return [self initWithTreeHistory: history
+                 pathModel: pathModel 
                  settings: defaultSettings];
 }
 
+
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithItemPathModel: (ItemPathModel *)itemPathModelVal
-         history: (TreeHistory *)history
+- (id) initWithTreeHistory: (TreeHistory *)treeHistoryVal
+         pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
+    NSAssert([itemPathModelVal itemTree] == [treeHistoryVal itemTree], 
+               @"Tree mismatch");
+    treeHistory = [treeHistoryVal retain];
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
-    treeHistory = [history retain];
 
     invisiblePathName = nil;
        
@@ -70,9 +72,9 @@
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
+  [treeHistory release];
   [itemPathModel release];
   [initialSettings release];
-  [treeHistory release];
   
   [fileItemMask release];
   

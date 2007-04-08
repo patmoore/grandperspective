@@ -1,34 +1,34 @@
 #import "FilterTaskInput.h"
 
-#import "DirectoryItem.h"
+#import "TreeHistory.h"
 
 
 @implementation FilterTaskInput
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithItemTree:filterTest: instead");
+  NSAssert(NO, @"Use initWithOldHistory:filterTest: instead");
 }
 
-- (id) initWithItemTree: (DirectoryItem *)tree 
-         filterTest: (NSObject <FileItemTest> *)test {
+- (id) initWithOldHistory: (TreeHistory *)oldHistoryVal
+         filterTest: (NSObject <FileItemTest> *)filterTestVal {
   if (self = [super init]) {
-    itemTree = [tree retain];
-    filterTest = [test retain];
+    oldHistory = [oldHistoryVal retain];
+    filterTest = [filterTestVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
-  [itemTree release];
+  [oldHistory release];
   [filterTest release];
   
   [super dealloc];
 }
 
 
-- (DirectoryItem*) itemTree {
-  return itemTree;
+- (TreeHistory *) oldHistory {
+  return oldHistory;
 }
 
 - (NSObject <FileItemTest> *) filterTest {

@@ -9,7 +9,7 @@
 
   NSDictionary *appDefaults = 
     [NSDictionary
-       dictionaryWithObject: @"logical" forKey: @"fileSizeMeasure"];
+       dictionaryWithObject: LogicalFileSize forKey: @"fileSizeMeasure"];
 
   [defaults registerDefaults: appDefaults];
 }
@@ -21,11 +21,8 @@
 
   if (defaultFileSizeMeasureCollectionInstance == nil) {
     defaultFileSizeMeasureCollectionInstance = 
-      [[FileSizeMeasureCollection alloc] initWithDictionary:
-          [NSDictionary dictionaryWithObjectsAndKeys:
-             [NSNumber numberWithInt: LOGICAL_FILE_SIZE], @"logical",
-             [NSNumber numberWithInt: PHYSICAL_FILE_SIZE], @"physical", 
-             nil]];
+      [[FileSizeMeasureCollection alloc] initWithKeys:
+          [NSArray arrayWithObjects: LogicalFileSize, PhysicalFileSize, nil]];
   }
   
   return defaultFileSizeMeasureCollectionInstance;
@@ -34,29 +31,25 @@
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithDictionary: [NSDictionary dictionary]];
+  return [self initWithKeys: [NSArray array]];
 }
 
-- (id) initWithDictionary: (NSDictionary *)dict {
+- (id) initWithKeys: (NSArray *)keysVal {
   if (self = [super init]) {
-    dictionary = [dict retain];
+    keys = [keysVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
-  [dictionary release];
+  [keys release];
   
   [super dealloc];
 }
 
 
 - (NSArray*) allKeys {
-  return [dictionary allKeys];
-}
-
-- (int) fileSizeMeasureForKey: (NSString *)key {
-  return [[dictionary objectForKey: key] intValue];
+  return keys;
 }
 
 @end

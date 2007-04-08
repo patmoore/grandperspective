@@ -5,13 +5,15 @@
 @class DirectoryItem;
 
 
-#define LOGICAL_FILE_SIZE   0
-#define PHYSICAL_FILE_SIZE  1
+extern NSString  *LogicalFileSize;
+extern NSString  *PhysicalFileSize;
 
 
 @interface TreeBuilder : NSObject {
 
-  int  fileSizeMeasure;
+  NSString  *fileSizeMeasure;
+  BOOL  useLogicalFileSize;
+  
   BOOL  abort;
   TreeBalancer  *treeBalancer;
 
@@ -21,9 +23,9 @@
 
 - (void) abort;
 
-- (int) fileSizeMeasure;
-- (void) setFileSizeMeasure: (int) measure;
+- (NSString *) fileSizeMeasure;
+- (void) setFileSizeMeasure: (NSString *)measure;
 
-- (DirectoryItem*) buildTreeForPath:(NSString*)path;
+- (DirectoryItem *) buildTreeForPath: (NSString *)path;
 
 @end

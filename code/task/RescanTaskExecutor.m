@@ -2,6 +2,7 @@
 
 #import "TreeFilter.h"
 #import "RescanTaskInput.h"
+#import "TreeHistory.h"
 
 
 @implementation RescanTaskExecutor
@@ -14,22 +15,27 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  DirectoryItem*  itemTree = [super runTaskWithInput: input];
+  TreeHistory  *scanResult = [super runTaskWithInput: input];
 
   RescanTaskInput  *myInput = input;
+  NSObject <FileItemTest>  *filterTest = [[myInput oldHistory] fileItemFilter];
   
   // Then filter ... (if not yet aborted, and there is actually a filter)
-  if (itemTree != nil && [myInput filterTest] != nil) {
-    treeFilter = 
-      [[TreeFilter alloc] initWithFileItemTest: [myInput filterTest]];
+  if (scanResult != nil && filterTest != nil) {
+    treeFilter = [[TreeFilter alloc] initWithFileItemTest: filterTest];
   
-    itemTree = [treeFilter filterItemTree: itemTree];
+    DirectoryItem  
+      *filteredTree = [treeFilter filterItemTree: [scanResult itemTree]];
   
     [treeFilter release];
     treeFilter = nil;
+    
+    return [[myInput oldHistory] historyAfterRescanning: filteredTree 
+                                   freeSpace: [scanResult freeSpace]];
   }
-  
-  return itemTree;
+  else {
+    return scanResult;
+  }
 }
 
 

@@ -2,6 +2,7 @@
 
 #import "TreeFilter.h"
 #import "FilterTaskInput.h"
+#import "TreeHistory.h"
 
 
 @implementation FilterTaskExecutor
@@ -31,13 +32,14 @@
 
   treeFilter = 
     [[TreeFilter alloc] initWithFileItemTest: [filterInput filterTest]];
-  DirectoryItem  *itemTree = 
-    [treeFilter filterItemTree: [filterInput itemTree]];
+  DirectoryItem  *filteredTree = 
+    [treeFilter filterItemTree: [[filterInput oldHistory] itemTree]];
   
   [treeFilter release];
   treeFilter = nil;
   
-  return itemTree;
+  return [[filterInput oldHistory] historyAfterFiltering: filteredTree
+                                     filter: [filterInput filterTest]];
 }
 
 

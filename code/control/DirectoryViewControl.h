@@ -73,10 +73,9 @@
 - (IBAction) colorMappingChanged: (id) sender;
 - (IBAction) colorPaletteChanged: (id) sender;
 
-- (id) initWithItemTree: (DirectoryItem *)itemTreeRoot
-         history: (TreeHistory *)history;
-- (id) initWithItemPathModel: (ItemPathModel *)itemPathModel
-         history: (TreeHistory *)history
+- (id) initWithTreeHistory: (TreeHistory *)history;
+- (id) initWithTreeHistory: (TreeHistory *)history
+         pathModel: (ItemPathModel *)itemPathModel
          settings: (DirectoryViewControlSettings *)settings;
 
 - (FileItemHashing*) colorMapping;

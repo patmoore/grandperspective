@@ -8,27 +8,28 @@
   NSAssert(NO, @"Use initWithDirectoryName:fileSizeMeasure: instead");
 }
 
-- (id) initWithDirectoryName: (NSString *)name 
-         fileSizeMeasure: (int) measure {
+- (id) initWithDirectoryName: (NSString *)dirNameVal 
+         fileSizeMeasure: (NSString *)fileSizeMeasureVal {
   if (self = [super init]) {
-    dirName = [name retain];
-    fileSizeMeasure = measure;
+    dirName = [dirNameVal retain];
+    fileSizeMeasure = [fileSizeMeasureVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
   [dirName release];
+  [fileSizeMeasure release];
   
   [super dealloc];
 }
 
 
-- (NSString*) directoryName {
+- (NSString *) directoryName {
   return dirName;
 }
 
-- (int) fileSizeMeasure {
+- (NSString *) fileSizeMeasure {
   return fileSizeMeasure;
 }
 

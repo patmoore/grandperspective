@@ -3,15 +3,14 @@
 
 @interface FileSizeMeasureCollection : NSObject {
 
-  NSDictionary  *dictionary;
+  NSArray  *keys;
 
 }
 
 + (FileSizeMeasureCollection*) defaultFileSizeMeasureCollection;
 
-- (id) initWithDictionary: (NSDictionary *)dict;
+- (id) initWithKeys: (NSArray *)keys;
 
-- (NSArray*) allKeys;
-- (int) fileSizeMeasureForKey: (NSString *)key;
+- (NSArray *) allKeys;
 
 @end

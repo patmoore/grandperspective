@@ -3,13 +3,13 @@
 
 @interface ScanTaskInput : NSObject {
   NSString  *dirName;
-  int  fileSizeMeasure;
+  NSString  *fileSizeMeasure;
 }
 
 - (id) initWithDirectoryName: (NSString *)name 
-         fileSizeMeasure: (int) measure;
+         fileSizeMeasure: (NSString *) measure;
 
-- (NSString*) directoryName;
-- (int) fileSizeMeasure;
+- (NSString *) directoryName;
+- (NSString *) fileSizeMeasure;
 
 @end
