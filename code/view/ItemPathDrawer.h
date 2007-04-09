@@ -9,9 +9,11 @@
 @interface ItemPathDrawer : NSObject <TreeLayoutTraverser> {
   BOOL          highlightPathEndPoint;
 
-  // Temporary variables only used for drawing the path
+  // Temporary variables only used for drawing the path. They are not
+  // retained, as they are only used during a single recursive invocation.
   NSArray*       drawPath;
   unsigned int   drawPathIndex;
+  NSBezierPath*  firstBezierPath;
   NSBezierPath*  lastBezierPath;
 }
 

@@ -386,14 +386,18 @@
                           [itemPathModel canMoveTreeViewDown] ];
   [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
 
-  ITEM_SIZE  itemSize = [[itemPathModel fileItemPathEndPoint] itemSize];
-  NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
+  if ( [itemPathModel isVisibleItemPathLocked] ||
+       [itemPathModel canMoveTreeViewDown] ) {
+    // There is a selected item. An item is considered selected when either
+    // the path is locked, or the path has one or more visible path 
+    // components (i.e. it goes beyond the folder that is shown in the view)
 
-  [itemSizeField setStringValue: itemSizeString];
+    ITEM_SIZE  itemSize = [[itemPathModel fileItemPathEndPoint] itemSize];
+    NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
 
-  NSString  *visiblePathName = [itemPathModel visibleFilePathName];
+    [itemSizeField setStringValue: itemSizeString];
 
-  if ( [visiblePathName length] > 0) {
+    NSString  *visiblePathName = [itemPathModel visibleFilePathName];
     NSString  *name = [invisiblePathName stringByAppendingPathComponent:
                          visiblePathName];
     NSMutableAttributedString  *attributedName = 
@@ -407,20 +411,23 @@
     [itemPathField setStringValue: ((id) attributedName) ];
 
     [attributedName release];
+
+    [selectedFilePathTextView setString:
+      [[visibleFolderPathTextView string] stringByAppendingPathComponent:
+                                            visiblePathName]];
+    [selectedFileExactSizeField setStringValue: 
+       [FileItem exactStringForFileItemSize: itemSize]];
+    [selectedFileSizeField setStringValue: 
+       [NSString stringWithFormat: @"(%@)", itemSizeString]];
   }
   else {
-    // There's no visible part, so can directly use "invisiblePathName"
-    [itemPathField setStringValue: invisiblePathName];
+    // There's no selected item
+    [itemSizeField setStringValue: @""];
+    [itemPathField setStringValue: @""];
+    [selectedFilePathTextView setString: @""];
+    [selectedFileExactSizeField setStringValue: @""];
+    [selectedFileSizeField setStringValue: @""];
   }
-  
-  [selectedFilePathTextView setString:
-    [[visibleFolderPathTextView string] stringByAppendingPathComponent:
-                                          visiblePathName]];
-
-  [selectedFileExactSizeField setStringValue: 
-     [FileItem exactStringForFileItemSize: itemSize]];
-  [selectedFileSizeField setStringValue: 
-     [NSString stringWithFormat: @"(%@)", itemSizeString]];
 }
 
 
