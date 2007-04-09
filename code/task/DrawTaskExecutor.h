@@ -3,33 +3,22 @@
 #import "TaskExecutor.h"
 
 @class ItemTreeDrawer;
-@class FileItemHashing;
-@protocol FileItemTest;
+@class ItemTreeDrawerSettings;
 
 
 @interface DrawTaskExecutor : NSObject <TaskExecutor> {
   ItemTreeDrawer  *treeDrawer;
   
-  BOOL  showFreeSpace;
-  FileItemHashing  *colorMapping;
-  NSColorList  *colorPalette;
-  NSObject<FileItemTest>  *fileItemMask;
+  ItemTreeDrawerSettings  *treeDrawerSettings;
+  NSLock  *settingsLock;
   
   BOOL  enabled;
 }
 
-- (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawer;
+- (id) init;
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
-- (void) setShowFreeSpace: (BOOL) flag;
-- (BOOL) showFreeSpace;
-
-- (void) setColorMapping:(FileItemHashing *)colorMapping;
-- (FileItemHashing*) colorMapping;
-
-- (void) setColorPalette:(NSColorList *)colorPalette;
-- (NSColorList*) colorPalette;
-
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
-- (NSObject <FileItemTest> *) fileItemMask;
+- (ItemTreeDrawerSettings *) treeDrawerSettings;
+- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
 @end

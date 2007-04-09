@@ -4,12 +4,11 @@
 #import "FileItemHashing.h"
 #import "TreeLayoutBuilder.h"
 #import "FileItemPathStringCache.h"
-
+#import "ItemTreeDrawerSettings.h"
 #import "FileItemTest.h"
 
 @interface ItemTreeDrawer (PrivateMethods)
 
-- (NSColorList *) defaultColorPalette;
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) initGradientColors;
@@ -20,28 +19,19 @@
 @implementation ItemTreeDrawer
 
 - (id) init {
-  return [self initWithLayoutBuilder:
-                 [[[TreeLayoutBuilder alloc] init] autorelease]];
+ return 
+    [self initWithTreeDrawerSettings: 
+            [[[ItemTreeDrawerSettings alloc] init] autorelease]];
 }
 
-- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilderVal {
-  return [self initWithLayoutBuilder: layoutBuilderVal
-                 colorMapping: [[[FileItemHashing alloc] init] autorelease]
-                 colorPalette: [self defaultColorPalette]];
-}
-
-- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilderVal
-         colorMapping: (FileItemHashing *)colorMappingVal
-         colorPalette: (NSColorList *)colorPaletteVal {
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
-    NSAssert(layoutBuilderVal != nil,
-               @"Cannot set an invalid tree layout builder.");
-    layoutBuilder = [layoutBuilderVal retain];
-    
+    // Make sure values are nil before calling updateSettings. 
     colorMapping = nil;
     colorPalette = nil;
-    [self setColorMapping: colorMappingVal];
-    [self setColorPalette: colorPaletteVal];
+    fileItemMask = nil;
+    
+    [self updateSettings: settings];
     
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
@@ -52,7 +42,6 @@
 }
 
 - (void) dealloc {
-  [layoutBuilder release];
   [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
@@ -64,11 +53,6 @@
   NSAssert(drawBitmap==nil, @"Bitmap should be nil.");
   
   [super dealloc];
-}
-
-
-- (TreeLayoutBuilder *) treeLayoutBuilder {
-  return layoutBuilder;
 }
 
 
@@ -111,13 +95,21 @@
   }
 }
 
-
 - (NSColorList *) colorPalette {
   return colorPalette;
 }
 
 
-- (NSImage *) drawImageOfItemTree: (Item *)itemTree inRect: (NSRect) bounds {
+- (void) updateSettings: (ItemTreeDrawerSettings *)settings {
+  [self setColorMapping: [settings colorMapping]];
+  [self setColorPalette: [settings colorPalette]];
+  [self setFileItemMask: [settings fileItemMask]];
+}
+
+
+- (NSImage *) drawImageOfItemTree: (Item *)itemTree 
+                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+                inRect: (NSRect) bounds {
   NSDate  *startTime = [NSDate date];
   
   NSAssert(drawBitmap == nil, @"Bitmap should be nil.");
@@ -188,21 +180,6 @@
 
 
 @implementation ItemTreeDrawer (PrivateMethods)
-
-- (NSColorList *) defaultColorPalette {
-  NSColorList  *colorList = [[NSColorList alloc] 
-                                initWithName: @"DefaultItemTreeDrawerPalette"];
-  [colorList insertColor: [NSColor blueColor]    key: @"blue"    atIndex: 0];
-  [colorList insertColor: [NSColor redColor]     key: @"red"     atIndex: 1];
-  [colorList insertColor: [NSColor greenColor]   key: @"green"   atIndex: 2];
-  [colorList insertColor: [NSColor cyanColor]    key: @"cyan"    atIndex: 3];
-  [colorList insertColor: [NSColor magentaColor] key: @"magenta" atIndex: 4];
-  [colorList insertColor: [NSColor orangeColor]  key: @"orange"  atIndex: 5];
-  [colorList insertColor: [NSColor yellowColor]  key: @"yellow"  atIndex: 6];
-  [colorList insertColor: [NSColor purpleColor]  key: @"purple"  atIndex: 7];
-
-  return [colorList autorelease];
-}
 
 - (void)drawBasicFilledRect:(NSRect)rect colorHash:(int)colorHash {
   UInt32  intColor = 
@@ -311,7 +288,8 @@
   UInt32  *pos = gradientColors;
   
   for (i=0; i<numGradientColors; i++) {    
-    NSColor  *color = [colorPalette colorWithKey: [colorKeys objectAtIndex: i]];
+    NSColor  *color = 
+      [colorPalette colorWithKey: [colorKeys objectAtIndex: i]];
     
     // TODO: needed?
     // color = [color colorUsingColorSpaceName:NSDeviceRGBColorSpace];

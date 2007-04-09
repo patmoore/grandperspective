@@ -2,16 +2,19 @@
 
 @class AsynchronousTaskManager;
 @class TreeLayoutBuilder;
+@class ConstrainedTreeLayoutBuilder;
+@class ItemTreeDrawerSettings;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
 @class ItemPathModel;
-@class FileItemHashing;
-@protocol FileItemTest;
 
 @interface DirectoryView : NSView {
   AsynchronousTaskManager  *drawTaskManager;
 
-  TreeLayoutBuilder  *treeLayoutBuilder;
+  TreeLayoutBuilder  *fullLayoutBuilder;
+  ConstrainedTreeLayoutBuilder  *freeSpaceLayoutBuilder;
+  BOOL  showFreeSpace;
+  
   ItemPathDrawer  *pathDrawer;
   ItemPathBuilder  *pathBuilder;
   
@@ -25,6 +28,7 @@
 - (void) postInitWithFreeSpace: (unsigned long long) freeSpace
            itemPathModel: (ItemPathModel *)pathModelVal;
 
+// TODO: Check if it is needed
 - (unsigned long long) freeSpace;
 
 - (ItemPathModel*) itemPathModel;
@@ -32,13 +36,9 @@
 - (void) setShowFreeSpace: (BOOL) flag;
 - (BOOL) showFreeSpace;
 
-- (void) setColorMapping:(FileItemHashing *)colorMapping;
-- (FileItemHashing*) colorMapping;
+- (ItemTreeDrawerSettings *) treeDrawerSettings;
+- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
-- (void) setColorPalette:(NSColorList *)colorPalette;
-- (NSColorList*) colorPalette;
-
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
-- (NSObject <FileItemTest> *) fileItemMask;
+- (TreeLayoutBuilder*) activeLayoutBuilder;
 
 @end

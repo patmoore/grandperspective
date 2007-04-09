@@ -102,15 +102,15 @@
     NSString  *filename = [savePanel filename];
     
     // Draw the image.
-    ItemTreeDrawer  *treeDrawer = [[[ItemTreeDrawer alloc] init] autorelease];
-    [treeDrawer setColorMapping: [dirViewControl colorMapping]];
-    [treeDrawer setColorPalette: [dirViewControl colorPalette]];
-    if ([dirViewControl fileItemMaskEnabled]) {
-      [treeDrawer setFileItemMask:[dirViewControl fileItemMask]];
-    }
+    DirectoryView  *dirView = [dirViewControl directoryView];
+    ItemTreeDrawer  *treeDrawer = 
+      [[[ItemTreeDrawer alloc] 
+           initWithTreeDrawerSettings: [dirView treeDrawerSettings]]
+             autorelease];
     NSImage  *image =
       [treeDrawer 
          drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]
+         usingLayoutBuilder: [dirView activeLayoutBuilder]
          inRect: bounds];
     
     // Save the image.

@@ -2,25 +2,25 @@
 
 #import "FileItem.h"
 #import "ItemTreeDrawer.h"
+#import "ItemTreeDrawerSettings.h"
 #import "DrawTaskInput.h"
-#import "FileItemHashing.h"
-#import "TreeLayoutBuilder.h"
+
 
 @implementation DrawTaskExecutor
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithTreeDrawer:[[[ItemTreeDrawer alloc] init] autorelease]];
+  return [self initWithTreeDrawerSettings:
+                 [[[ItemTreeDrawerSettings alloc] init] autorelease]];
 }
 
-- (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawerVal {
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
-    treeDrawer = [treeDrawerVal retain];
-    showFreeSpace = [[treeDrawer treeLayoutBuilder] showFreeSpace];
-    colorMapping = [[treeDrawer colorMapping] retain];
-    colorPalette = [[treeDrawer colorPalette] retain];
-    fileItemMask = [[treeDrawer fileItemMask] retain];
-
+    treeDrawer = [[ItemTreeDrawer alloc] initWithTreeDrawerSettings: settings];
+    treeDrawerSettings = [settings retain];
+    
+    settingsLock = [[NSLock alloc] init];
+    
     enabled = YES;
   }
   return self;
@@ -28,71 +28,40 @@
 
 - (void) dealloc {
   [treeDrawer release];
+  [treeDrawerSettings release];
   
-  [colorMapping release];
-  [colorPalette release];
-  [fileItemMask release];
+  [settingsLock release];
   
   [super dealloc];
 }
 
 
-- (void) setShowFreeSpace: (BOOL) showFreeSpaceVal {
-  showFreeSpace = showFreeSpaceVal;
+- (ItemTreeDrawerSettings *) treeDrawerSettings {
+  return treeDrawerSettings;
 }
 
-- (BOOL) showFreeSpace {
-  return showFreeSpace;
-}
-
-
-- (void) setColorMapping: (FileItemHashing *)colorMappingVal {
-  if (colorMappingVal != colorMapping) {
-    [colorMapping release];
-    colorMapping = [colorMappingVal retain];
+- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+  [settingsLock lock];
+  if (settings != treeDrawerSettings) {
+    [treeDrawerSettings release];
+    treeDrawerSettings = [settings retain];
   }
-}
-
-- (FileItemHashing *) colorMapping {
-  return colorMapping;
-}
-
-
-- (void) setColorPalette: (NSColorList *)colorPaletteVal {
-  if (colorPaletteVal != colorPalette) {
-    [colorPalette release];
-    colorPalette = [colorPaletteVal retain];
-  }
-}
-
-- (NSColorList *) colorPalette {
-  return colorPalette;
-}
-
-
-- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal {
-  if (fileItemMaskVal != fileItemMask) {
-    [fileItemMask release];
-    fileItemMask = [fileItemMaskVal retain];
-  }
-}
-
-- (NSObject <FileItemTest> *) fileItemMask {
-  return fileItemMask;
+  [settingsLock unlock];
 }
 
 
 - (id) runTaskWithInput: (id)input {
   if (enabled) {
-    // Always set, as it may have changed.
-    [[treeDrawer treeLayoutBuilder] setShowFreeSpace: showFreeSpace];
-    [treeDrawer setColorMapping: colorMapping];
-    [treeDrawer setColorPalette: colorPalette];
-    [treeDrawer setFileItemMask: fileItemMask];
+    [settingsLock lock];
+    // Even though the settings are immutable, obtaining the settingsLock
+    // ensures that it is not de-allocated while it is being used. 
+    [treeDrawer updateSettings: treeDrawerSettings];
+    [settingsLock unlock];
 
     DrawTaskInput  *drawingInput = input;
     
     return [treeDrawer drawImageOfItemTree: [drawingInput itemSubTree] 
+                         usingLayoutBuilder: [drawingInput treeLayoutBuilder]
                          inRect: [drawingInput bounds]];
   }
   else {

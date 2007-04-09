@@ -5,7 +5,9 @@
 #import "FileItem.h"
 
 #import "TreeLayoutBuilder.h"
+#import "ConstrainedTreeLayoutBuilder.h"
 #import "ItemTreeDrawer.h"
+#import "ItemTreeDrawerSettings.h"
 #import "ItemPathDrawer.h"
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
@@ -38,13 +40,29 @@
 
 @implementation DirectoryView
 
+- (id) initWithFrame:(NSRect)frame {
+  if (self = [super initWithFrame:frame]) {
+    fullLayoutBuilder = [[TreeLayoutBuilder alloc] init];
+
+    DrawTaskExecutor  *drawTaskExecutor = [[DrawTaskExecutor alloc] init];  
+    drawTaskManager = 
+      [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+    [drawTaskExecutor release];
+
+    pathDrawer = [[ItemPathDrawer alloc] init];
+  }
+
+  return self;
+}
+
 - (void) dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
   [drawTaskManager dispose];
   [drawTaskManager release];
 
-  [treeLayoutBuilder release];
+  [fullLayoutBuilder release];
+  [freeSpaceLayoutBuilder release];
 
   [pathDrawer release];
   [pathBuilder release];
@@ -58,30 +76,17 @@
 
 - (void) postInitWithFreeSpace: (unsigned long long) freeSpace
            itemPathModel: (ItemPathModel *)pathModelVal {
-  NSAssert(treeLayoutBuilder==nil, @"postInit has already taken place.");
+  NSAssert(freeSpaceLayoutBuilder==nil, @"postInit has already taken place.");
 
-  treeLayoutBuilder = [[TreeLayoutBuilder alloc] init];
-  [treeLayoutBuilder setFreeSpace: freeSpace];
-
-  ItemTreeDrawer  *treeDrawer = 
-    [[ItemTreeDrawer alloc] initWithLayoutBuilder: treeLayoutBuilder];
-  DrawTaskExecutor  *drawTaskExecutor = 
-    [[DrawTaskExecutor alloc] initWithTreeDrawer: treeDrawer];
-  
-  drawTaskManager = 
-    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-
-  [treeDrawer release];
-  [drawTaskExecutor release];
-
-  pathDrawer = [[ItemPathDrawer alloc] init];
+  freeSpaceLayoutBuilder = 
+    [[ConstrainedTreeLayoutBuilder alloc] initWithReservedSpace: freeSpace];
 
   [self setItemPathModel: pathModelVal];
 }
 
 
 - (unsigned long long) freeSpace {
-  return [treeLayoutBuilder freeSpace];
+  return [freeSpaceLayoutBuilder reservedSpace];
 }
 
 - (ItemPathModel *) itemPathModel {
@@ -89,75 +94,38 @@
 }
 
 
-- (void) setShowFreeSpace: (BOOL) showFreeSpace {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-  
-  if (showFreeSpace != [drawTaskExecutor showFreeSpace]) {
-    [drawTaskExecutor setShowFreeSpace: showFreeSpace];
-    [self forceRedraw];
-  }
-}
-
 - (BOOL) showFreeSpace {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-
-  return [drawTaskExecutor showFreeSpace];
+  return showFreeSpace;
 }
 
-
-- (void) setColorMapping: (FileItemHashing *)colorMapping {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-  
-  if (colorMapping != [drawTaskExecutor colorMapping]) {
-    [drawTaskExecutor setColorMapping: colorMapping];
+- (void) setShowFreeSpace: (BOOL) showFreeSpaceVal {
+  if (showFreeSpace != showFreeSpaceVal) {
+    showFreeSpace = showFreeSpaceVal;
     [self forceRedraw];
   }
 }
 
-- (FileItemHashing *) colorMapping {
+
+- (ItemTreeDrawerSettings *) treeDrawerSettings {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
-  return [drawTaskExecutor colorMapping];
+  return [drawTaskExecutor treeDrawerSettings];
 }
 
-
-- (void) setColorPalette: (NSColorList *)colorPalette {
+- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-  
-  if (colorPalette != [drawTaskExecutor colorPalette]) {
-    [drawTaskExecutor setColorPalette: colorPalette];
+
+  if (settings != [drawTaskExecutor treeDrawerSettings]) {
+    [drawTaskExecutor setTreeDrawerSettings: settings];
     [self forceRedraw];
   }
 }
 
-- (NSColorList *) colorPalette {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
-  return [drawTaskExecutor colorPalette];
-}
-
-
-- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-  
-  if (fileItemMask != [drawTaskExecutor fileItemMask]) {
-    [drawTaskExecutor setFileItemMask: fileItemMask];
-    [self forceRedraw];
-  }
-}
-
-- (NSObject <FileItemTest> *) fileItemMask {
-  DrawTaskExecutor  *drawTaskExecutor = 
-    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
-
-  return [drawTaskExecutor fileItemMask];
+- (TreeLayoutBuilder*) activeLayoutBuilder {
+  return (showFreeSpace ? freeSpaceLayoutBuilder : fullLayoutBuilder);
 }
 
 
@@ -175,8 +143,9 @@
     
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
-      [[DrawTaskInput alloc] initWithItemSubTree:[pathModel visibleItemTree] 
-                               bounds:[self bounds]];
+      [[DrawTaskInput alloc] initWithItemSubTree: [pathModel visibleItemTree] 
+                               layoutBuilder: [self activeLayoutBuilder]
+                               bounds: [self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
                        selector: @selector(itemTreeImageReady:)];
     [drawInput release];
@@ -186,7 +155,7 @@
   
     [pathDrawer drawItemPath: [pathModel itemPath] 
                   tree: [pathModel visibleItemTree] 
-                  usingLayoutBuilder: treeLayoutBuilder
+                  usingLayoutBuilder: [self activeLayoutBuilder]
                   bounds: [self bounds]];
   }
 }
@@ -342,7 +311,7 @@
 
 - (void) buildPathToMouseLoc: (NSPoint) point {
   [pathBuilder buildVisibleItemPathToPoint: point
-                       usingLayoutBuilder: treeLayoutBuilder
+                       usingLayoutBuilder: [self activeLayoutBuilder]
                        bounds: [self bounds]];
 }
 

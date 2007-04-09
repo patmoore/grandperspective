@@ -2,9 +2,7 @@
 
 @class DirectoryItem;
 @class DirectoryView;
-@class StartupControl;
 @class ItemPathModel;
-@class FileItemHashing;
 @class FileItemHashingCollection;
 @class ColorListCollection;
 @class EditFilterWindowControl;
@@ -81,13 +79,7 @@
          pathModel: (ItemPathModel *)itemPathModel
          settings: (DirectoryViewControlSettings *)settings;
 
-- (FileItemHashing*) colorMapping;
-- (NSColorList*) colorPalette;
-
 - (NSObject <FileItemTest> *) fileItemMask;
-- (BOOL) fileItemMaskEnabled;
-
-- (BOOL) showFreeSpace;
 
 - (ItemPathModel*) itemPathModel;
 

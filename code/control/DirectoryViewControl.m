@@ -3,12 +3,12 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
-#import "FileItemHashing.h"
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeHistory.h"
 #import "EditFilterWindowControl.h"
+#import "ItemTreeDrawerSettings.h"
 
 
 @interface DirectoryViewControl (PrivateMethods)
@@ -18,6 +18,7 @@
 - (void) updateButtonState:(NSNotification*)notification;
 - (void) visibleItemTreeChanged:(NSNotification*)notification;
 - (void) maskChanged;
+- (void) updateMask;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -92,24 +93,8 @@
 }
 
 
-- (FileItemHashing*) colorMapping {
-  return [mainView colorMapping];
-}
-
-- (NSColorList*) colorPalette {
-  return [mainView colorPalette];
-}
-
 - (NSObject <FileItemTest> *) fileItemMask {
   return fileItemMask;
-}
-
-- (BOOL) fileItemMaskEnabled {
-  return [mainView fileItemMask] != nil;
-}
-
-- (BOOL) showFreeSpace {
-  return [mainView showFreeSpace];
 }
 
 - (ItemPathModel*) itemPathModel {
@@ -132,8 +117,8 @@
               initWithColorMappingKey: colorMappingKey
               colorPaletteKey: colorPaletteKey
               mask: fileItemMask
-              maskEnabled: [self fileItemMaskEnabled]
-              showFreeSpace: [self showFreeSpace]]
+              maskEnabled: [maskCheckBox state]==NSOnState
+              showFreeSpace: [mainView showFreeSpace]]
                 autorelease];
 }
 
@@ -263,12 +248,7 @@
 
 
 - (IBAction) maskCheckBoxChanged:(id)sender {
-  if ( [sender state]==NSOnState ) {
-    [mainView setFileItemMask:fileItemMask];
-  }
-  else {
-    [mainView setFileItemMask:nil];
-  }
+  [self updateMask];
 }
 
 - (IBAction) editMask:(id)sender {
@@ -295,7 +275,8 @@
   FileItemHashing  *mapping = [colorMappings fileItemHashingForKey: name];
 
   if (mapping != nil) {
-    [mainView setColorMapping: mapping];
+    [mainView setTreeDrawerSettings: 
+      [[mainView treeDrawerSettings] copyWithColorMapping: mapping]];
   }
 }
 
@@ -305,8 +286,9 @@
     [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
   NSColorList  *palette = [colorPalettes colorListForKey: name];
 
-  if (palette != nil) {
-    [mainView setColorPalette: palette];
+  if (palette != nil) {  
+    [mainView setTreeDrawerSettings: 
+      [[mainView treeDrawerSettings] copyWithColorPalette: palette]];
   }
 }
 
@@ -453,8 +435,15 @@
     [maskCheckBox setState: NSOffState];
   }
   
-  [mainView setFileItemMask: 
-              (([maskCheckBox state] == NSOnState) ? fileItemMask : nil) ];
+  [self updateMask];
+}
+  
+- (void) updateMask {
+  NSObject <FileItemTest>  *newMask = 
+    [maskCheckBox state]==NSOnState ? fileItemMask : nil;
+
+  [mainView setTreeDrawerSettings: 
+    [[mainView treeDrawerSettings] copyWithFileItemMask: newMask]];
 }
 
 

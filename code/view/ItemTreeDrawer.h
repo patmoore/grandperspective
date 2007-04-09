@@ -7,6 +7,7 @@
 @class FileItemHashing;
 @class ColorPalette;
 @class FileItemPathStringCache;
+@class ItemTreeDrawerSettings;
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
@@ -16,8 +17,6 @@
   
   FileItemPathStringCache  *fileItemPathStringCache;
   
-  TreeLayoutBuilder  *layoutBuilder;
-
   NSColorList  *colorPalette;
   BOOL  initGradientColors;
   UInt32  *gradientColors;
@@ -27,14 +26,9 @@
   BOOL  abort;
 }
 
-- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder;
+- (id) init;
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
-- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
-         colorMapping: (FileItemHashing *)colorMapping
-         colorPalette: (NSColorList *)colorPalette;
-
-
-- (TreeLayoutBuilder *) treeLayoutBuilder;
 
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
@@ -45,8 +39,13 @@
 - (void) setColorPalette: (NSColorList *)colorPalette;
 - (NSColorList *) colorPalette;
 
+// Updates the drawer according to the given settings.
+- (void) updateSettings: (ItemTreeDrawerSettings *)settings;
+
 // The tree starting at "itemTree" should be immutable.
-- (NSImage *) drawImageOfItemTree: (Item *)itemTree inRect: (NSRect) bounds;
+- (NSImage *) drawImageOfItemTree: (Item *)itemTree 
+                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+                inRect: (NSRect) bounds;
 
 - (void) abortDrawing;
 
