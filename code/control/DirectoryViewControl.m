@@ -108,6 +108,10 @@
   return [mainView fileItemMask] != nil;
 }
 
+- (BOOL) showFreeSpace {
+  return [mainView showFreeSpace];
+}
+
 - (ItemPathModel*) itemPathModel {
   return itemPathModel;
 }
@@ -128,7 +132,8 @@
               initWithColorMappingKey: colorMappingKey
               colorPaletteKey: colorPaletteKey
               mask: fileItemMask
-              maskEnabled: [self fileItemMaskEnabled]] 
+              maskEnabled: [self fileItemMaskEnabled]
+              showFreeSpace: [self showFreeSpace]]
                 autorelease];
 }
 
@@ -138,7 +143,8 @@
 
 
 - (void) windowDidLoad {
-  [mainView setItemPathModel:itemPathModel];
+  [mainView postInitWithFreeSpace: [treeHistory freeSpace] 
+              itemPathModel: itemPathModel];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -172,7 +178,11 @@
   fileItemMask = [[initialSettings fileItemMask] retain];
   [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
                               ? NSOnState : NSOffState ) ];
-  [self maskChanged];  
+  [self maskChanged];
+  
+  [freeSpaceCheckBox setState: ( [initialSettings showFreeSpace] 
+                                   ? NSOnState : NSOffState ) ];
+  [self freeSpaceCheckBoxChanged: nil];
   
   [initialSettings release];
   initialSettings = nil;
@@ -277,6 +287,7 @@
   [[editMaskFilterWindowControl window] makeKeyWindow];
 }
 
+
 - (IBAction) colorMappingChanged: (id) sender {
   NSString  *localizedName = [colorMappingPopUp titleOfSelectedItem];
   NSString  *name = 
@@ -288,7 +299,6 @@
   }
 }
 
-
 - (IBAction) colorPaletteChanged: (id) sender {
   NSString  *localizedName = [colorPalettePopUp titleOfSelectedItem];
   NSString  *name = 
@@ -298,6 +308,11 @@
   if (palette != nil) {
     [mainView setColorPalette: palette];
   }
+}
+
+- (IBAction) freeSpaceCheckBoxChanged: (id) sender {
+  [mainView 
+     setShowFreeSpace: ([freeSpaceCheckBox state]==NSOnState) ? YES : NO];
 }
 
 

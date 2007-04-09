@@ -5,18 +5,20 @@
 
 - (id) init {
   return [self initWithColorMappingKey: nil colorPaletteKey: nil mask: nil 
-                 maskEnabled: NO];
+                 maskEnabled: NO showFreeSpace: NO];
 }
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKeyVal 
          colorPaletteKey: (NSString *)colorPaletteKeyVal
          mask: (NSObject <FileItemTest> *)maskVal
-         maskEnabled: (BOOL) maskEnabledVal {
+         maskEnabled: (BOOL) maskEnabledVal 
+         showFreeSpace: (BOOL) showFreeSpaceVal {
   if (self = [super init]) {
     colorMappingKey = [colorMappingKeyVal retain];
     colorPaletteKey = [colorPaletteKeyVal retain];
     mask = [maskVal retain];
     maskEnabled = maskEnabledVal;
+    showFreeSpace = showFreeSpaceVal;
   }
   
   return self;
@@ -72,6 +74,15 @@
 
 - (void) setFileItemMaskEnabled: (BOOL)flag {
   maskEnabled = flag;
+}
+
+
+- (BOOL) showFreeSpace {
+  return showFreeSpace;
+}
+
+- (void) setShowFreeSpace: (BOOL)flag {
+  showFreeSpace = flag;
 }
 
 @end

@@ -29,6 +29,7 @@
   IBOutlet NSPopUpButton  *colorPalettePopUp;
   IBOutlet NSTextView  *maskDescriptionTextView;
   IBOutlet NSButton  *maskCheckBox;
+  IBOutlet NSButton  *freeSpaceCheckBox;
 
   // "Info" drawer panel
   IBOutlet NSTextView  *treePathTextView;
@@ -73,6 +74,7 @@
 
 - (IBAction) colorMappingChanged: (id) sender;
 - (IBAction) colorPaletteChanged: (id) sender;
+- (IBAction) freeSpaceCheckBoxChanged: (id) sender;
 
 - (id) initWithTreeHistory: (TreeHistory *)history;
 - (id) initWithTreeHistory: (TreeHistory *)history
@@ -84,6 +86,8 @@
 
 - (NSObject <FileItemTest> *) fileItemMask;
 - (BOOL) fileItemMaskEnabled;
+
+- (BOOL) showFreeSpace;
 
 - (ItemPathModel*) itemPathModel;
 

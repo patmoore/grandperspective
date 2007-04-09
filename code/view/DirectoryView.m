@@ -19,6 +19,11 @@
 
 @interface DirectoryView (PrivateMethods)
 
+// Called as part of "postInit"
+- (void) setItemPathModel:(ItemPathModel*)pathModelVal;
+
+- (void) forceRedraw;
+
 - (void) itemTreeImageReady: (id) image;
 
 - (void) visibleItemPathChanged: (NSNotification *)notification;
@@ -32,25 +37,6 @@
 
 
 @implementation DirectoryView
-
-- (id) initWithFrame:(NSRect)frame {
-  if (self = [super initWithFrame:frame]) {
-    ItemTreeDrawer  *treeDrawer = [[ItemTreeDrawer alloc] init];
-    DrawTaskExecutor  *drawTaskExecutor = 
-      [[DrawTaskExecutor alloc] initWithTreeDrawer:treeDrawer];
-  
-    treeLayoutBuilder = [[treeDrawer treeLayoutBuilder] retain];
-    drawTaskManager = 
-      [[AsynchronousTaskManager alloc] initWithTaskExecutor:drawTaskExecutor];
-
-    [treeDrawer release];
-    [drawTaskExecutor release];
-
-    pathDrawer = [[ItemPathDrawer alloc] init];
-  }
-  return self;
-}
-
 
 - (void) dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -70,57 +56,68 @@
 }
 
 
-- (void) setItemPathModel:(ItemPathModel*)pathModelVal {
-  NSAssert(pathModel==nil, @"The item path model should only be set once.");
+- (void) postInitWithFreeSpace: (unsigned long long) freeSpace
+           itemPathModel: (ItemPathModel *)pathModelVal {
+  NSAssert(treeLayoutBuilder==nil, @"postInit has already taken place.");
 
-  pathModel = [pathModelVal retain];
+  treeLayoutBuilder = [[TreeLayoutBuilder alloc] init];
+  [treeLayoutBuilder setFreeSpace: freeSpace];
 
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemPathChanged:)
-      name: @"visibleItemPathChanged" object: pathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemTreeChanged:)
-      name: @"visibleItemTreeChanged" object: pathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemPathLockingChanged:)
-      name: @"visibleItemPathLockingChanged" object: pathModel];
-          
-  pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
-
-  [[self window] setAcceptsMouseMovedEvents: 
-                   ![pathModel isVisibleItemPathLocked]];
+  ItemTreeDrawer  *treeDrawer = 
+    [[ItemTreeDrawer alloc] initWithLayoutBuilder: treeLayoutBuilder];
+  DrawTaskExecutor  *drawTaskExecutor = 
+    [[DrawTaskExecutor alloc] initWithTreeDrawer: treeDrawer];
   
-  [[NSNotificationCenter defaultCenter]
-    addObserver: self selector: @selector(windowMainStatusChanged:)
-    name: NSWindowDidBecomeMainNotification object: [self window]];
-  [[NSNotificationCenter defaultCenter]
-    addObserver: self selector: @selector(windowMainStatusChanged:)
-    name: NSWindowDidResignMainNotification object: [self window]];
-  
-  [self setNeedsDisplay:YES];
+  drawTaskManager = 
+    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+
+  [treeDrawer release];
+  [drawTaskExecutor release];
+
+  pathDrawer = [[ItemPathDrawer alloc] init];
+
+  [self setItemPathModel: pathModelVal];
 }
 
-- (ItemPathModel*) itemPathModel {
+
+- (unsigned long long) freeSpace {
+  return [treeLayoutBuilder freeSpace];
+}
+
+- (ItemPathModel *) itemPathModel {
   return pathModel;
 }
 
 
-- (void) setColorMapping:(FileItemHashing *)colorMapping {
+- (void) setShowFreeSpace: (BOOL) showFreeSpace {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+  
+  if (showFreeSpace != [drawTaskExecutor showFreeSpace]) {
+    [drawTaskExecutor setShowFreeSpace: showFreeSpace];
+    [self forceRedraw];
+  }
+}
+
+- (BOOL) showFreeSpace {
+  DrawTaskExecutor  *drawTaskExecutor = 
+    (DrawTaskExecutor*)[drawTaskManager taskExecutor];
+
+  return [drawTaskExecutor showFreeSpace];
+}
+
+
+- (void) setColorMapping: (FileItemHashing *)colorMapping {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
   
   if (colorMapping != [drawTaskExecutor colorMapping]) {
     [drawTaskExecutor setColorMapping: colorMapping];
-
-    [self setNeedsDisplay:YES];
-
-    // Discard the existing image.
-    [treeImage release];
-    treeImage = nil;
+    [self forceRedraw];
   }
 }
 
-- (FileItemHashing*) colorMapping {
+- (FileItemHashing *) colorMapping {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
@@ -128,22 +125,17 @@
 }
 
 
-- (void) setColorPalette:(NSColorList *)colorPalette {
+- (void) setColorPalette: (NSColorList *)colorPalette {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
   
   if (colorPalette != [drawTaskExecutor colorPalette]) {
     [drawTaskExecutor setColorPalette: colorPalette];
-
-    [self setNeedsDisplay:YES];
-
-    // Discard the existing image.
-    [treeImage release];
-    treeImage = nil;
+    [self forceRedraw];
   }
 }
 
-- (NSColorList*) colorPalette {
+- (NSColorList *) colorPalette {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
@@ -151,18 +143,13 @@
 }
 
 
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask {
+- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
   
   if (fileItemMask != [drawTaskExecutor fileItemMask]) {
-    [drawTaskExecutor setFileItemMask:fileItemMask];
-
-    [self setNeedsDisplay:YES];
-
-    // Discard the existing image.
-    [treeImage release];
-    treeImage = nil;
+    [drawTaskExecutor setFileItemMask: fileItemMask];
+    [self forceRedraw];
   }
 }
 
@@ -267,6 +254,46 @@
 
 
 @implementation DirectoryView (PrivateMethods)
+
+- (void) setItemPathModel:(ItemPathModel*)pathModelVal {
+  NSAssert(pathModel==nil, @"The item path model should only be set once.");
+
+  pathModel = [pathModelVal retain];
+
+  [[NSNotificationCenter defaultCenter]
+      addObserver: self selector: @selector(visibleItemPathChanged:)
+      name: @"visibleItemPathChanged" object: pathModel];
+  [[NSNotificationCenter defaultCenter]
+      addObserver: self selector: @selector(visibleItemTreeChanged:)
+      name: @"visibleItemTreeChanged" object: pathModel];
+  [[NSNotificationCenter defaultCenter]
+      addObserver: self selector: @selector(visibleItemPathLockingChanged:)
+      name: @"visibleItemPathLockingChanged" object: pathModel];
+          
+  pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
+
+  [[self window] setAcceptsMouseMovedEvents: 
+                   ![pathModel isVisibleItemPathLocked]];
+  
+  [[NSNotificationCenter defaultCenter]
+    addObserver: self selector: @selector(windowMainStatusChanged:)
+    name: NSWindowDidBecomeMainNotification object: [self window]];
+  [[NSNotificationCenter defaultCenter]
+    addObserver: self selector: @selector(windowMainStatusChanged:)
+    name: NSWindowDidResignMainNotification object: [self window]];
+  
+  [self setNeedsDisplay:YES];
+}
+
+
+- (void) forceRedraw {
+  [self setNeedsDisplay: YES];
+
+  // Discard the existing image.
+  [treeImage release];
+  treeImage = nil;
+}
+
 
 - (void) itemTreeImageReady: (id) image {
   // Note: This method is called from the main thread (even though it has been

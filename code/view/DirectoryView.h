@@ -20,8 +20,17 @@
   NSImage  *treeImage;  
 }
 
-- (void) setItemPathModel:(ItemPathModel*)itemPath;
+// Initialises the instance-specific state after the view has been restored
+// from the nib file (which invokes the generic initWithFrame: method).
+- (void) postInitWithFreeSpace: (unsigned long long) freeSpace
+           itemPathModel: (ItemPathModel *)pathModelVal;
+
+- (unsigned long long) freeSpace;
+
 - (ItemPathModel*) itemPathModel;
+
+- (void) setShowFreeSpace: (BOOL) flag;
+- (BOOL) showFreeSpace;
 
 - (void) setColorMapping:(FileItemHashing *)colorMapping;
 - (FileItemHashing*) colorMapping;

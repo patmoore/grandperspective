@@ -27,26 +27,26 @@
   BOOL  abort;
 }
 
-- (id) initWithColorMapping: (FileItemHashing *)colorMapping;
+- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder;
 
-- (id) initWithColorMapping: (FileItemHashing *)colorMapping
-         colorPalette: (NSColorList*)colorPalette
-         layoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
+- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
+         colorMapping: (FileItemHashing *)colorMapping
+         colorPalette: (NSColorList *)colorPalette;
 
-- (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilder;
-- (TreeLayoutBuilder*) treeLayoutBuilder;
 
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMask;
+- (TreeLayoutBuilder *) treeLayoutBuilder;
+
+- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
 
 - (void) setColorMapping: (FileItemHashing *)colorMapping;
-- (FileItemHashing*) colorMapping;
+- (FileItemHashing *) colorMapping;
 
-- (void) setColorPalette: (NSColorList*)colorPalette;
-- (NSColorList*) colorPalette;
+- (void) setColorPalette: (NSColorList *)colorPalette;
+- (NSColorList *) colorPalette;
 
-// The tree starting at "itemTreeRoot" should be immutable.
-- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds;
+// The tree starting at "itemTree" should be immutable.
+- (NSImage *) drawImageOfItemTree: (Item *)itemTree inRect: (NSRect) bounds;
 
 - (void) abortDrawing;
 

@@ -9,12 +9,14 @@
   NSString  *colorPaletteKey;
   NSObject <FileItemTest>  *mask;
   BOOL  maskEnabled;
+  BOOL  showFreeSpace;
 }
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKey 
          colorPaletteKey: (NSString *)colorPaletteKey
          mask: (NSObject <FileItemTest> *)mask
-         maskEnabled: (BOOL) maskEnabled;
+         maskEnabled: (BOOL) maskEnabled
+         showFreeSpace: (BOOL) showFreeSpace;
 
 - (NSString*) colorMappingKey;
 - (void) setColorMappingKey: (NSString *)key;
@@ -27,5 +29,8 @@
 
 - (BOOL) fileItemMaskEnabled;
 - (void) setFileItemMaskEnabled: (BOOL)flag;
+
+- (BOOL) showFreeSpace;
+- (void) setShowFreeSpace: (BOOL)flag;
 
 @end

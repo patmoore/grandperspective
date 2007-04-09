@@ -4,6 +4,7 @@
 #import "ItemTreeDrawer.h"
 #import "DrawTaskInput.h"
 #import "FileItemHashing.h"
+#import "TreeLayoutBuilder.h"
 
 @implementation DrawTaskExecutor
 
@@ -15,6 +16,7 @@
 - (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawerVal {
   if (self = [super init]) {
     treeDrawer = [treeDrawerVal retain];
+    showFreeSpace = [[treeDrawer treeLayoutBuilder] showFreeSpace];
     colorMapping = [[treeDrawer colorMapping] retain];
     colorPalette = [[treeDrawer colorPalette] retain];
     fileItemMask = [[treeDrawer fileItemMask] retain];
@@ -35,6 +37,15 @@
 }
 
 
+- (void) setShowFreeSpace: (BOOL) showFreeSpaceVal {
+  showFreeSpace = showFreeSpaceVal;
+}
+
+- (BOOL) showFreeSpace {
+  return showFreeSpace;
+}
+
+
 - (void) setColorMapping: (FileItemHashing *)colorMappingVal {
   if (colorMappingVal != colorMapping) {
     [colorMapping release];
@@ -42,24 +53,24 @@
   }
 }
 
-- (FileItemHashing*) colorMapping {
+- (FileItemHashing *) colorMapping {
   return colorMapping;
 }
 
 
-- (void) setColorPalette:(NSColorList *)colorPaletteVal {
+- (void) setColorPalette: (NSColorList *)colorPaletteVal {
   if (colorPaletteVal != colorPalette) {
     [colorPalette release];
     colorPalette = [colorPaletteVal retain];
   }
 }
 
-- (NSColorList*) colorPalette {
+- (NSColorList *) colorPalette {
   return colorPalette;
 }
 
 
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMaskVal {
+- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal {
   if (fileItemMaskVal != fileItemMask) {
     [fileItemMask release];
     fileItemMask = [fileItemMaskVal retain];
@@ -74,6 +85,7 @@
 - (id) runTaskWithInput: (id)input {
   if (enabled) {
     // Always set, as it may have changed.
+    [[treeDrawer treeLayoutBuilder] setShowFreeSpace: showFreeSpace];
     [treeDrawer setColorMapping: colorMapping];
     [treeDrawer setColorPalette: colorPalette];
     [treeDrawer setFileItemMask: fileItemMask];
@@ -99,6 +111,5 @@
 - (void) enable {
   enabled = YES;
 }
-
 
 @end

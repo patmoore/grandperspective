@@ -14,10 +14,54 @@
 
 @implementation TreeLayoutBuilder
 
-- (void) layoutItemTree:(Item *)itemTreeRoot inRect:(NSRect)bounds
-           traverser:(NSObject <TreeLayoutTraverser> *)traverser {
-  [self layoutItemTree:itemTreeRoot inRect:bounds traverser:traverser depth:0];
+- (id) init {
+  if (self = [super init]) {
+    freeSpace = 0;
+    showFreeSpace = NO;
+  }
+  return self;
 }
+
+- (void) layoutItemTree: (Item *)tree 
+           inRect: (NSRect) bounds
+           traverser: (NSObject <TreeLayoutTraverser> *)traverser {
+  if (showFreeSpace) {
+    unsigned long long  totalSize = freeSpace + [tree itemSize];
+    float  ratio = 
+      (totalSize > 0) ? ([tree itemSize] / (float)totalSize) : 0.50;
+    NSRect  rect1, rect2;
+    
+    if (NSWidth(bounds) > NSHeight(bounds)) {
+      NSDivideRect(bounds, &rect1, &rect2, ratio*NSWidth(bounds), NSMinXEdge);
+    }
+    else {
+      NSDivideRect(bounds, &rect1, &rect2, ratio*NSHeight(bounds), NSMaxYEdge); 
+    }
+        
+    [self layoutItemTree: tree inRect: rect1 traverser: traverser depth: 0];
+  }         
+  else {
+    [self layoutItemTree: tree inRect: bounds traverser: traverser depth: 0];
+  }
+}
+
+
+- (void) setFreeSpace: (unsigned long long) freeSpaceVal {
+  freeSpace = freeSpaceVal;
+}
+
+- (unsigned long long) freeSpace {
+  return freeSpace;
+}
+
+- (void) setShowFreeSpace: (BOOL) showFreeSpaceVal {
+  showFreeSpace = showFreeSpaceVal;
+}
+
+- (BOOL) showFreeSpace {
+  return showFreeSpace;
+}
+
 
 @end // @implementation TreeLayoutBuilder
 

@@ -10,6 +10,7 @@
 @interface DrawTaskExecutor : NSObject <TaskExecutor> {
   ItemTreeDrawer  *treeDrawer;
   
+  BOOL  showFreeSpace;
   FileItemHashing  *colorMapping;
   NSColorList  *colorPalette;
   NSObject<FileItemTest>  *fileItemMask;
@@ -18,6 +19,9 @@
 }
 
 - (id) initWithTreeDrawer:(ItemTreeDrawer*)treeDrawer;
+
+- (void) setShowFreeSpace: (BOOL) flag;
+- (BOOL) showFreeSpace;
 
 - (void) setColorMapping:(FileItemHashing *)colorMapping;
 - (FileItemHashing*) colorMapping;

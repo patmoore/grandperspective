@@ -9,7 +9,7 @@
 
 @interface ItemTreeDrawer (PrivateMethods)
 
-- (NSColorList*) defaultColorPalette;
+- (NSColorList *) defaultColorPalette;
 - (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) initGradientColors;
@@ -20,26 +20,28 @@
 @implementation ItemTreeDrawer
 
 - (id) init {
-  return [self initWithColorMapping:
-           [[[FileItemHashing alloc] init] autorelease]];
+  return [self initWithLayoutBuilder:
+                 [[[TreeLayoutBuilder alloc] init] autorelease]];
 }
 
-- (id) initWithColorMapping: (FileItemHashing *)colorMappingVal {
-  return [self initWithColorMapping: colorMappingVal
-                 colorPalette: [self defaultColorPalette]
-                 layoutBuilder: [[[TreeLayoutBuilder alloc] init] autorelease]];
+- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilderVal {
+  return [self initWithLayoutBuilder: layoutBuilderVal
+                 colorMapping: [[[FileItemHashing alloc] init] autorelease]
+                 colorPalette: [self defaultColorPalette]];
 }
 
-- (id) initWithColorMapping: (FileItemHashing *)colorMappingVal
-         colorPalette: (NSColorList*)colorPaletteVal
-         layoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
+- (id) initWithLayoutBuilder: (TreeLayoutBuilder *)layoutBuilderVal
+         colorMapping: (FileItemHashing *)colorMappingVal
+         colorPalette: (NSColorList *)colorPaletteVal {
   if (self = [super init]) {
+    NSAssert(layoutBuilderVal != nil,
+               @"Cannot set an invalid tree layout builder.");
+    layoutBuilder = [layoutBuilderVal retain];
+    
     colorMapping = nil;
     colorPalette = nil;
-    layoutBuilder = nil;
     [self setColorMapping: colorMappingVal];
     [self setColorPalette: colorPaletteVal];
-    [self setTreeLayoutBuilder: layoutBuilderVal];
     
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
@@ -65,17 +67,7 @@
 }
 
 
-- (void) setTreeLayoutBuilder: (TreeLayoutBuilder*)layoutBuilderVal {
-  NSAssert(layoutBuilderVal != nil,
-           @"Cannot set an invalid tree layout builder.");
-
-  if (layoutBuilderVal != layoutBuilder) {
-    [layoutBuilder release];
-    layoutBuilder = [layoutBuilderVal retain];
-  }
-}
-
-- (TreeLayoutBuilder*) treeLayoutBuilder {
+- (TreeLayoutBuilder *) treeLayoutBuilder {
   return layoutBuilder;
 }
 
@@ -90,12 +82,12 @@
   }
 }
 
-- (FileItemHashing*) colorMapping {
+- (FileItemHashing *) colorMapping {
   return colorMapping;
 }
 
 
-- (void) setFileItemMask:(NSObject <FileItemTest>*)fileItemMaskVal {
+- (void) setFileItemMask:(NSObject <FileItemTest> *)fileItemMaskVal {
   if (fileItemMaskVal != fileItemMask) {
     [fileItemMask release];
     fileItemMask = [fileItemMaskVal retain];
@@ -107,7 +99,7 @@
 }
 
 
-- (void) setColorPalette: (NSColorList*)colorPaletteVal {
+- (void) setColorPalette: (NSColorList *)colorPaletteVal {
   NSAssert(colorPaletteVal != nil && [[colorPaletteVal allKeys] count] > 0,
            @"Cannot set an invalid color palette.");
 
@@ -120,12 +112,12 @@
 }
 
 
-- (NSColorList*) colorPalette {
+- (NSColorList *) colorPalette {
   return colorPalette;
 }
 
 
-- (NSImage*) drawImageOfItemTree: (Item*)itemTreeRoot inRect: (NSRect)bounds {
+- (NSImage *) drawImageOfItemTree: (Item *)itemTree inRect: (NSRect) bounds {
   NSDate  *startTime = [NSDate date];
   
   NSAssert(drawBitmap == nil, @"Bitmap should be nil.");
@@ -141,7 +133,7 @@
       colorSpaceName: NSDeviceRGBColorSpace
       bytesPerRow: 0
       bitsPerPixel: 32];
-      
+
   if (initGradientColors) {
     [self initGradientColors];
     initGradientColors = NO;
@@ -149,7 +141,7 @@
   
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  [layoutBuilder layoutItemTree: itemTreeRoot inRect: bounds traverser: self];
+  [layoutBuilder layoutItemTree: itemTree inRect: bounds traverser: self];
   [fileItemPathStringCache clearCache];
 
   NSImage  *image = nil;
@@ -158,7 +150,7 @@
     NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
 
     image = [[[NSImage alloc] initWithSize:bounds.size] autorelease];
-    [image addRepresentation:drawBitmap];
+    [image addRepresentation: drawBitmap];
   }
   abort = NO; // Enable drawer again for next time.
 
@@ -174,7 +166,8 @@
 }
 
 
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
+- (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
+           depth: (int) depth {
   if (![item isVirtual]) {
     FileItem*  file = (FileItem*)item;
     
@@ -196,7 +189,7 @@
 
 @implementation ItemTreeDrawer (PrivateMethods)
 
-- (NSColorList*) defaultColorPalette {
+- (NSColorList *) defaultColorPalette {
   NSColorList  *colorList = [[NSColorList alloc] 
                                 initWithName: @"DefaultItemTreeDrawerPalette"];
   [colorList insertColor: [NSColor blueColor]    key: @"blue"    atIndex: 0];
