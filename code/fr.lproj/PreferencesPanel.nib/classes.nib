@@ -1,0 +1,18 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {
+            ACTIONS = {cancelAction = id; okAction = id; valueChanged = id; }; 
+            CLASS = PreferencesPanelControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                defaultColorMappingPopUp = NSPopUpButton; 
+                defaultColorPalettePopUp = NSPopUpButton; 
+                fileSizeMeasurePopUp = NSPopUpButton; 
+                okButton = NSButton; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }
+    ); 
+    IBVersion = 1; 
+}

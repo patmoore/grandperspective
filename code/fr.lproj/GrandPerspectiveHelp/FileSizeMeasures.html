@@ -1,0 +1,44 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Mesure de la taille des fichiers</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Describes the file size measures that are supported and explains how these can be chosen.">
+<meta name="keywords" content="file, size, measure, logical, physical">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Mesure de la taille des fichiers</h1>
+</div>
+
+<p>
+L'aire de chaque rectangle dans la <a href="Views.html">fenêtre principale</a> est proportionnel à la taille du fichier qu'il représente.
+Il y a cependant plusieurs manières de mesurer la taille d'un fichier.
+GrandPerspective supporte deux manières différentes de mesurer la taille des fichiers.
+
+<ul>
+<li><b>Taille logique</b>,
+qui correspond à la taille de l'information dans le fichier.
+Par exemple, la taille logique d'un fichier texte codé en ASCII est le nombre de ces caractères (incluant les espaces et retours à la ligne).</li>
+
+<li><b>Taille physique</b>, 
+qui représente l'espace qu'un fichier prends sur le disque.
+La taille physique d'un fichier peut être la même que sa taille logique mais elle est généralement plus grande du faitde la manière dont sont stockés les fichiers.
+Par exemple, un fichier avec une taille logique de dix octets peut, selon le système de fichiers, avoir une taille physique de 1024 octets.
+</li>
+</ul>
+</p>
+
+<p>
+Par défaut, GrandPerspective affiche la taille logique des fichiers.
+Vous pouvez changer cela en allant dans les <b>Préférences</b> de l'application.
+Les changement prennent effet lorsque de nouveau dossiers sont scannés.
+Ces modifications n'affecte pas les fenêtres existantes, où les fenetres qui sont <a href="CreatingViews.html">crées</a> après une nouvelle analyse (car ces dernières prennent leurs préférences depuis leur fenêtre originel).
+</p>
+
+</body>
+</html>
