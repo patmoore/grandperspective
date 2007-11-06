@@ -3,6 +3,7 @@
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Also imports FileItem.h
 #import "TreeBalancer.h"
+#import "ItemInventory.h"
 
 
 NSString  *LogicalFileSize = @"logical";
@@ -123,8 +124,12 @@ static struct {
   
   DirectoryItem*  rootItem = 
     [[[DirectoryItem alloc] initWithName:path parent:nil] autorelease];
+    
+  itemInventory = [[[ItemInventory alloc] init] autorelease];
 
   BOOL  ok = [self buildTreeForDirectory:rootItem parentPath:@"" ref:&rootRef];
+
+  [itemInventory dumpItemReport];
 
   return ok ? rootItem : nil;
 }
@@ -214,6 +219,8 @@ static struct {
             [fileChildItem release];
 
             dirSize += childSize;
+            
+            [itemInventory registerFileItem: fileChildItem];
           }
           
           [childName release];
