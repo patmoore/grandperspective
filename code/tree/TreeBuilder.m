@@ -125,11 +125,7 @@ static struct {
   DirectoryItem*  rootItem = 
     [[[DirectoryItem alloc] initWithName:path parent:nil] autorelease];
     
-  itemInventory = [[[ItemInventory alloc] init] autorelease];
-
   BOOL  ok = [self buildTreeForDirectory:rootItem parentPath:@"" ref:&rootRef];
-
-  [itemInventory dumpItemReport];
 
   return ok ? rootItem : nil;
 }
@@ -141,6 +137,8 @@ static struct {
 
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
+
+  ItemInventory  *itemInventory = [ItemInventory defaultItemInventory];
 
   NSMutableArray  *fileChildren = 
     [[NSMutableArray alloc] initWithCapacity:128];

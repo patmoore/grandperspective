@@ -3,7 +3,6 @@
 
 @class TreeBalancer;
 @class DirectoryItem;
-@class ItemInventory;
 
 
 extern NSString  *LogicalFileSize;
@@ -17,9 +16,6 @@ extern NSString  *PhysicalFileSize;
   
   BOOL  abort;
   TreeBalancer  *treeBalancer;
-
-  // TEMP
-  ItemInventory  *itemInventory;
 }
 
 - (id) init;

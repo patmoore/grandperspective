@@ -6,19 +6,26 @@
 
 @interface ItemInventory : NSObject {
 
-  NSMutableSet  *typedExtensions;
+  NSMutableDictionary  *typeForExtension;
   NSMutableSet  *untypedExtensions;
-  NSMutableSet  *fileTypes;
-      
-  int        numTyped;
-  ITEM_SIZE  totalSizeTyped;
-  
-  int        numUntyped;
-  ITEM_SIZE  totalSizeUntyped;
+  NSMutableDictionary  *infoForFileType;
+  NSMutableSet  *parentlessTypes;
 }
+
++ (ItemInventory *)defaultItemInventory;
 
 - (void) registerFileItem: (FileItem *)item;
 
-- (void) dumpItemReport;
+// Returns the UTI for the given file, or "NULL" if there is no properly 
+// defined UTI for this file (i.e. this is the case when the UTI string is
+// dynamically generated).
+- (NSString *)typeForFileItem: (FileItem *)item;
+
+- (NSEnumerator *)knownTypesEnumerator;
+
+// TODO: Expose and implement, or expose FileTypeInfo directly?
+//- (NSEnumerator *)childrenOfType: (NSString *)uti;
+//- (NSEnumerator *)parentsOfType: (NSString *)uti;
+//- (NSString *)descriptionOfType: (NSString *)uti;
 
 @end
