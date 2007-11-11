@@ -20,6 +20,7 @@
 + (void) createDaytona;
 + (void) createFlyingGeese;
 + (void) createLagoonNebula;
++ (void) createAutumnBlush;
 + (void) createColorFile: (NSString*)name hexColors: (NSArray*) colors;
 
 @end
@@ -72,6 +73,7 @@ NSColor* colorForHexString(NSString* hexColor) {
   [self createDaytona];
   [self createFlyingGeese];
   [self createLagoonNebula];
+  [self createAutumnBlush];
 }
 
 @end
@@ -215,9 +217,17 @@ NSColor* colorForHexString(NSString* hexColor) {
 + (void) createLagoonNebula {
   NSArray  *colors = 
     [NSArray arrayWithObjects: @"CFAD4B", @"5A272C", @"98C8D6", @"F4AD6F",
-               @"845D4E", @"D86562", @"9ED5AE", @"325086",nil];
+               @"845D4E", @"D86562", @"9ED5AE", @"325086", nil];
                
   [self createColorFile: @"LagoonNebula" hexColors: colors];
+}
+
++ (void) createAutumnBlush {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"B00F5D", @"CA6841", @"EFC53D", @"FAD779",
+               @"64AF9A", @"C5DCD2", @"66443B", @"BAA29E", @"EAE4D4", nil];
+               
+  [self createColorFile: @"AutumnBlush" hexColors: colors];
 }
 
 + (void) createColorFile: (NSString*)name hexColors: (NSArray*) colors {
