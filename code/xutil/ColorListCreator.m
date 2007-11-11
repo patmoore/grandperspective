@@ -13,6 +13,13 @@
 + (void) createBujumbura;
 + (void) createAutumn;
 + (void) createOliveSunset;
++ (void) createRainbow;
++ (void) createOrigamiMice;
++ (void) createSeussSiteWebsite;
++ (void) createFengShui;
++ (void) createDaytona;
++ (void) createFlyingGeese;
++ (void) createLagoonNebula;
 + (void) createColorFile: (NSString*)name hexColors: (NSArray*) colors;
 
 @end
@@ -58,6 +65,13 @@ NSColor* colorForHexString(NSString* hexColor) {
   [self createBujumbura];
   [self createAutumn];
   [self createOliveSunset];
+  [self createRainbow];
+  [self createOrigamiMice];
+  [self createSeussSiteWebsite];
+  [self createFengShui];
+  [self createDaytona];
+  [self createFlyingGeese];
+  [self createLagoonNebula];
 }
 
 @end
@@ -144,6 +158,66 @@ NSColor* colorForHexString(NSString* hexColor) {
                @"CC0033", @"990033", nil];
                
   [self createColorFile: @"OliveSunset" hexColors: colors];
+}
+
++ (void) createRainbow {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"FFFF54", @"C8E64C", @"8CD466", @"4DC742",
+               @"45D2B0", @"46ACD3", @"438CCB", @"4262C7", @"5240C3", @"8C3FC0",
+               @"D145C1", @"E64C8D", @"FF5454", @"FF8054", @"FFA054", @"FFB554",
+               nil];
+               
+  [self createColorFile: @"Rainbow" hexColors: colors];
+}
+
++ (void) createOrigamiMice {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"CE61A5", @"5AC3BD", @"C61400", @"8C8A6B",
+               @"006152", @"5ABA10", @"8479AD", @"DEB64A", @"C6CB00", nil];
+               
+  [self createColorFile: @"OrigamiMice" hexColors: colors];
+}
+
++ (void) createSeussSiteWebsite {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"5ABFC6", @"CE95C8", @"D1C57E", @"E85AAA",
+               @"FF2626", @"009ACD", @"FFFF00", @"FBBF51", @"FFF07A", @"9EFC7D",
+               @"AAE009", @"58A866", nil];
+               
+  [self createColorFile: @"GreenEggs" hexColors: colors];
+}
+
++ (void) createFengShui {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"DF4527", @"E87D18", @"D39907", @"F7C600",
+               @"FEFA54", @"B7DD7E", @"7CC6A2", @"8FCDEA", @"007CC6", nil];
+               
+  [self createColorFile: @"FengShui" hexColors: colors];
+}
+
++ (void) createDaytona {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"996600", @"CC9933", @"CCCC66", @"FFFF99",
+               @"3399FF", @"99CCFF", @"003399", @"99FF99", @"66FF33", @"339900",
+               nil];
+               
+  [self createColorFile: @"Daytona" hexColors: colors];
+}
+
++ (void) createFlyingGeese {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"F948D7", @"DD43D9", @"8A53D1", @"586EA0",
+               @"479FCF", @"6A7469", @"A29E57", @"D9C447", @"FAD843", nil];
+               
+  [self createColorFile: @"FlyingGeese" hexColors: colors];
+}
+
++ (void) createLagoonNebula {
+  NSArray  *colors = 
+    [NSArray arrayWithObjects: @"CFAD4B", @"5A272C", @"98C8D6", @"F4AD6F",
+               @"845D4E", @"D86562", @"9ED5AE", @"325086",nil];
+               
+  [self createColorFile: @"LagoonNebula" hexColors: colors];
 }
 
 + (void) createColorFile: (NSString*)name hexColors: (NSArray*) colors {
