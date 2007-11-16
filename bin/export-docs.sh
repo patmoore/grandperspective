@@ -16,10 +16,17 @@ DEST_DIR=$3
 VERSION=$4
 VERSION_ID=$5
 
-TEMP_PARENT_DIR="/Users/erwin/temp"
-TEMP_DIR=${TEMP_PARENT_DIR}/export-docs-$$
+if [ "$GP_SVN_URL" == "" ]
+then
+  echo "GP_SVN_URL not set correctly."
+  exit -1
+fi
 
-SVN_URL=https://194.121.182.66/svn/erwin/GrandPerspective
+if [[ "$TEMP_DIR" == "" || ! -d $TEMP_DIR ]]
+then
+  echo "TEMP_DIR not set (correctly)."
+  exit -1
+fi
 
 if [ ! -e $DEST_DIR ]
 then
@@ -27,9 +34,11 @@ then
   exit -2
 fi
 
-svn export -q -r $SVN_REV $SVN_URL/$SVN_PATH $TEMP_DIR
+TEMP_EXPORT_DIR=${TEMP_DIR}/export-docs-$$
 
-for f in ${TEMP_DIR}/*.txt
+svn export -q -r $SVN_REV $GP_SVN_URL/$SVN_PATH $TEMP_EXPORT_DIR
+
+for f in ${TEMP_EXPORT_DIR}/*.txt
 do
   base_f=${f##?*/}
   cat $f \
@@ -38,5 +47,5 @@ do
   > $DEST_DIR/$base_f
 done
 
-rm $TEMP_DIR/*.txt
-rmdir $TEMP_DIR
+rm $TEMP_EXPORT_DIR/*.txt
+rmdir $TEMP_EXPORT_DIR

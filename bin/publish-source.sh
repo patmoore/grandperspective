@@ -2,15 +2,6 @@
 
 VERSION="0.99"
 VERSION_ID="0_99"
-TEMP_PARENT_PATH="/Users/erwin/temp"
-TEMP_PATH=`mktemp -d ${TEMP_PARENT_PATH}/publish-XXXXXX` || exit -1
-
-echo "Output to" $TEMP_PATH
-
-HELP_FOLDER=GrandPerspectiveHelp
-OUTER_DIR="GrandPerspective-${VERSION_ID}"
-OUTER_DIR_PATH=$TEMP_PATH/$OUTER_DIR
-OUT_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 
 if [ $# -ne "1" ]
 then
@@ -19,6 +10,21 @@ then
 fi
 
 DEST_PATH=$1
+
+if [[ "$TEMP_DIR" == "" || ! -d $TEMP_DIR ]]
+then
+  echo "TEMP_DIR not set (correctly)."
+  exit -1
+fi
+
+TEMP_PUBLISH_DIR=`mktemp -d ${TEMP_DIR}/publish-XXXXXX` || exit -1
+
+echo "Temporary output to" $TEMP_PUBLISH_DIR
+
+HELP_FOLDER=GrandPerspectiveHelp
+OUTER_DIR="GrandPerspective-${VERSION_ID}"
+OUTER_DIR_PATH=$TEMP_PUBLISH_DIR/$OUTER_DIR
+OUT_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 
 mkdir $OUTER_DIR_PATH
 
@@ -30,8 +36,8 @@ echo "Exporting source code."
 ./export-source.sh trunk/code 385 $OUTER_DIR_PATH/src $VERSION
 
 echo "Exporting help documentation."
-./export-help.sh trunk/help 390 $OUTER_DIR_PATH/src English
-./export-help.sh trunk/help 390 $OUTER_DIR_PATH/src nl
+./export-help.sh 390 $OUTER_DIR_PATH/src English
+./export-help.sh 390 $OUTER_DIR_PATH/src nl
 
 echo "Generating help indexes."
 ./update-help-index.sh $OUTER_DIR_PATH/src/English.lproj/$HELP_FOLDER English
@@ -46,8 +52,8 @@ read dummy
 
 
 echo "Creating TGZ file."
-pushd $TEMP_PATH > /dev/null
+pushd $TEMP_PUBLISH_DIR > /dev/null
 tar czf $DEST_PATH/$OUT_FILE ${OUTER_DIR}
 popd > /dev/null
 
-rm -rf $TEMP_PATH
+rm -rf $TEMP_PUBLISH_DIR

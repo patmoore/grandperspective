@@ -15,10 +15,19 @@ SVN_REV=$2
 DEST_DIR=$3
 VERSION=$4
 
-TEMP_PARENT_DIR="/Users/erwin/temp"
-TEMP_DIR=${TEMP_PARENT_DIR}/export-source-$$
+if [[ "$TEMP_DIR" == "" || ! -d $TEMP_DIR ]]
+then
+  echo "TEMP_DIR not set (correctly)."
+  exit -1
+fi
 
-SVN_URL=https://194.121.182.66/svn/erwin/GrandPerspective
+TEMP_EXPORT_DIR=${TEMP_DIR}/export-source-$$
+
+if [ "$GP_SVN_URL" == "" ]
+then
+  echo "GP_SVN_UR not set correctly."
+  exit -1
+fi
 
 if [ ! -e $DEST_DIR ]
 then
@@ -26,22 +35,22 @@ then
   exit -2
 fi
 
-svn export -q -r $SVN_REV $SVN_URL/$SVN_PATH $TEMP_DIR
+svn export -q -r $SVN_REV $GP_SVN_URL/$SVN_PATH $TEMP_EXPORT_DIR
 
 # Exclude all localizations except the English and Dutch
-mv $TEMP_DIR/nl.lproj $TEMP_DIR/Dutch.lproj
-rm -rf $TEMP_DIR/??.lproj
-mv $TEMP_DIR/Dutch.lproj $TEMP_DIR/nl.lproj
+mv $TEMP_EXPORT_DIR/nl.lproj $TEMP_EXPORT_DIR/Dutch.lproj
+rm -rf $TEMP_EXPORT_DIR/??.lproj
+mv $TEMP_EXPORT_DIR/Dutch.lproj $TEMP_EXPORT_DIR/nl.lproj
 
 # Exclude sources files that are not part of the release
-rm -rf $TEMP_DIR/xutil
+rm -rf $TEMP_EXPORT_DIR/xutil
 
 # Copy Objective C source files. Also add header to each file.
 #
-OBJECTIVE_C_SRC=`find $TEMP_DIR -name \*.[hm]`
+OBJECTIVE_C_SRC=`find $TEMP_EXPORT_DIR -name \*.[hm]`
 for f in ${OBJECTIVE_C_SRC}
 do
-  base_f=${f#${TEMP_DIR}/}
+  base_f=${f#${TEMP_EXPORT_DIR}/}
   tmp="/"$base_f
   tmp=${tmp%/*}
   subdir=${tmp#/}
@@ -75,6 +84,6 @@ done
 
 # Copy remaining source files.
 #
-tar cf - -C $TEMP_DIR --exclude "*.[mh]" . | tar xf - -C $DEST_DIR
+tar cf - -C $TEMP_EXPORT_DIR --exclude "*.[mh]" . | tar xf - -C $DEST_DIR
 
-rm -rf $TEMP_DIR
+rm -rf $TEMP_EXPORT_DIR
