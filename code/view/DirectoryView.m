@@ -179,11 +179,17 @@
   if ([chars isEqualToString: @"]"]) {
     if ([pathModel canMoveSelectionDown]) {
       [pathModel moveSelectionDown];
+      
+      // Automatically lock path
+      [pathModel setVisibleItemPathLocking: YES];
     }
   }
   else if ([chars isEqualToString: @"["]) {
     if ([pathModel canMoveSelectionUp]) {
       [pathModel moveSelectionUp];
+      
+      // Automatically lock path
+      [pathModel setVisibleItemPathLocking: YES];
     }
   }
 }
