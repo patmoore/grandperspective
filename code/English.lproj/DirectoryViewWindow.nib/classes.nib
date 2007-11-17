@@ -31,9 +31,10 @@
                 maskDescriptionTextView = NSTextView; 
                 openButton = NSButton; 
                 scanTimeField = NSTextField; 
-                selectedFileExactSizeField = NSTextField; 
-                selectedFilePathTextView = NSTextView; 
-                selectedFileSizeField = NSTextField; 
+                selectedItemExactSizeField = NSTextField; 
+                selectedItemPathTextView = NSTextView; 
+                selectedItemSizeField = NSTextField; 
+                selectedItemTitleField = NSTextField; 
                 treePathTextView = NSTextView; 
                 treeSizeField = NSTextField; 
                 upButton = NSButton; 

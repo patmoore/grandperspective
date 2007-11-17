@@ -12,22 +12,26 @@
 
   // The index in the path array where the subtree starts (always a FileItem)
   unsigned  visibleTreeRootIndex;
+
+  // The index in the path array where the selected file item is.
+  //
+  // Note: It is always part of the visible item path)
+  unsigned  selectedFileItemIndex;
   
   // The index in the path array where the visible file path ends (always a 
   // FileItem).
   //
   // Note: It is not necessarily always the last item in the array, as one
-  // or more virtual items may still follow (in particular while the path is 
-  // currently being extended).
+  // or more virtual items may still follow (in particular when the path is 
+  // being extended).
   unsigned lastFileItemIndex;
   
-  // Controls if "visibleItemPathChanged" notifications are being (temporarily)
-  // supressed. If it is set to "nil", they are posted as they occur. Otherwise
-  // it will suppress notifications, but remember the state of the path when
-  // the last notification was posted by remembering the endpoint. As soon as
-  // it is switched back to nil, it will check if the path has indeed changed,
-  // and if so, fire a notification. 
-  Item*  lastNotifiedPathEndPoint;
+  // Controls if "selectedItemChanged" notifications are being (temporarily)
+  // supressed. If it is set to -1, they are posted as they occur. Otherwise
+  // it will suppress notifications, but remember the current selection state. 
+  // As soon as notifications are enabled again, it will check if a 
+  // notification needs to be fired. 
+  int  lastNotifiedSelectedFileItemIndex;
   
   // If it is set to "false", the visible item path cannot be changed.
   // (Note: the invisible part can never be changed directly. Only by first
@@ -37,26 +41,33 @@
 
 - (id) initWithTree:(DirectoryItem*)itemTreeRoot;
 
+
 // Returns the file items in the invisble part of the path until (inclusive)
 // root in view.
 - (NSArray*) invisibleFileItemPath;
+
+// Returns the file items in the visible part of the path up until the 
+// selected file item (excluding root in view).
+- (NSArray*) visibleSelectedFileItemPath;
 
 // Returns the file items in the visible part of the path (excluding root in 
 // view).
 - (NSArray*) visibleFileItemPath;
 
-// Returns all items in the invisble part of the path until (inclusive) root 
-// in view.
-- (NSArray*) invisibleItemPath;
-
-// Returns all items in the visible part of the path (excluding root in view).
-- (NSArray*) visibleItemPath;
 
 // Returns all items in the path.
 - (NSArray*) itemPath;
 
+// Returns all items in the path up until (inclusive) the selected file item.
+- (NSArray*) itemPathToSelectedFileItem;
+
+
+// Returns the selected file item (which is always part of the visible path).
+- (FileItem*) selectedFileItem;
+
 // Returns the last file item in the path.
 - (FileItem*) fileItemPathEndPoint;
+
 
 // The path name for the root of the tree. 
 - (NSString*) rootFilePathName;
@@ -64,6 +75,11 @@
 // The path name of the invisible part of the path until (inclusive) the root 
 // in the view. The path is relative to that returned by -rootFilePathName.
 - (NSString*) invisibleFilePathName;
+
+// The path name to the selected file item that is visible (excluding the 
+// root in the view). So the path is relative to that returned by 
+// -invisibleFilePathName.
+- (NSString*) visibleSelectedFilePathName;
 
 // The path name that is visible (excluding the root in the view). So the path
 // is relative to that returned by -invisibleFilePathName.
@@ -73,7 +89,7 @@
 - (BOOL) isVisibleItemPathLocked;
 - (void) setVisibleItemPathLocking:(BOOL)value;
 
-- (void) suppressItemPathChangedNotifications:(BOOL)option;
+- (void) suppressSelectedItemChangedNotifications:(BOOL)option;
 
 - (BOOL) clearVisibleItemPath;
 - (void) extendVisibleItemPath:(Item*)nextItem;
@@ -86,5 +102,10 @@
 - (BOOL) canMoveTreeViewDown;
 - (void) moveTreeViewUp;
 - (void) moveTreeViewDown;
+
+- (BOOL) canMoveSelectionUp;
+- (BOOL) canMoveSelectionDown;
+- (void) moveSelectionUp;
+- (void) moveSelectionDown;
 
 @end

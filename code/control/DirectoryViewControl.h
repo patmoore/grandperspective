@@ -42,9 +42,10 @@
   IBOutlet NSTextView  *visibleFolderPathTextView;
   IBOutlet NSTextField  *visibleFolderExactSizeField;
   IBOutlet NSTextField  *visibleFolderSizeField;
-  IBOutlet NSTextView  *selectedFilePathTextView;
-  IBOutlet NSTextField  *selectedFileExactSizeField;
-  IBOutlet NSTextField  *selectedFileSizeField;
+  IBOutlet NSTextView  *selectedItemPathTextView;
+  IBOutlet NSTextField  *selectedItemExactSizeField;
+  IBOutlet NSTextField  *selectedItemSizeField;
+  IBOutlet NSTextField  *selectedItemTitleField;
 
   ItemPathModel  *itemPathModel;
   DirectoryViewControlSettings  *initialSettings;

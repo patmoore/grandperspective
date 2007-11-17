@@ -472,7 +472,7 @@ NSString* scanActivityFormatString() {
   ItemPathModel  *path = 
     [[[ItemPathModel alloc] initWithTree: [treeHistory itemTree]] autorelease];
 
-  [path suppressItemPathChangedNotifications:YES];
+  [path suppressSelectedItemChangedNotifications: YES];
     
   BOOL  ok = YES;
   NSEnumerator  *fileItemEnum = nil;
@@ -504,7 +504,7 @@ NSString* scanActivityFormatString() {
     }
   }
         
-  [path suppressItemPathChangedNotifications:NO];
+  [path suppressSelectedItemChangedNotifications: NO];
 
   return [[[DirectoryViewControl alloc] 
              initWithTreeHistory: treeHistory pathModel: path 

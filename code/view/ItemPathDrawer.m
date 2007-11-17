@@ -34,7 +34,7 @@
     [[NSColor selectedControlColor] set];
       
     if (highlightPathEndPoint) {
-      [lastBezierPath setLineWidth: 2];
+      [lastBezierPath setLineWidth: 3];
     }
 
     if ((firstBezierPath != lastBezierPath) || highlightPathEndPoint) {

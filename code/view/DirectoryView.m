@@ -28,7 +28,7 @@
 
 - (void) itemTreeImageReady: (id) image;
 
-- (void) visibleItemPathChanged: (NSNotification *)notification;
+- (void) selectedItemChanged: (NSNotification *)notification;
 - (void) visibleItemTreeChanged: (NSNotification *)notification;
 - (void) visibleItemPathLockingChanged: (NSNotification *)notification;
 - (void) windowMainStatusChanged: (NSNotification *) notification;
@@ -153,7 +153,7 @@
   else {
     [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
   
-    [pathDrawer drawItemPath: [pathModel itemPath] 
+    [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
                   tree: [pathModel visibleItemTree] 
                   usingLayoutBuilder: [self activeLayoutBuilder]
                   bounds: [self bounds]];
@@ -174,13 +174,28 @@
 }
 
 
+- (void) keyDown: (NSEvent *)theEvent {
+  NSString*  chars = [theEvent characters];
+  if ([chars isEqualToString: @"]"]) {
+    if ([pathModel canMoveSelectionDown]) {
+      [pathModel moveSelectionDown];
+    }
+  }
+  else if ([chars isEqualToString: @"["]) {
+    if ([pathModel canMoveSelectionUp]) {
+      [pathModel moveSelectionUp];
+    }
+  }
+}
+
+
 - (void) mouseDown: (NSEvent *)theEvent {
   // Toggle the path locking.
 
   BOOL  wasLocked = [pathModel isVisibleItemPathLocked];
   if (wasLocked) {
     // Unlock first, then build new path.
-    [pathModel setVisibleItemPathLocking:NO];
+    [pathModel setVisibleItemPathLocking: NO];
   }
 
   NSPoint  loc = [theEvent locationInWindow];
@@ -230,8 +245,8 @@
   pathModel = [pathModelVal retain];
 
   [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemPathChanged:)
-      name: @"visibleItemPathChanged" object: pathModel];
+      addObserver: self selector: @selector(selectedItemChanged:)
+      name: @"selectedItemChanged" object: pathModel];
   [[NSNotificationCenter defaultCenter]
       addObserver: self selector: @selector(visibleItemTreeChanged:)
       name: @"visibleItemTreeChanged" object: pathModel];
@@ -275,7 +290,7 @@
 }
 
 
-- (void) visibleItemPathChanged: (NSNotification *)notification {
+- (void) selectedItemChanged: (NSNotification *)notification {
   [self setNeedsDisplay: YES];
 }
 

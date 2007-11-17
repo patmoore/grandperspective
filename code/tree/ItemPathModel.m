@@ -6,11 +6,14 @@
 
 @interface ItemPathModel (PrivateMethods)
 
-- (void) postVisibleItemPathChanged;
+- (void) postSelectedItemChanged;
 - (void) postVisibleItemTreeChanged;
 - (void) postVisibleItemPathLockingChanged;
 
-// "start" is inclusive, "end" is exclusive.
+// "start" and "end" are both inclusive.
+- (NSArray*) buildFileItemPathFromIndex:(int)start toIndex:(int)end;
+
+// "start" and "end" are both inclusive.
 - (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end;
 
 - (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item;
@@ -32,10 +35,11 @@
     [path addObject:itemTreeRoot];
 
     visibleTreeRootIndex = 0;
+    selectedFileItemIndex = 0;
     lastFileItemIndex = 0;
     
     visibleItemPathLocked = NO;
-    lastNotifiedPathEndPoint = nil;
+    lastNotifiedSelectedFileItemIndex = -1;
   }
   return self;
 }
@@ -56,51 +60,27 @@
   [copy->path addObjectsFromArray:path];
 
   copy->visibleTreeRootIndex = visibleTreeRootIndex;
+  copy->selectedFileItemIndex = selectedFileItemIndex;
   copy->lastFileItemIndex = lastFileItemIndex;
   copy->visibleItemPathLocked = visibleItemPathLocked;
-  copy->lastNotifiedPathEndPoint = nil;
+  copy->lastNotifiedSelectedFileItemIndex = -1;
   
   return copy;
 }
 
 
 - (NSArray*) invisibleFileItemPath {
-  NSMutableArray  *invisible = [NSMutableArray arrayWithCapacity:8];
+  return [self buildFileItemPathFromIndex: 0 toIndex: visibleTreeRootIndex];
+}
 
-  unsigned  i = 0;
-  while (i <= visibleTreeRootIndex) {
-    if (![[path objectAtIndex:i] isVirtual]) {
-      [invisible addObject:[path objectAtIndex:i]];
-    }
-    i++;
-  }
-  
-  return invisible;
+- (NSArray*) visibleSelectedFileItemPath {
+  return [self buildFileItemPathFromIndex: visibleTreeRootIndex + 1 
+                 toIndex: selectedFileItemIndex ];
 }
 
 - (NSArray*) visibleFileItemPath {
-  NSMutableArray  *visible = [NSMutableArray arrayWithCapacity:8];
-
-  int  i = visibleTreeRootIndex + 1, max = [path count];
-  while (i < max) {
-    if (![[path objectAtIndex:i] isVirtual]) {
-      [visible addObject:[path objectAtIndex:i]];
-    }
-    i++;
-  }
-  return visible;
-}
-
-
-- (NSArray*) invisibleItemPath {
-  return [path subarrayWithRange:NSMakeRange(0, visibleTreeRootIndex + 1)];
-}
-
-
-- (NSArray*) visibleItemPath {
-  return [path subarrayWithRange:
-                 NSMakeRange(visibleTreeRootIndex + 1,
-                             [path count] - visibleTreeRootIndex - 1)];
+  return [self buildFileItemPathFromIndex: visibleTreeRootIndex + 1 
+                 toIndex: lastFileItemIndex ];
 }
 
 
@@ -112,9 +92,17 @@
   return path;
 }
 
+- (NSArray*) itemPathToSelectedFileItem {
+   return [path subarrayWithRange:NSMakeRange(0, selectedFileItemIndex + 1)];
+}
+
+
+- (FileItem*) selectedFileItem {
+  return [path objectAtIndex: selectedFileItemIndex];
+}
 
 - (FileItem*) fileItemPathEndPoint {
-  return [path objectAtIndex:lastFileItemIndex];
+  return [path objectAtIndex: lastFileItemIndex];
 }
 
 
@@ -125,14 +113,20 @@
 }
 
 - (NSString*) invisibleFilePathName {
-  return [self buildPathNameFromIndex:1             // skip the tree root
-                 toIndex:visibleTreeRootIndex + 1]; // include visible root
+  return [self buildPathNameFromIndex: 1            // Skip the tree root
+                 toIndex: visibleTreeRootIndex];    // Include visible root
+}
+
+- (NSString*) visibleSelectedFilePathName {
+  return [self buildPathNameFromIndex: visibleTreeRootIndex + 1  
+                                                    // Skip the visible root
+                  toIndex: selectedFileItemIndex];  // Include the end point
 }
 
 - (NSString*) visibleFilePathName {
-  return [self buildPathNameFromIndex:visibleTreeRootIndex + 1  
-                                                     // skip the visible root
-                  toIndex:[path count]];             // include the end point
+  return [self buildPathNameFromIndex: visibleTreeRootIndex + 1  
+                                                    // Skip the visible root
+                  toIndex: lastFileItemIndex];      // Include the end point
 }
 
 
@@ -150,22 +144,22 @@
 }
 
 
-- (void) suppressItemPathChangedNotifications:(BOOL)option {
+- (void) suppressSelectedItemChangedNotifications:(BOOL)option {
   if (option) {
-    if (lastNotifiedPathEndPoint != nil) {
+    if (lastNotifiedSelectedFileItemIndex != -1) {
       return; // Already suppressing notifications.
     }
-    lastNotifiedPathEndPoint = [path lastObject];
+    lastNotifiedSelectedFileItemIndex = selectedFileItemIndex;
   }
   else {
-    if (lastNotifiedPathEndPoint == nil) {
-      return; // Already instantanously generating notifications.
+    if (lastNotifiedSelectedFileItemIndex == -1) {
+      return; // Already instantaneously generating notifications.
     }
     
-    if (lastNotifiedPathEndPoint != [path lastObject]) {
-      [self postVisibleItemPathChanged];
+    if (lastNotifiedSelectedFileItemIndex != selectedFileItemIndex) {
+      [self postSelectedItemChanged];
     }
-    lastNotifiedPathEndPoint = nil;
+    lastNotifiedSelectedFileItemIndex = -1;
   }
 }
 
@@ -178,9 +172,8 @@
     [path removeObjectsInRange: NSMakeRange(visibleTreeRootIndex + 1, num)];
     lastFileItemIndex = visibleTreeRootIndex;
 
-    if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
-      [self postVisibleItemPathChanged];
-    }
+    selectedFileItemIndex = visibleTreeRootIndex;
+    [self postSelectedItemChanged];
     
     return YES;
   }
@@ -192,14 +185,14 @@
 - (void) extendVisibleItemPath: (Item *)nextItem {
   NSAssert(!visibleItemPathLocked, @"Cannot extend path when locked.");
   
+  [path addObject: nextItem];  
+  
   if (! [nextItem isVirtual]) {
-    lastFileItemIndex = [path count];
-  }
-  
-  [path addObject: nextItem];
-  
-  if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
-    [self postVisibleItemPathChanged];
+    lastFileItemIndex = [path count] - 1;
+    
+    // Automatically update the selection to the end point.
+    selectedFileItemIndex = lastFileItemIndex;
+    [self postSelectedItemChanged];
   }
 }
 
@@ -225,10 +218,9 @@
   NSAssert(![[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
   lastFileItemIndex = [path count] - 1;
 
-  // Path was successfully extended.
-  if (lastNotifiedPathEndPoint == nil) { // Notifications not suppressed.
-    [self postVisibleItemPathChanged];
-  }
+  // Automatically update the selection to the end point.
+  selectedFileItemIndex = lastFileItemIndex;
+  [self postSelectedItemChanged];
   
   return YES;
 }
@@ -265,9 +257,44 @@
 
   do {
     visibleTreeRootIndex++;
-  } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);  
+  } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
+  
+  if (selectedFileItemIndex < visibleTreeRootIndex) {
+    // Ensure that the selected file item is always in the visible path
+    selectedFileItemIndex = visibleTreeRootIndex;
+    [self postSelectedItemChanged];
+  }
 
   [self postVisibleItemTreeChanged];
+}
+
+
+- (BOOL) canMoveSelectionUp {
+  return (selectedFileItemIndex > visibleTreeRootIndex);
+}
+
+- (BOOL) canMoveSelectionDown {
+  return (selectedFileItemIndex < lastFileItemIndex);
+}
+
+- (void) moveSelectionUp {
+  NSAssert([self canMoveSelectionUp], @"Cannot move up");
+  
+  do {
+    selectedFileItemIndex--;
+  } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
+  
+  [self postSelectedItemChanged];
+}
+
+- (void) moveSelectionDown {
+  NSAssert([self canMoveSelectionDown], @"Cannot move down");
+  
+  do {
+    selectedFileItemIndex++;
+  } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
+  
+  [self postSelectedItemChanged];
 }
 
 @end
@@ -275,9 +302,13 @@
 
 @implementation ItemPathModel (PrivateMethods)
 
-- (void) postVisibleItemPathChanged {
+- (void) postSelectedItemChanged {
+  if (lastNotifiedSelectedFileItemIndex == -1) {
+    // Currently surpressing notifications
+  }
+
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"visibleItemPathChanged" object:self];
+      postNotificationName:@"selectedItemChanged" object:self];
 }
 
 - (void) postVisibleItemTreeChanged {
@@ -290,12 +321,26 @@
       postNotificationName:@"visibleItemPathLockingChanged" object:self];
 }
 
+- (NSArray*) buildFileItemPathFromIndex: (int)start toIndex: (int)end {
+  NSMutableArray  *fileItemPath = [NSMutableArray arrayWithCapacity:8];
+
+  unsigned  i = start;
+  while (i <= end) {
+    if (![[path objectAtIndex:i] isVirtual]) {
+      [fileItemPath addObject: [path objectAtIndex:i]];
+    }
+    i++;
+  }
+  
+  return fileItemPath;
+}
+
 - (NSString*) buildPathNameFromIndex: (int)start toIndex: (int)end {
   NSMutableString  *s = 
     [[[NSMutableString alloc] initWithCapacity: 128] autorelease];
 
   int  i = start; // Skip the root
-  while (i < end) {
+  while (i <= end) {
     Item*  item = [path objectAtIndex: i]; 
 
     if (! [item isVirtual]) {

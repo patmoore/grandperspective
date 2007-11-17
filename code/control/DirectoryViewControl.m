@@ -197,7 +197,7 @@
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(updateButtonState:)
-        name:@"visibleItemPathChanged" object:itemPathModel];
+        name:@"selectedItemChanged" object:itemPathModel];
   [nc addObserver:self selector:@selector(updateButtonState:)
         name:@"visibleItemPathLockingChanged" object:itemPathModel];
   [nc addObserver:self selector:@selector(visibleItemTreeChanged:)
@@ -234,7 +234,7 @@
 }
 
 - (IBAction) openFileInFinder:(id)sender {
-  NSString  *filePath = [itemPathModel visibleFilePathName];
+  NSString  *filePath = [itemPathModel visibleSelectedFilePathName];
   NSString  *rootPath = 
     [[itemPathModel rootFilePathName] 
       stringByAppendingPathComponent: [itemPathModel invisibleFilePathName]];
@@ -381,10 +381,15 @@
 
 
 - (void) updateButtonState:(NSNotification*)notification {
-  [upButton setEnabled:[itemPathModel canMoveTreeViewUp]];
+  [upButton setEnabled: [itemPathModel canMoveTreeViewUp]];
   [downButton setEnabled: [itemPathModel isVisibleItemPathLocked] &&
-                          [itemPathModel canMoveTreeViewDown] ];
+                          [itemPathModel canMoveTreeViewDown] &&
+                          ( [itemPathModel selectedFileItem] !=
+                            [itemPathModel visibleItemTree] )] ;
   [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
+  
+  NSString  *selectedFileTitle = 
+    NSLocalizedString( @"Selected file:", "Label in Focus panel" );
 
   if ( [itemPathModel isVisibleItemPathLocked] ||
        [itemPathModel canMoveTreeViewDown] ) {
@@ -392,12 +397,13 @@
     // the path is locked, or the path has one or more visible path 
     // components (i.e. it goes beyond the folder that is shown in the view)
 
-    ITEM_SIZE  itemSize = [[itemPathModel fileItemPathEndPoint] itemSize];
+    FileItem  *selectedItem = [itemPathModel selectedFileItem];
+    ITEM_SIZE  itemSize = [selectedItem itemSize];
     NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
 
     [itemSizeField setStringValue: itemSizeString];
 
-    NSString  *visiblePathName = [itemPathModel visibleFilePathName];
+    NSString  *visiblePathName = [itemPathModel visibleSelectedFilePathName];
     NSString  *name = [invisiblePathName stringByAppendingPathComponent:
                          visiblePathName];
     NSMutableAttributedString  *attributedName = 
@@ -412,21 +418,26 @@
 
     [attributedName release];
 
-    [selectedFilePathTextView setString:
+    [selectedItemTitleField setStringValue:
+      ([selectedItem isPlainFile] ?
+         selectedFileTitle :
+         NSLocalizedString( @"Selected folder:", "Label in Focus panel" ) )];
+    [selectedItemPathTextView setString:
       [[visibleFolderPathTextView string] stringByAppendingPathComponent:
                                             visiblePathName]];
-    [selectedFileExactSizeField setStringValue: 
+    [selectedItemExactSizeField setStringValue: 
        [FileItem exactStringForFileItemSize: itemSize]];
-    [selectedFileSizeField setStringValue: 
+    [selectedItemSizeField setStringValue: 
        [NSString stringWithFormat: @"(%@)", itemSizeString]];
   }
   else {
     // There's no selected item
     [itemSizeField setStringValue: @""];
     [itemPathField setStringValue: @""];
-    [selectedFilePathTextView setString: @""];
-    [selectedFileExactSizeField setStringValue: @""];
-    [selectedFileSizeField setStringValue: @""];
+    [selectedItemTitleField setStringValue: selectedFileTitle];
+    [selectedItemPathTextView setString: @""];
+    [selectedItemExactSizeField setStringValue: @""];
+    [selectedItemSizeField setStringValue: @""];
   }
 }
 

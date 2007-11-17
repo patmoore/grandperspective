@@ -30,7 +30,7 @@
            usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder 
            bounds:(NSRect)bounds {
   // Don't generate notifications while the path is being built.
-  [pathModel suppressItemPathChangedNotifications:YES];
+  [pathModel suppressSelectedItemChangedNotifications:YES];
   
   [pathModel clearVisibleItemPath];
   buildTargetPoint = point;
@@ -38,7 +38,7 @@
   [layoutBuilder layoutItemTree:[pathModel visibleItemTree] inRect:bounds
                    traverser:self];
   
-  [pathModel suppressItemPathChangedNotifications:NO];
+  [pathModel suppressSelectedItemChangedNotifications:NO];
 }
 
 
