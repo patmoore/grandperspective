@@ -256,9 +256,6 @@
           
   pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
 
-  [[self window] setAcceptsMouseMovedEvents: 
-                   ![pathModel isVisibleItemPathLocked]];
-  
   [[NSNotificationCenter defaultCenter]
     addObserver: self selector: @selector(windowMainStatusChanged:)
     name: NSWindowDidBecomeMainNotification object: [self window]];
@@ -266,7 +263,8 @@
     addObserver: self selector: @selector(windowMainStatusChanged:)
     name: NSWindowDidResignMainNotification object: [self window]];
   
-  [self setNeedsDisplay:YES];
+  [self visibleItemPathLockingChanged: nil];
+  [self setNeedsDisplay: YES];
 }
 
 
@@ -309,7 +307,7 @@
   // listen to the notification, it seems better to do it like this. It keeps
   // the item path drawer more general, and as the item path drawer is tightly
   // integrated with this view, there is no harm in updating it directly.
-  [pathDrawer setHighlightPathEndPoint:locked];
+  [pathDrawer setHighlightPathEndPoint: locked];
  
   [[self window] setAcceptsMouseMovedEvents: 
                    !locked && [[self window] isMainWindow]];
