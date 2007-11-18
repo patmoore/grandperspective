@@ -27,11 +27,11 @@
 }
 
 
-- (void) setDirectoryContents:(Item*)contentsVal size:(ITEM_SIZE)dirSize {
+- (void) setDirectoryContents:(Item *)contentsVal {
   NSAssert(contents == nil, @"Contents should only be set once.");
   
   contents = [contentsVal retain];
-  size = dirSize;
+  size = (contents == nil) ? 0 : [contents itemSize];
 }
 
 

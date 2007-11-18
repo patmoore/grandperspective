@@ -9,7 +9,7 @@
 + (DirectoryItem*) specialDirectoryItemWithName:(NSString *)name
                      parent:(DirectoryItem *)parent;
 
-- (void) setDirectoryContents:(Item*)contents size:(ITEM_SIZE)dirSize;
+- (void) setDirectoryContents:(Item *)contents;
 
 - (Item*) getContents;
 

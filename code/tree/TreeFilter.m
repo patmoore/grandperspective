@@ -58,10 +58,9 @@
           directoryItems: dirChildren fileItems: fileChildren];
 
   if (!abort) { // Break recursion when task has been aborted.
-    ITEM_SIZE  dirSize = 0; 
     int  i;
   
-    // Add up the size of all file items that passed the test
+    // Collect all file items that passed the test
     for (i = [fileChildren count]; --i >= 0; ) {
       FileItem  *oldFileItem = [fileChildren objectAtIndex: i];
       FileItem  *newFileItem = 
@@ -69,7 +68,6 @@
                             size: [oldFileItem itemSize]];
       
       [fileChildren replaceObjectAtIndex: i withObject: newFileItem];  
-      dirSize += [newFileItem itemSize];
       
       [newFileItem release];
     }
@@ -83,13 +81,6 @@
         // Check to prevent inserting "nil" when filtering was aborted.
         
         [dirChildren replaceObjectAtIndex: i withObject: newSubDirItem];
-        dirSize += [newSubDirItem itemSize];
-      }
-      else {
-        // There's really no point in doing this, as the entire tree will
-        // be discarded anyway. But hey, omitting this feels wrong. ;-)
-        
-        dirSize += [oldSubDirItem itemSize];
       }
     }
   
@@ -98,7 +89,7 @@
     Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
                                          second: dirTree];
                                        
-    [newDirItem setDirectoryContents: contentTree size: dirSize];
+    [newDirItem setDirectoryContents: contentTree];
   }
 
   [dirChildren release];

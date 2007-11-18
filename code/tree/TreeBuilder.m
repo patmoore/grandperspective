@@ -197,17 +197,13 @@ static struct {
     [FileItem specialFileItemWithName: @"Miscellaneous"
                  parent: usedSpaceItem size: miscUnusedSize];
 
-  Item*  usedSpaceContents = 
-    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
-                    second: scannedDirItem];
-  [usedSpaceItem setDirectoryContents: usedSpaceContents 
-                   size: [usedSpaceContents itemSize]];
-                   
-  Item*  volumeContents =
-    [CompoundItem compoundItemWithFirst: freeSpaceItem
-                    second: usedSpaceItem];
-  [volumeItem setDirectoryContents: volumeContents 
-                   size: [volumeContents itemSize]];
+  [usedSpaceItem setDirectoryContents: 
+                   [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
+                                   second: scannedDirItem]];
+    
+  [volumeItem setDirectoryContents: 
+                [CompoundItem compoundItemWithFirst: freeSpaceItem
+                                second: usedSpaceItem]];
 
   return scannedDirItem;
 }
@@ -232,7 +228,6 @@ static struct {
   NSAutoreleasePool  *localAutoreleasePool = nil;
   
   NSString  *path = [parentPath stringByAppendingPathComponent:[dirItem name]];
-  ITEM_SIZE  dirSize = 0;
   int  i;
 
   FSIterator iterator;
@@ -298,8 +293,6 @@ static struct {
             [fileChildren addObject:fileChildItem];
             [fileChildItem release];
 
-            dirSize += childSize;
-            
             [itemInventory registerFileItem: fileChildItem];
           }
           
@@ -316,8 +309,6 @@ static struct {
     
     [self buildTreeForDirectory:dirChildItem parentPath:path
             ref: &(refObject->ref)];
-    
-    dirSize += [dirChildItem itemSize];
   }
   
   Item  *fileTree = [treeBalancer createTreeForItems:fileChildren];
@@ -325,7 +316,7 @@ static struct {
   Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
                                        second: dirTree];
 
-  [dirItem setDirectoryContents:contentTree size:dirSize];
+  [dirItem setDirectoryContents: contentTree];
   
   [fileChildren release];
   [dirChildren release];
