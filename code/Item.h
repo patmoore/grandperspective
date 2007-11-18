@@ -11,6 +11,7 @@
 
 - (ITEM_SIZE) itemSize;
 
+// An item is virtual if it is not a file item (i.e. a file or directory).
 - (BOOL) isVirtual;
 
 @end

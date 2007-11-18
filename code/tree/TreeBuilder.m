@@ -113,21 +113,103 @@ static struct {
 }
 
 
-- (DirectoryItem*) buildTreeForPath:(NSString*)path {
-  FSRef  rootRef;
+- (DirectoryItem*) buildTreeForPath:(NSString *)path {
+  FSRef  pathRef;
   Boolean  isDir;
 
   OSStatus  status = 
-    FSPathMakeRef( [path fileSystemRepresentation], &rootRef, &isDir );
+    FSPathMakeRef( [path fileSystemRepresentation], &pathRef, &isDir );
+  NSAssert(isDir, @"Path is not a directory.");
   
-  NSAssert(isDir, @"Root is not a directory.");
+  NSFileManager  *manager = [NSFileManager defaultManager];
+  NSDictionary  *fsattrs = [manager fileSystemAttributesAtPath: path];
   
-  DirectoryItem*  rootItem = 
-    [[[DirectoryItem alloc] initWithName:path parent:nil] autorelease];
-    
-  BOOL  ok = [self buildTreeForDirectory:rootItem parentPath:@"" ref:&rootRef];
+  unsigned long long  freeSpace = 
+    [[fsattrs objectForKey: NSFileSystemFreeSize] unsignedLongLongValue];
+  unsigned long long  volumeSize =
+    [[fsattrs objectForKey: NSFileSystemSize] unsignedLongLongValue];
+  
+  // Establish the root of the volume
+  unsigned long long  fileSystemNumber =
+    [[fsattrs objectForKey: NSFileSystemNumber] unsignedLongLongValue];
+  NSString  *pathToVolume = path;
 
-  return ok ? rootItem : nil;
+  while (YES) {
+    NSString  *parentPath = [pathToVolume stringByDeletingLastPathComponent];
+    if ([parentPath isEqualToString: pathToVolume]) {
+      break;
+    }
+    fsattrs = [manager fileSystemAttributesAtPath: parentPath];
+
+    unsigned long long  parentFileSystemNumber =
+      [[fsattrs objectForKey: NSFileSystemNumber] unsignedLongLongValue];
+    if (parentFileSystemNumber != fileSystemNumber) {
+      break;
+    } 
+    pathToVolume = parentPath;
+  }
+  NSLog(@"Volume: %@ [%@]", pathToVolume, 
+           [manager displayNameAtPath: pathToVolume]);
+  NSString  *relativePath =
+    ([pathToVolume length] < [path length] ? 
+       [path substringFromIndex: [pathToVolume length]] : @"");
+  NSLog(@"Relative folder: %@", relativePath);  
+       
+  DirectoryItem*  volumeItem = 
+    [[[DirectoryItem alloc] initWithName: pathToVolume parent: nil] 
+         autorelease];
+         
+  FileItem*  freeSpaceItem = 
+    [FileItem specialFileItemWithName: @"Free space"
+                 parent: volumeItem size: freeSpace];
+                 
+  DirectoryItem*  usedSpaceItem =
+    [DirectoryItem specialDirectoryItemWithName: @"Used space"
+                     parent: volumeItem];
+                     
+  DirectoryItem*  scannedDirItem = 
+    [[[DirectoryItem alloc] initWithName: relativePath parent: nil] 
+         autorelease];
+    
+  if (! [self buildTreeForDirectory: scannedDirItem 
+                parentPath: pathToVolume ref: &pathRef]) {
+    return nil;
+  }
+
+  ITEM_SIZE  miscUnusedSize = volumeSize;
+  if ([scannedDirItem itemSize] <= volumeSize) {
+    miscUnusedSize -= [scannedDirItem itemSize];
+    
+    if (freeSpace <= volumeSize) {
+      miscUnusedSize -= freeSpace;
+    }
+    else {
+      NSLog(@"Scanned tree size plus free space is larger than volume size.");
+      miscUnusedSize = 0;
+    }
+  } 
+  else {
+    NSLog(@"Scanned tree size is larger than volume size.");
+    miscUnusedSize = 0;
+  }
+
+  FileItem*  miscUnusedSpaceItem = 
+    [FileItem specialFileItemWithName: @"Miscellaneous"
+                 parent: usedSpaceItem size: miscUnusedSize];
+
+  Item*  usedSpaceContents = 
+    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
+                    second: scannedDirItem];
+  [usedSpaceItem setDirectoryContents: usedSpaceContents 
+                   size: [usedSpaceContents itemSize]];
+                   
+  Item*  volumeContents =
+    [CompoundItem compoundItemWithFirst: freeSpaceItem
+                    second: usedSpaceItem];
+  [volumeItem setDirectoryContents: volumeContents 
+                   size: [volumeContents itemSize]];
+
+  return scannedDirItem;
 }
 
 @end // @implementation TreeBuilder

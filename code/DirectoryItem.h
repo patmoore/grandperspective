@@ -6,6 +6,9 @@
   Item  *contents;
 }
 
++ (DirectoryItem*) specialDirectoryItemWithName:(NSString *)name
+                     parent:(DirectoryItem *)parent;
+
 - (void) setDirectoryContents:(Item*)contents size:(ITEM_SIZE)dirSize;
 
 - (Item*) getContents;

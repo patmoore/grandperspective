@@ -16,8 +16,17 @@
 - (id) initWithName:(NSString*)name parent:(DirectoryItem*)parent;
 - (id) initWithName:(NSString*)name parent:(DirectoryItem*)parent 
          size:(ITEM_SIZE)size;
+
++ (FileItem *) specialFileItemWithName:(NSString *)name
+                 parent:(DirectoryItem *)parent 
+                 size:(ITEM_SIZE) size;
   
+// Returns YES iff the file item is not a directory.
 - (BOOL) isPlainFile;
+
+// An item is special if it does not represent an actual file.
+// E.g. a special file item may represent the free space on a volume. 
+- (BOOL) isSpecial;
 
 - (NSString*) stringForFileItemPath;
 

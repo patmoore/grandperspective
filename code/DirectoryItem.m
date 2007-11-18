@@ -1,7 +1,24 @@
 #import "DirectoryItem.h"
 
 
+
+@interface SpecialDirectoryItem : DirectoryItem {
+}
+@end
+
+@implementation SpecialDirectoryItem
+- (BOOL) isSpecial { return YES; }
+@end
+
+
 @implementation DirectoryItem
+
++ (DirectoryItem *)specialDirectoryItemWithName:(NSString *)nameVal
+                     parent:(DirectoryItem *)parentVal {
+  return [[[SpecialDirectoryItem alloc] initWithName: nameVal 
+                                          parent: parentVal] autorelease];
+}
+
 
 - (void) dealloc {
   [contents release];

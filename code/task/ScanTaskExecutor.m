@@ -28,6 +28,7 @@
   }
   
   ScanTaskInput  *myInput = input;
+  NSString  *path = [myInput directoryName];
   
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
   treeBuilder = [[TreeBuilder alloc] init];
@@ -35,8 +36,7 @@
   
   NSDate  *startTime = [NSDate date];
   
-  DirectoryItem*  itemTree = 
-    [treeBuilder buildTreeForPath: [myInput directoryName]];
+  DirectoryItem*  itemTree = [treeBuilder buildTreeForPath: path];
   
   [treeBuilder release];
   treeBuilder = nil;
@@ -48,8 +48,7 @@
   
   // Establish the free space (at time of scan)  
   NSFileManager  *manager = [NSFileManager defaultManager];
-  NSDictionary  *fsattrs = 
-    [manager fileSystemAttributesAtPath: [myInput directoryName]];
+  NSDictionary  *fsattrs = [manager fileSystemAttributesAtPath: path];
   unsigned long long  freeSpace = 
     [[fsattrs objectForKey: NSFileSystemFreeSize] unsignedLongLongValue];
 

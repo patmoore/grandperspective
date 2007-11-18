@@ -14,7 +14,24 @@ NSString* filesizeUnitString(int order) {
 };
 
 
+
+@interface SpecialFileItem : FileItem {
+}
+@end
+
+@implementation SpecialFileItem
+- (BOOL) isSpecial { return YES; }
+@end
+
+
 @implementation FileItem
+
++ (FileItem *) specialFileItemWithName:(NSString *)nameVal
+                 parent:(DirectoryItem *)parentVal
+                 size:(ITEM_SIZE) sizeVal {
+  return [[[SpecialFileItem alloc] initWithName: nameVal parent: parentVal
+                                     size: sizeVal] autorelease];
+}
 
 // Overrides super's designated initialiser.
 - (id) initWithItemSize:(ITEM_SIZE)sizeVal {
@@ -59,6 +76,10 @@ NSString* filesizeUnitString(int order) {
 
 - (BOOL) isPlainFile {
   return YES;
+}
+
+- (BOOL) isSpecial {
+  return NO;
 }
 
 
