@@ -56,6 +56,9 @@
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
 
+    rootPathName = 
+      [[[itemPathModel rootFileItem] stringForFileItemPath] retain];
+    
     invisiblePathName = nil;
        
     colorMappings = 
@@ -87,6 +90,7 @@
   
   [editMaskFilterWindowControl release];
 
+  [rootPathName release];
   [invisiblePathName release];
   
   [super dealloc];
@@ -193,7 +197,8 @@
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
-  invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
+  invisiblePathName = 
+    [[[itemPathModel visibleRootFileItem] stringForFileItemPath] retain];
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(updateButtonState:)
@@ -234,16 +239,12 @@
 }
 
 - (IBAction) openFileInFinder:(id)sender {
-  NSString  *filePath = [itemPathModel visibleSelectedFilePathName];
-  NSString  *rootPath = 
-    [[itemPathModel rootFilePathName] 
-      stringByAppendingPathComponent: [itemPathModel invisibleFilePathName]];
-    
-  NSLog(@"root=%@ file=%@", rootPath, filePath);
+  NSString  *filePath = 
+    [[itemPathModel selectedFileItem] stringForFileItemPath];
+  NSLog(@"root=%@ file=%@", invisiblePathName, filePath);
 
   [[NSWorkspace sharedWorkspace] 
-    selectFile: [rootPath stringByAppendingPathComponent:filePath] 
-    inFileViewerRootedAtPath: rootPath];  
+    selectFile: filePath inFileViewerRootedAtPath: invisiblePathName];
 }
 
 
@@ -363,11 +364,10 @@
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
   
   [invisiblePathName release];
-  invisiblePathName = [[itemPathModel invisibleFilePathName] retain];
+  invisiblePathName = 
+    [[[itemPathModel visibleRootFileItem] stringForFileItemPath] retain];
 
-  [visibleFolderPathTextView setString:
-    [[itemPathModel rootFilePathName] stringByAppendingPathComponent:
-                                        invisiblePathName]];
+  [visibleFolderPathTextView setString: invisiblePathName];;
 
   ITEM_SIZE  itemSize = [[itemPathModel visibleItemTree] itemSize];
   [visibleFolderExactSizeField setStringValue:
@@ -403,17 +403,23 @@
 
     [itemSizeField setStringValue: itemSizeString];
 
-    NSString  *visiblePathName = [itemPathModel visibleSelectedFilePathName];
-    NSString  *name = [invisiblePathName stringByAppendingPathComponent:
-                         visiblePathName];
+    // Create attributed string for the path of the selected item. The
+    // root of the scanned tree is excluded from the path, and the part that
+    // is visible in the view is marked using different attributes.
+    NSString  *name = [selectedItem stringForFileItemPath];
+    NSString  *relName = [name substringFromIndex: [rootPathName length]];
+    int  visLen = [name length] - [invisiblePathName length] - 1;
+    if ([relName isAbsolutePath]) {
+      // Strip leading slash.
+      relName = [relName substringFromIndex: 1];
+    }
     NSMutableAttributedString  *attributedName = 
-      [[NSMutableAttributedString alloc] initWithString: name];
-   
-    // Mark invisible part of path
-    int  invisLen = [invisiblePathName length];
-    [attributedName addAttribute: NSForegroundColorAttributeName
-                      value: [NSColor darkGrayColor] 
-                      range: NSMakeRange(invisLen, [name length] - invisLen) ];
+      [[NSMutableAttributedString alloc] initWithString: relName];
+    if (visLen > 0) {
+      [attributedName addAttribute: NSForegroundColorAttributeName
+                        value: [NSColor darkGrayColor] 
+                        range: NSMakeRange([relName length] - visLen, visLen) ];
+    }
     [itemPathField setStringValue: ((id) attributedName) ];
 
     [attributedName release];
@@ -422,9 +428,7 @@
       ([selectedItem isPlainFile] ?
          selectedFileTitle :
          NSLocalizedString( @"Selected folder:", "Label in Focus panel" ) )];
-    [selectedItemPathTextView setString:
-      [[visibleFolderPathTextView string] stringByAppendingPathComponent:
-                                            visiblePathName]];
+    [selectedItemPathTextView setString: name];
     [selectedItemExactSizeField setStringValue: 
        [FileItem exactStringForFileItemSize: itemSize]];
     [selectedItemSizeField setStringValue: 

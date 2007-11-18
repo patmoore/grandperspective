@@ -61,6 +61,7 @@
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
+  NSString  *rootPathName;
   NSString  *invisiblePathName;
 }
 

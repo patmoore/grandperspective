@@ -207,7 +207,7 @@ NSString* scanActivityFormatString() {
   ItemPathModel  *itemPathModel = [oldControl itemPathModel];
 
   if (itemPathModel != nil) {
-    NSString  *dirName = [itemPathModel rootFilePathName];
+    NSString  *dirName = [[itemPathModel rootFileItem] stringForFileItemPath];
     
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
@@ -284,10 +284,10 @@ NSString* scanActivityFormatString() {
     NSString  *format = NSLocalizedString( 
                           @"Filtering %@", 
                           @"Message in progress panel while filtering" );
+    NSString  *pathName = [[oldPathModel rootFileItem] stringForFileItemPath];
     [filterTaskManager asynchronouslyRunTaskWithInput: input
                          description: 
-                           [NSString stringWithFormat: format,
-                                       [oldPathModel rootFilePathName]]
+                           [NSString stringWithFormat: format, pathName]
                          callback: windowCreator
                          selector: @selector(createWindowForTree:)];
 

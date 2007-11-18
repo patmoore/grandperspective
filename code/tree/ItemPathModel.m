@@ -13,9 +13,6 @@
 // "start" and "end" are both inclusive.
 - (NSArray*) buildFileItemPathFromIndex:(int)start toIndex:(int)end;
 
-// "start" and "end" are both inclusive.
-- (NSString*) buildPathNameFromIndex:(int)start toIndex:(int)end;
-
 - (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item;
 
 @end
@@ -97,36 +94,20 @@
 }
 
 
+- (FileItem*) rootFileItem {
+  return [path objectAtIndex: 0];
+}
+
+- (FileItem*) visibleRootFileItem {
+  return [path objectAtIndex: visibleTreeRootIndex];
+}
+
 - (FileItem*) selectedFileItem {
   return [path objectAtIndex: selectedFileItemIndex];
 }
 
 - (FileItem*) fileItemPathEndPoint {
   return [path objectAtIndex: lastFileItemIndex];
-}
-
-
-
-- (NSString*) rootFilePathName {
-  FileItem  *root = [path objectAtIndex:0];
-  return [root name];
-}
-
-- (NSString*) invisibleFilePathName {
-  return [self buildPathNameFromIndex: 1            // Skip the tree root
-                 toIndex: visibleTreeRootIndex];    // Include visible root
-}
-
-- (NSString*) visibleSelectedFilePathName {
-  return [self buildPathNameFromIndex: visibleTreeRootIndex + 1  
-                                                    // Skip the visible root
-                  toIndex: selectedFileItemIndex];  // Include the end point
-}
-
-- (NSString*) visibleFilePathName {
-  return [self buildPathNameFromIndex: visibleTreeRootIndex + 1  
-                                                    // Skip the visible root
-                  toIndex: lastFileItemIndex];      // Include the end point
 }
 
 
@@ -333,28 +314,6 @@
   }
   
   return fileItemPath;
-}
-
-- (NSString*) buildPathNameFromIndex: (int)start toIndex: (int)end {
-  NSMutableString  *s = 
-    [[[NSMutableString alloc] initWithCapacity: 128] autorelease];
-
-  int  i = start; // Skip the root
-  while (i <= end) {
-    Item*  item = [path objectAtIndex: i]; 
-
-    if (! [item isVirtual]) {
-      if ([s length] > 0) {
-        [s appendString: @"/"];
-      }
-      
-      [s appendString: [((FileItem*)item) name]];
-    }
-    i++;
-  }
-
-  // Return an immutable string.
-  return  [NSString stringWithString: s];
 }
 
 

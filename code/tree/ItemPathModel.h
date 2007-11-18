@@ -62,28 +62,17 @@
 - (NSArray*) itemPathToSelectedFileItem;
 
 
+// Returns the root of the entire tree.
+- (FileItem*) rootFileItem;
+
+// Returns the root of the visible tree.
+- (FileItem*) visibleRootFileItem;
+
 // Returns the selected file item (which is always part of the visible path).
 - (FileItem*) selectedFileItem;
 
 // Returns the last file item in the path.
 - (FileItem*) fileItemPathEndPoint;
-
-
-// The path name for the root of the tree. 
-- (NSString*) rootFilePathName;
-
-// The path name of the invisible part of the path until (inclusive) the root 
-// in the view. The path is relative to that returned by -rootFilePathName.
-- (NSString*) invisibleFilePathName;
-
-// The path name to the selected file item that is visible (excluding the 
-// root in the view). So the path is relative to that returned by 
-// -invisibleFilePathName.
-- (NSString*) visibleSelectedFilePathName;
-
-// The path name that is visible (excluding the root in the view). So the path
-// is relative to that returned by -invisibleFilePathName.
-- (NSString*) visibleFilePathName;
 
 
 - (BOOL) isVisibleItemPathLocked;
