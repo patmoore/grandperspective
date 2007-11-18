@@ -104,14 +104,14 @@
   NSAssert(item != nil, @"Item must be non-nil.");
   
   NSString  *pathString;
-
+  NSString*  comp = [item isSpecial] ? @"" : [item name];
   if ([item parentDirectory] != nil) {
     [self fillCacheToItem: [item parentDirectory]];
-    pathString = [[cachedPathStrings lastObject] 
-                     stringByAppendingPathComponent: [item name]];
+    pathString = 
+      [[cachedPathStrings lastObject] stringByAppendingPathComponent: comp];
   }
   else {
-    pathString = [item name];
+    pathString = comp;
     NSAssert([cachedPathStrings count] == 0, @"Cache should be empty.");
   }
   

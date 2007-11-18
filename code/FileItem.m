@@ -84,10 +84,13 @@ NSString* filesizeUnitString(int order) {
 
 
 - (NSString*) stringForFileItemPath {
-  return
-    (parent != nil) ?
-       [[parent stringForFileItemPath] stringByAppendingPathComponent: name] :
-    name;
+  // Special items do not contribute to the path.
+  NSString*  comp = [self isSpecial] ? @"" : name;
+  
+  return (parent != nil) ? [[parent stringForFileItemPath] 
+                               stringByAppendingPathComponent: comp] : comp;
+  // Note: The above assumes that appending an empty path component does 
+  // nothing.
 }
 
 

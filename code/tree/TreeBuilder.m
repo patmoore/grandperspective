@@ -205,6 +205,11 @@ static struct {
                 [CompoundItem compoundItemWithFirst: freeSpaceItem
                                 second: usedSpaceItem]];
 
+  // TEMP: Retain here, as long as this is not yet done elsewhere. This way,
+  // the special items are not released prematurely. However, this obviously
+  // introduces a huge memory leak.
+  [volumeItem retain];
+
   return scannedDirItem;
 }
 
