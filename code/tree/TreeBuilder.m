@@ -168,7 +168,7 @@ static struct {
                      parent: volumeItem];
                      
   DirectoryItem*  scannedDirItem = 
-    [[[DirectoryItem alloc] initWithName: relativePath parent: nil] 
+    [[[DirectoryItem alloc] initWithName: relativePath parent: usedSpaceItem] 
          autorelease];
     
   if (! [self buildTreeForDirectory: scannedDirItem 
