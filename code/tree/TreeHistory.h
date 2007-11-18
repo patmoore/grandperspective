@@ -5,19 +5,17 @@
 @class DirectoryItem;
 
 @interface TreeHistory : NSObject {
-  DirectoryItem  *treeRoot;
+  DirectoryItem  *volumeTree;
 
   NSDate  *scanTime;
   NSString  *fileSizeMeasure;
-  unsigned long long  freeSpace;
   
   NSObject <FileItemTest>  *filter;
   int  filterId;
 }
 
 // Scan time is set to "now".
-- (id) initWithTree: (DirectoryItem *)treeRoot 
-         freeSpace: (unsigned long long) space
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree 
          fileSizeMeasure: (NSString *)measure;
 
 // Scan time defaults to "now". "newFilter" is the newly applied filter,
@@ -29,11 +27,13 @@
 - (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree
                    freeSpace: (unsigned long long) space;
 
-- (DirectoryItem*) itemTree;
+- (DirectoryItem*) volumeTree;
+- (DirectoryItem*) scanTree;
+
+- (unsigned long long) freeSpace;
 
 - (NSString*) fileSizeMeasure;
 - (NSDate*) scanTime;
-- (unsigned long long) freeSpace;
 
 - (NSObject <FileItemTest>*) fileItemFilter;
 

@@ -14,7 +14,7 @@
 }
 
 - (id) initWithOldHistory: (TreeHistory *) oldHistoryVal {
-  if (self = [super initWithDirectoryName: [[oldHistoryVal itemTree] name]
+  if (self = [super initWithDirectoryName: [[oldHistoryVal scanTree] name]
                       fileSizeMeasure: [oldHistoryVal fileSizeMeasure]]) {
     oldHistory = [oldHistoryVal retain];
   }

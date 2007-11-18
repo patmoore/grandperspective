@@ -25,7 +25,7 @@
     treeFilter = [[TreeFilter alloc] initWithFileItemTest: filterTest];
   
     DirectoryItem  
-      *filteredTree = [treeFilter filterItemTree: [scanResult itemTree]];
+      *filteredTree = [treeFilter filterItemTree: [scanResult volumeTree]];
   
     [treeFilter release];
     treeFilter = nil;

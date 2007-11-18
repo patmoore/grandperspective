@@ -36,27 +36,21 @@
   
   NSDate  *startTime = [NSDate date];
   
-  DirectoryItem*  itemTree = [treeBuilder buildTreeForPath: path];
+  DirectoryItem*  volumeTree = [treeBuilder buildVolumeTreeForPath: path];
   
   [treeBuilder release];
   treeBuilder = nil;
   
-  if (itemTree == nil) {
+  if (volumeTree == nil) {
     // Scanning was aborted.
     return nil;
   }
-  
-  // Establish the free space (at time of scan)  
-  NSFileManager  *manager = [NSFileManager defaultManager];
-  NSDictionary  *fsattrs = [manager fileSystemAttributesAtPath: path];
-  unsigned long long  freeSpace = 
-    [[fsattrs objectForKey: NSFileSystemFreeSize] unsignedLongLongValue];
 
-  NSLog(@"Done scanning. Total size=%qu, Free space=%qu, Time taken=%f", 
-          [itemTree itemSize], freeSpace, -[startTime timeIntervalSinceNow]);
+  NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
+          [volumeTree itemSize], -[startTime timeIntervalSinceNow]);
   
   return [[[TreeHistory alloc] 
-              initWithTree: itemTree freeSpace: freeSpace
+              initWithVolumeTree: volumeTree
               fileSizeMeasure: [myInput fileSizeMeasure]] autorelease];
 }
 

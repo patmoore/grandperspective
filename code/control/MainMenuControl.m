@@ -366,7 +366,8 @@ NSString* scanActivityFormatString() {
 // Creates window title based on scan location, scan time and filter (if any).
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeHistory  *history = [control treeHistory];
-  NSString  *rootPathName = [[[control itemPathModel] itemTree] name];
+  NSString  *rootPathName = 
+    [[[control itemPathModel] itemTree] stringForFileItemPath];
                 
   NSString  *scanTimeString = 
     [[history scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
@@ -470,7 +471,7 @@ NSString* scanActivityFormatString() {
        
   // Try to match the path.
   ItemPathModel  *path = 
-    [[[ItemPathModel alloc] initWithTree: [treeHistory itemTree]] autorelease];
+    [[[ItemPathModel alloc] initWithTree: [treeHistory scanTree]] autorelease];
 
   [path suppressSelectedItemChangedNotifications: YES];
     

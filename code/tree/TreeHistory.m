@@ -2,6 +2,7 @@
 
 #import "CompoundAndItemTest.h"
 #import "DirectoryItem.h"
+#import "TreeBuilder.h"
 
 
 static int  nextFilterId = 1;
@@ -9,8 +10,7 @@ static int  nextFilterId = 1;
 
 @interface TreeHistory (PrivateMethods)
 
-- (id) initWithTree: (DirectoryItem *)treeRoot
-         freeSpace: (unsigned long long) freeSpace
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
          fileSizeMeasure: (NSString *)fileSizeMeasure
          scanTime: (NSDate *)scanTime
          filter: (NSObject <FileItemTest> *)filter
@@ -27,11 +27,9 @@ static int  nextFilterId = 1;
 }
 
 
-- (id) initWithTree: (DirectoryItem *)treeRootVal
-         freeSpace: (unsigned long long) freeSpaceVal
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal
          fileSizeMeasure: (NSString *)fileSizeMeasureVal {
-  return [self initWithTree: treeRootVal 
-                 freeSpace: freeSpaceVal 
+  return [self initWithVolumeTree: volumeTreeVal 
                  fileSizeMeasure: fileSizeMeasureVal 
                  scanTime: [NSDate date]
                  filter: nil 
@@ -39,7 +37,7 @@ static int  nextFilterId = 1;
 }
 
 - (void) dealloc {
-  [treeRoot release];
+  [volumeTree release];
   [fileSizeMeasure release];
   [scanTime release];
   [filter release];
@@ -62,8 +60,7 @@ static int  nextFilterId = 1;
            [NSArray arrayWithObjects:filter, newFilter, nil]] autorelease];
   }
 
-  return [[[TreeHistory alloc] initWithTree: newTree
-                                 freeSpace: freeSpace
+  return [[[TreeHistory alloc] initWithVolumeTree: newTree
                                  fileSizeMeasure: fileSizeMeasure
                                  scanTime: scanTime
                                  filter: totalFilter
@@ -72,8 +69,7 @@ static int  nextFilterId = 1;
 
 - (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree
                    freeSpace: (unsigned long long) newFreeSpace {
-  return [[[TreeHistory alloc] initWithTree: newTree
-                                 freeSpace: newFreeSpace
+  return [[[TreeHistory alloc] initWithVolumeTree: newTree
                                  fileSizeMeasure: fileSizeMeasure
                                  scanTime: [NSDate date]
                                  filter: filter
@@ -81,10 +77,18 @@ static int  nextFilterId = 1;
 }
 
 
-- (DirectoryItem*) itemTree {
-  return treeRoot;
+- (DirectoryItem*) volumeTree {
+  return volumeTree;
 }
 
+- (DirectoryItem*) scanTree {
+  return [TreeBuilder scanTreeOfVolume: volumeTree];
+}
+
+
+- (unsigned long long) freeSpace {
+  return [TreeBuilder freeSpaceOfVolume: volumeTree];
+}
 
 - (NSString*) fileSizeMeasure {
   return fileSizeMeasure;
@@ -93,11 +97,6 @@ static int  nextFilterId = 1;
 - (NSDate*) scanTime {
   return scanTime;
 }
-
-- (unsigned long long) freeSpace {
-  return freeSpace;
-}
-
 
 - (NSObject <FileItemTest>*) fileItemFilter {
   return filter;
@@ -125,16 +124,16 @@ static int  nextFilterId = 1;
 
 @implementation TreeHistory (PrivateMethods)
 
-- (id) initWithTree: (DirectoryItem *)treeRootVal
-         freeSpace: (unsigned long long) freeSpaceVal
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
          scanTime: (NSDate *)scanTimeVal
          filter: (NSObject <FileItemTest> *)filterVal
          filterId: (int) filterIdVal {
   if (self = [super init]) {
-    treeRoot = [treeRootVal retain];
+    NSAssert([volumeTreeVal parentDirectory]==nil,
+                @"Tree must be the volume tree.");
+    volumeTree = [volumeTreeVal retain];
 
-    freeSpace = freeSpaceVal;
     fileSizeMeasure = [fileSizeMeasureVal retain];
     scanTime = [scanTimeVal retain];
 

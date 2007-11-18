@@ -32,7 +32,7 @@
 
 - (id) initWithTreeHistory: (TreeHistory *)history {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithTree: [history itemTree]] autorelease];
+    [[[ItemPathModel alloc] initWithTree: [history scanTree]] autorelease];
 
   // Default settings
   DirectoryViewControlSettings  *defaultSettings =
@@ -50,7 +50,7 @@
          pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal itemTree] == [treeHistoryVal itemTree], 
+    NSAssert([itemPathModelVal itemTree] == [treeHistoryVal scanTree], 
                @"Tree mismatch");
     treeHistory = [treeHistoryVal retain];
     itemPathModel = [itemPathModelVal retain];
@@ -132,8 +132,8 @@
 
 
 - (void) windowDidLoad {
-  [mainView postInitWithFreeSpace: [treeHistory freeSpace] 
-              itemPathModel: itemPathModel];
+  unsigned long long  freeSpace = [treeHistory freeSpace];
+  [mainView postInitWithFreeSpace: freeSpace itemPathModel: itemPathModel];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -176,7 +176,8 @@
   [initialSettings release];
   initialSettings = nil;
   
-  [treePathTextView setString: [[itemPathModel itemTree] name]];
+  [treePathTextView setString: 
+                      [[itemPathModel itemTree] stringForFileItemPath]];
 
   [filterNameField setStringValue: [treeHistory filterName]];
   [filterDescriptionTextView setString: 
@@ -192,8 +193,7 @@
                   table: @"Names"]];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
-  [freeSpaceField setStringValue: [FileItem stringForFileItemSize: 
-                                    [treeHistory freeSpace]]];
+  [freeSpaceField setStringValue: [FileItem stringForFileItemSize: freeSpace]];
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");

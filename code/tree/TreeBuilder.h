@@ -25,6 +25,9 @@ extern NSString  *PhysicalFileSize;
 - (NSString *) fileSizeMeasure;
 - (void) setFileSizeMeasure: (NSString *)measure;
 
-- (DirectoryItem *) buildTreeForPath: (NSString *)path;
+- (DirectoryItem *) buildVolumeTreeForPath: (NSString *)path;
+
++ (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root;
++ (DirectoryItem *) scanTreeOfVolume: (DirectoryItem *)root;
 
 @end

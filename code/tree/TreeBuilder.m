@@ -113,7 +113,7 @@ static struct {
 }
 
 
-- (DirectoryItem*) buildTreeForPath:(NSString *)path {
+- (DirectoryItem*) buildVolumeTreeForPath:(NSString *)path {
   FSRef  pathRef;
   Boolean  isDir;
 
@@ -205,12 +205,23 @@ static struct {
                 [CompoundItem compoundItemWithFirst: freeSpaceItem
                                 second: usedSpaceItem]];
 
-  // TEMP: Retain here, as long as this is not yet done elsewhere. This way,
-  // the special items are not released prematurely. However, this obviously
-  // introduces a huge memory leak.
-  [volumeItem retain];
+  return volumeItem;
+}
 
-  return scannedDirItem;
++ (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root {
+  NSAssert([root parentDirectory]==nil, @"Root must be the volume tree.");
+  
+  return [[((CompoundItem *)[root getContents]) getFirst] itemSize];
+}
+
++ (DirectoryItem *) scanTreeOfVolume: (DirectoryItem *)root {
+  NSAssert([root parentDirectory]==nil, @"Root must be the volume tree.");
+  
+  return (DirectoryItem *)
+           [((CompoundItem *)
+             [((DirectoryItem *)
+               [((CompoundItem *)
+                 [root getContents]) getSecond]) getContents]) getSecond];
 }
 
 @end // @implementation TreeBuilder
