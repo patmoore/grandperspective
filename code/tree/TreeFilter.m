@@ -2,11 +2,15 @@
 
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
+#import "TreeBuilder.h"
 #import "TreeBalancer.h"
 #import "FileItemTest.h"
 #import "FileItemPathStringCache.h"
 
 @interface TreeFilter (PrivateMethods)
+
+- (void) filterItemTree: (DirectoryItem *)oldDirItem 
+           into: (DirectoryItem *)newDirItem;
 
 - (void) flattenAndFilterSiblings: (Item *)item
            directoryItems: (NSMutableArray *)dirItems
@@ -37,7 +41,6 @@
   return self;
 }
 
-
 - (void) dealloc {
   [itemTest release];
   [treeBalancer release];
@@ -46,15 +49,37 @@
   [super dealloc];
 }
 
-- (DirectoryItem*) filterItemTree:(DirectoryItem*) dirItem {
-  DirectoryItem  *newDirItem = 
-    [[[DirectoryItem alloc] initWithName: [dirItem name] 
-                              parent: [dirItem parentDirectory]] autorelease];
+- (DirectoryItem*) filterVolumeTree:(DirectoryItem *)oldVolumeTree {
+  DirectoryItem  *oldScanTree = [TreeBuilder scanTreeOfVolume: oldVolumeTree];
+  DirectoryItem  *newScanTree = 
+    [TreeBuilder scanTreeWithPath: [oldScanTree name]
+                      volumePath: [oldVolumeTree name]];
+  
+  [self filterItemTree: oldScanTree into: newScanTree];
+  
+  DirectoryItem  *newVolumeTree = 
+    [TreeBuilder finaliseVolumeTreeForScanTree: newScanTree
+                   volumeSize: [oldVolumeTree itemSize] 
+                   freeSpace: [TreeBuilder freeSpaceOfVolume: oldVolumeTree]];
+                 
+  return newVolumeTree; 
+}
 
+- (void) abort {
+  abort = YES;
+}
+
+@end
+
+
+@implementation TreeFilter (PrivateMethods)
+
+- (void) filterItemTree: (DirectoryItem *)oldDirItem 
+           into: (DirectoryItem *)newDirItem {
   NSMutableArray  *dirChildren = [[NSMutableArray alloc] initWithCapacity: 64];
   NSMutableArray  *fileChildren = [[NSMutableArray alloc] initWithCapacity:512]; 
 
-  [self flattenAndFilterSiblings: [dirItem getContents] 
+  [self flattenAndFilterSiblings: [oldDirItem getContents] 
           directoryItems: dirChildren fileItems: fileChildren];
 
   if (!abort) { // Break recursion when task has been aborted.
@@ -75,10 +100,14 @@
     // Filter the contents of all directory items
     for (i = [dirChildren count]; --i >= 0; ) {
       DirectoryItem  *oldSubDirItem = [dirChildren objectAtIndex: i];
-      DirectoryItem  *newSubDirItem = [self filterItemTree: oldSubDirItem];
+      DirectoryItem  *newSubDirItem = 
+        [[[DirectoryItem alloc] initWithName: [oldSubDirItem name]
+                                  parent: newDirItem] autorelease];
+      
+      [self filterItemTree: oldSubDirItem into: newSubDirItem];
     
-      if (newSubDirItem != nil) {
-        // Check to prevent inserting "nil" when filtering was aborted.
+      if (! abort) {
+        // Check to prevent inserting corrupt tree when filtering was aborted.
         
         [dirChildren replaceObjectAtIndex: i withObject: newSubDirItem];
       }
@@ -94,21 +123,8 @@
 
   [dirChildren release];
   [fileChildren release];
-  
-  // Must check "abort" flag again, as otherwise the returned tree could be 
-  // corrupt.
-  return (abort ? nil : newDirItem);
 }
 
-
-- (void) abort {
-  abort = YES;
-}
-
-@end
-
-
-@implementation TreeFilter (PrivateMethods)
 
 - (void) flattenAndFilterSiblings: (Item *)item
            directoryItems:(NSMutableArray *)dirItems

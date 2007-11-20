@@ -14,7 +14,10 @@
 }
 
 - (id) initWithOldHistory: (TreeHistory *) oldHistoryVal {
-  if (self = [super initWithDirectoryName: [[oldHistoryVal scanTree] name]
+  NSString  *scanTreePath = 
+    [[[oldHistoryVal volumeTree] name] stringByAppendingPathComponent:
+                                         [[oldHistoryVal scanTree] name]];
+  if (self = [super initWithDirectoryName: scanTreePath
                       fileSizeMeasure: [oldHistoryVal fileSizeMeasure]]) {
     oldHistory = [oldHistoryVal retain];
   }

@@ -67,8 +67,7 @@ static int  nextFilterId = 1;
                                  filterId: nextFilterId++] autorelease];
 }
 
-- (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree
-                   freeSpace: (unsigned long long) newFreeSpace {
+- (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree {
   return [[[TreeHistory alloc] initWithVolumeTree: newTree
                                  fileSizeMeasure: fileSizeMeasure
                                  scanTime: [NSDate date]

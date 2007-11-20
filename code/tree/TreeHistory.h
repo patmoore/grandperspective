@@ -24,8 +24,7 @@
                    filter: (NSObject <FileItemTest> *)newFilter;
 
 // Scan time is set to "now".
-- (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree
-                   freeSpace: (unsigned long long) space;
+- (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree;
 
 - (DirectoryItem*) volumeTree;
 - (DirectoryItem*) scanTree;

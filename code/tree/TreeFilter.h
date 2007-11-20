@@ -24,7 +24,7 @@
 
 - (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest;
 
-- (DirectoryItem*) filterItemTree:(DirectoryItem*) dirItem;
+- (DirectoryItem*) filterVolumeTree:(DirectoryItem *)volumeTree;
 
 - (void) abort;
 

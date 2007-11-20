@@ -24,14 +24,13 @@
   if (scanResult != nil && filterTest != nil) {
     treeFilter = [[TreeFilter alloc] initWithFileItemTest: filterTest];
   
-    DirectoryItem  
-      *filteredTree = [treeFilter filterItemTree: [scanResult volumeTree]];
+    DirectoryItem  *filteredVolumeTree = 
+      [treeFilter filterVolumeTree: [scanResult volumeTree]];
   
     [treeFilter release];
     treeFilter = nil;
     
-    return [[myInput oldHistory] historyAfterRescanning: filteredTree 
-                                   freeSpace: [scanResult freeSpace]];
+    return [[myInput oldHistory] historyAfterRescanning: filteredVolumeTree];
   }
   else {
     return scanResult;

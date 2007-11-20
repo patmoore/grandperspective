@@ -32,13 +32,13 @@
 
   treeFilter = 
     [[TreeFilter alloc] initWithFileItemTest: [filterInput filterTest]];
-  DirectoryItem  *filteredTree = 
-    [treeFilter filterItemTree: [[filterInput oldHistory] volumeTree]];
+  DirectoryItem  *filteredVolumeTree = 
+    [treeFilter filterVolumeTree: [[filterInput oldHistory] volumeTree]];
   
   [treeFilter release];
   treeFilter = nil;
   
-  return [[filterInput oldHistory] historyAfterFiltering: filteredTree
+  return [[filterInput oldHistory] historyAfterFiltering: filteredVolumeTree
                                      filter: [filterInput filterTest]];
 }
 
