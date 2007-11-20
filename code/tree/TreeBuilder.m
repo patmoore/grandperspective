@@ -155,30 +155,54 @@ static struct {
        [path substringFromIndex: [pathToVolume length]] : @"");
   NSLog(@"Relative folder: %@", relativePath);  
        
+  DirectoryItem*  scanTree = 
+    [TreeBuilder scanTreeWithPath: relativePath volumePath: pathToVolume];
+    
+  if (! [self buildTreeForDirectory: scanTree parentPath: pathToVolume
+                ref: &pathRef]) {
+    return nil;
+  }
+
+  DirectoryItem*  volumeTree = 
+    [TreeBuilder finaliseVolumeTreeForScanTree: scanTree
+                   volumeSize: volumeSize freeSpace: freeSpace];
+
+  return volumeTree;
+}
+
+
++ (DirectoryItem *) scanTreeWithPath: (NSString *)relativePath
+                      volumePath: (NSString *)pathToVolume {
   DirectoryItem*  volumeItem = 
     [[[DirectoryItem alloc] initWithName: pathToVolume parent: nil] 
          autorelease];
          
-  FileItem*  freeSpaceItem = 
-    [FileItem specialFileItemWithName: @"Free space"
-                 parent: volumeItem size: freeSpace];
-                 
   DirectoryItem*  usedSpaceItem =
     [DirectoryItem specialDirectoryItemWithName: @"Used space"
                      parent: volumeItem];
                      
-  DirectoryItem*  scannedDirItem = 
+  DirectoryItem*  scanTreeItem = 
     [[[DirectoryItem alloc] initWithName: relativePath parent: usedSpaceItem] 
          autorelease];
-    
-  if (! [self buildTreeForDirectory: scannedDirItem 
-                parentPath: pathToVolume ref: &pathRef]) {
-    return nil;
-  }
+         
+  return scanTreeItem;
+  // Note: volumeItem and useSpacedItem are currently only retained in the
+  // autorelease pool.
+}
 
++ (DirectoryItem *) finaliseVolumeTreeForScanTree: (DirectoryItem *)scanTree
+                      volumeSize: (unsigned long long) volumeSize 
+                      freeSpace: (unsigned long long) freeSpace {
+  DirectoryItem*  usedSpaceItem = [scanTree parentDirectory];
+  DirectoryItem*  volumeTree = [usedSpaceItem parentDirectory];
+
+  FileItem*  freeSpaceItem = 
+    [FileItem specialFileItemWithName: @"Free space"
+                 parent: volumeTree size: freeSpace];
+                 
   ITEM_SIZE  miscUnusedSize = volumeSize;
-  if ([scannedDirItem itemSize] <= volumeSize) {
-    miscUnusedSize -= [scannedDirItem itemSize];
+  if ([scanTree itemSize] <= volumeSize) {
+    miscUnusedSize -= [scanTree itemSize];
     
     if (freeSpace <= volumeSize) {
       miscUnusedSize -= freeSpace;
@@ -199,14 +223,15 @@ static struct {
 
   [usedSpaceItem setDirectoryContents: 
                    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
-                                   second: scannedDirItem]];
+                                   second: scanTree]];
     
-  [volumeItem setDirectoryContents: 
+  [volumeTree setDirectoryContents: 
                 [CompoundItem compoundItemWithFirst: freeSpaceItem
                                 second: usedSpaceItem]];
-
-  return volumeItem;
+                                
+  return volumeTree;
 }
+
 
 + (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root {
   NSAssert([root parentDirectory]==nil, @"Root must be the volume tree.");
