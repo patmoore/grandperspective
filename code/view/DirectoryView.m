@@ -2,7 +2,7 @@
 
 #import "math.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 
 #import "TreeLayoutBuilder.h"
 #import "ItemTreeDrawer.h"
@@ -10,6 +10,7 @@
 #import "ItemPathDrawer.h"
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
+#import "TreeBuilder.h"
 
 #import "TreeLayoutTraverser.h"
 
@@ -42,12 +43,7 @@
 - (id) initWithFrame:(NSRect)frame {
   if (self = [super initWithFrame:frame]) {
     layoutBuilder = [[TreeLayoutBuilder alloc] init];
-
-    DrawTaskExecutor  *drawTaskExecutor = [[DrawTaskExecutor alloc] init];  
-    drawTaskManager = 
-      [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-    [drawTaskExecutor release];
-
+    
     pathDrawer = [[ItemPathDrawer alloc] init];
   }
 
@@ -71,26 +67,24 @@
   [super dealloc];
 }
 
+- (void) postInitWithPathModel: (ItemPathModel *)pathModelVal {
+  NSAssert(drawTaskManager==nil, @"postInit already invoked.");
+  
+  DirectoryItem  *volumeTree =
+    [TreeBuilder volumeOfFileItem: [pathModelVal rootItemTree]];
+     
+  DrawTaskExecutor  *drawTaskExecutor = 
+    [[DrawTaskExecutor alloc] initWithVolumeTree: volumeTree];
+  drawTaskManager = 
+    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+  [drawTaskExecutor release];
 
-- (void) postInitWithItemPathModel: (ItemPathModel *)pathModelVal {
   [self setItemPathModel: pathModelVal];
 }
 
 
 - (ItemPathModel *) itemPathModel {
   return pathModel;
-}
-
-
-- (BOOL) showEntireVolume {
-  return showEntireVolume;
-}
-
-- (void) setShowEntireVolume: (BOOL) showEntireVolumeVal {
-  if (showEntireVolume != showEntireVolumeVal) {
-    showEntireVolume = showEntireVolumeVal;
-    [self forceRedraw];
-  }
 }
 
 
@@ -131,7 +125,7 @@
     
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
-      [[DrawTaskInput alloc] initWithItemSubTree: [pathModel visibleItemTree] 
+      [[DrawTaskInput alloc] initWithVisibleTree: [pathModel visibleItemTree] 
                                layoutBuilder: layoutBuilder
                                bounds: [self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 

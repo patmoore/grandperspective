@@ -11,11 +11,11 @@
   NSAssert(NO, @"Use initWithItemTree:bounds: instead");
 }
 
-- (id) initWithItemSubTree: (FileItem *)itemTreeVal
+- (id) initWithVisibleTree: (FileItem *)visibleTreeVal
          layoutBuilder: (TreeLayoutBuilder *)layoutBuilderVal
          bounds: (NSRect) boundsVal {
   if (self = [super init]) {
-    itemTree = [itemTreeVal retain];
+    visibleTree = [visibleTreeVal retain];
     layoutBuilder = [layoutBuilderVal retain];
     bounds = boundsVal;
   }
@@ -23,18 +23,18 @@
 }
 
 - (void) dealloc {
-  [itemTree release];
+  [visibleTree release];
   [layoutBuilder release];
   
   [super dealloc];
 }
 
 
-- (FileItem*) itemSubTree {
-  return itemTree;
+- (FileItem*) visibleTree {
+  return visibleTree;
 }
 
-- (TreeLayoutBuilder *) treeLayoutBuilder {
+- (TreeLayoutBuilder *) layoutBuilder {
   return layoutBuilder;
 }
 

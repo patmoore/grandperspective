@@ -2,7 +2,8 @@
 
 #import "TreeLayoutTraverser.h"
 
-@class Item;
+@class FileItem;
+@class DirectoryItem;
 @class TreeLayoutBuilder;
 @class FileItemHashing;
 @class ColorPalette;
@@ -11,6 +12,7 @@
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
+  DirectoryItem  *volumeTree;
 
   FileItemHashing  *colorMapping;
   NSObject<FileItemTest>  *fileItemMask;
@@ -26,9 +28,10 @@
   BOOL  abort;
 }
 
-- (id) init;
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
-
+// The tree starting at "volumeTree" should be immutable.
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree;
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
+         treeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
@@ -42,9 +45,8 @@
 // Updates the drawer according to the given settings.
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings;
 
-// The tree starting at "itemTree" should be immutable.
-- (NSImage *) drawImageOfItemTree: (Item *)itemTree 
-                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree
+                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
                 inRect: (NSRect) bounds;
 
 - (void) abortDrawing;

@@ -4,17 +4,17 @@
 @class TreeLayoutBuilder;
 
 @interface DrawTaskInput : NSObject {
-  FileItem  *itemTree;
+  FileItem  *visibleTree;
   TreeLayoutBuilder  *layoutBuilder;
   NSRect  bounds;
 }
 
-- (id) initWithItemSubTree: (FileItem *)itemTree 
+- (id) initWithVisibleTree: (FileItem *)visibleTree 
          layoutBuilder: (TreeLayoutBuilder *)layoutBuilder
          bounds: (NSRect) bounds;
 
-- (FileItem*) itemSubTree;
-- (TreeLayoutBuilder *) treeLayoutBuilder;
+- (FileItem *)visibleTree;
+- (TreeLayoutBuilder *)layoutBuilder;
 - (NSRect) bounds;
 
 @end

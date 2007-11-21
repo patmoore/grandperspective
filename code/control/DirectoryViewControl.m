@@ -50,14 +50,14 @@
          pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal itemTree] == [treeHistoryVal scanTree], 
+    NSAssert([itemPathModelVal rootItemTree] == [treeHistoryVal scanTree], 
                @"Tree mismatch");
     treeHistory = [treeHistoryVal retain];
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
 
     rootPathName = 
-      [[[itemPathModel rootFileItem] stringForFileItemPath] retain];
+      [[[itemPathModel rootItemTree] stringForFileItemPath] retain];
     
     invisiblePathName = nil;
        
@@ -122,7 +122,7 @@
               colorPaletteKey: colorPaletteKey
               mask: fileItemMask
               maskEnabled: [maskCheckBox state]==NSOnState
-              showEntireVolume: [mainView showEntireVolume]]
+              showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState]
                 autorelease];
 }
 
@@ -132,7 +132,7 @@
 
 
 - (void) windowDidLoad {
-  [mainView postInitWithItemPathModel: itemPathModel];
+  [mainView postInitWithPathModel: itemPathModel];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -175,8 +175,8 @@
   [initialSettings release];
   initialSettings = nil;
   
-  [treePathTextView setString: 
-                      [[itemPathModel itemTree] stringForFileItemPath]];
+  FileItem  *visibleItemTree = [itemPathModel visibleItemTree];
+  [treePathTextView setString: [visibleItemTree stringForFileItemPath]];
 
   [filterNameField setStringValue: [treeHistory filterName]];
   [filterDescriptionTextView setString: 
@@ -190,15 +190,14 @@
   [fileSizeMeasureField setStringValue: 
     [mainBundle localizedStringForKey: [treeHistory fileSizeMeasure] value: nil
                   table: @"Names"]];
-  [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
-                                    [[itemPathModel itemTree] itemSize]]];
+  [treeSizeField setStringValue: 
+    [FileItem stringForFileItemSize: [visibleItemTree itemSize]]];
   unsigned long long  freeSpace = [treeHistory freeSpace];
   [freeSpaceField setStringValue: [FileItem stringForFileItemSize: freeSpace]];
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
-  invisiblePathName = 
-    [[[itemPathModel visibleRootFileItem] stringForFileItemPath] retain];
+  invisiblePathName = [[visibleItemTree stringForFileItemPath] retain];
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(updateButtonState:)
@@ -294,8 +293,9 @@
 }
 
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender {
-  [mainView setShowEntireVolume: 
-              ([showEntireVolumeCheckBox state]==NSOnState) ? YES : NO];
+  [mainView setTreeDrawerSettings: 
+     [[mainView treeDrawerSettings] copyWithShowEntireVolume:
+         [showEntireVolumeCheckBox state]==NSOnState ? YES : NO]];
 }
 
 
@@ -362,14 +362,14 @@
 }
 
 - (void) visibleItemTreeChanged:(NSNotification*)notification {
+  FileItem  *visibleItemTree = [itemPathModel visibleItemTree];
   
   [invisiblePathName release];
-  invisiblePathName = 
-    [[[itemPathModel visibleRootFileItem] stringForFileItemPath] retain];
+  invisiblePathName = [[visibleItemTree stringForFileItemPath] retain];
 
-  [visibleFolderPathTextView setString: invisiblePathName];;
+  [visibleFolderPathTextView setString: invisiblePathName];
 
-  ITEM_SIZE  itemSize = [[itemPathModel visibleItemTree] itemSize];
+  ITEM_SIZE  itemSize = [visibleItemTree itemSize];
   [visibleFolderExactSizeField setStringValue:
      [FileItem exactStringForFileItemSize: itemSize]];
   [visibleFolderSizeField setStringValue:

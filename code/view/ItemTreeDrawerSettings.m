@@ -17,17 +17,20 @@
   return 
     [self initWithColorMapping: [[[FileItemHashing alloc] init] autorelease]
             colorPalette: [ItemTreeDrawerSettings defaultColorPalette]
-            fileItemMask: nil];
+            fileItemMask: nil
+            showEntireVolume: NO];
 }
 
 
 - (id) initWithColorMapping: (FileItemHashing *)colorMappingVal
          colorPalette: (NSColorList *)colorPaletteVal
-         fileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal {
+         fileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal
+         showEntireVolume: (BOOL) showEntireVolumeVal {
   if (self = [super init]) {
     colorMapping = [colorMappingVal retain];
     colorPalette = [colorPaletteVal retain];
     fileItemMask = [fileItemMaskVal retain];
+    showEntireVolume = showEntireVolumeVal;
   }
   
   return self;
@@ -46,21 +49,32 @@
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapping: colorMappingVal
               colorPalette: colorPalette
-              fileItemMask: fileItemMask] autorelease];
+              fileItemMask: fileItemMask
+              showEntireVolume: showEntireVolume] autorelease];
 }
 
 - (id) copyWithColorPalette: (NSColorList *)colorPaletteVal {
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapping: colorMapping
               colorPalette: colorPaletteVal
-              fileItemMask: fileItemMask] autorelease];
+              fileItemMask: fileItemMask
+              showEntireVolume: showEntireVolume] autorelease];
 }
 
 - (id) copyWithFileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal {
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapping: colorMapping
               colorPalette: colorPalette
-              fileItemMask: fileItemMaskVal] autorelease];
+              fileItemMask: fileItemMaskVal
+              showEntireVolume: showEntireVolume] autorelease];
+}
+
+- (id) copyWithShowEntireVolume: (BOOL)showEntireVolumeVal {
+  return [[[ItemTreeDrawerSettings alloc]
+              initWithColorMapping: colorMapping
+              colorPalette: colorPalette
+              fileItemMask: fileItemMask
+              showEntireVolume: showEntireVolumeVal] autorelease];
 }
 
 
@@ -74,6 +88,10 @@
 
 - (NSObject <FileItemTest> *) fileItemMask {
   return fileItemMask;
+}
+
+- (BOOL) showEntireVolume {
+  return showEntireVolume;
 }
 
 @end

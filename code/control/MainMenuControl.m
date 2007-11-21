@@ -207,7 +207,7 @@ NSString* scanActivityFormatString() {
   ItemPathModel  *itemPathModel = [oldControl itemPathModel];
 
   if (itemPathModel != nil) {
-    NSString  *dirName = [[itemPathModel rootFileItem] stringForFileItemPath];
+    NSString  *dirName = [[itemPathModel rootItemTree] stringForFileItemPath];
     
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
@@ -284,7 +284,7 @@ NSString* scanActivityFormatString() {
     NSString  *format = NSLocalizedString( 
                           @"Filtering %@", 
                           @"Message in progress panel while filtering" );
-    NSString  *pathName = [[oldPathModel rootFileItem] stringForFileItemPath];
+    NSString  *pathName = [[oldPathModel rootItemTree] stringForFileItemPath];
     [filterTaskManager asynchronouslyRunTaskWithInput: input
                          description: 
                            [NSString stringWithFormat: format, pathName]
@@ -367,7 +367,7 @@ NSString* scanActivityFormatString() {
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeHistory  *history = [control treeHistory];
   NSString  *rootPathName = 
-    [[[control itemPathModel] itemTree] stringForFileItemPath];
+    [[[control itemPathModel] visibleItemTree] stringForFileItemPath];
                 
   NSString  *scanTimeString = 
     [[history scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"

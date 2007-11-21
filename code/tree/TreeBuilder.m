@@ -249,6 +249,16 @@ static struct {
                  [root getContents]) getSecond]) getContents]) getSecond];
 }
 
++ (DirectoryItem *) volumeOfFileItem: (FileItem *)item {
+  // Climb to the top of the parent hierarchy; this is the volume (as long as
+  // the item is indeed part of a volume tree).
+  DirectoryItem  *parent;
+  while (parent = [item parentDirectory]) {
+    item = parent;
+  }
+  return (DirectoryItem *)item;
+}
+
 @end // @implementation TreeBuilder
 
 

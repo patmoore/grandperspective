@@ -2,6 +2,7 @@
 
 
 @class TreeBalancer;
+@class FileItem;
 @class DirectoryItem;
 
 
@@ -45,5 +46,6 @@ extern NSString  *PhysicalFileSize;
 
 + (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root;
 + (DirectoryItem *) scanTreeOfVolume: (DirectoryItem *)root;
++ (DirectoryItem *) volumeOfFileItem: (FileItem *)item;
 
 @end

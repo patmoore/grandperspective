@@ -2,6 +2,7 @@
 
 #import "TaskExecutor.h"
 
+@class DirectoryItem;
 @class ItemTreeDrawer;
 @class ItemTreeDrawerSettings;
 
@@ -15,8 +16,9 @@
   BOOL  enabled;
 }
 
-- (id) init;
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree;
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
+         treeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
 - (ItemTreeDrawerSettings *) treeDrawerSettings;
 - (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;

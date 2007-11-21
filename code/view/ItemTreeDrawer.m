@@ -1,6 +1,6 @@
 #import "ItemTreeDrawer.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 #import "FileItemHashing.h"
 #import "TreeLayoutBuilder.h"
 #import "FileItemPathStringCache.h"
@@ -19,13 +19,21 @@
 @implementation ItemTreeDrawer
 
 - (id) init {
- return 
-    [self initWithTreeDrawerSettings: 
-            [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+  NSAssert(NO, @"Use initWithVolumeTree: instead");
 }
 
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal {
+ return 
+    [self initWithVolumeTree: volumeTreeVal
+            treeDrawerSettings: 
+              [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+}
+
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal
+         treeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
+    volumeTree = [volumeTreeVal retain];
+  
     // Make sure values are nil before calling updateSettings. 
     colorMapping = nil;
     colorPalette = nil;
@@ -42,6 +50,8 @@
 }
 
 - (void) dealloc {
+  [volumeTree release];
+
   [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
@@ -107,7 +117,7 @@
 }
 
 
-- (NSImage *) drawImageOfItemTree: (Item *)itemTree 
+- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree 
                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
                 inRect: (NSRect) bounds {
   NSDate  *startTime = [NSDate date];
@@ -133,7 +143,7 @@
   
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  [layoutBuilder layoutItemTree: itemTree inRect: bounds traverser: self];
+  [layoutBuilder layoutItemTree: visibleTree inRect: bounds traverser: self];
   [fileItemPathStringCache clearCache];
 
   NSImage  *image = nil;

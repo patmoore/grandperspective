@@ -51,7 +51,7 @@
 
 - (id) copyWithZone:(NSZone*) zone {
   ItemPathModel  *copy = 
-    [[[self class] allocWithZone:zone] initWithTree:[self itemTree]];
+    [[[self class] allocWithZone:zone] initWithTree: [self rootItemTree]];
     
   [copy->path removeAllObjects];
   [copy->path addObjectsFromArray:path];
@@ -94,11 +94,11 @@
 }
 
 
-- (FileItem*) rootFileItem {
+- (DirectoryItem*) rootItemTree {
   return [path objectAtIndex: 0];
 }
 
-- (FileItem*) visibleRootFileItem {
+- (FileItem*) visibleItemTree {
   return [path objectAtIndex: visibleTreeRootIndex];
 }
 
@@ -204,14 +204,6 @@
   [self postSelectedItemChanged];
   
   return YES;
-}
-
-- (DirectoryItem*) itemTree {
-  return [path objectAtIndex:0];
-}
-
-- (FileItem*) visibleItemTree {
-  return [path objectAtIndex:visibleTreeRootIndex];
 }
 
 

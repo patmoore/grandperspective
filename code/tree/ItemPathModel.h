@@ -63,10 +63,10 @@
 
 
 // Returns the root of the entire tree.
-- (FileItem*) rootFileItem;
+- (DirectoryItem*) rootItemTree;
 
 // Returns the root of the visible tree.
-- (FileItem*) visibleRootFileItem;
+- (FileItem*) visibleItemTree;
 
 // Returns the selected file item (which is always part of the visible path).
 - (FileItem*) selectedFileItem;
@@ -83,9 +83,6 @@
 - (BOOL) clearVisibleItemPath;
 - (void) extendVisibleItemPath:(Item*)nextItem;
 - (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name;
-
-- (DirectoryItem*) itemTree;
-- (FileItem*) visibleItemTree;
 
 - (BOOL) canMoveTreeViewUp;
 - (BOOL) canMoveTreeViewDown;
