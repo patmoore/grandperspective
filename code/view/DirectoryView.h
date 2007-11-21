@@ -2,7 +2,6 @@
 
 @class AsynchronousTaskManager;
 @class TreeLayoutBuilder;
-@class ConstrainedTreeLayoutBuilder;
 @class ItemTreeDrawerSettings;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
@@ -11,9 +10,8 @@
 @interface DirectoryView : NSView {
   AsynchronousTaskManager  *drawTaskManager;
 
-  TreeLayoutBuilder  *fullLayoutBuilder;
-  ConstrainedTreeLayoutBuilder  *freeSpaceLayoutBuilder;
-  BOOL  showFreeSpace;
+  TreeLayoutBuilder  *layoutBuilder;
+  BOOL  showEntireVolume;
   
   ItemPathDrawer  *pathDrawer;
   ItemPathBuilder  *pathBuilder;
@@ -25,20 +23,16 @@
 
 // Initialises the instance-specific state after the view has been restored
 // from the nib file (which invokes the generic initWithFrame: method).
-- (void) postInitWithFreeSpace: (unsigned long long) freeSpace
-           itemPathModel: (ItemPathModel *)pathModelVal;
-
-// TODO: Check if it is needed
-- (unsigned long long) freeSpace;
+- (void) postInitWithItemPathModel: (ItemPathModel *)pathModelVal;
 
 - (ItemPathModel*) itemPathModel;
 
-- (void) setShowFreeSpace: (BOOL) flag;
-- (BOOL) showFreeSpace;
+- (void) setShowEntireVolume: (BOOL) flag;
+- (BOOL) showEntireVolume;
 
 - (ItemTreeDrawerSettings *) treeDrawerSettings;
 - (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
-- (TreeLayoutBuilder*) activeLayoutBuilder;
+- (TreeLayoutBuilder*) layoutBuilder;
 
 @end

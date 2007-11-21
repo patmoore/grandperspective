@@ -5,7 +5,6 @@
 #import "FileItem.h"
 
 #import "TreeLayoutBuilder.h"
-#import "ConstrainedTreeLayoutBuilder.h"
 #import "ItemTreeDrawer.h"
 #import "ItemTreeDrawerSettings.h"
 #import "ItemPathDrawer.h"
@@ -42,7 +41,7 @@
 
 - (id) initWithFrame:(NSRect)frame {
   if (self = [super initWithFrame:frame]) {
-    fullLayoutBuilder = [[TreeLayoutBuilder alloc] init];
+    layoutBuilder = [[TreeLayoutBuilder alloc] init];
 
     DrawTaskExecutor  *drawTaskExecutor = [[DrawTaskExecutor alloc] init];  
     drawTaskManager = 
@@ -61,8 +60,7 @@
   [drawTaskManager dispose];
   [drawTaskManager release];
 
-  [fullLayoutBuilder release];
-  [freeSpaceLayoutBuilder release];
+  [layoutBuilder release];
 
   [pathDrawer release];
   [pathBuilder release];
@@ -74,33 +72,23 @@
 }
 
 
-- (void) postInitWithFreeSpace: (unsigned long long) freeSpace
-           itemPathModel: (ItemPathModel *)pathModelVal {
-  NSAssert(freeSpaceLayoutBuilder==nil, @"postInit has already taken place.");
-
-  freeSpaceLayoutBuilder = 
-    [[ConstrainedTreeLayoutBuilder alloc] initWithReservedSpace: freeSpace];
-
+- (void) postInitWithItemPathModel: (ItemPathModel *)pathModelVal {
   [self setItemPathModel: pathModelVal];
 }
 
-
-- (unsigned long long) freeSpace {
-  return [freeSpaceLayoutBuilder reservedSpace];
-}
 
 - (ItemPathModel *) itemPathModel {
   return pathModel;
 }
 
 
-- (BOOL) showFreeSpace {
-  return showFreeSpace;
+- (BOOL) showEntireVolume {
+  return showEntireVolume;
 }
 
-- (void) setShowFreeSpace: (BOOL) showFreeSpaceVal {
-  if (showFreeSpace != showFreeSpaceVal) {
-    showFreeSpace = showFreeSpaceVal;
+- (void) setShowEntireVolume: (BOOL) showEntireVolumeVal {
+  if (showEntireVolume != showEntireVolumeVal) {
+    showEntireVolume = showEntireVolumeVal;
     [self forceRedraw];
   }
 }
@@ -124,8 +112,8 @@
 }
 
 
-- (TreeLayoutBuilder*) activeLayoutBuilder {
-  return (showFreeSpace ? freeSpaceLayoutBuilder : fullLayoutBuilder);
+- (TreeLayoutBuilder*) layoutBuilder {
+  return layoutBuilder;
 }
 
 
@@ -144,7 +132,7 @@
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
       [[DrawTaskInput alloc] initWithItemSubTree: [pathModel visibleItemTree] 
-                               layoutBuilder: [self activeLayoutBuilder]
+                               layoutBuilder: layoutBuilder
                                bounds: [self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
                        selector: @selector(itemTreeImageReady:)];
@@ -155,7 +143,7 @@
   
     [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
                   tree: [pathModel visibleItemTree] 
-                  usingLayoutBuilder: [self activeLayoutBuilder]
+                  usingLayoutBuilder: layoutBuilder
                   bounds: [self bounds]];
   }
 }
@@ -330,7 +318,7 @@
 
 - (void) buildPathToMouseLoc: (NSPoint) point {
   [pathBuilder buildVisibleItemPathToPoint: point
-                       usingLayoutBuilder: [self activeLayoutBuilder]
+                       usingLayoutBuilder: layoutBuilder
                        bounds: [self bounds]];
 }
 

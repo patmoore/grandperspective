@@ -328,7 +328,6 @@
 				AA13BAD30B8A5747000AEAA9,
 				AADD34930B8B902000AC2C97,
 				AA62D5DA0BCA67BB0095A09A,
-				AA62D6120BCA8FD70095A09A,
 				AAE87FDB0CE10B9B00A99883,
 			);
 			isa = PBXResourcesBuildPhase;
@@ -407,7 +406,6 @@
 				AA8FEB510B6CD0810049FF42,
 				AA8FECA00B6CFC990049FF42,
 				AA62D5DB0BCA67BB0095A09A,
-				AA62D6130BCA8FD70095A09A,
 				AAE87FDA0CE10B9B00A99883,
 			);
 			isa = PBXSourcesBuildPhase;
@@ -1099,8 +1097,6 @@
 				AA60131D0A5AFCC500DEBCB8,
 				AA60131F0A5AFCC500DEBCB8,
 				AA60131E0A5AFCC500DEBCB8,
-				AA62D6100BCA8FD70095A09A,
-				AA62D6110BCA8FD70095A09A,
 				AA1116C10A8541EF0023C5CD,
 				AA1116C20A8541EF0023C5CD,
 				AA6013210A5AFCC500DEBCB8,
@@ -1562,36 +1558,6 @@
 		};
 		AA62D5DB0BCA67BB0095A09A = {
 			fileRef = AA62D5D90BCA67BB0095A09A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AA62D6100BCA8FD70095A09A = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = ConstrainedTreeLayoutBuilder.h;
-			path = tree/ConstrainedTreeLayoutBuilder.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA62D6110BCA8FD70095A09A = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = ConstrainedTreeLayoutBuilder.m;
-			path = tree/ConstrainedTreeLayoutBuilder.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA62D6120BCA8FD70095A09A = {
-			fileRef = AA62D6100BCA8FD70095A09A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AA62D6130BCA8FD70095A09A = {
-			fileRef = AA62D6110BCA8FD70095A09A;
 			isa = PBXBuildFile;
 			settings = {
 			};

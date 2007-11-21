@@ -7,9 +7,9 @@
                 colorPaletteChanged = id; 
                 downAction = id; 
                 editMask = id; 
-                freeSpaceCheckBoxChanged = id; 
                 maskCheckBoxChanged = id; 
                 openFileInFinder = id; 
+                showEntireVolumeCheckBoxChanged = id; 
                 upAction = id; 
             }; 
             CLASS = DirectoryViewControl; 
@@ -22,7 +22,6 @@
                 fileSizeMeasureField = NSTextField; 
                 filterDescriptionTextView = NSTextView; 
                 filterNameField = NSTextField; 
-                freeSpaceCheckBox = NSButton; 
                 freeSpaceField = NSTextField; 
                 itemPathField = NSTextField; 
                 itemSizeField = NSTextField; 
@@ -35,6 +34,7 @@
                 selectedItemPathTextView = NSTextView; 
                 selectedItemSizeField = NSTextField; 
                 selectedItemTitleField = NSTextField; 
+                showEntireVolumeCheckBox = NSButton; 
                 treePathTextView = NSTextView; 
                 treeSizeField = NSTextField; 
                 upButton = NSButton; 

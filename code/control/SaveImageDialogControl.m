@@ -110,7 +110,7 @@
     NSImage  *image =
       [treeDrawer 
          drawImageOfItemTree: [[dirViewControl itemPathModel] visibleItemTree]
-         usingLayoutBuilder: [dirView activeLayoutBuilder]
+         usingLayoutBuilder: [dirView layoutBuilder]
          inRect: bounds];
     
     // Save the image.

@@ -27,7 +27,7 @@
   IBOutlet NSPopUpButton  *colorPalettePopUp;
   IBOutlet NSTextView  *maskDescriptionTextView;
   IBOutlet NSButton  *maskCheckBox;
-  IBOutlet NSButton  *freeSpaceCheckBox;
+  IBOutlet NSButton  *showEntireVolumeCheckBox;
 
   // "Info" drawer panel
   IBOutlet NSTextView  *treePathTextView;
@@ -74,7 +74,7 @@
 
 - (IBAction) colorMappingChanged: (id) sender;
 - (IBAction) colorPaletteChanged: (id) sender;
-- (IBAction) freeSpaceCheckBoxChanged: (id) sender;
+- (IBAction) showEntireVolumeCheckBoxChanged: (id) sender;
 
 - (id) initWithTreeHistory: (TreeHistory *)history;
 - (id) initWithTreeHistory: (TreeHistory *)history

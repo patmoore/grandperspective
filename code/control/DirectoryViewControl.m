@@ -122,7 +122,7 @@
               colorPaletteKey: colorPaletteKey
               mask: fileItemMask
               maskEnabled: [maskCheckBox state]==NSOnState
-              showFreeSpace: [mainView showFreeSpace]]
+              showEntireVolume: [mainView showEntireVolume]]
                 autorelease];
 }
 
@@ -132,8 +132,7 @@
 
 
 - (void) windowDidLoad {
-  unsigned long long  freeSpace = [treeHistory freeSpace];
-  [mainView postInitWithFreeSpace: freeSpace itemPathModel: itemPathModel];
+  [mainView postInitWithItemPathModel: itemPathModel];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -169,9 +168,9 @@
                               ? NSOnState : NSOffState ) ];
   [self maskChanged];
   
-  [freeSpaceCheckBox setState: ( [initialSettings showFreeSpace] 
-                                   ? NSOnState : NSOffState ) ];
-  [self freeSpaceCheckBoxChanged: nil];
+  [showEntireVolumeCheckBox setState: 
+     ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ];
+  [self showEntireVolumeCheckBoxChanged: nil];
   
   [initialSettings release];
   initialSettings = nil;
@@ -193,6 +192,7 @@
                   table: @"Names"]];
   [treeSizeField setStringValue: [FileItem stringForFileItemSize: 
                                     [[itemPathModel itemTree] itemSize]]];
+  unsigned long long  freeSpace = [treeHistory freeSpace];
   [freeSpaceField setStringValue: [FileItem stringForFileItemSize: freeSpace]];
   [super windowDidLoad];
   
@@ -293,9 +293,9 @@
   }
 }
 
-- (IBAction) freeSpaceCheckBoxChanged: (id) sender {
-  [mainView 
-     setShowFreeSpace: ([freeSpaceCheckBox state]==NSOnState) ? YES : NO];
+- (IBAction) showEntireVolumeCheckBoxChanged: (id) sender {
+  [mainView setShowEntireVolume: 
+              ([showEntireVolumeCheckBox state]==NSOnState) ? YES : NO];
 }
 
 
