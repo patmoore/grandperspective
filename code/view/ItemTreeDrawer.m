@@ -7,9 +7,13 @@
 #import "ItemTreeDrawerSettings.h"
 #import "FileItemTest.h"
 
+
 @interface ItemTreeDrawer (PrivateMethods)
 
-- (void) drawBasicFilledRect:(NSRect)rect colorHash:(int)hash;
+- (UInt32) intValueForColor: (NSColor *)color;
+
+- (void) drawBasicFilledRect: (NSRect) rect intColor: (UInt32) intColor;
+
 - (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
 - (void) initGradientColors;
 
@@ -44,6 +48,9 @@
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
     
+    freeSpaceColor = [self intValueForColor: [NSColor darkGrayColor]];
+    usedSpaceColor = [self intValueForColor: [NSColor grayColor]];
+    
     abort = NO;
   }
   return self;
@@ -60,6 +67,7 @@
   
   free(gradientColors);
   
+  NSAssert(visibleTree==nil, @"visibleTree should be nil.");
   NSAssert(drawBitmap==nil, @"Bitmap should be nil.");
   
   [super dealloc];
@@ -110,14 +118,24 @@
 }
 
 
+- (void) setShowEntireVolume: (BOOL) flag {
+  showEntireVolume = flag;
+}
+
+- (BOOL) showEntireVolume {
+  return showEntireVolume;
+}
+
+
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings {
   [self setColorMapping: [settings colorMapping]];
   [self setColorPalette: [settings colorPalette]];
   [self setFileItemMask: [settings fileItemMask]];
+  [self setShowEntireVolume: [settings showEntireVolume]];
 }
 
 
-- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree 
+- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTreeVal 
                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
                 inRect: (NSRect) bounds {
   NSDate  *startTime = [NSDate date];
@@ -141,9 +159,17 @@
     initGradientColors = NO;
   }
   
+  insideVisibleTree = NO;
+  NSAssert(visibleTree == nil, @"visibleTree should be nil.");
+  visibleTree = [visibleTreeVal retain];
+  FileItem  *drawRoot = (showEntireVolume ? volumeTree : visibleTree);
+
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  [layoutBuilder layoutItemTree: visibleTree inRect: bounds traverser: self];
+  [layoutBuilder layoutItemTree: drawRoot inRect: bounds traverser: self];
+  [visibleTree release];
+  visibleTree = nil;
+   
   [fileItemPathStringCache clearCache];
 
   NSImage  *image = nil;
@@ -170,20 +196,64 @@
 
 - (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
            depth: (int) depth {
+  BOOL  descend = YES; // Default 
+           
   if (![item isVirtual]) {
     FileItem*  file = (FileItem*)item;
     
-    if ( [file isPlainFile]
-         && ( fileItemMask==nil 
-              || [fileItemMask testFileItem: file 
-                                 context: fileItemPathStringCache] ) ) {
-      [self drawGradientFilledRect: rect 
-              colorHash: [colorMapping hashForFileItem: file depth: depth]];
+    if (file==visibleTree) {
+      insideVisibleTree = YES;
+    }
+    
+    
+    if ([file isPlainFile]) {
+      if ([file isSpecial] && [[file name] isEqualToString: @"Free space"]) {
+        [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+      }
+    
+      if (insideVisibleTree) {
+        if ( fileItemMask==nil 
+             || [fileItemMask testFileItem: file 
+                                context: fileItemPathStringCache] ) {
+          [self drawGradientFilledRect: rect 
+                  colorHash: [colorMapping hashForFileItem: file depth: depth]];
+        }
+      }
+    }
+    else {
+      if ([file isSpecial] && [[file name] isEqualToString: @"Used space"]) {
+        [self drawBasicFilledRect: rect intColor: usedSpaceColor];
+      }
+    
+      if (!insideVisibleTree) {
+        // Check if the DirectoryItem "file" is an ancestor of the visible
+        // tree. If not, there's no need to descend.
+        FileItem  *ancestor = visibleTree;
+        BOOL  isAncestor = NO;
+        while (ancestor = [ancestor parentDirectory]) {
+          if (file == ancestor) {
+            isAncestor = YES;
+            break;
+          }
+        }
+        if (!isAncestor) {
+          descend = NO;
+        }
+      }
     }
   }
 
-  // Only descend/continue when the current drawing task has not been aborted.
-  return !abort;
+  if (abort) {
+    descend = NO;
+  }
+  
+  return descend;
+}
+
+- (void) emergedFromItem: (Item *)item {
+  if (item == visibleTree) {
+    insideVisibleTree = NO;
+  }
 }
 
 @end // @implementation ItemTreeDrawer
@@ -191,10 +261,16 @@
 
 @implementation ItemTreeDrawer (PrivateMethods)
 
-- (void)drawBasicFilledRect:(NSRect)rect colorHash:(int)colorHash {
-  UInt32  intColor = 
-    gradientColors[(abs(colorHash) % numGradientColors) * 256 + 128];
+- (UInt32) intValueForColor: (NSColor *)color {
+  color = [color colorUsingColorSpaceName: NSDeviceRGBColorSpace];
+  return CFSwapInt32BigToHost(
+                 ((UInt32)([color redComponent] * 255) & 0xFF) << 24 |
+                 ((UInt32)([color greenComponent] * 255) & 0xFF) << 16 |
+                 ((UInt32)([color blueComponent] * 255) & 0xFF) << 8);
+}
 
+
+- (void) drawBasicFilledRect: (NSRect) rect intColor: (UInt32) intColor {
   UInt32  *data = (UInt32*)[drawBitmap bitmapData];
   
   int  x, y;
@@ -215,7 +291,7 @@
 }
 
 
-- (void)drawGradientFilledRect:(NSRect)rect colorHash:(int)colorHash {
+- (void) drawGradientFilledRect: (NSRect) rect colorHash: (int) colorHash {
   UInt32  *intColors = 
     &gradientColors[(abs(colorHash) % numGradientColors) * 256];
   UInt32  intColor;

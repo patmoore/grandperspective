@@ -135,10 +135,13 @@
   else {
     [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
   
-    [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
-                  tree: [pathModel visibleItemTree] 
-                  usingLayoutBuilder: layoutBuilder
-                  bounds: [self bounds]];
+    // TEMP: Cannot yet draw paths starting at the volume root.
+    if ( ! [[self treeDrawerSettings] showEntireVolume] ) {
+      [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
+                    tree: [pathModel visibleItemTree]
+                    usingLayoutBuilder: layoutBuilder
+                    bounds: [self bounds]];
+    }
   }
 }
 

@@ -16,6 +16,7 @@
 
   FileItemHashing  *colorMapping;
   NSObject<FileItemTest>  *fileItemMask;
+  BOOL  showEntireVolume;
   
   FileItemPathStringCache  *fileItemPathStringCache;
   
@@ -23,6 +24,11 @@
   BOOL  initGradientColors;
   UInt32  *gradientColors;
   int  numGradientColors;
+  UInt32  freeSpaceColor;
+  UInt32  usedSpaceColor;
+
+  FileItem  *visibleTree;
+  BOOL  insideVisibleTree;
 
   NSBitmapImageRep  *drawBitmap;
   BOOL  abort;
@@ -41,6 +47,9 @@
 
 - (void) setColorPalette: (NSColorList *)colorPalette;
 - (NSColorList *) colorPalette;
+
+- (void) setShowEntireVolume: (BOOL) flag;
+- (BOOL) showEntireVolume;
 
 // Updates the drawer according to the given settings.
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings;

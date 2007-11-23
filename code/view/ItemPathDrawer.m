@@ -77,5 +77,9 @@
   return YES;
 }
 
+- (void) emergedFromItem:(Item*)item {
+  // void
+}
+
 @end // @implementation ItemPathDrawer
 
