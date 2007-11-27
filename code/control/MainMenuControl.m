@@ -207,7 +207,7 @@ NSString* scanActivityFormatString() {
   ItemPathModel  *itemPathModel = [oldControl itemPathModel];
 
   if (itemPathModel != nil) {
-    NSString  *dirName = [[itemPathModel rootItemTree] stringForFileItemPath];
+    NSString  *dirName = [[itemPathModel scanTree] stringForFileItemPath];
     
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
@@ -284,7 +284,7 @@ NSString* scanActivityFormatString() {
     NSString  *format = NSLocalizedString( 
                           @"Filtering %@", 
                           @"Message in progress panel while filtering" );
-    NSString  *pathName = [[oldPathModel rootItemTree] stringForFileItemPath];
+    NSString  *pathName = [[oldPathModel scanTree] stringForFileItemPath];
     [filterTaskManager asynchronouslyRunTaskWithInput: input
                          description: 
                            [NSString stringWithFormat: format, pathName]
@@ -367,7 +367,7 @@ NSString* scanActivityFormatString() {
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeHistory  *history = [control treeHistory];
   NSString  *rootPathName = 
-    [[[control itemPathModel] visibleItemTree] stringForFileItemPath];
+    [[[control itemPathModel] visibleTree] stringForFileItemPath];
                 
   NSString  *scanTimeString = 
     [[history scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
@@ -482,7 +482,7 @@ NSString* scanActivityFormatString() {
   fileItemEnum = [[targetPath invisibleFileItemPath] objectEnumerator];  
   [fileItemEnum nextObject]; // Skip the root.
   while (ok && (fileItem = [fileItemEnum nextObject])) {
-    ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
+    ok = [path extendVisiblePathToFileItemWithName:[fileItem name]];
   }
   // Make this extension "invisible".
   while ([path canMoveTreeViewDown]) {
@@ -494,14 +494,14 @@ NSString* scanActivityFormatString() {
       
     fileItemEnum = [[targetPath visibleFileItemPath] objectEnumerator];
     while (ok && (fileItem = [fileItemEnum nextObject])) {
-      ok = [path extendVisibleItemPathToFileItemWithName:[fileItem name]];
+      ok = [path extendVisiblePathToFileItemWithName:[fileItem name]];
       if (ok) {
         hasVisibleItems = YES;
       }
     }
       
     if (hasVisibleItems) {
-      [path setVisibleItemPathLocking:YES];
+      [path setVisiblePathLocking:YES];
     }
   }
         

@@ -4,6 +4,7 @@
 
 @protocol TreeLayoutTraverser
 
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth;  
+- (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect depth: (int) depth;
+- (void) emergedFromItem: (Item *)item;
 
 @end

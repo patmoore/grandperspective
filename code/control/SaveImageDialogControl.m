@@ -104,7 +104,7 @@
     // Draw the image.
     DirectoryView  *dirView = [dirViewControl directoryView];
     DirectoryItem  *volumeTree = 
-       [TreeBuilder volumeOfFileItem: [[dirView itemPathModel] rootItemTree]];
+       [TreeBuilder volumeOfFileItem: [[dirView itemPathModel] scanTree]];
     ItemTreeDrawer  *treeDrawer = 
       [[[ItemTreeDrawer alloc] 
            initWithVolumeTree: volumeTree
@@ -112,7 +112,7 @@
                autorelease];
     NSImage  *image =
       [treeDrawer drawImageOfVisibleTree:
-                               [[dirViewControl itemPathModel] visibleItemTree]
+                               [[dirViewControl itemPathModel] visibleTree]
                     usingLayoutBuilder: [dirView layoutBuilder]
                     inRect: bounds];
     

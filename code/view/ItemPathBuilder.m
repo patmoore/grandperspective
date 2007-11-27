@@ -26,16 +26,16 @@
   [super dealloc];
 }
 
-- (void) buildVisibleItemPathToPoint:(NSPoint)point 
+- (void) buildVisiblePathToPoint:(NSPoint)point 
            usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder 
            bounds:(NSRect)bounds {
   // Don't generate notifications while the path is being built.
   [pathModel suppressSelectedItemChangedNotifications:YES];
   
-  [pathModel clearVisibleItemPath];
+  [pathModel clearVisiblePath];
   buildTargetPoint = point;
 
-  [layoutBuilder layoutItemTree:[pathModel visibleItemTree] inRect:bounds
+  [layoutBuilder layoutItemTree:[pathModel visibleTree] inRect:bounds
                    traverser:self];
   
   [pathModel suppressSelectedItemChangedNotifications:NO];
@@ -48,7 +48,7 @@
   }
 
   if (depth > 0) {
-    [pathModel extendVisibleItemPath:item];
+    [pathModel extendVisiblePath:item];
   }
 
   // track path further

@@ -36,7 +36,7 @@
   // If it is set to "false", the visible item path cannot be changed.
   // (Note: the invisible part can never be changed directly. Only by first
   // making it visible can it be changed). 
-  BOOL  visibleItemPathLocked;
+  BOOL  visiblePathLocked;
 }
 
 - (id) initWithTree:(DirectoryItem*)itemTreeRoot;
@@ -62,11 +62,11 @@
 - (NSArray*) itemPathToSelectedFileItem;
 
 
-// Returns the root of the entire tree.
-- (DirectoryItem*) rootItemTree;
+// Returns the root of the scanned tree.
+- (DirectoryItem*) scanTree;
 
 // Returns the root of the visible tree.
-- (FileItem*) visibleItemTree;
+- (FileItem*) visibleTree;
 
 // Returns the selected file item (which is always part of the visible path).
 - (FileItem*) selectedFileItem;
@@ -75,14 +75,14 @@
 - (FileItem*) fileItemPathEndPoint;
 
 
-- (BOOL) isVisibleItemPathLocked;
-- (void) setVisibleItemPathLocking:(BOOL)value;
+- (BOOL) isVisiblePathLocked;
+- (void) setVisiblePathLocking:(BOOL)value;
 
 - (void) suppressSelectedItemChangedNotifications:(BOOL)option;
 
-- (BOOL) clearVisibleItemPath;
-- (void) extendVisibleItemPath:(Item*)nextItem;
-- (BOOL) extendVisibleItemPathToFileItemWithName:(NSString*)name;
+- (BOOL) clearVisiblePath;
+- (void) extendVisiblePath:(Item*)nextItem;
+- (BOOL) extendVisiblePathToFileItemWithName:(NSString*)name;
 
 - (BOOL) canMoveTreeViewUp;
 - (BOOL) canMoveTreeViewDown;

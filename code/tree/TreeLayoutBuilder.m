@@ -39,7 +39,7 @@
     return;
   }
     
-  if (! [traverser descendIntoItem:root atRect:rect depth:depth] ) {
+  if (! [traverser descendIntoItem: root atRect: rect depth: depth] ) {
     return;
   }
   
@@ -69,6 +69,8 @@
       [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];
     }
   }
+  
+  [traverser emergedFromItem: root];
 }
 
 @end // @implementation TreeLayoutBuilder (PrivateMethods)

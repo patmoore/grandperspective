@@ -16,7 +16,7 @@
 - (void) createEditMaskFilterWindow;
 
 - (void) updateButtonState:(NSNotification*)notification;
-- (void) visibleItemTreeChanged:(NSNotification*)notification;
+- (void) visibleTreeChanged:(NSNotification*)notification;
 - (void) maskChanged;
 - (void) updateMask;
 
@@ -50,14 +50,13 @@
          pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal rootItemTree] == [treeHistoryVal scanTree], 
+    NSAssert([itemPathModelVal scanTree] == [treeHistoryVal scanTree], 
                @"Tree mismatch");
     treeHistory = [treeHistoryVal retain];
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
 
-    rootPathName = 
-      [[[itemPathModel rootItemTree] stringForFileItemPath] retain];
+    rootPathName = [[[itemPathModel scanTree] stringForFileItemPath] retain];
     
     invisiblePathName = nil;
        
@@ -175,8 +174,8 @@
   [initialSettings release];
   initialSettings = nil;
   
-  FileItem  *visibleItemTree = [itemPathModel visibleItemTree];
-  [treePathTextView setString: [visibleItemTree stringForFileItemPath]];
+  FileItem  *visibleTree = [itemPathModel visibleTree];
+  [treePathTextView setString: [visibleTree stringForFileItemPath]];
 
   [filterNameField setStringValue: [treeHistory filterName]];
   [filterDescriptionTextView setString: 
@@ -191,23 +190,23 @@
     [mainBundle localizedStringForKey: [treeHistory fileSizeMeasure] value: nil
                   table: @"Names"]];
   [treeSizeField setStringValue: 
-    [FileItem stringForFileItemSize: [visibleItemTree itemSize]]];
+    [FileItem stringForFileItemSize: [visibleTree itemSize]]];
   unsigned long long  freeSpace = [treeHistory freeSpace];
   [freeSpaceField setStringValue: [FileItem stringForFileItemSize: freeSpace]];
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
-  invisiblePathName = [[visibleItemTree stringForFileItemPath] retain];
+  invisiblePathName = [[visibleTree stringForFileItemPath] retain];
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   [nc addObserver:self selector:@selector(updateButtonState:)
         name:@"selectedItemChanged" object:itemPathModel];
   [nc addObserver:self selector:@selector(updateButtonState:)
-        name:@"visibleItemPathLockingChanged" object:itemPathModel];
-  [nc addObserver:self selector:@selector(visibleItemTreeChanged:)
-        name:@"visibleItemTreeChanged" object:itemPathModel];
+        name:@"visiblePathLockingChanged" object:itemPathModel];
+  [nc addObserver:self selector:@selector(visibleTreeChanged:)
+        name:@"visibleTreeChanged" object:itemPathModel];
 
-  [self visibleItemTreeChanged: nil];
+  [self visibleTreeChanged: nil];
 
   [[self window] makeFirstResponder:mainView];
   [[self window] makeKeyAndOrderFront:self];
@@ -230,7 +229,7 @@
   [itemPathModel moveTreeViewUp];
   
   // Automatically lock path as well.
-  [itemPathModel setVisibleItemPathLocking:YES];
+  [itemPathModel setVisiblePathLocking:YES];
 }
 
 - (IBAction) downAction:(id)sender {
@@ -361,15 +360,15 @@
       NSLocalizedString( @"Edit mask", @"Window title" ) ];
 }
 
-- (void) visibleItemTreeChanged:(NSNotification*)notification {
-  FileItem  *visibleItemTree = [itemPathModel visibleItemTree];
+- (void) visibleTreeChanged:(NSNotification*)notification {
+  FileItem  *visibleTree = [itemPathModel visibleTree];
   
   [invisiblePathName release];
-  invisiblePathName = [[visibleItemTree stringForFileItemPath] retain];
+  invisiblePathName = [[visibleTree stringForFileItemPath] retain];
 
   [visibleFolderPathTextView setString: invisiblePathName];
 
-  ITEM_SIZE  itemSize = [visibleItemTree itemSize];
+  ITEM_SIZE  itemSize = [visibleTree itemSize];
   [visibleFolderExactSizeField setStringValue:
      [FileItem exactStringForFileItemSize: itemSize]];
   [visibleFolderSizeField setStringValue:
@@ -382,16 +381,16 @@
 
 - (void) updateButtonState:(NSNotification*)notification {
   [upButton setEnabled: [itemPathModel canMoveTreeViewUp]];
-  [downButton setEnabled: [itemPathModel isVisibleItemPathLocked] &&
+  [downButton setEnabled: [itemPathModel isVisiblePathLocked] &&
                           [itemPathModel canMoveTreeViewDown] &&
                           ( [itemPathModel selectedFileItem] !=
-                            [itemPathModel visibleItemTree] )] ;
-  [openButton setEnabled: [itemPathModel isVisibleItemPathLocked] ];
+                            [itemPathModel visibleTree] )] ;
+  [openButton setEnabled: [itemPathModel isVisiblePathLocked] ];
   
   NSString  *selectedFileTitle = 
     NSLocalizedString( @"Selected file:", "Label in Focus panel" );
 
-  if ( [itemPathModel isVisibleItemPathLocked] ||
+  if ( [itemPathModel isVisiblePathLocked] ||
        [itemPathModel canMoveTreeViewDown] ) {
     // There is a selected item. An item is considered selected when either
     // the path is locked, or the path has one or more visible path 

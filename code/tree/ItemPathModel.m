@@ -7,8 +7,8 @@
 @interface ItemPathModel (PrivateMethods)
 
 - (void) postSelectedItemChanged;
-- (void) postVisibleItemTreeChanged;
-- (void) postVisibleItemPathLockingChanged;
+- (void) postVisibleTreeChanged;
+- (void) postVisiblePathLockingChanged;
 
 // "start" and "end" are both inclusive.
 - (NSArray*) buildFileItemPathFromIndex:(int)start toIndex:(int)end;
@@ -35,7 +35,7 @@
     selectedFileItemIndex = 0;
     lastFileItemIndex = 0;
     
-    visibleItemPathLocked = NO;
+    visiblePathLocked = NO;
     lastNotifiedSelectedFileItemIndex = -1;
   }
   return self;
@@ -51,7 +51,7 @@
 
 - (id) copyWithZone:(NSZone*) zone {
   ItemPathModel  *copy = 
-    [[[self class] allocWithZone:zone] initWithTree: [self rootItemTree]];
+    [[[self class] allocWithZone:zone] initWithTree: [self scanTree]];
     
   [copy->path removeAllObjects];
   [copy->path addObjectsFromArray:path];
@@ -59,7 +59,7 @@
   copy->visibleTreeRootIndex = visibleTreeRootIndex;
   copy->selectedFileItemIndex = selectedFileItemIndex;
   copy->lastFileItemIndex = lastFileItemIndex;
-  copy->visibleItemPathLocked = visibleItemPathLocked;
+  copy->visiblePathLocked = visiblePathLocked;
   copy->lastNotifiedSelectedFileItemIndex = -1;
   
   return copy;
@@ -94,11 +94,11 @@
 }
 
 
-- (DirectoryItem*) rootItemTree {
+- (DirectoryItem*) scanTree {
   return [path objectAtIndex: 0];
 }
 
-- (FileItem*) visibleItemTree {
+- (FileItem*) visibleTree {
   return [path objectAtIndex: visibleTreeRootIndex];
 }
 
@@ -111,17 +111,17 @@
 }
 
 
-- (BOOL) isVisibleItemPathLocked {
-  return visibleItemPathLocked;
+- (BOOL) isVisiblePathLocked {
+  return visiblePathLocked;
 }
 
-- (void) setVisibleItemPathLocking:(BOOL)value {
-  if (value == visibleItemPathLocked) {
+- (void) setVisiblePathLocking:(BOOL)value {
+  if (value == visiblePathLocked) {
     return; // No change: Ignore.
   }
   
-  visibleItemPathLocked = value;
-  [self postVisibleItemPathLockingChanged];
+  visiblePathLocked = value;
+  [self postVisiblePathLockingChanged];
 }
 
 
@@ -144,8 +144,8 @@
   }
 }
 
-- (BOOL) clearVisibleItemPath {
-  NSAssert(!visibleItemPathLocked, @"Cannot clear path when locked.");
+- (BOOL) clearVisiblePath {
+  NSAssert(!visiblePathLocked, @"Cannot clear path when locked.");
     
   int  num = [path count] - visibleTreeRootIndex - 1;
 
@@ -163,8 +163,8 @@
 }
 
 
-- (void) extendVisibleItemPath: (Item *)nextItem {
-  NSAssert(!visibleItemPathLocked, @"Cannot extend path when locked.");
+- (void) extendVisiblePath: (Item *)nextItem {
+  NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
   
   [path addObject: nextItem];  
   
@@ -178,8 +178,8 @@
 }
 
 
-- (BOOL) extendVisibleItemPathToFileItemWithName: (NSString *)name {
-  NSAssert(!visibleItemPathLocked, @"Cannot extend path when locked.");
+- (BOOL) extendVisiblePathToFileItemWithName: (NSString *)name {
+  NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
   
   id  pathEndPoint = [path lastObject];
   
@@ -222,7 +222,7 @@
     visibleTreeRootIndex--;
   } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
   
-  [self postVisibleItemTreeChanged];
+  [self postVisibleTreeChanged];
 }
 
 - (void) moveTreeViewDown {
@@ -238,7 +238,7 @@
     [self postSelectedItemChanged];
   }
 
-  [self postVisibleItemTreeChanged];
+  [self postVisibleTreeChanged];
 }
 
 
@@ -284,14 +284,14 @@
       postNotificationName:@"selectedItemChanged" object:self];
 }
 
-- (void) postVisibleItemTreeChanged {
+- (void) postVisibleTreeChanged {
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"visibleItemTreeChanged" object:self];
+      postNotificationName:@"visibleTreeChanged" object:self];
 }
 
-- (void) postVisibleItemPathLockingChanged {
+- (void) postVisiblePathLockingChanged {
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"visibleItemPathLockingChanged" object:self];
+      postNotificationName:@"visiblePathLockingChanged" object:self];
 }
 
 - (NSArray*) buildFileItemPathFromIndex: (int)start toIndex: (int)end {

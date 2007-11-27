@@ -14,7 +14,7 @@
 
 - (id) initWithPathModel:(ItemPathModel*)pathModel;
 
-- (void) buildVisibleItemPathToPoint:(NSPoint)point 
+- (void) buildVisiblePathToPoint:(NSPoint)point 
            usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder 
            bounds:(NSRect)bounds;
 

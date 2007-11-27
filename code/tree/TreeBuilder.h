@@ -46,6 +46,8 @@ extern NSString  *PhysicalFileSize;
 
 + (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root;
 + (DirectoryItem *) scanTreeOfVolume: (DirectoryItem *)root;
+
+// TODO: Remove once ItemPathModel includes a "volumeTree" method.
 + (DirectoryItem *) volumeOfFileItem: (FileItem *)item;
 
 @end

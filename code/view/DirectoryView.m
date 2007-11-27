@@ -29,8 +29,8 @@
 - (void) itemTreeImageReady: (id) image;
 
 - (void) selectedItemChanged: (NSNotification *)notification;
-- (void) visibleItemTreeChanged: (NSNotification *)notification;
-- (void) visibleItemPathLockingChanged: (NSNotification *)notification;
+- (void) visibleTreeChanged: (NSNotification *)notification;
+- (void) visiblePathLockingChanged: (NSNotification *)notification;
 - (void) windowMainStatusChanged: (NSNotification *) notification;
 
 - (void) buildPathToMouseLoc: (NSPoint) point;
@@ -71,7 +71,7 @@
   NSAssert(drawTaskManager==nil, @"postInit already invoked.");
   
   DirectoryItem  *volumeTree =
-    [TreeBuilder volumeOfFileItem: [pathModelVal rootItemTree]];
+    [TreeBuilder volumeOfFileItem: [pathModelVal scanTree]];
      
   DrawTaskExecutor  *drawTaskExecutor = 
     [[DrawTaskExecutor alloc] initWithVolumeTree: volumeTree];
@@ -125,7 +125,7 @@
     
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
-      [[DrawTaskInput alloc] initWithVisibleTree: [pathModel visibleItemTree] 
+      [[DrawTaskInput alloc] initWithVisibleTree: [pathModel visibleTree] 
                                layoutBuilder: layoutBuilder
                                bounds: [self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
@@ -138,7 +138,7 @@
     // TEMP: Cannot yet draw paths starting at the volume root.
     if ( ! [[self treeDrawerSettings] showEntireVolume] ) {
       [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
-                    tree: [pathModel visibleItemTree]
+                    tree: [pathModel visibleTree]
                     usingLayoutBuilder: layoutBuilder
                     bounds: [self bounds]];
     }
@@ -166,7 +166,7 @@
       [pathModel moveSelectionDown];
       
       // Automatically lock path
-      [pathModel setVisibleItemPathLocking: YES];
+      [pathModel setVisiblePathLocking: YES];
     }
   }
   else if ([chars isEqualToString: @"["]) {
@@ -174,7 +174,7 @@
       [pathModel moveSelectionUp];
       
       // Automatically lock path
-      [pathModel setVisibleItemPathLocking: YES];
+      [pathModel setVisiblePathLocking: YES];
     }
   }
 }
@@ -183,10 +183,10 @@
 - (void) mouseDown: (NSEvent *)theEvent {
   // Toggle the path locking.
 
-  BOOL  wasLocked = [pathModel isVisibleItemPathLocked];
+  BOOL  wasLocked = [pathModel isVisiblePathLocked];
   if (wasLocked) {
     // Unlock first, then build new path.
-    [pathModel setVisibleItemPathLocking: NO];
+    [pathModel setVisiblePathLocking: NO];
   }
 
   NSPoint  loc = [theEvent locationInWindow];
@@ -194,13 +194,13 @@
 
   if (!wasLocked) {
     // Now lock, after having updated path.
-    [pathModel setVisibleItemPathLocking: YES];
+    [pathModel setVisiblePathLocking: YES];
   }
 }
 
 
 - (void) mouseMoved: (NSEvent *)theEvent {
-  if ([pathModel isVisibleItemPathLocked]) {
+  if ([pathModel isVisiblePathLocked]) {
     // Ignore mouseMoved events the the item path is locked.
     //
     // Note: Although this view stops accepting mouse moved events when the
@@ -221,7 +221,7 @@
     [self buildPathToMouseLoc: mouseLoc];
   }
   else {
-    [pathModel clearVisibleItemPath];
+    [pathModel clearVisiblePath];
   }
 }
 
@@ -239,11 +239,11 @@
       addObserver: self selector: @selector(selectedItemChanged:)
       name: @"selectedItemChanged" object: pathModel];
   [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemTreeChanged:)
-      name: @"visibleItemTreeChanged" object: pathModel];
+      addObserver: self selector: @selector(visibleTreeChanged:)
+      name: @"visibleTreeChanged" object: pathModel];
   [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleItemPathLockingChanged:)
-      name: @"visibleItemPathLockingChanged" object: pathModel];
+      addObserver: self selector: @selector(visiblePathLockingChanged:)
+      name: @"visiblePathLockingChanged" object: pathModel];
           
   pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
 
@@ -254,7 +254,7 @@
     addObserver: self selector: @selector(windowMainStatusChanged:)
     name: NSWindowDidResignMainNotification object: [self window]];
   
-  [self visibleItemPathLockingChanged: nil];
+  [self visiblePathLockingChanged: nil];
   [self setNeedsDisplay: YES];
 }
 
@@ -283,7 +283,7 @@
   [self setNeedsDisplay: YES];
 }
 
-- (void) visibleItemTreeChanged: (NSNotification *)notification {
+- (void) visibleTreeChanged: (NSNotification *)notification {
   // Discard the existing image.
   [treeImage release];
   treeImage = nil;
@@ -291,8 +291,8 @@
   [self setNeedsDisplay: YES];
 }
 
-- (void) visibleItemPathLockingChanged: (NSNotification *)notification {
-  BOOL  locked = [pathModel isVisibleItemPathLocked];
+- (void) visiblePathLockingChanged: (NSNotification *)notification {
+  BOOL  locked = [pathModel isVisiblePathLocked];
   
   // Update the item path drawer directly. Although the drawer could also
   // listen to the notification, it seems better to do it like this. It keeps
@@ -308,13 +308,13 @@
 
 - (void) windowMainStatusChanged: (NSNotification *)notification {
   [[self window] setAcceptsMouseMovedEvents: 
-                   ![pathModel isVisibleItemPathLocked] && 
+                   ![pathModel isVisiblePathLocked] && 
                    [[self window] isMainWindow]];
 }
 
 
 - (void) buildPathToMouseLoc: (NSPoint) point {
-  [pathBuilder buildVisibleItemPathToPoint: point
+  [pathBuilder buildVisiblePathToPoint: point
                        usingLayoutBuilder: layoutBuilder
                        bounds: [self bounds]];
 }
