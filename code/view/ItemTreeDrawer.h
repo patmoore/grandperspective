@@ -12,11 +12,8 @@
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
-  DirectoryItem  *volumeTree;
-
   FileItemHashing  *colorMapping;
   NSObject<FileItemTest>  *fileItemMask;
-  BOOL  showEntireVolume;
   
   FileItemPathStringCache  *fileItemPathStringCache;
   
@@ -34,10 +31,8 @@
   BOOL  abort;
 }
 
-// The tree starting at "volumeTree" should be immutable.
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree;
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
-         treeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (id) init;
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
@@ -48,13 +43,12 @@
 - (void) setColorPalette: (NSColorList *)colorPalette;
 - (NSColorList *) colorPalette;
 
-- (void) setShowEntireVolume: (BOOL) flag;
-- (BOOL) showEntireVolume;
-
 // Updates the drawer according to the given settings.
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings;
 
+// Note: The tree starting at "treeRoot" should be immutable.
 - (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree
+                startingAtTree: (FileItem *)treeRoot
                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
                 inRect: (NSRect) bounds;
 

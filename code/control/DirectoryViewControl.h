@@ -62,6 +62,8 @@
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
   NSString  *rootPathName;
+  
+  // The part of the pathname that is outside the visible tree.
   NSString  *invisiblePathName;
 }
 

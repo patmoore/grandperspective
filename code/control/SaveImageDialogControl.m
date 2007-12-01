@@ -7,7 +7,6 @@
 #import "ItemTreeDrawer.h"
 #import "ItemPathModel.h"
 #import "DirectoryItem.h"
-#import "TreeBuilder.h"
 
 #define MINIMUM_SIZE 16
 
@@ -103,16 +102,14 @@
     
     // Draw the image.
     DirectoryView  *dirView = [dirViewControl directoryView];
-    DirectoryItem  *volumeTree = 
-       [TreeBuilder volumeOfFileItem: [[dirView itemPathModel] scanTree]];
+    ItemPathModel  *pathModel = [dirView itemPathModel];
     ItemTreeDrawer  *treeDrawer = 
       [[[ItemTreeDrawer alloc] 
-           initWithVolumeTree: volumeTree
-             treeDrawerSettings: [dirView treeDrawerSettings]]
-               autorelease];
+           initWithTreeDrawerSettings: [dirView treeDrawerSettings]]
+             autorelease];
     NSImage  *image =
-      [treeDrawer drawImageOfVisibleTree:
-                               [[dirViewControl itemPathModel] visibleTree]
+      [treeDrawer drawImageOfVisibleTree: [pathModel visibleTree]
+                    startingAtTree: [dirView treeInView]
                     usingLayoutBuilder: [dirView layoutBuilder]
                     inRect: bounds];
     

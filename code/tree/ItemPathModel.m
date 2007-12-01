@@ -2,6 +2,7 @@
 
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Imports FileItem.h
+#import "TreeBuilder.h"
 
 
 @interface ItemPathModel (PrivateMethods)
@@ -10,10 +11,15 @@
 - (void) postVisibleTreeChanged;
 - (void) postVisiblePathLockingChanged;
 
+- (BOOL) buildPathToFileItem: (FileItem *)targetItem;
+
 // "start" and "end" are both inclusive.
 - (NSArray*) buildFileItemPathFromIndex:(int)start toIndex:(int)end;
 
-- (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item;
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
+           similar: (BOOL) similar;
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
+           similar: (BOOL) similar fromItem: (Item *)current;
 
 @end
 
@@ -25,16 +31,21 @@
   NSAssert(NO, @"Use -initWithTree instead.");
 }
 
-- (id) initWithTree:(DirectoryItem*)itemTreeRoot {
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree {
   if (self = [super init]) {
-    path = [[NSMutableArray alloc] initWithCapacity:64];
-
-    [path addObject:itemTreeRoot];
-
+    path = [[NSMutableArray alloc] initWithCapacity: 64];
+    
+    [path addObject: volumeTree];
+    lastFileItemIndex = 0;
     visibleTreeRootIndex = 0;
     selectedFileItemIndex = 0;
-    lastFileItemIndex = 0;
-    
+
+    BOOL  ok = [self buildPathToFileItem: 
+                       [TreeBuilder scanTreeOfVolume: volumeTree]];
+    NSAssert(ok, @"Failed to extend path to scan tree.");
+    scanTreeIndex = lastFileItemIndex;
+    visibleTreeRootIndex = lastFileItemIndex;
+      
     visiblePathLocked = NO;
     lastNotifiedSelectedFileItemIndex = -1;
   }
@@ -51,10 +62,10 @@
 
 - (id) copyWithZone:(NSZone*) zone {
   ItemPathModel  *copy = 
-    [[[self class] allocWithZone:zone] initWithTree: [self scanTree]];
+    [[[self class] allocWithZone:zone] initWithVolumeTree: [self volumeTree]];
     
   [copy->path removeAllObjects];
-  [copy->path addObjectsFromArray:path];
+  [copy->path addObjectsFromArray: path];
 
   copy->visibleTreeRootIndex = visibleTreeRootIndex;
   copy->selectedFileItemIndex = selectedFileItemIndex;
@@ -66,36 +77,29 @@
 }
 
 
-- (NSArray*) invisibleFileItemPath {
-  return [self buildFileItemPathFromIndex: 0 toIndex: visibleTreeRootIndex];
+- (NSArray*) fileItemPath {
+  return [self buildFileItemPathFromIndex: 0 toIndex: lastFileItemIndex];
 }
-
-- (NSArray*) visibleSelectedFileItemPath {
-  return [self buildFileItemPathFromIndex: visibleTreeRootIndex + 1 
-                 toIndex: selectedFileItemIndex ];
-}
-
-- (NSArray*) visibleFileItemPath {
-  return [self buildFileItemPathFromIndex: visibleTreeRootIndex + 1 
-                 toIndex: lastFileItemIndex ];
-}
-
 
 - (NSArray*) itemPath {
   // Note: For efficiency returning path directly, instead of an (immutable)
   // copy. This is done so that there is not too much overhead associated
-  // with invoking ItemPathDrawer -drawItemPath:...: many times in short
+  // with invoking ItemPathDrawer -drawVisiblePath:...: many times in short
   // successsion.
   return path;
 }
 
 - (NSArray*) itemPathToSelectedFileItem {
-   return [path subarrayWithRange:NSMakeRange(0, selectedFileItemIndex + 1)];
+   return [path subarrayWithRange: NSMakeRange(0, selectedFileItemIndex + 1)];
 }
 
 
-- (DirectoryItem*) scanTree {
+- (DirectoryItem*) volumeTree {
   return [path objectAtIndex: 0];
+}
+
+- (DirectoryItem*) scanTree {
+  return [path objectAtIndex: scanTreeIndex];
 }
 
 - (FileItem*) visibleTree {
@@ -104,10 +108,6 @@
 
 - (FileItem*) selectedFileItem {
   return [path objectAtIndex: selectedFileItemIndex];
-}
-
-- (FileItem*) fileItemPathEndPoint {
-  return [path objectAtIndex: lastFileItemIndex];
 }
 
 
@@ -144,13 +144,15 @@
   }
 }
 
+
 - (BOOL) clearVisiblePath {
   NSAssert(!visiblePathLocked, @"Cannot clear path when locked.");
-    
+
   int  num = [path count] - visibleTreeRootIndex - 1;
 
   if (num > 0) {
     [path removeObjectsInRange: NSMakeRange(visibleTreeRootIndex + 1, num)];
+    
     lastFileItemIndex = visibleTreeRootIndex;
 
     selectedFileItemIndex = visibleTreeRootIndex;
@@ -162,13 +164,16 @@
   return NO;
 }
 
-
 - (void) extendVisiblePath: (Item *)nextItem {
   NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
-  
+   
   [path addObject: nextItem];  
-  
+
   if (! [nextItem isVirtual]) {
+    NSAssert( [((FileItem *)nextItem) parentDirectory] == 
+                [path objectAtIndex: lastFileItemIndex], 
+              @"Path parent inconsistency.");
+  
     lastFileItemIndex = [path count] - 1;
     
     // Automatically update the selection to the end point.
@@ -178,45 +183,25 @@
 }
 
 
-- (BOOL) extendVisiblePathToFileItemWithName: (NSString *)name {
-  NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
-  
-  id  pathEndPoint = [path lastObject];
-  
-  if ([pathEndPoint isVirtual] || [pathEndPoint isPlainFile]) {
-    // Can only extend from a DirectoryItem
-    return NO;
-  }
-  
-  DirectoryItem  *dirItem = (DirectoryItem*)pathEndPoint;
-  
-  if (! [self extendPathToFileItemWithName: name 
-                fromItem: [dirItem getContents]] ) {
-    // Failed to find a file item with the given name.
-    return NO;
-  }
-  
-  NSAssert(![[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
-  lastFileItemIndex = [path count] - 1;
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)item {
+  return [self extendVisiblePathToFileItem: item similar: NO];
+}
 
-  // Automatically update the selection to the end point.
-  selectedFileItemIndex = lastFileItemIndex;
-  [self postSelectedItemChanged];
-  
-  return YES;
+- (BOOL) extendVisiblePathToSimilarFileItem: (FileItem *)item {
+  return [self extendVisiblePathToFileItem: item similar: YES];
 }
 
 
-- (BOOL) canMoveTreeViewUp {
-  return (visibleTreeRootIndex > 0);
+- (BOOL) canMoveVisibleTreeUp {
+  return (visibleTreeRootIndex > scanTreeIndex);
 }
 
-- (BOOL) canMoveTreeViewDown {
+- (BOOL) canMoveVisibleTreeDown {
   return (visibleTreeRootIndex < lastFileItemIndex);
 }
 
-- (void) moveTreeViewUp {
-  NSAssert([self canMoveTreeViewUp], @"Cannot move up.");
+- (void) moveVisibleTreeUp {
+  NSAssert([self canMoveVisibleTreeUp], @"Cannot move up.");
 
   do {
     visibleTreeRootIndex--;
@@ -225,8 +210,8 @@
   [self postVisibleTreeChanged];
 }
 
-- (void) moveTreeViewDown {
-  NSAssert([self canMoveTreeViewDown], @"Cannot move down.");
+- (void) moveVisibleTreeDown {
+  NSAssert([self canMoveVisibleTreeDown], @"Cannot move down.");
 
   do {
     visibleTreeRootIndex++;
@@ -294,6 +279,40 @@
       postNotificationName:@"visiblePathLockingChanged" object:self];
 }
 
+
+- (BOOL) buildPathToFileItem: (FileItem *)targetItem {
+  Item  *lastItem = [path lastObject];
+  
+  if ([lastItem isVirtual]) {
+    // Can only extend from a file item.
+    return NO;
+  }
+  
+  
+  NSMutableArray  *items = [NSMutableArray arrayWithCapacity: 16];
+
+  // Collect all file items on the path (by ascending the file hierarchy)
+  FileItem  *item = targetItem;
+  while (item != lastItem) {
+    [items addObject: item];
+
+    item = [item parentDirectory];
+    NSAssert(item != nil, @"Did not find path end-point in ancestors.");
+  }
+  
+  // Extend the path, starting from the top-level items.
+  while ([items count] > 0) {
+    if (! [self extendVisiblePathToFileItem: [items lastObject]]) {
+      break;
+    }
+
+    [items removeLastObject];
+  }
+  
+  return [items count] == 0;
+}
+
+
 - (NSArray*) buildFileItemPathFromIndex: (int)start toIndex: (int)end {
   NSMutableArray  *fileItemPath = [NSMutableArray arrayWithCapacity:8];
 
@@ -309,25 +328,58 @@
 }
 
 
-- (BOOL) extendPathToFileItemWithName:(NSString*)name fromItem:(Item*)item {
-  [path addObject:item];
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
+           similar: (BOOL) similar {
+  NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
   
-  if ([item isVirtual]) {
-    CompoundItem  *compoundItem = (CompoundItem*)item;
+  Item  *pathEndPoint = [path lastObject];
+  
+  if ([pathEndPoint isVirtual] || 
+      [((FileItem *)pathEndPoint) isPlainFile]) {
+    // Can only extend from a DirectoryItem
+    return NO;
+  }
+  
+  if (! [self extendVisiblePathToFileItem: target similar: similar
+                fromItem: [((DirectoryItem *)pathEndPoint) getContents]] ) {
+    // Failed to find a similar file item
+    return NO;
+  }
+  
+  NSAssert(! [[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
+  lastFileItemIndex = [path count] - 1;
+
+  // Automatically update the selection to the end point.
+  selectedFileItemIndex = lastFileItemIndex;
+  [self postSelectedItemChanged];
+  
+  return YES;
+}
+
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
+           similar: (BOOL) similar fromItem: (Item *)current {
+  [path addObject: current];
+  
+  if ([current isVirtual]) {
+    CompoundItem  *compoundItem = (CompoundItem*)current;
     
-    if ([self extendPathToFileItemWithName:name 
-                fromItem:[compoundItem getFirst]]) {
+    if ([self extendVisiblePathToFileItem: target similar: similar
+                fromItem: [compoundItem getFirst]]) {
       return YES;  
     }
-    if ([self extendPathToFileItemWithName:name 
-                fromItem:[compoundItem getSecond]]) {
+    if ([self extendVisiblePathToFileItem: target similar: similar
+                fromItem: [compoundItem getSecond]]) {
       return YES;
     }
   }
   else {
-    FileItem  *fileItem = (FileItem*)item;
-    
-    if ([[fileItem name] isEqualToString:name]) {
+    FileItem  *fileItem = (FileItem*)current;
+
+    if (target == fileItem ||
+          (similar &&
+             ([[fileItem name] isEqualToString: [target name]] &&
+              [fileItem isPlainFile] == [target isPlainFile] &&
+              [fileItem isSpecial] == [target isSpecial]))) {
       return YES;
     }
   }

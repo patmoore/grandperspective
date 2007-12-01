@@ -5,15 +5,18 @@
 
 @interface DrawTaskInput : NSObject {
   FileItem  *visibleTree;
+  FileItem  *treeInView;
   TreeLayoutBuilder  *layoutBuilder;
   NSRect  bounds;
 }
 
-- (id) initWithVisibleTree: (FileItem *)visibleTree 
+- (id) initWithVisibleTree: (FileItem *)visibleTree
+         treeInView: (FileItem *)treeInView 
          layoutBuilder: (TreeLayoutBuilder *)layoutBuilder
          bounds: (NSRect) bounds;
 
 - (FileItem *)visibleTree;
+- (FileItem *)treeInView;
 - (TreeLayoutBuilder *)layoutBuilder;
 - (NSRect) bounds;
 

@@ -2,6 +2,7 @@
 
 @class AsynchronousTaskManager;
 @class TreeLayoutBuilder;
+@class FileItem;
 @class ItemTreeDrawerSettings;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
@@ -20,6 +21,13 @@
   
   ItemPathModel  *pathModel;
   
+  // Maintains the selected item if it is outside the visible tree (in which
+  // case it cannot be maintained by the pathModel). This can happen when the
+  // entire volume is shown.
+  FileItem  *invisibleSelectedItem;
+  
+  BOOL  showEntireVolume;
+  
   NSImage  *treeImage;  
 }
 
@@ -27,10 +35,15 @@
 // from the nib file (which invokes the generic initWithFrame: method).
 - (void) postInitWithPathModel: (ItemPathModel *)pathModelVal;
 
-- (ItemPathModel*) itemPathModel;
+- (ItemPathModel *)itemPathModel;
+- (FileItem *)treeInView;
+- (FileItem *)selectedItem;
 
 - (ItemTreeDrawerSettings *) treeDrawerSettings;
 - (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+
+- (BOOL) showEntireVolume;
+- (void) setShowEntireVolume: (BOOL) flag;
 
 - (TreeLayoutBuilder*) layoutBuilder;
 

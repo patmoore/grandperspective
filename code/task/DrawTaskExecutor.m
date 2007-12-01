@@ -9,20 +9,13 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithVolumeTree: instead");
+  return [self initWithTreeDrawerSettings:
+                 [[[ItemTreeDrawerSettings alloc] init] autorelease]];
 }
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal {
-  return [self initWithVolumeTree: volumeTreeVal
-                 treeDrawerSettings:
-                   [[[ItemTreeDrawerSettings alloc] init] autorelease]];
-}
-
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree 
-         treeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
-    treeDrawer = [[ItemTreeDrawer alloc] initWithVolumeTree: volumeTree 
-                                           treeDrawerSettings: settings];
+    treeDrawer = [[ItemTreeDrawer alloc] initWithTreeDrawerSettings: settings];
     treeDrawerSettings = [settings retain];
     
     settingsLock = [[NSLock alloc] init];
@@ -67,6 +60,7 @@
     DrawTaskInput  *drawingInput = input;
     
     return [treeDrawer drawImageOfVisibleTree: [drawingInput visibleTree] 
+                         startingAtTree: [drawingInput treeInView]
                          usingLayoutBuilder: [drawingInput layoutBuilder]
                          inRect: [drawingInput bounds]];
   }

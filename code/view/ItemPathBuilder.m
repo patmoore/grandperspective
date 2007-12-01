@@ -7,56 +7,77 @@
 
 @implementation ItemPathBuilder
 
-// Overrides super's designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use -initWithPathModel: instead.");
-}
-
-- (id) initWithPathModel:(ItemPathModel*)pathModelVal {
-  if (self = [super init]) {
-    pathModel = [pathModelVal retain];    
-  }
-  
-  return self;
-}
-
-- (void) dealloc {
-  [pathModel release];
-
-  [super dealloc];
-}
-
-- (void) buildVisiblePathToPoint:(NSPoint)point 
-           usingLayoutBuilder:(TreeLayoutBuilder*)layoutBuilder 
-           bounds:(NSRect)bounds {
+- (FileItem *) selectItemAtPoint: (NSPoint)point 
+                 startingAtTree: (FileItem *)treeRoot
+                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+                 bounds: (NSRect)bounds
+                 updatePath: (ItemPathModel *)pathModelVal {
+  NSAssert(pathModel==nil, @"Path model should be nil.");
+  pathModel = pathModelVal;
+  visibleTree = [pathModel visibleTree];
+  insideVisibleTree = NO;
+           
   // Don't generate notifications while the path is being built.
-  [pathModel suppressSelectedItemChangedNotifications:YES];
+  [pathModel suppressSelectedItemChangedNotifications: YES];
   
   [pathModel clearVisiblePath];
-  buildTargetPoint = point;
-
-  [layoutBuilder layoutItemTree:[pathModel visibleTree] inRect:bounds
-                   traverser:self];
   
-  [pathModel suppressSelectedItemChangedNotifications:NO];
+  FileItem  *retVal = [self selectItemAtPoint: point 
+                              startingAtTree: treeRoot 
+                              usingLayoutBuilder: layoutBuilder 
+                              bounds: bounds];
+  
+  [pathModel suppressSelectedItemChangedNotifications: NO];
+  visibleTree = nil;
+  pathModel = nil;
+  
+  return retVal;
+}
+
+- (FileItem *) selectItemAtPoint: (NSPoint)point 
+                 startingAtTree: (FileItem *)treeRoot
+                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+                 bounds: (NSRect)bounds {
+  NSAssert(foundItem==nil, @"foundItem should be nil.");
+  
+  targetPoint = point;
+
+  [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
+  
+  FileItem  *retVal = foundItem;
+  foundItem = nil;
+  return retVal;
 }
 
 
 - (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
-  if (!NSPointInRect(buildTargetPoint, rect)) {
+  if (!NSPointInRect(targetPoint, rect)) {
     return NO;
   }
-
-  if (depth > 0) {
-    [pathModel extendVisiblePath:item];
+  
+  if (pathModel != nil) {
+    if (item == visibleTree) {
+      insideVisibleTree = YES;
+    }
+    else if (insideVisibleTree) {
+      // Note: Append the visible item which is not the visible tree root 
+      // itself) to the path.
+      [pathModel extendVisiblePath: item];
+    }
   }
 
+  if (! [item isVirtual]) {
+    foundItem = (FileItem *)item;
+  }
+  
   // track path further
   return YES;
 }
 
 - (void) emergedFromItem:(Item*)item {
-  // void
+  if (item == visibleTree) {
+    insideVisibleTree = NO;
+  }
 }
 
 @end // @implementation ItemPathBuilder

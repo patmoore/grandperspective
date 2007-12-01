@@ -12,7 +12,6 @@
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
 #import "TreeHistory.h"
-#import "TreeBuilder.h"
 
 #import "WindowManager.h"
 
@@ -471,38 +470,56 @@ NSString* scanActivityFormatString() {
        
   // Try to match the path.
   ItemPathModel  *path = 
-    [[[ItemPathModel alloc] initWithTree: [treeHistory scanTree]] autorelease];
+    [[[ItemPathModel alloc] initWithVolumeTree: [treeHistory volumeTree]] 
+         autorelease];
 
   [path suppressSelectedItemChangedNotifications: YES];
-    
-  BOOL  ok = YES;
+
   NSEnumerator  *fileItemEnum = nil;
-  FileItem  *fileItem;
+  FileItem  *targetItem;
+  FileItem  *itemToSelect;
+
+  BOOL  insideVisibleTree = NO;
+  BOOL  hasVisibleItems = NO;
   
-  fileItemEnum = [[targetPath invisibleFileItemPath] objectEnumerator];  
-  [fileItemEnum nextObject]; // Skip the root.
-  while (ok && (fileItem = [fileItemEnum nextObject])) {
-    ok = [path extendVisiblePathToFileItemWithName:[fileItem name]];
-  }
-  // Make this extension "invisible".
-  while ([path canMoveTreeViewDown]) {
-    [path moveTreeViewDown];
-  }
-    
-  if (ok && [targetPath visibleFileItemPath] != nil) {
-    BOOL  hasVisibleItems = NO;
-      
-    fileItemEnum = [[targetPath visibleFileItemPath] objectEnumerator];
-    while (ok && (fileItem = [fileItemEnum nextObject])) {
-      ok = [path extendVisiblePathToFileItemWithName:[fileItem name]];
-      if (ok) {
+  fileItemEnum = [[targetPath fileItemPath] objectEnumerator];
+
+  // Skip all nodes up to including the scan tree, as "path" is also starting
+  // from its scan tree.
+  while ([fileItemEnum nextObject] != [targetPath scanTree]);
+  
+  while (targetItem = [fileItemEnum nextObject]) {
+    if ( [path extendVisiblePathToSimilarFileItem: targetItem] ) {
+      if (! insideVisibleTree) {
+        [path moveVisibleTreeDown];
+        
+        if (targetItem == [targetPath visibleTree]) {
+          // The remainder of this path can remain visible.
+          insideVisibleTree = YES;
+        }
+      }
+      else {
         hasVisibleItems = YES;
       }
-    }
       
-    if (hasVisibleItems) {
-      [path setVisiblePathLocking:YES];
+      if (targetItem == [targetPath selectedFileItem]) {
+        itemToSelect = [path selectedFileItem];
+      }
     }
+    else {
+      // Failure to match, so should stop matching remainder of path.
+      break;
+    }
+  }
+
+  if (hasVisibleItems) {
+    [path setVisiblePathLocking: YES];
+  }
+  
+  // Match the selection to that of the original path. This is needed, because
+  // the path endpoint is not necessarily the selected item.
+  while ([path selectedFileItem] != itemToSelect) {
+    [path moveSelectionUp];
   }
         
   [path suppressSelectedItemChangedNotifications: NO];

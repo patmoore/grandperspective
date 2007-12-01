@@ -23,21 +23,13 @@
 @implementation ItemTreeDrawer
 
 - (id) init {
-  NSAssert(NO, @"Use initWithVolumeTree: instead");
-}
-
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal {
  return 
-    [self initWithVolumeTree: volumeTreeVal
-            treeDrawerSettings: 
-              [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+    [self initWithTreeDrawerSettings: 
+            [[[ItemTreeDrawerSettings alloc] init] autorelease]];
 }
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTreeVal
-         treeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
-    volumeTree = [volumeTreeVal retain];
-  
     // Make sure values are nil before calling updateSettings. 
     colorMapping = nil;
     colorPalette = nil;
@@ -57,8 +49,6 @@
 }
 
 - (void) dealloc {
-  [volumeTree release];
-
   [colorMapping release];
   [colorPalette release];
   [fileItemMask release];
@@ -118,25 +108,16 @@
 }
 
 
-- (void) setShowEntireVolume: (BOOL) flag {
-  showEntireVolume = flag;
-}
-
-- (BOOL) showEntireVolume {
-  return showEntireVolume;
-}
-
-
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings {
   [self setColorMapping: [settings colorMapping]];
   [self setColorPalette: [settings colorPalette]];
   [self setFileItemMask: [settings fileItemMask]];
-  [self setShowEntireVolume: [settings showEntireVolume]];
 }
 
 
-- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTreeVal 
-                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
+- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTreeVal
+                startingAtTree: (FileItem *)treeRoot
+                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
                 inRect: (NSRect) bounds {
   NSDate  *startTime = [NSDate date];
   
@@ -161,13 +142,12 @@
   
   insideVisibleTree = NO;
   NSAssert(visibleTree == nil, @"visibleTree should be nil.");
-  visibleTree = [visibleTreeVal retain];
-  FileItem  *drawRoot = (showEntireVolume ? volumeTree : visibleTree);
+  visibleTree = visibleTreeVal; 
+                     // Not retaining it. It is only needed during this method.
 
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
-  [layoutBuilder layoutItemTree: drawRoot inRect: bounds traverser: self];
-  [visibleTree release];
+  [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
   visibleTree = nil;
    
   [fileItemPathStringCache clearCache];
@@ -204,7 +184,6 @@
     if (file==visibleTree) {
       insideVisibleTree = YES;
     }
-    
     
     if ([file isPlainFile]) {
       if ([file isSpecial] && [[file name] isEqualToString: @"Free space"]) {

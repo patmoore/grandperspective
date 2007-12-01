@@ -5,13 +5,15 @@
 @class DirectoryItem;
 
 @interface ItemPathModel : NSObject<NSCopying> {
-  // Contains the FileItems from the root until the end of the path. It may
-  // also be used to store the intermediate virtual items. This can be
-  // useful, for instance, when the path needs to be drawn in the tree view.
+  // Contains the FileItems from the root until the end of the path.
   NSMutableArray  *path;
 
   // The index in the path array where the subtree starts (always a FileItem)
   unsigned  visibleTreeRootIndex;
+  
+  // The root of the scan tree. The visible tree should always be inside the
+  // scan tree.
+  unsigned  scanTreeIndex;
 
   // The index in the path array where the selected file item is.
   //
@@ -24,7 +26,7 @@
   // Note: It is not necessarily always the last item in the array, as one
   // or more virtual items may still follow (in particular when the path is 
   // being extended).
-  unsigned lastFileItemIndex;
+  unsigned  lastFileItemIndex;
   
   // Controls if "selectedItemChanged" notifications are being (temporarily)
   // supressed. If it is set to -1, they are posted as they occur. Otherwise
@@ -33,27 +35,17 @@
   // notification needs to be fired. 
   int  lastNotifiedSelectedFileItemIndex;
   
-  // If it is set to "false", the visible item path cannot be changed.
+  // If it is set to "NO", the visible item path cannot be changed.
   // (Note: the invisible part can never be changed directly. Only by first
   // making it visible can it be changed). 
   BOOL  visiblePathLocked;
 }
 
-- (id) initWithTree:(DirectoryItem*)itemTreeRoot;
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree;
 
 
-// Returns the file items in the invisble part of the path until (inclusive)
-// root in view.
-- (NSArray*) invisibleFileItemPath;
-
-// Returns the file items in the visible part of the path up until the 
-// selected file item (excluding root in view).
-- (NSArray*) visibleSelectedFileItemPath;
-
-// Returns the file items in the visible part of the path (excluding root in 
-// view).
-- (NSArray*) visibleFileItemPath;
-
+// Returns the file items in the path
+- (NSArray*) fileItemPath;
 
 // Returns all items in the path.
 - (NSArray*) itemPath;
@@ -62,17 +54,19 @@
 - (NSArray*) itemPathToSelectedFileItem;
 
 
+// Returns the volume tree.
+- (DirectoryItem*) volumeTree;
+
 // Returns the root of the scanned tree.
 - (DirectoryItem*) scanTree;
 
-// Returns the root of the visible tree.
+// Returns the root of the visible tree. The visible tree is the part of the
+// volume tree whose treemap is drawn.
 - (FileItem*) visibleTree;
+
 
 // Returns the selected file item (which is always part of the visible path).
 - (FileItem*) selectedFileItem;
-
-// Returns the last file item in the path.
-- (FileItem*) fileItemPathEndPoint;
 
 
 - (BOOL) isVisiblePathLocked;
@@ -81,13 +75,26 @@
 - (void) suppressSelectedItemChangedNotifications:(BOOL)option;
 
 - (BOOL) clearVisiblePath;
-- (void) extendVisiblePath:(Item*)nextItem;
-- (BOOL) extendVisiblePathToFileItemWithName:(NSString*)name;
+- (void) extendVisiblePath: (Item *)nextItem;
 
-- (BOOL) canMoveTreeViewUp;
-- (BOOL) canMoveTreeViewDown;
-- (void) moveTreeViewUp;
-- (void) moveTreeViewDown;
+// Attemps to extend the path with a file item equal to the specified one.
+//
+// Note: The path is extended with at most one file item. I.e. it does not
+// recurse into subdirectories.
+- (BOOL) extendVisiblePathToFileItem: (FileItem *)item;
+
+// Attemps to extend the path with a file item similar to the specified one.
+// A file item is similar if it has the same name, and the "isSpecial" 
+// attribute matches.
+//
+// Note: The path is extended with at most one file item. I.e. it does not
+// recurse into subdirectories.
+- (BOOL) extendVisiblePathToSimilarFileItem: (FileItem *)item;
+
+- (BOOL) canMoveVisibleTreeUp;
+- (BOOL) canMoveVisibleTreeDown;
+- (void) moveVisibleTreeUp;
+- (void) moveVisibleTreeDown;
 
 - (BOOL) canMoveSelectionUp;
 - (BOOL) canMoveSelectionDown;

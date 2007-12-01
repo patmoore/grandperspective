@@ -10,7 +10,6 @@
 #import "ItemPathDrawer.h"
 #import "ItemPathBuilder.h"
 #import "ItemPathModel.h"
-#import "TreeBuilder.h"
 
 #import "TreeLayoutTraverser.h"
 
@@ -33,7 +32,7 @@
 - (void) visiblePathLockingChanged: (NSNotification *)notification;
 - (void) windowMainStatusChanged: (NSNotification *) notification;
 
-- (void) buildPathToMouseLoc: (NSPoint) point;
+- (void) updateSelectedItem: (NSPoint) point;
 
 @end  
 
@@ -43,8 +42,15 @@
 - (id) initWithFrame:(NSRect)frame {
   if (self = [super initWithFrame:frame]) {
     layoutBuilder = [[TreeLayoutBuilder alloc] init];
-    
     pathDrawer = [[ItemPathDrawer alloc] init];
+    pathBuilder = [[ItemPathBuilder alloc] init];
+    
+    invisibleSelectedItem = nil;
+    
+    DrawTaskExecutor  *drawTaskExecutor = [[DrawTaskExecutor alloc] init];
+    drawTaskManager = 
+      [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+    [drawTaskExecutor release];
   }
 
   return self;
@@ -57,10 +63,11 @@
   [drawTaskManager release];
 
   [layoutBuilder release];
-
   [pathDrawer release];
   [pathBuilder release];
+  
   [pathModel release];
+  [invisibleSelectedItem release];
   
   [treeImage release];
   
@@ -68,23 +75,23 @@
 }
 
 - (void) postInitWithPathModel: (ItemPathModel *)pathModelVal {
-  NSAssert(drawTaskManager==nil, @"postInit already invoked.");
-  
-  DirectoryItem  *volumeTree =
-    [TreeBuilder volumeOfFileItem: [pathModelVal scanTree]];
-     
-  DrawTaskExecutor  *drawTaskExecutor = 
-    [[DrawTaskExecutor alloc] initWithVolumeTree: volumeTree];
-  drawTaskManager = 
-    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-  [drawTaskExecutor release];
-
   [self setItemPathModel: pathModelVal];
 }
 
 
-- (ItemPathModel *) itemPathModel {
+- (ItemPathModel *)itemPathModel {
   return pathModel;
+}
+
+- (FileItem *)treeInView {
+  return showEntireVolume ? [pathModel volumeTree] : [pathModel visibleTree];
+}
+
+- (FileItem *)selectedItem {
+  return (invisibleSelectedItem != nil) 
+            ? invisibleSelectedItem : [pathModel selectedFileItem];
+  // TODO: Return "nil" when the selected item is the visible tree root and
+  // the path is not locked?
 }
 
 
@@ -101,6 +108,18 @@
 
   if (settings != [drawTaskExecutor treeDrawerSettings]) {
     [drawTaskExecutor setTreeDrawerSettings: settings];
+    [self forceRedraw];
+  }
+}
+
+
+- (BOOL) showEntireVolume {
+  return showEntireVolume;
+}
+
+- (void) setShowEntireVolume: (BOOL) flag {
+  if (flag != showEntireVolume) {
+    showEntireVolume = flag;
     [self forceRedraw];
   }
 }
@@ -126,6 +145,7 @@
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
       [[DrawTaskInput alloc] initWithVisibleTree: [pathModel visibleTree] 
+                               treeInView: [self treeInView]
                                layoutBuilder: layoutBuilder
                                bounds: [self bounds]];
     [drawTaskManager asynchronouslyRunTaskWithInput: drawInput callback: self 
@@ -134,14 +154,11 @@
   }
   else {
     [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
-  
-    // TEMP: Cannot yet draw paths starting at the volume root.
-    if ( ! [[self treeDrawerSettings] showEntireVolume] ) {
-      [pathDrawer drawItemPath: [pathModel itemPathToSelectedFileItem] 
-                    tree: [pathModel visibleTree]
-                    usingLayoutBuilder: layoutBuilder
-                    bounds: [self bounds]];
-    }
+
+    [pathDrawer drawVisiblePath: pathModel
+                  startingAtTree: [self treeInView]
+                  usingLayoutBuilder: layoutBuilder
+                  bounds: [self bounds]];
   }
 }
 
@@ -190,7 +207,7 @@
   }
 
   NSPoint  loc = [theEvent locationInWindow];
-  [self buildPathToMouseLoc: [self convertPoint: loc fromView: nil]];
+  [self updateSelectedItem: [self convertPoint: loc fromView: nil]];
 
   if (!wasLocked) {
     // Now lock, after having updated path.
@@ -218,7 +235,7 @@
   BOOL isInside = [self mouse: mouseLoc inRect: [self bounds]];
 
   if (isInside) {
-    [self buildPathToMouseLoc: mouseLoc];
+    [self updateSelectedItem: mouseLoc];
   }
   else {
     [pathModel clearVisiblePath];
@@ -245,8 +262,6 @@
       addObserver: self selector: @selector(visiblePathLockingChanged:)
       name: @"visiblePathLockingChanged" object: pathModel];
           
-  pathBuilder = [[ItemPathBuilder alloc] initWithPathModel: pathModel];
-
   [[NSNotificationCenter defaultCenter]
     addObserver: self selector: @selector(windowMainStatusChanged:)
     name: NSWindowDidBecomeMainNotification object: [self window]];
@@ -284,11 +299,7 @@
 }
 
 - (void) visibleTreeChanged: (NSNotification *)notification {
-  // Discard the existing image.
-  [treeImage release];
-  treeImage = nil;
-  
-  [self setNeedsDisplay: YES];
+  [self forceRedraw];
 }
 
 - (void) visiblePathLockingChanged: (NSNotification *)notification {
@@ -313,10 +324,33 @@
 }
 
 
-- (void) buildPathToMouseLoc: (NSPoint) point {
-  [pathBuilder buildVisiblePathToPoint: point
-                       usingLayoutBuilder: layoutBuilder
-                       bounds: [self bounds]];
+// Updates the selected item as well as the path, so that the path points to 
+// it (if possible). This may not possible when the entire volume is shown, as
+// the selected item can be outside the visible tree.
+- (void) updateSelectedItem: (NSPoint) point {
+  FileItem  *selectedItem =
+    [pathBuilder selectItemAtPoint: point 
+                   startingAtTree: [self treeInView]
+                   usingLayoutBuilder: layoutBuilder 
+                   bounds: [self bounds]
+                   updatePath: pathModel];
+                   
+  if (selectedItem != [pathModel selectedFileItem]) {
+    // The selected item is outside the visible tree. It must therefore be
+    // maintained by the view
+    
+    NSAssert([pathModel selectedFileItem] == [pathModel visibleTree], 
+               @"Unexpected pathModel state.");
+    
+    [invisibleSelectedItem release];
+    invisibleSelectedItem = [selectedItem retain];
+  }
+  else {
+    // The selected item is inside the visible tree. It therefore managed by
+    // the pathModel (so that it can be moved up/down the path)
+    [invisibleSelectedItem release]; 
+    invisibleSelectedItem = nil;
+  }
 }
 
 @end // @implementation DirectoryView (PrivateMethods)

@@ -7,6 +7,7 @@
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeHistory.h"
+#import "TreeBuilder.h"
 #import "EditFilterWindowControl.h"
 #import "ItemTreeDrawerSettings.h"
 
@@ -32,7 +33,8 @@
 
 - (id) initWithTreeHistory: (TreeHistory *)history {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithTree: [history scanTree]] autorelease];
+    [[[ItemPathModel alloc] initWithVolumeTree: [history volumeTree]] 
+         autorelease];
 
   // Default settings
   DirectoryViewControlSettings  *defaultSettings =
@@ -50,13 +52,15 @@
          pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal scanTree] == [treeHistoryVal scanTree], 
+    NSAssert([itemPathModelVal volumeTree] == [treeHistoryVal volumeTree], 
                @"Tree mismatch");
     treeHistory = [treeHistoryVal retain];
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
 
-    rootPathName = [[[itemPathModel scanTree] stringForFileItemPath] retain];
+    DirectoryItem  *scanTree = 
+      [TreeBuilder scanTreeOfVolume: [itemPathModel volumeTree]];
+    rootPathName = [[scanTree stringForFileItemPath] retain];
     
     invisiblePathName = nil;
        
@@ -226,14 +230,14 @@
 }
 
 - (IBAction) upAction:(id)sender {
-  [itemPathModel moveTreeViewUp];
+  [itemPathModel moveVisibleTreeUp];
   
   // Automatically lock path as well.
   [itemPathModel setVisiblePathLocking:YES];
 }
 
 - (IBAction) downAction:(id)sender {
-  [itemPathModel moveTreeViewDown];
+  [itemPathModel moveVisibleTreeDown];
 }
 
 - (IBAction) openFileInFinder:(id)sender {
@@ -292,9 +296,8 @@
 }
 
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender {
-  [mainView setTreeDrawerSettings: 
-     [[mainView treeDrawerSettings] copyWithShowEntireVolume:
-         [showEntireVolumeCheckBox state]==NSOnState ? YES : NO]];
+  [mainView setShowEntireVolume: 
+    [showEntireVolumeCheckBox state]==NSOnState ? YES : NO];
 }
 
 
@@ -380,9 +383,9 @@
 
 
 - (void) updateButtonState:(NSNotification*)notification {
-  [upButton setEnabled: [itemPathModel canMoveTreeViewUp]];
+  [upButton setEnabled: [itemPathModel canMoveVisibleTreeUp]];
   [downButton setEnabled: [itemPathModel isVisiblePathLocked] &&
-                          [itemPathModel canMoveTreeViewDown] &&
+                          [itemPathModel canMoveVisibleTreeDown] &&
                           ( [itemPathModel selectedFileItem] !=
                             [itemPathModel visibleTree] )] ;
   [openButton setEnabled: [itemPathModel isVisiblePathLocked] ];
@@ -390,44 +393,59 @@
   NSString  *selectedFileTitle = 
     NSLocalizedString( @"Selected file:", "Label in Focus panel" );
 
-  if ( [itemPathModel isVisiblePathLocked] ||
-       [itemPathModel canMoveTreeViewDown] ) {
-    // There is a selected item. An item is considered selected when either
-    // the path is locked, or the path has one or more visible path 
-    // components (i.e. it goes beyond the folder that is shown in the view)
+  FileItem  *selectedItem = [mainView selectedItem];
 
-    FileItem  *selectedItem = [itemPathModel selectedFileItem];
+  if ( selectedItem != nil ) {
     ITEM_SIZE  itemSize = [selectedItem itemSize];
     NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
 
     [itemSizeField setStringValue: itemSizeString];
 
-    // Create attributed string for the path of the selected item. The
-    // root of the scanned tree is excluded from the path, and the part that
-    // is visible in the view is marked using different attributes.
-    NSString  *name = [selectedItem stringForFileItemPath];
-    NSString  *relName = [name substringFromIndex: [rootPathName length]];
-    int  visLen = [name length] - [invisiblePathName length] - 1;
-    if ([relName isAbsolutePath]) {
-      // Strip leading slash.
-      relName = [relName substringFromIndex: 1];
-    }
-    NSMutableAttributedString  *attributedName = 
-      [[NSMutableAttributedString alloc] initWithString: relName];
-    if (visLen > 0) {
-      [attributedName addAttribute: NSForegroundColorAttributeName
-                        value: [NSColor darkGrayColor] 
-                        range: NSMakeRange([relName length] - visLen, visLen) ];
-    }
-    [itemPathField setStringValue: ((id) attributedName) ];
+    NSString  *itemPath;
+    NSString  *relativeItemPath;
 
-    [attributedName release];
+    if ([selectedItem isSpecial]) {
+      relativeItemPath = [selectedItem name];
+      itemPath = [rootPathName stringByAppendingFormat: @" [%@]", 
+                                 relativeItemPath];
+    }
+    else {
+      itemPath = [selectedItem stringForFileItemPath];
+      
+      NSAssert([itemPath hasPrefix: rootPathName], @"Invalid path prefix.");
+      relativeItemPath = [itemPath substringFromIndex: [rootPathName length]];
+      if ([relativeItemPath isAbsolutePath]) {
+        // Strip leading slash.
+        relativeItemPath = [relativeItemPath substringFromIndex: 1];
+      }
+      
+      if ([itemPath hasPrefix: invisiblePathName]) {
+        // Create attributed string for the path of the selected item. The
+        // root of the scanned tree is excluded from the path, and the part 
+        // that is inside the visible tree is marked using different
+        // attributes.
+    
+        int  visLen = [itemPath length] - [invisiblePathName length] - 1;
+        NSMutableAttributedString  *attributedPath = 
+          [[[NSMutableAttributedString alloc] 
+               initWithString: relativeItemPath] autorelease];
+        if (visLen > 0) {
+          [attributedPath addAttribute: NSForegroundColorAttributeName
+                            value: [NSColor darkGrayColor] 
+                            range: NSMakeRange([relativeItemPath length]-visLen, 
+                                               visLen) ];
+        }
+
+        relativeItemPath = (NSString *)attributedPath;
+      }
+    }
+    [itemPathField setStringValue: relativeItemPath];
 
     [selectedItemTitleField setStringValue:
       ([selectedItem isPlainFile] ?
          selectedFileTitle :
          NSLocalizedString( @"Selected folder:", "Label in Focus panel" ) )];
-    [selectedItemPathTextView setString: name];
+    [selectedItemPathTextView setString: itemPath];
     [selectedItemExactSizeField setStringValue: 
        [FileItem exactStringForFileItemSize: itemSize]];
     [selectedItemSizeField setStringValue: 

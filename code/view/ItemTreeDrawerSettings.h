@@ -12,7 +12,6 @@
   FileItemHashing  *colorMapping;
   NSColorList  *colorPalette;
   NSObject<FileItemTest>  *fileItemMask;
-  BOOL  showEntireVolume;
 }
 
 // Creates default settings.
@@ -20,17 +19,14 @@
 
 - (id) initWithColorMapping: (FileItemHashing *)colorMapping
          colorPalette: (NSColorList *)colorPalette
-         fileItemMask: (NSObject<FileItemTest> *)fileItemMask
-         showEntireVolume: (BOOL) showEntireVolume;
+         fileItemMask: (NSObject<FileItemTest> *)fileItemMask;
 
 - (id) copyWithColorMapping: (FileItemHashing *)colorMapping;
 - (id) copyWithColorPalette: (NSColorList *)colorPalette;
 - (id) copyWithFileItemMask: (NSObject<FileItemTest> *)fileItemMask;
-- (id) copyWithShowEntireVolume: (BOOL) showEntireVolume;
 
 - (FileItemHashing *)colorMapping;
 - (NSColorList *)colorPalette;
 - (NSObject <FileItemTest> *)fileItemMask;
-- (BOOL) showEntireVolume;
 
 @end
