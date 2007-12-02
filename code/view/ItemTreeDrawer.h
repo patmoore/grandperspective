@@ -23,6 +23,7 @@
   int  numGradientColors;
   UInt32  freeSpaceColor;
   UInt32  usedSpaceColor;
+  UInt32  visibleTreeBackgroundColor;
 
   FileItem  *visibleTree;
   BOOL  insideVisibleTree;

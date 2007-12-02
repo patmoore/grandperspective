@@ -41,8 +41,9 @@
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
     
-    freeSpaceColor = [self intValueForColor: [NSColor darkGrayColor]];
-    usedSpaceColor = [self intValueForColor: [NSColor grayColor]];
+    freeSpaceColor = [self intValueForColor: [NSColor blackColor]];
+    usedSpaceColor = [self intValueForColor: [NSColor darkGrayColor]];
+    visibleTreeBackgroundColor = [self intValueForColor: [NSColor grayColor]];
     
     abort = NO;
   }
@@ -184,6 +185,8 @@
     
     if (file==visibleTree) {
       insideVisibleTree = YES;
+      
+      [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
     }
     
     if ([file isPlainFile]) {
