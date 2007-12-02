@@ -41,9 +41,7 @@
   if (lastBezierPath != nil) {
     [[NSColor selectedControlColor] set];
       
-    if (highlightPathEndPoint) {
-      [lastBezierPath setLineWidth: 3];
-    }
+    [lastBezierPath setLineWidth: (highlightPathEndPoint ? 3 : 2)];
 
     if ((firstBezierPath != lastBezierPath) || highlightPathEndPoint) {
       // Only draw the last path component if it is not the only one, or if
@@ -77,6 +75,7 @@
         //   (Also, should this be the outer rectangle, as it is not the
         //    end-point, it may also be drawn).    
         [[NSColor secondarySelectedControlColor] set];
+        [lastBezierPath setLineWidth: 2];
         [lastBezierPath stroke];
       }
   
