@@ -9,6 +9,10 @@
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
+NSString  *FreeSpace = @"free";
+NSString  *UsedSpace = @"used";
+NSString  *MiscUsedSpace = @"misc used";
+
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
  * pages. This is a good balance between the iteration I/O overhead and the 
@@ -178,8 +182,7 @@ static struct {
          autorelease];
          
   DirectoryItem*  usedSpaceItem =
-    [DirectoryItem specialDirectoryItemWithName: @"Used space"
-                     parent: volumeItem];
+    [DirectoryItem specialDirectoryItemWithName: UsedSpace parent: volumeItem];
                      
   DirectoryItem*  scanTreeItem = 
     [[[DirectoryItem alloc] initWithName: relativePath parent: usedSpaceItem] 
@@ -197,8 +200,8 @@ static struct {
   DirectoryItem*  volumeTree = [usedSpaceItem parentDirectory];
 
   FileItem*  freeSpaceItem = 
-    [FileItem specialFileItemWithName: @"Free space"
-                 parent: volumeTree size: freeSpace];
+    [FileItem specialFileItemWithName: FreeSpace parent: volumeTree 
+                size: freeSpace];
                  
   ITEM_SIZE  miscUnusedSize = volumeSize;
   if ([scanTree itemSize] <= volumeSize) {
@@ -218,8 +221,8 @@ static struct {
   }
 
   FileItem*  miscUnusedSpaceItem = 
-    [FileItem specialFileItemWithName: @"Miscellaneous"
-                 parent: usedSpaceItem size: miscUnusedSize];
+    [FileItem specialFileItemWithName: MiscUsedSpace parent: usedSpaceItem
+                size: miscUnusedSize];
 
   [usedSpaceItem setDirectoryContents: 
                    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem

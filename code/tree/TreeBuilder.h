@@ -9,6 +9,10 @@
 extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
 
+extern NSString  *FreeSpace;
+extern NSString  *UsedSpace;
+extern NSString  *MiscUsedSpace;
+
 
 @interface TreeBuilder : NSObject {
 

@@ -6,6 +6,7 @@
 #import "FileItemPathStringCache.h"
 #import "ItemTreeDrawerSettings.h"
 #import "FileItemTest.h"
+#import "TreeBuilder.h"
 
 
 @interface ItemTreeDrawer (PrivateMethods)
@@ -186,7 +187,7 @@
     }
     
     if ([file isPlainFile]) {
-      if ([file isSpecial] && [[file name] isEqualToString: @"Free space"]) {
+      if ([file isSpecial] && [[file name] isEqualToString: FreeSpace]) {
         [self drawBasicFilledRect: rect intColor: freeSpaceColor];
       }
     
@@ -200,7 +201,7 @@
       }
     }
     else {
-      if ([file isSpecial] && [[file name] isEqualToString: @"Used space"]) {
+      if ([file isSpecial] && [[file name] isEqualToString: UsedSpace]) {
         [self drawBasicFilledRect: rect intColor: usedSpaceColor];
       }
     

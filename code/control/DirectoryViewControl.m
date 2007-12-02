@@ -409,7 +409,9 @@
     NSString  *relativeItemPath;
 
     if ([selectedItem isSpecial]) {
-      relativeItemPath = [selectedItem name];
+      relativeItemPath = 
+        [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
+                                 value: nil table: @"Names"];
       itemPath = [rootPathName stringByAppendingFormat: @" [%@]", 
                                  relativeItemPath];
     }
