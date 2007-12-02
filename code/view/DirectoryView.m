@@ -138,14 +138,15 @@
   if (pathModel==nil) {
     return;
   }
+  
+  if (treeImage!=nil && !NSEqualSizes([treeImage size], [self bounds].size)) {
+    treeImage = nil;
+  }
 
-  if (treeImage==nil || !NSEqualSizes([treeImage size], [self bounds].size)) {
+  if (treeImage==nil) {
     NSAssert([self bounds].origin.x == 0 &&
              [self bounds].origin.y == 0, @"Bounds not at (0, 0)");
 
-    [[NSColor blackColor] set];
-    NSRectFill([self bounds]);
-    
     // Create image in background thread.
     DrawTaskInput  *drawInput = 
       [[DrawTaskInput alloc] initWithVisibleTree: [pathModel visibleTree] 
@@ -166,6 +167,10 @@
   }
 }
 
+
+- (BOOL) isOpaque {
+  return YES;
+}
 
 - (BOOL) acceptsFirstResponder {
   return YES;
