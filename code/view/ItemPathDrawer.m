@@ -40,15 +40,8 @@
   
   if (lastBezierPath != nil) {
     [[NSColor selectedControlColor] set];
-      
     [lastBezierPath setLineWidth: (highlightPathEndPoint ? 3 : 2)];
-
-    if ((firstBezierPath != lastBezierPath) || highlightPathEndPoint) {
-      // Only draw the last path component if it is not the only one, or if
-      // it should be highlighted. Otherwise, the item at the end of the path
-      // is not considered as selected, so should not be drawn either. 
-      [lastBezierPath stroke];
-     }
+    [lastBezierPath stroke];
   }
 
   drawPath = nil;

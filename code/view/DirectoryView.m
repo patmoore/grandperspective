@@ -165,10 +165,12 @@
   else {
     [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
 
-    [pathDrawer drawVisiblePath: pathModel
-                  startingAtTree: [self treeInView]
-                  usingLayoutBuilder: layoutBuilder
-                  bounds: [self bounds]];
+    if (invisibleSelectedItem == nil) {
+      [pathDrawer drawVisiblePath: pathModel
+                    startingAtTree: [self treeInView]
+                    usingLayoutBuilder: layoutBuilder
+                    bounds: [self bounds]];
+    }
   }
 }
 
@@ -259,7 +261,12 @@
 
   if (!wasLocked) {
     // Now lock, after having updated path.
-    [pathModel setVisiblePathLocking: YES];
+
+    if (invisibleSelectedItem == nil) {
+      // Only lock the path if it contains the selected item, i.e. if the 
+      // mouse click was inside the visible tree.
+      [pathModel setVisiblePathLocking: YES];
+    }
   }
 }
 
@@ -410,6 +417,11 @@
     
     [invisibleSelectedItem release];
     invisibleSelectedItem = [selectedItem retain];
+    
+    if (oldInvisibleSelectedItem == nil) {
+      // There was a visible selected item. Not anymore, so redraw the view.
+      [self setNeedsDisplay: YES];
+    }
   }
   else {
     // The selected item is inside the visible tree. It therefore managed by
