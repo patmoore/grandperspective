@@ -27,6 +27,10 @@
 
 - (void) itemTreeImageReady: (id) image;
 
+// Sends selection-changed events, which comprise selection-changes inside
+// the path, as well as selection of "invisible" items outside the path.
+- (void) postSelectedItemChanged;
+
 - (void) selectedItemChanged: (NSNotification *)notification;
 - (void) visibleTreeChanged: (NSNotification *)notification;
 - (void) visiblePathLockingChanged: (NSNotification *)notification;
@@ -57,7 +61,7 @@
 }
 
 - (void) dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   
   [drawTaskManager dispose];
   [drawTaskManager release];
@@ -226,7 +230,7 @@
     // drawer triggers mouse moved events again.
     return;
   }
-
+  
   NSPoint  loc = [[self window] mouseLocationOutsideOfEventStream];
   // Note: not using the location returned by [theEvent locationInWindow] as
   // this is incorrect after the drawer has been clicked on.
@@ -294,8 +298,18 @@
 }
 
 
+- (void) postSelectedItemChanged {
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName: @"selectedItemChanged" object: self];
+}
+
+
+// Called when selection changes in path
 - (void) selectedItemChanged: (NSNotification *)notification {
   [self setNeedsDisplay: YES];
+  
+  // Propagate event to my listeners.
+  [self postSelectedItemChanged];
 }
 
 - (void) visibleTreeChanged: (NSNotification *)notification {
@@ -328,6 +342,8 @@
 // it (if possible). This may not possible when the entire volume is shown, as
 // the selected item can be outside the visible tree.
 - (void) updateSelectedItem: (NSPoint) point {
+  FileItem  *oldInvisibleSelectedItem = invisibleSelectedItem;
+
   FileItem  *selectedItem =
     [pathBuilder selectItemAtPoint: point 
                    startingAtTree: [self treeInView]
@@ -350,6 +366,13 @@
     // the pathModel (so that it can be moved up/down the path)
     [invisibleSelectedItem release]; 
     invisibleSelectedItem = nil;
+  }
+  
+  if (oldInvisibleSelectedItem != invisibleSelectedItem) {
+    // Only post changes here to the invisible item. When the selected item
+    // in the path changed, -selectedItemChanged will be notified and post the 
+    // event in response. 
+    [self postSelectedItemChanged];
   }
 }
 

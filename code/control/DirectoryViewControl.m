@@ -203,12 +203,16 @@
   invisiblePathName = [[visibleTree stringForFileItemPath] retain];
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver:self selector:@selector(updateButtonState:)
-        name:@"selectedItemChanged" object:itemPathModel];
-  [nc addObserver:self selector:@selector(updateButtonState:)
-        name:@"visiblePathLockingChanged" object:itemPathModel];
-  [nc addObserver:self selector:@selector(visibleTreeChanged:)
-        name:@"visibleTreeChanged" object:itemPathModel];
+
+  // Note: For selectedItemChanged events listening to the view instead of the
+  // path, as the selected item returned by the view can change without a
+  // change to the selected item in the path.
+  [nc addObserver:self selector: @selector(updateButtonState:)
+        name: @"selectedItemChanged" object: mainView];
+  [nc addObserver:self selector: @selector(updateButtonState:)
+        name: @"visiblePathLockingChanged" object: itemPathModel];
+  [nc addObserver:self selector: @selector(visibleTreeChanged:)
+        name: @"visibleTreeChanged" object: itemPathModel];
 
   [self visibleTreeChanged: nil];
 
