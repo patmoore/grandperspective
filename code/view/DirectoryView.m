@@ -193,19 +193,18 @@
 - (void) keyDown: (NSEvent *)theEvent {
   NSString*  chars = [theEvent characters];
   if ([chars isEqualToString: @"]"]) {
-    if ([pathModel canMoveSelectionDown]) {
-      [pathModel moveSelectionDown];
-      
-      // Automatically lock path
-      [pathModel setVisiblePathLocking: YES];
+    if (! [pathModel selectionSticksToEndPoint]) {
+      if ([pathModel canMoveSelectionDown]) {
+        [pathModel moveSelectionDown];
+      }
+      else {
+        [pathModel setSelectionSticksToEndPoint: YES];
+      }
     }
   }
   else if ([chars isEqualToString: @"["]) {
     if ([pathModel canMoveSelectionUp]) {
       [pathModel moveSelectionUp];
-      
-      // Automatically lock path
-      [pathModel setVisiblePathLocking: YES];
     }
   }
 }
@@ -215,37 +214,32 @@
   scrollWheelDelta += [theEvent deltaY];
   
   if (scrollWheelDelta > 0) {
-    if ([pathModel canMoveSelectionDown]) {
-      if (scrollWheelDelta > SCROLL_WHEEL_SENSITIVITY + 0.5f) {
-        [pathModel moveSelectionDown];
-
-        // Automatically lock path
-        [pathModel setVisiblePathLocking: YES];
-
-        // Make it easy to move up down again.
-        scrollWheelDelta = - SCROLL_WHEEL_SENSITIVITY;
-      }
-    }
-    else {
+    if ([pathModel selectionSticksToEndPoint]) {
       // Keep it at zero, to make moving up not unnecessarily cumbersome.
       scrollWheelDelta = 0;
     }
+    else if (scrollWheelDelta > SCROLL_WHEEL_SENSITIVITY + 0.5f) {
+      if ([pathModel canMoveSelectionDown]) {
+        [pathModel moveSelectionDown];
+      }
+      else {
+        [pathModel setSelectionSticksToEndPoint: YES];
+      }
+
+      // Make it easy to move up down again.
+      scrollWheelDelta = - SCROLL_WHEEL_SENSITIVITY;
+    }
   }
   else {
-    if ([pathModel canMoveSelectionUp]) {
-      if (scrollWheelDelta < - (SCROLL_WHEEL_SENSITIVITY + 0.5f)) {
-        [pathModel moveSelectionUp];
-      
-        // Automatically lock path
-        [pathModel setVisiblePathLocking: YES];
-
-        // Make it easy to move back down again.
-        scrollWheelDelta = SCROLL_WHEEL_SENSITIVITY;
-      }
-    }
-    else {
-      // Keep it at zero, to make moving down not unnecessarily cumbersome.
+    if (! [pathModel canMoveSelectionUp]) {
+      // Keep it at zero, to make moving up not unnecessarily cumbersome.
       scrollWheelDelta = 0;
+    }
+    else if (scrollWheelDelta < - (SCROLL_WHEEL_SENSITIVITY + 0.5f)) {
+      [pathModel moveSelectionUp];
+
+      // Make it easy to move back down again.
+      scrollWheelDelta = SCROLL_WHEEL_SENSITIVITY;
     }
   }
 }

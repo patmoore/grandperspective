@@ -15,6 +15,7 @@
   
   FileItem  *visibleTree;
   BOOL  insideVisibleTree;
+  BOOL  wasInsideVisibleTree;
 }
 
 // Returns the item that is located at the given point (given the tree 

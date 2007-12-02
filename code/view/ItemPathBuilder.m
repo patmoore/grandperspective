@@ -16,7 +16,8 @@
   pathModel = pathModelVal;
   visibleTree = [pathModel visibleTree];
   insideVisibleTree = NO;
-           
+  wasInsideVisibleTree = NO;
+  
   // Don't generate notifications while the path is being built.
   [pathModel suppressSelectedItemChangedNotifications: YES];
   
@@ -26,6 +27,10 @@
                               startingAtTree: treeRoot 
                               usingLayoutBuilder: layoutBuilder 
                               bounds: bounds];
+  // If the target point was inside the visible tree, let the path return
+  // the selected item. It may not necessarily be the path's end point (i.e.
+  // the current value of "retVal"), it can be an intermediate directory.
+  retVal = wasInsideVisibleTree ? [pathModel selectedFileItem] : retVal;
   
   [pathModel suppressSelectedItemChangedNotifications: NO];
   visibleTree = nil;
@@ -77,6 +82,7 @@
 - (void) emergedFromItem:(Item*)item {
   if (item == visibleTree) {
     insideVisibleTree = NO;
+    wasInsideVisibleTree = YES;
   }
 }
 

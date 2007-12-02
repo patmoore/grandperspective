@@ -35,6 +35,10 @@
   // notification needs to be fired. 
   int  lastNotifiedSelectedFileItemIndex;
   
+  // Relative to the visible tree root.
+  unsigned  selectionDepth;
+  unsigned  preferredSelectionDepth;
+  
   // If it is set to "NO", the visible item path cannot be changed.
   // (Note: the invisible part can never be changed directly. Only by first
   // making it visible can it be changed). 
@@ -68,6 +72,8 @@
 // Returns the selected file item (which is always part of the visible path).
 - (FileItem*) selectedFileItem;
 
+- (BOOL) selectionSticksToEndPoint;
+- (void) setSelectionSticksToEndPoint: (BOOL)value;
 
 - (BOOL) isVisiblePathLocked;
 - (void) setVisiblePathLocking:(BOOL)value;

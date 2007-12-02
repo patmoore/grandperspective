@@ -5,6 +5,9 @@
 #import "TreeBuilder.h"
 
 
+#define STICK_TO_ENDPOINT  0xFFFF
+
+
 @interface ItemPathModel (PrivateMethods)
 
 - (void) postSelectedItemChanged;
@@ -39,6 +42,9 @@
     lastFileItemIndex = 0;
     visibleTreeRootIndex = 0;
     selectedFileItemIndex = 0;
+    
+    preferredSelectionDepth = STICK_TO_ENDPOINT;
+    selectionDepth = 0;
 
     BOOL  ok = [self buildPathToFileItem: 
                        [TreeBuilder scanTreeOfVolume: volumeTree]];
@@ -72,6 +78,8 @@
   copy->lastFileItemIndex = lastFileItemIndex;
   copy->visiblePathLocked = visiblePathLocked;
   copy->lastNotifiedSelectedFileItemIndex = -1;
+  copy->selectionDepth = selectionDepth;
+  copy->preferredSelectionDepth = preferredSelectionDepth;
   
   return copy;
 }
@@ -108,6 +116,26 @@
 
 - (FileItem*) selectedFileItem {
   return [path objectAtIndex: selectedFileItemIndex];
+}
+
+
+- (BOOL) selectionSticksToEndPoint {
+  return (preferredSelectionDepth == STICK_TO_ENDPOINT);
+}
+
+- (void) setSelectionSticksToEndPoint: (BOOL)value {  
+  if (value) {
+    preferredSelectionDepth = STICK_TO_ENDPOINT;
+    
+    // Move selection to the path's endpoint
+    while ([self canMoveSelectionDown]) {
+      [self moveSelectionDown];
+    }
+  }
+  else {
+    // Preferred depth is the current one. The selection does not change.
+    preferredSelectionDepth = selectionDepth;
+  }
 }
 
 
@@ -156,6 +184,7 @@
     lastFileItemIndex = visibleTreeRootIndex;
 
     selectedFileItemIndex = visibleTreeRootIndex;
+    selectionDepth = 0;
     [self postSelectedItemChanged];
     
     return YES;
@@ -176,9 +205,10 @@
   
     lastFileItemIndex = [path count] - 1;
     
-    // Automatically update the selection to the end point.
-    selectedFileItemIndex = lastFileItemIndex;
-    [self postSelectedItemChanged];
+    if (selectionDepth < preferredSelectionDepth) {
+      // Automatically move selection down
+      [self moveSelectionDown];
+    }
   }
 }
 
@@ -206,6 +236,9 @@
   do {
     visibleTreeRootIndex--;
   } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
+
+  // Selection has moved one level deeper as a result.
+  selectionDepth++;
   
   [self postVisibleTreeChanged];
 }
@@ -217,11 +250,17 @@
     visibleTreeRootIndex++;
   } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
   
-  if (selectedFileItemIndex < visibleTreeRootIndex) {
+  if (selectionDepth==0) {
     // Ensure that the selected file item is always in the visible path
     selectedFileItemIndex = visibleTreeRootIndex;
     [self postSelectedItemChanged];
   }
+  else {
+    // Selection has moved one level higher as a result.
+    selectionDepth--;
+  }
+  NSAssert(selectedFileItemIndex >= visibleTreeRootIndex, 
+             @"Inconsistent selection state.");
 
   [self postVisibleTreeChanged];
 }
@@ -237,10 +276,14 @@
 
 - (void) moveSelectionUp {
   NSAssert([self canMoveSelectionUp], @"Cannot move up");
+  NSAssert(selectionDepth > 0, @"Invalid selection depth");
   
   do {
     selectedFileItemIndex--;
   } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
+  selectionDepth--;
+  preferredSelectionDepth = selectionDepth;
+    // Note: If preferred selection depth was sticky, it is not anymore.
   
   [self postSelectedItemChanged];
 }
@@ -251,6 +294,10 @@
   do {
     selectedFileItemIndex++;
   } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
+  selectionDepth++;
+  if (preferredSelectionDepth < selectionDepth) {
+    preferredSelectionDepth = selectionDepth;
+  }
   
   [self postSelectedItemChanged];
 }
@@ -349,9 +396,11 @@
   NSAssert(! [[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
   lastFileItemIndex = [path count] - 1;
 
-  // Automatically update the selection to the end point.
-  selectedFileItemIndex = lastFileItemIndex;
-  [self postSelectedItemChanged];
+
+  if (selectionDepth < preferredSelectionDepth) {
+    // Automatically move the selection down.
+    [self moveSelectionDown];
+  }
   
   return YES;
 }
