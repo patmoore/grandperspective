@@ -28,7 +28,9 @@
   
   BOOL  showEntireVolume;
   
-  NSImage  *treeImage;  
+  NSImage  *treeImage;
+  
+  float  scrollWheelDelta;
 }
 
 // Initialises the instance-specific state after the view has been restored

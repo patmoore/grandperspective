@@ -18,6 +18,9 @@
 #import "DrawTaskInput.h"
 
 
+#define SCROLL_WHEEL_SENSITIVITY  6.0
+
+
 @interface DirectoryView (PrivateMethods)
 
 // Called as part of "postInit"
@@ -55,6 +58,8 @@
     drawTaskManager = 
       [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
     [drawTaskExecutor release];
+    
+    scrollWheelDelta = 0;
   }
 
   return self;
@@ -201,6 +206,46 @@
       
       // Automatically lock path
       [pathModel setVisiblePathLocking: YES];
+    }
+  }
+}
+
+
+- (void) scrollWheel: (NSEvent *)theEvent {
+  scrollWheelDelta += [theEvent deltaY];
+  
+  if (scrollWheelDelta > 0) {
+    if ([pathModel canMoveSelectionDown]) {
+      if (scrollWheelDelta > SCROLL_WHEEL_SENSITIVITY + 0.5f) {
+        [pathModel moveSelectionDown];
+
+        // Automatically lock path
+        [pathModel setVisiblePathLocking: YES];
+
+        // Make it easy to move up down again.
+        scrollWheelDelta = - SCROLL_WHEEL_SENSITIVITY;
+      }
+    }
+    else {
+      // Keep it at zero, to make moving up not unnecessarily cumbersome.
+      scrollWheelDelta = 0;
+    }
+  }
+  else {
+    if ([pathModel canMoveSelectionUp]) {
+      if (scrollWheelDelta < - (SCROLL_WHEEL_SENSITIVITY + 0.5f)) {
+        [pathModel moveSelectionUp];
+      
+        // Automatically lock path
+        [pathModel setVisiblePathLocking: YES];
+
+        // Make it easy to move back down again.
+        scrollWheelDelta = SCROLL_WHEEL_SENSITIVITY;
+      }
+    }
+    else {
+      // Keep it at zero, to make moving down not unnecessarily cumbersome.
+      scrollWheelDelta = 0;
     }
   }
 }
