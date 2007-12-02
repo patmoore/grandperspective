@@ -352,6 +352,12 @@
 - (void) selectedItemChanged: (NSNotification *)notification {
   [self setNeedsDisplay: YES];
   
+  if (invisibleSelectedItem != nil) {
+    // Set the view's selected item to that of the path.
+    [invisibleSelectedItem release]; 
+    invisibleSelectedItem = nil;
+  }
+  
   // Propagate event to my listeners.
   [self postSelectedItemChanged];
 }
