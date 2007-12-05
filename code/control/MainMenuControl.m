@@ -475,40 +475,41 @@ NSString* scanActivityFormatString() {
 
   [path suppressSelectedItemChangedNotifications: YES];
 
-  NSEnumerator  *fileItemEnum = nil;
+  NSEnumerator  *fileItemEnum = [[targetPath fileItemPath] objectEnumerator];
   FileItem  *targetItem;
-  FileItem  *itemToSelect;
+  FileItem  *itemToSelect = nil;
 
+  BOOL  insideScanTree = NO;
   BOOL  insideVisibleTree = NO;
   BOOL  hasVisibleItems = NO;
   
-  fileItemEnum = [[targetPath fileItemPath] objectEnumerator];
-
-  // Skip all nodes up to including the scan tree, as "path" is also starting
-  // from its scan tree.
-  while ([fileItemEnum nextObject] != [targetPath scanTree]);
-  
   while (targetItem = [fileItemEnum nextObject]) {
-    if ( [path extendVisiblePathToSimilarFileItem: targetItem] ) {
-      if (! insideVisibleTree) {
-        [path moveVisibleTreeDown];
-        
-        if (targetItem == [targetPath visibleTree]) {
-          // The remainder of this path can remain visible.
-          insideVisibleTree = YES;
+    if ( insideScanTree ) {
+      // Only try to extend the visible path once we are inside the scan tree,
+      // as "path" starts at its scan tree.
+      if ( [path extendVisiblePathToSimilarFileItem: targetItem] ) {
+        if (! insideVisibleTree) {
+          [path moveVisibleTreeDown];
+        }
+        else {
+          hasVisibleItems = YES;
         }
       }
       else {
-        hasVisibleItems = YES;
-      }
-      
-      if (targetItem == [targetPath selectedFileItem]) {
-        itemToSelect = [path selectedFileItem];
+        // Failure to match, so should stop matching remainder of path.
+        break;
       }
     }
-    else {
-      // Failure to match, so should stop matching remainder of path.
-      break;
+    if (itemToSelect == nil && targetItem == [targetPath selectedFileItem]) {
+      itemToSelect = [path selectedFileItem];
+    }
+    if (!insideVisibleTree && targetItem == [targetPath visibleTree]) {
+      // The remainder of this path can remain visible.
+      insideVisibleTree = YES;
+    }
+    if (!insideScanTree && targetItem == [targetPath scanTree]) {
+      // We can now start extending "path" to match "targetPath". 
+      insideScanTree = YES;
     }
   }
 
@@ -516,10 +517,18 @@ NSString* scanActivityFormatString() {
     [path setVisiblePathLocking: YES];
   }
   
-  // Match the selection to that of the original path. This is needed, because
-  // the path endpoint is not necessarily the selected item.
-  while ([path selectedFileItem] != itemToSelect) {
-    [path moveSelectionUp];
+  if (itemToSelect != nil) {
+    // Match the selection to that of the original path. This is needed, 
+    // because the path endpoint is not necessarily the selected item.
+    while ([path selectedFileItem] != itemToSelect) {
+      [path moveSelectionUp];
+    }
+  }
+  else {
+    // Did not manage to match the new path all the way up to the selected
+    // item in the original path. The selected item of the new path can 
+    // therefore remain at its endpoint (as that is the closest it can come
+    // to matching the old selection).
   }
         
   [path suppressSelectedItemChangedNotifications: NO];
