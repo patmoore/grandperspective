@@ -28,19 +28,23 @@
                 mainView = DirectoryView; 
                 maskCheckBox = NSButton; 
                 maskDescriptionTextView = NSTextView; 
+                miscUsedSpaceField = NSTextField; 
                 openButton = NSButton; 
+                scanPathTextView = NSTextView; 
                 scanTimeField = NSTextField; 
                 selectedItemExactSizeField = NSTextField; 
                 selectedItemPathTextView = NSTextView; 
                 selectedItemSizeField = NSTextField; 
                 selectedItemTitleField = NSTextField; 
                 showEntireVolumeCheckBox = NSButton; 
-                treePathTextView = NSTextView; 
                 treeSizeField = NSTextField; 
                 upButton = NSButton; 
                 visibleFolderExactSizeField = NSTextField; 
                 visibleFolderPathTextView = NSTextView; 
                 visibleFolderSizeField = NSTextField; 
+                volumeIconView = NSImageView; 
+                volumeNameTextView = NSTextView; 
+                volumeSizeField = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

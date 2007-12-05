@@ -30,11 +30,15 @@
   IBOutlet NSButton  *showEntireVolumeCheckBox;
 
   // "Info" drawer panel
-  IBOutlet NSTextView  *treePathTextView;
+  IBOutlet NSImageView  *volumeIconView;
+  IBOutlet NSTextView  *volumeNameTextView;
+  IBOutlet NSTextView  *scanPathTextView;
   IBOutlet NSTextField  *filterNameField;
   IBOutlet NSTextView  *filterDescriptionTextView;
   IBOutlet NSTextField  *scanTimeField;
   IBOutlet NSTextField  *fileSizeMeasureField;
+  IBOutlet NSTextField  *volumeSizeField;
+  IBOutlet NSTextField  *miscUsedSpaceField;
   IBOutlet NSTextField  *treeSizeField;
   IBOutlet NSTextField  *freeSpaceField;
   

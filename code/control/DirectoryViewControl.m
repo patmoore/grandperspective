@@ -178,8 +178,24 @@
   [initialSettings release];
   initialSettings = nil;
   
+  FileItem  *volumeTree = [itemPathModel volumeTree];
+  FileItem  *scanTree = [itemPathModel scanTree];
   FileItem  *visibleTree = [itemPathModel visibleTree];
-  [treePathTextView setString: [visibleTree stringForFileItemPath]];
+
+  // Configure the "Info" panel
+  NSString  *volumeName = [volumeTree name];
+  NSImage  *volumeIcon = 
+    [[NSWorkspace sharedWorkspace] iconForFile: volumeName];
+  [volumeIconView setImage: volumeIcon];
+
+  [volumeNameTextView setString: 
+    [[NSFileManager defaultManager] displayNameAtPath: volumeName]];
+  [volumeNameTextView setDrawsBackground: NO];
+  [[volumeNameTextView enclosingScrollView] setDrawsBackground: NO];
+
+  [scanPathTextView setString: [scanTree name]];
+  [scanPathTextView setDrawsBackground: NO];
+  [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
   [filterNameField setStringValue: [treeHistory filterName]];
   [filterDescriptionTextView setString: 
@@ -193,10 +209,21 @@
   [fileSizeMeasureField setStringValue: 
     [mainBundle localizedStringForKey: [treeHistory fileSizeMeasure] value: nil
                   table: @"Names"]];
-  [treeSizeField setStringValue: 
-    [FileItem stringForFileItemSize: [visibleTree itemSize]]];
+
+  unsigned long long  scanTreeSize = [scanTree itemSize];
   unsigned long long  freeSpace = [treeHistory freeSpace];
-  [freeSpaceField setStringValue: [FileItem stringForFileItemSize: freeSpace]];
+  unsigned long long  volumeSize = [volumeTree itemSize];
+  unsigned long long  miscUsedSpace = volumeSize - freeSpace - scanTreeSize;
+
+  [volumeSizeField setStringValue:  
+                            [FileItem stringForFileItemSize: volumeSize]];  
+  [treeSizeField setStringValue: 
+                            [FileItem stringForFileItemSize: scanTreeSize]];
+  [miscUsedSpaceField setStringValue:  
+                            [FileItem stringForFileItemSize: miscUsedSpace]];
+  [freeSpaceField setStringValue: 
+                            [FileItem stringForFileItemSize: freeSpace]];
+
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
@@ -217,7 +244,7 @@
   [self visibleTreeChanged: nil];
 
   [[self window] makeFirstResponder:mainView];
-  [[self window] makeKeyAndOrderFront:self];
+  [[self window] makeKeyAndOrderFront:self];  
 }
 
 // Invoked because the controller is the delegate for the window.
