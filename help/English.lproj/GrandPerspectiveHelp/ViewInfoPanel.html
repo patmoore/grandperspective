@@ -17,9 +17,34 @@
 
 <p>
 The Info panel in the <a href="ViewDrawer.html">view's drawer</a> gives information about the folder that has been scanned.
-It shows the name of the folder, and also the time when it was scanned.
+It shows the name of the folder, the time when it was scanned, and the volume on which it resides.
+The <a href="FileSizeMeasures.html">file size measure</a> that has been used is shown as well.
 When a <a href="MasksAndFilters.html">filter</a> has been applied, it will also show details of this.
-It also shows which <a href="FileSizeMeasures.html">file size measure</a> has been used, and the total size of the folder is scanned.
+</p>
+
+<p>
+The panel also shows the following four sizes:
+
+<ul>
+<li><b>Volume size</b>: The total size of the volume.
+</li>
+<li><b>Size of scanned files</b>: The total size of the scanned files, using the specified file size measure and after having applied the filter (if any).
+</li>
+<li><b>Free space</b>: The available space on the volume, as reported by the Operating System at the time of the scan.
+</li>
+<li><b>Miscellaneous used space</b>: All used space that is not accounted for by the size of the scanned files. This includes the following:
+  <ul>
+  <li>Files that were not scanned, either because the scanned folder was not at the root of the volume, or the user did not have permissions to access all subfolders.
+  </li>
+  <li>Files that are excluded by the filter (if any).
+  </li>
+  <li>Disk space that is not accounted for because the Logical <a href="FileSizeMeasures.html">file size measure</a> is used, which underestimates the space that files actually take up.
+  </li>
+  <li>Low-level file system data, needed to store amongst others the folder hierarchy.
+  </li>
+  </ul>  
+</li>
+</ul>
 </p>
 
 </body>
