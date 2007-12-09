@@ -85,8 +85,6 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
 
 - (void) storeUserCreatedTests {
-  NSLog(@"storeUserCreatedTests");
-  
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
   NSMutableArray  *testsArray = 

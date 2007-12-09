@@ -71,8 +71,6 @@
 
 
 - (void) dealloc {
-  NSLog(@"DirectoryViewControl-dealloc");
-
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
   [treeContext release];
@@ -270,7 +268,6 @@
 - (IBAction) openFileInFinder:(id)sender {
   NSString  *filePath = 
     [[itemPathModel selectedFileItem] stringForFileItemPath];
-  NSLog(@"root=%@ file=%@", invisiblePathName, filePath);
 
   [[NSWorkspace sharedWorkspace] 
     selectFile: filePath inFileViewerRootedAtPath: invisiblePathName];

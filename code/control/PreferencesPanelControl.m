@@ -27,8 +27,6 @@
 }
 
 - (void) dealloc {
-  NSLog(@"PreferencesPanelControl-dealloc");
-
   [localizedFileSizeMeasureNamesReverseLookup release];
   [localizedColorMappingNamesReverseLookup release];
   [localizedColorPaletteNamesReverseLookup release];

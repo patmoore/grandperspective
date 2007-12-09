@@ -110,8 +110,6 @@ NSString* scanActivityFormatString() {
 }
 
 - (void) dealloc {
-  NSLog(@"MainMenuControl-dealloc");
-
   [windowManager release];
   
   [scanTaskManager dispose];

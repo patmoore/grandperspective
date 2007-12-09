@@ -32,8 +32,6 @@
 }
 
 - (void) dealloc {
-  NSLog(@"SaveImageDialogControl-dealloc");
-  
   [[NSNotificationCenter defaultCenter] removeObserver: self];
   
   [dirViewControl release];
@@ -43,8 +41,6 @@
 
 
 - (void) windowDidLoad {
-  NSLog(@"windowDidLoad");
-
   [[NSNotificationCenter defaultCenter]
       addObserver: self selector: @selector(windowWillClose:)
       name: @"NSWindowWillCloseNotification" object: [self window]];

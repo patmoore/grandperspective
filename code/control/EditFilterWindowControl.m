@@ -105,8 +105,6 @@
 }
 
 - (void) dealloc {
-  NSLog(@"EditFilterWindowControl-dealloc");
-
   [testRepository release];
 
   [[repositoryTestsByName notificationCenter] removeObserver:self];
@@ -151,13 +149,10 @@
 
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification {
-  NSLog(@"windowDidBecomeKey");
   finalNotificationFired = NO;
 }
 
 - (void) windowWillClose:(NSNotification*)notification {
-  NSLog(@"windowWillClose");
-  
   if (! finalNotificationFired ) {
     // The window is closing while no "okPerformed" or "cancelPerformed" has
     // been fired yet. This means that the user is closing the window using
@@ -625,8 +620,6 @@
 
 
 - (void) updateWindowState: (NSNotification *)notification {
-  // NSLog(@"First responder: %@", [[self window] firstResponder]);
-
   if (! [[availableTestsBrowser selectedCell] isEnabled]) {
     // The window is in an anomalous situation: a test is selected in the
     // available tests browser, even though the test is disabled.
@@ -789,8 +782,6 @@
 }
 
 - (void) dealloc {
-  NSLog(@"EditFilterRuleWindowTerminationControl dealloc");
-  
   [windowControl release];
   [allTests release];
   [allowedName release];
