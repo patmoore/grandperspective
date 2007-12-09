@@ -3,7 +3,6 @@
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Also imports FileItem.h
 #import "TreeBalancer.h"
-#import "ItemInventory.h"
 #import "TreeContext.h"
 
 
@@ -182,8 +181,6 @@ static struct {
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref {
 
-  ItemInventory  *itemInventory = [ItemInventory defaultItemInventory];
-
   NSMutableArray  *fileChildren = 
     [[NSMutableArray alloc] initWithCapacity:128];
   NSMutableArray  *dirChildren = 
@@ -258,8 +255,6 @@ static struct {
 
             [fileChildren addObject:fileChildItem];
             [fileChildItem release];
-
-            [itemInventory registerFileItem: fileChildItem];
           }
           
           [childName release];
