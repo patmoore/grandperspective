@@ -7,7 +7,7 @@
 @class ColorListCollection;
 @class EditFilterWindowControl;
 @class DirectoryViewControlSettings;
-@class TreeHistory;
+@class TreeContext;
 @protocol FileItemTest;
 
 @interface DirectoryViewControl : NSWindowController {
@@ -53,7 +53,7 @@
 
   ItemPathModel  *itemPathModel;
   DirectoryViewControlSettings  *initialSettings;
-  TreeHistory  *treeHistory;
+  TreeContext  *treeContext;
 
   NSObject <FileItemTest>  *fileItemMask;
 
@@ -83,8 +83,8 @@
 - (IBAction) colorPaletteChanged: (id) sender;
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender;
 
-- (id) initWithTreeHistory: (TreeHistory *)history;
-- (id) initWithTreeHistory: (TreeHistory *)history
+- (id) initWithTreeContext: (TreeContext *)treeContext;
+- (id) initWithTreeContext: (TreeContext *)treeContext
          pathModel: (ItemPathModel *)itemPathModel
          settings: (DirectoryViewControlSettings *)settings;
 
@@ -94,7 +94,7 @@
 
 - (DirectoryView*) directoryView;
 
-- (TreeHistory*) treeHistory;
+- (TreeContext*) treeContext;
 
 // Returns the current settings of the view.
 - (DirectoryViewControlSettings*) directoryViewControlSettings;

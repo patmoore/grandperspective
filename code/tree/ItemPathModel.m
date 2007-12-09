@@ -2,13 +2,16 @@
 
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Imports FileItem.h
-#import "TreeBuilder.h"
+#import "TreeHistory.h"
 
 
 #define STICK_TO_ENDPOINT  0xFFFF
 
 
 @interface ItemPathModel (PrivateMethods)
+
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
+         scanTree: (DirectoryItem *)scanTree;
 
 - (void) postSelectedItemChanged;
 - (void) postVisibleTreeChanged;
@@ -34,28 +37,9 @@
   NSAssert(NO, @"Use -initWithTree instead.");
 }
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree {
-  if (self = [super init]) {
-    path = [[NSMutableArray alloc] initWithCapacity: 64];
-    
-    [path addObject: volumeTree];
-    lastFileItemIndex = 0;
-    visibleTreeRootIndex = 0;
-    selectedFileItemIndex = 0;
-    
-    preferredSelectionDepth = STICK_TO_ENDPOINT;
-    selectionDepth = 0;
-
-    BOOL  ok = [self buildPathToFileItem: 
-                       [TreeBuilder scanTreeOfVolume: volumeTree]];
-    NSAssert(ok, @"Failed to extend path to scan tree.");
-    scanTreeIndex = lastFileItemIndex;
-    visibleTreeRootIndex = lastFileItemIndex;
-      
-    visiblePathLocked = NO;
-    lastNotifiedSelectedFileItemIndex = -1;
-  }
-  return self;
+- (id) initWithTreeContext: (TreeContext *)treeContext {
+  return [self initWithVolumeTree: [treeContext volumeTree]
+                 scanTree: [treeContext scanTree]];
 }
 
 - (void) dealloc {
@@ -68,7 +52,8 @@
 
 - (id) copyWithZone:(NSZone*) zone {
   ItemPathModel  *copy = 
-    [[[self class] allocWithZone:zone] initWithVolumeTree: [self volumeTree]];
+    [[[self class] allocWithZone: zone] initWithVolumeTree: [self volumeTree]
+                                          scanTree: [self scanTree]];
     
   [copy->path removeAllObjects];
   [copy->path addObjectsFromArray: path];
@@ -306,6 +291,31 @@
 
 
 @implementation ItemPathModel (PrivateMethods)
+
+- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
+         scanTree: (DirectoryItem *)scanTree {
+  if (self = [super init]) {
+    path = [[NSMutableArray alloc] initWithCapacity: 64];
+    
+    [path addObject: volumeTree];
+    lastFileItemIndex = 0;
+    visibleTreeRootIndex = 0;
+    selectedFileItemIndex = 0;
+    
+    preferredSelectionDepth = STICK_TO_ENDPOINT;
+    selectionDepth = 0;
+
+    BOOL  ok = [self buildPathToFileItem: scanTree];
+    NSAssert(ok, @"Failed to extend path to scan tree.");
+    scanTreeIndex = lastFileItemIndex;
+    visibleTreeRootIndex = lastFileItemIndex;
+      
+    visiblePathLocked = NO;
+    lastNotifiedSelectedFileItemIndex = -1;
+  }
+
+  return self;  
+}
 
 - (void) postSelectedItemChanged {
   if (lastNotifiedSelectedFileItemIndex == -1) {

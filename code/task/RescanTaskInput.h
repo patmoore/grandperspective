@@ -3,15 +3,15 @@
 #import "ScanTaskInput.h"
 
 
-@class TreeHistory;
+@class TreeContext;
 
 
 @interface RescanTaskInput : ScanTaskInput {
-  TreeHistory  *oldHistory;
+  TreeContext  *oldContext;
 }
 
-- (id) initWithOldHistory: (TreeHistory *) oldHistory;
+- (id) initWithOldContext: (TreeContext *) oldContext;
 
-- (TreeHistory *) oldHistory;
+- (TreeContext *) oldContext;
 
 @end

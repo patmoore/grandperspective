@@ -3,6 +3,7 @@
 @class Item;
 @class FileItem;
 @class DirectoryItem;
+@class TreeContext;
 
 @interface ItemPathModel : NSObject<NSCopying> {
   // Contains the FileItems from the root until the end of the path.
@@ -45,7 +46,7 @@
   BOOL  visiblePathLocked;
 }
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree;
+- (id) initWithTreeContext: (TreeContext *)treeContext;
 
 
 // Returns the file items in the path

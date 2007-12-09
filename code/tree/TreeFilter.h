@@ -2,7 +2,7 @@
 
 
 @class TreeBalancer;
-@class DirectoryItem;
+@class TreeContext;
 @class FileItemPathStringCache;
 @protocol FileItemTest;
 
@@ -24,7 +24,7 @@
 
 - (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest;
 
-- (DirectoryItem*) filterVolumeTree:(DirectoryItem *)volumeTree;
+- (TreeContext *) filterTree: (TreeContext *)oldTree;
 
 - (void) abort;
 

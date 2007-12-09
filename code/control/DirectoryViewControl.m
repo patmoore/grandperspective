@@ -7,7 +7,6 @@
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeHistory.h"
-#import "TreeBuilder.h"
 #import "EditFilterWindowControl.h"
 #import "ItemTreeDrawerSettings.h"
 
@@ -31,16 +30,15 @@
 
 @implementation DirectoryViewControl
 
-- (id) initWithTreeHistory: (TreeHistory *)history {
+- (id) initWithTreeContext: (TreeContext *)treeContextVal {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithVolumeTree: [history volumeTree]] 
-         autorelease];
+    [[[ItemPathModel alloc] initWithTreeContext: treeContextVal] autorelease];
 
   // Default settings
   DirectoryViewControlSettings  *defaultSettings =
     [[[DirectoryViewControlSettings alloc] init] autorelease];
 
-  return [self initWithTreeHistory: history
+  return [self initWithTreeContext: treeContextVal
                  pathModel: pathModel 
                  settings: defaultSettings];
 }
@@ -48,19 +46,17 @@
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithTreeHistory: (TreeHistory *)treeHistoryVal
+- (id) initWithTreeContext: (TreeContext *)treeContextVal
          pathModel: (ItemPathModel *)itemPathModelVal
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal volumeTree] == [treeHistoryVal volumeTree], 
+    NSAssert([itemPathModelVal volumeTree] == [treeContextVal volumeTree], 
                @"Tree mismatch");
-    treeHistory = [treeHistoryVal retain];
+    treeContext = [treeContextVal retain];
     itemPathModel = [itemPathModelVal retain];
     initialSettings = [settings retain];
 
-    DirectoryItem  *scanTree = 
-      [TreeBuilder scanTreeOfVolume: [itemPathModel volumeTree]];
-    rootPathName = [[scanTree stringForFileItemPath] retain];
+    scanPathName = [[[treeContext scanTree] stringForFileItemPath] retain];
     
     invisiblePathName = nil;
        
@@ -79,7 +75,7 @@
 
   [[NSNotificationCenter defaultCenter] removeObserver:self];
   
-  [treeHistory release];
+  [treeContext release];
   [itemPathModel release];
   [initialSettings release];
   
@@ -129,8 +125,8 @@
                 autorelease];
 }
 
-- (TreeHistory*) treeHistory {
-  return treeHistory;
+- (TreeContext*) treeContext {
+  return treeContext;
 }
 
 
@@ -197,21 +193,21 @@
   [scanPathTextView setDrawsBackground: NO];
   [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
-  [filterNameField setStringValue: [treeHistory filterName]];
+  [filterNameField setStringValue: [treeContext filterName]];
   [filterDescriptionTextView setString: 
-                               ([treeHistory fileItemFilter] != nil 
-                                ? [[treeHistory fileItemFilter] description]
+                               ([treeContext fileItemFilter] != nil 
+                                ? [[treeContext fileItemFilter] description]
                                 : @"") ];
   
   [scanTimeField setStringValue: 
-    [[treeHistory scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
+    [[treeContext scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
                               timeZone:nil locale:nil]];
   [fileSizeMeasureField setStringValue: 
-    [mainBundle localizedStringForKey: [treeHistory fileSizeMeasure] value: nil
+    [mainBundle localizedStringForKey: [treeContext fileSizeMeasure] value: nil
                   table: @"Names"]];
 
   unsigned long long  scanTreeSize = [scanTree itemSize];
-  unsigned long long  freeSpace = [treeHistory freeSpace];
+  unsigned long long  freeSpace = [treeContext freeSpace];
   unsigned long long  volumeSize = [volumeTree itemSize];
   unsigned long long  miscUsedSpace = volumeSize - freeSpace - scanTreeSize;
 

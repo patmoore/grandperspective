@@ -1,11 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
+extern NSString  *FreeSpace;
+extern NSString  *UsedSpace;
+extern NSString  *MiscUsedSpace;
 
 @protocol FileItemTest;
 @class DirectoryItem;
 
-@interface TreeHistory : NSObject {
+@interface TreeContext : NSObject {
+  unsigned long long  volumeSize;
+  unsigned long long  freeSpace;
+
   DirectoryItem  *volumeTree;
+  DirectoryItem  *scanTree;
 
   NSDate  *scanTime;
   NSString  *fileSizeMeasure;
@@ -14,21 +21,35 @@
   int  filterId;
 }
 
-// Scan time is set to "now".
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree 
-         fileSizeMeasure: (NSString *)measure;
 
-// Scan time defaults to "now". "newFilter" is the newly applied filter,
-// which does not include any filters that had already been applied earlier.
-- (TreeHistory*) historyAfterFiltering: (DirectoryItem *)newTree
-                   filter: (NSObject <FileItemTest> *)newFilter;
+// Creates a new tree context, without a filter and with a scan time set to 
+// "now". A volume-tree skeleton is created, but still needs to be finalised.
+//
+// Note: The returned object is not yet fully ready. The contents scanTree
+// of its scan tree need to be set, after which -postInit must be called.
+- (id) initWithVolumePath: (NSString *)volumePath
+         scanPath: (NSString *)relativePath
+         fileSizeMeasure: (NSString *)fileSizeMeasureVal
+         volumeSize: (unsigned long long) volumeSize 
+         freeSpace: (unsigned long long) freeSpace;
 
-// Scan time is set to "now".
-- (TreeHistory*) historyAfterRescanning: (DirectoryItem *)newTree;
+// Creates a new tree context, based on the current one, but with an additional
+// filter applied. The filtering itself still needs to be performed. This is
+// the responsibility of the sender, after which it has to finalise the 
+// volume tree.
+//
+// Note: The returned object is not yet fully ready. The contents scanTree
+// of its scan tree need to be set, after which -postInit must be called.
+- (TreeContext *) contextAfterFiltering: (NSObject <FileItemTest> *)newFilter;
+
+// Finalises the volume tree. It should be called after the scan tree
+// contents have been set.
+- (void) postInit;
 
 - (DirectoryItem*) volumeTree;
 - (DirectoryItem*) scanTree;
 
+- (unsigned long long) volumeSize;
 - (unsigned long long) freeSpace;
 
 - (NSString*) fileSizeMeasure;

@@ -7,28 +7,28 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithOldHistory:filterTest: instead");
+  NSAssert(NO, @"Use initWithOldContext:filterTest: instead");
 }
 
-- (id) initWithOldHistory: (TreeHistory *)oldHistoryVal
+- (id) initWithOldContext: (TreeContext *)oldContextVal
          filterTest: (NSObject <FileItemTest> *)filterTestVal {
   if (self = [super init]) {
-    oldHistory = [oldHistoryVal retain];
+    oldContext = [oldContextVal retain];
     filterTest = [filterTestVal retain];
   }
   return self;
 }
 
 - (void) dealloc {
-  [oldHistory release];
+  [oldContext release];
   [filterTest release];
   
   [super dealloc];
 }
 
 
-- (TreeHistory *) oldHistory {
-  return oldHistory;
+- (TreeContext *) oldContext {
+  return oldContext;
 }
 
 - (NSObject <FileItemTest> *) filterTest {

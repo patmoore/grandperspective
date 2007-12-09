@@ -36,22 +36,16 @@
   
   NSDate  *startTime = [NSDate date];
   
-  DirectoryItem*  volumeTree = [treeBuilder buildVolumeTreeForPath: path];
+  TreeContext*  scanResult = [treeBuilder buildTreeForPath: path];
   
   [treeBuilder release];
   treeBuilder = nil;
   
-  if (volumeTree == nil) {
-    // Scanning was aborted.
-    return nil;
+  if (scanResult != nil) {
+    NSLog(@"Done scanning. Time taken=%f", -[startTime timeIntervalSinceNow]);
   }
 
-  NSLog(@"Done scanning. Total size=%qu, Time taken=%f", 
-          [volumeTree itemSize], -[startTime timeIntervalSinceNow]);
-  
-  return [[[TreeHistory alloc] 
-              initWithVolumeTree: volumeTree
-              fileSizeMeasure: [myInput fileSizeMeasure]] autorelease];
+  return scanResult;
 }
 
 

@@ -4,14 +4,11 @@
 #import "DirectoryItem.h" // Also imports FileItem.h
 #import "TreeBalancer.h"
 #import "ItemInventory.h"
+#import "TreeHistory.h"
 
 
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
-
-NSString  *FreeSpace = @"free";
-NSString  *UsedSpace = @"used";
-NSString  *MiscUsedSpace = @"misc used";
 
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
@@ -117,7 +114,7 @@ static struct {
 }
 
 
-- (DirectoryItem*) buildVolumeTreeForPath:(NSString *)path {
+- (TreeContext *)buildTreeForPath: (NSString *)path {
   FSRef  pathRef;
   Boolean  isDir;
 
@@ -159,107 +156,22 @@ static struct {
        [path substringFromIndex: [pathToVolume length]] : @"");
   NSLog(@"Relative folder: %@", relativePath);  
        
-  DirectoryItem*  scanTree = 
-    [TreeBuilder scanTreeWithPath: relativePath volumePath: pathToVolume];
+  TreeContext  *scanResult =
+    [[[TreeContext alloc] initWithVolumePath: pathToVolume
+                            scanPath: relativePath
+                            fileSizeMeasure: fileSizeMeasure
+                            volumeSize: volumeSize 
+                            freeSpace: freeSpace] autorelease];
     
-  if (! [self buildTreeForDirectory: scanTree parentPath: pathToVolume
+  if (! [self buildTreeForDirectory: [scanResult scanTree] 
+                parentPath: pathToVolume
                 ref: &pathRef]) {
     return nil;
   }
-
-  DirectoryItem*  volumeTree = 
-    [TreeBuilder finaliseVolumeTreeForScanTree: scanTree
-                   volumeSize: volumeSize freeSpace: freeSpace];
-
-  return volumeTree;
-}
-
-
-+ (DirectoryItem *) scanTreeWithPath: (NSString *)relativePath
-                      volumePath: (NSString *)pathToVolume {
-  DirectoryItem*  volumeItem = 
-    [[[DirectoryItem alloc] initWithName: pathToVolume parent: nil] 
-         autorelease];
-         
-  DirectoryItem*  usedSpaceItem =
-    [DirectoryItem specialDirectoryItemWithName: UsedSpace parent: volumeItem];
-                     
-  DirectoryItem*  scanTreeItem = 
-    [[[DirectoryItem alloc] initWithName: relativePath parent: usedSpaceItem] 
-         autorelease];
-         
-  return scanTreeItem;
-  // Note: volumeItem and useSpacedItem are currently only retained in the
-  // autorelease pool.
-}
-
-+ (DirectoryItem *) finaliseVolumeTreeForScanTree: (DirectoryItem *)scanTree
-                      volumeSize: (unsigned long long) volumeSize 
-                      freeSpace: (unsigned long long) freeSpace {
-  DirectoryItem*  usedSpaceItem = [scanTree parentDirectory];
-  DirectoryItem*  volumeTree = [usedSpaceItem parentDirectory];
-
-  FileItem*  freeSpaceItem = 
-    [FileItem specialFileItemWithName: FreeSpace parent: volumeTree 
-                size: freeSpace];
-                 
-  ITEM_SIZE  miscUnusedSize = volumeSize;
-  if ([scanTree itemSize] <= volumeSize) {
-    miscUnusedSize -= [scanTree itemSize];
-    
-    if (freeSpace <= volumeSize) {
-      miscUnusedSize -= freeSpace;
-    }
-    else {
-      NSLog(@"Scanned tree size plus free space is larger than volume size.");
-      miscUnusedSize = 0;
-    }
-  } 
-  else {
-    NSLog(@"Scanned tree size is larger than volume size.");
-    miscUnusedSize = 0;
-  }
-
-  FileItem*  miscUnusedSpaceItem = 
-    [FileItem specialFileItemWithName: MiscUsedSpace parent: usedSpaceItem
-                size: miscUnusedSize];
-
-  [usedSpaceItem setDirectoryContents: 
-                   [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
-                                   second: scanTree]];
-    
-  [volumeTree setDirectoryContents: 
-                [CompoundItem compoundItemWithFirst: freeSpaceItem
-                                second: usedSpaceItem]];
-                                
-  return volumeTree;
-}
-
-
-+ (unsigned long long) freeSpaceOfVolume: (DirectoryItem *)root {
-  NSAssert([root parentDirectory]==nil, @"Root must be the volume tree.");
   
-  return [[((CompoundItem *)[root getContents]) getFirst] itemSize];
-}
-
-+ (DirectoryItem *) scanTreeOfVolume: (DirectoryItem *)root {
-  NSAssert([root parentDirectory]==nil, @"Root must be the volume tree.");
+  [scanResult postInit];
   
-  return (DirectoryItem *)
-           [((CompoundItem *)
-             [((DirectoryItem *)
-               [((CompoundItem *)
-                 [root getContents]) getSecond]) getContents]) getSecond];
-}
-
-+ (DirectoryItem *) volumeOfFileItem: (FileItem *)item {
-  // Climb to the top of the parent hierarchy; this is the volume (as long as
-  // the item is indeed part of a volume tree).
-  DirectoryItem  *parent;
-  while (parent = [item parentDirectory]) {
-    item = parent;
-  }
-  return (DirectoryItem *)item;
+  return scanResult;
 }
 
 @end // @implementation TreeBuilder

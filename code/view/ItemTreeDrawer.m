@@ -6,7 +6,7 @@
 #import "FileItemPathStringCache.h"
 #import "ItemTreeDrawerSettings.h"
 #import "FileItemTest.h"
-#import "TreeBuilder.h"
+#import "TreeHistory.h"
 
 
 @interface ItemTreeDrawer (PrivateMethods)

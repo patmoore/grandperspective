@@ -15,22 +15,21 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  TreeHistory  *scanResult = [super runTaskWithInput: input];
+  TreeContext  *scanResult = [super runTaskWithInput: input];
 
   RescanTaskInput  *myInput = input;
-  NSObject <FileItemTest>  *filterTest = [[myInput oldHistory] fileItemFilter];
+  NSObject <FileItemTest>  *filterTest = [[myInput oldContext] fileItemFilter];
   
   // Then filter ... (if not yet aborted, and there is actually a filter)
   if (scanResult != nil && filterTest != nil) {
     treeFilter = [[TreeFilter alloc] initWithFileItemTest: filterTest];
   
-    DirectoryItem  *filteredVolumeTree = 
-      [treeFilter filterVolumeTree: [scanResult volumeTree]];
+    TreeContext  *filteredResult = [treeFilter filterTree: scanResult];
   
     [treeFilter release];
     treeFilter = nil;
     
-    return [[myInput oldHistory] historyAfterRescanning: filteredVolumeTree];
+    return filteredResult;
   }
   else {
     return scanResult;

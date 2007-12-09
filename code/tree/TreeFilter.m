@@ -2,7 +2,7 @@
 
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
-#import "TreeBuilder.h"
+#import "TreeHistory.h"
 #import "TreeBalancer.h"
 #import "FileItemTest.h"
 #import "FileItemPathStringCache.h"
@@ -49,20 +49,14 @@
   [super dealloc];
 }
 
-- (DirectoryItem*) filterVolumeTree:(DirectoryItem *)oldVolumeTree {
-  DirectoryItem  *oldScanTree = [TreeBuilder scanTreeOfVolume: oldVolumeTree];
-  DirectoryItem  *newScanTree = 
-    [TreeBuilder scanTreeWithPath: [oldScanTree name]
-                      volumePath: [oldVolumeTree name]];
+- (TreeContext *)filterTree: (TreeContext *)oldTree {
+  TreeContext  *filterResult = [oldTree contextAfterFiltering: itemTest];
   
-  [self filterItemTree: oldScanTree into: newScanTree];
-  
-  DirectoryItem  *newVolumeTree = 
-    [TreeBuilder finaliseVolumeTreeForScanTree: newScanTree
-                   volumeSize: [oldVolumeTree itemSize] 
-                   freeSpace: [TreeBuilder freeSpaceOfVolume: oldVolumeTree]];
+  [self filterItemTree: [oldTree scanTree] into: [filterResult scanTree]];
+          
+  [filterResult postInit];
                  
-  return newVolumeTree; 
+  return filterResult; 
 }
 
 - (void) abort {
