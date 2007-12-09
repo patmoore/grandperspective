@@ -365,23 +365,21 @@ NSString* scanActivityFormatString() {
 // Creates window title based on scan location, scan time and filter (if any).
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeContext  *treeContext = [control treeContext];
-  NSString  *scanPathName = 
-    [[[control itemPathModel] scanTree] stringForFileItemPath];
-                
+  NSString  *scanPath = [[treeContext scanTree] stringForFileItemPath];
+
   NSString  *scanTimeString = 
     [[treeContext scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
                               timeZone: nil locale: nil];
   if ([treeContext filterIdentifier] == 0) {
     return [NSString stringWithFormat: @"%@ - %@", 
-                                         scanPathName, scanTimeString];
+                                         scanPath, scanTimeString];
   }
   else {
     return [NSString stringWithFormat: @"%@ - %@ - %@", 
-                                         scanPathName, scanTimeString,
+                                         scanPath, scanTimeString,
                                          [treeContext filterName] ];
   }
 }
-
 
 @end // @implementation MainMenuControl (PrivateMethods)
 

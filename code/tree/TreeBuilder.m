@@ -132,11 +132,12 @@ static struct {
   // Establish the root of the volume
   unsigned long long  fileSystemNumber =
     [[fsattrs objectForKey: NSFileSystemNumber] unsignedLongLongValue];
-  NSString  *pathToVolume = path;
+  NSString  *volumePath = path;
 
   while (YES) {
-    NSString  *parentPath = [pathToVolume stringByDeletingLastPathComponent];
-    if ([parentPath isEqualToString: pathToVolume]) {
+    NSString  *parentPath = [volumePath stringByDeletingLastPathComponent];
+    if ([parentPath isEqualToString: volumePath]) {
+      // String cannot be reduced further, so must be start of volume.
       break;
     }
     fsattrs = [manager fileSystemAttributesAtPath: parentPath];
@@ -144,27 +145,39 @@ static struct {
     unsigned long long  parentFileSystemNumber =
       [[fsattrs objectForKey: NSFileSystemNumber] unsignedLongLongValue];
     if (parentFileSystemNumber != fileSystemNumber) {
+      // There was a change of filesystem, so the start of the volume has been
+      // found.
       break;
-    } 
-    pathToVolume = parentPath;
+    }
+    volumePath = parentPath;
   }
-  NSLog(@"Volume: %@ [%@]", pathToVolume, 
-           [manager displayNameAtPath: pathToVolume]);
+  
   NSString  *relativePath =
-    ([pathToVolume length] < [path length] ? 
-       [path substringFromIndex: [pathToVolume length]] : @"");
-  NSLog(@"Relative folder: %@", relativePath);  
+    ([volumePath length] < [path length] ? 
+       [path substringFromIndex: [volumePath length]] : @"");
+  if ([relativePath isAbsolutePath]) {
+    // Strip leading slash.
+    relativePath = [relativePath substringFromIndex: 1];
+  }     
+       
+  if ([relativePath length] > 0) {
+    NSLog(@"Scanning volume %@ [%@], starting at %@", volumePath, 
+             [manager displayNameAtPath: volumePath], relativePath);
+  }
+  else {
+    NSLog(@"Scanning entire volume %@ [%@].", volumePath, 
+             [manager displayNameAtPath: volumePath]);
+  }
        
   TreeContext  *scanResult =
-    [[[TreeContext alloc] initWithVolumePath: pathToVolume
+    [[[TreeContext alloc] initWithVolumePath: volumePath
                             scanPath: relativePath
                             fileSizeMeasure: fileSizeMeasure
                             volumeSize: volumeSize 
                             freeSpace: freeSpace] autorelease];
     
   if (! [self buildTreeForDirectory: [scanResult scanTree] 
-                parentPath: pathToVolume
-                ref: &pathRef]) {
+                parentPath: volumePath ref: &pathRef]) {
     return nil;
   }
   
