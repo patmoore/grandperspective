@@ -4,7 +4,7 @@
 <title>Het Info paneel van het overzicht venster</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
 <meta name="description" content="Beschrijft het Info paneel van het overzicht venster.">
-<meta name="keywords" content="GrandPerspective, venster, lade, info, paneel, inlezen, ingelezen, map" >
+<meta name="keywords" content="GrandPerspective, venster, lade, info, paneel, inlezen, ingelezen, map, opslagmedium" >
 </head>
 <body>
 
@@ -17,10 +17,36 @@
 
 <p>
 Het Info paneel in de <a href="ViewDrawer.html">lade van het overzicht venster</a> geeft informatie over de map die ingelezen is.
-Het toont de naam van de map, en het tijdstip waarop de map ingelezen is.
+Het toont het opslagmedium waarop de map zich bevindt, de naam van de map, en het tijdstip waarop de map ingelezen is.
+Het paneel geeft ook aan welke <a href="FileSizeMeasures.html">bestandsgrootte maat</a> gebruikt is.
 Wanneer een <a href="MasksAndFilters.html">filter</a> toegepast is, worden hier ook details van gegeven.
-Het paneel geeft ook aan welke <a href="FileSizeMeasures.html">bestandsgrootte maat</a> gebruikt is, tesamen met de totale grootte van de ingelezen map.
 </p>
+
+<p>
+Het paneel geeft onderaan de volgende vier groottes weer:
+
+<ul>
+<li><b>Grootte van opslagmedium</b>: De totale grootte van het opslagmedium.
+</li>
+<li><b>Grootte van ingelezen bestanden</b>: De totale grootte van de ingelezen bestanden, volgens de aangegeven bestandsgrootte maat en nadat het filter is toegepast (indien aanwezig).
+</li>
+<li><b>Beschikbare ruimte</b>: De ruimte die beschikbaar is op het opslagmedium, zoals dit door het besturingssysteem gerapporteerd was toen de map ingelezen werd.
+</li>
+<li><b>Overige gebruikte ruimte</b>: Alle gebruikte ruimte die niet onder de grootte van ingelezen bestanden valt. Dit bestaat uit de volgende onderdelen:
+  <ul>
+  <li>Bestanden die niet ingelezen zijn, omdat de ingelezen map niet de buitenste map van het opslagmedium is, of omdat u als gebruiker geen rechten heeft om alle bestanden te bekijken.
+  </li>
+  <li>Bestanden die door het filter zijn buitengesloten.
+  </li>
+  <li>Schijfruimte die buiten beschouwing is gebleven omdat de Intrinsieke <a href="FileSizeMeasures.html">bestandsgrootte maat</a> gebruikt is, welke de benodigde schijfruimte iets onderschat.
+  </li>
+  <li>Data op laag niveau van het bestandssysteem. Deze data is onder andere nodig om de bestandshierarchie bij te houden.
+  </li>
+  </ul>  
+</li>
+</ul>
+</p>
+
 
 </body>
 </html>
