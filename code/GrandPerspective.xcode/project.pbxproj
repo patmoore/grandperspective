@@ -389,7 +389,6 @@
 				AA4030070A5B01A6004EAAF3,
 				AA4030330A5B02F1004EAAF3,
 				AA1115C40A84CA320023C5CD,
-				AA1116C40A8541EF0023C5CD,
 				AAFDC49C0A892AE200DB84D7,
 				AAC26BC10A8CAF4800F2DA33,
 				AAC26BC30A8CAF4800F2DA33,
@@ -407,6 +406,7 @@
 				AA8FECA00B6CFC990049FF42,
 				AA62D5DB0BCA67BB0095A09A,
 				AAE87FDA0CE10B9B00A99883,
+				AA8877EB0D0C0E3500F52571,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -479,30 +479,6 @@
 		};
 		AA1115C40A84CA320023C5CD = {
 			fileRef = AA1115C20A84CA320023C5CD;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AA1116C10A8541EF0023C5CD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = TreeHistory.h;
-			path = tree/TreeHistory.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA1116C20A8541EF0023C5CD = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = TreeHistory.m;
-			path = tree/TreeHistory.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA1116C40A8541EF0023C5CD = {
-			fileRef = AA1116C20A8541EF0023C5CD;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1092,13 +1068,13 @@
 		};
 		AA6012010A5AEE0D00DEBCB8 = {
 			children = (
+				AA8877E80D0C0E3500F52571,
+				AA8877E90D0C0E3500F52571,
 				AA4030320A5B02F1004EAAF3,
 				AA4030310A5B02F1004EAAF3,
 				AA60131D0A5AFCC500DEBCB8,
 				AA60131F0A5AFCC500DEBCB8,
 				AA60131E0A5AFCC500DEBCB8,
-				AA1116C10A8541EF0023C5CD,
-				AA1116C20A8541EF0023C5CD,
 				AA6013210A5AFCC500DEBCB8,
 				AA6013200A5AFCC500DEBCB8,
 				AA6013230A5AFCC500DEBCB8,
@@ -1682,6 +1658,30 @@
 			path = English.lproj/DirectoryViewWindow.nib;
 			refType = 4;
 			sourceTree = "<group>";
+		};
+		AA8877E80D0C0E3500F52571 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = TreeContext.h;
+			path = tree/TreeContext.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA8877E90D0C0E3500F52571 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = TreeContext.m;
+			path = tree/TreeContext.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA8877EB0D0C0E3500F52571 = {
+			fileRef = AA8877E90D0C0E3500F52571;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		AA8FEA0A0B6BFBB40049FF42 = {
 			fileEncoding = 4;

@@ -2,7 +2,7 @@
 
 #import "TreeBuilder.h"
 #import "DirectoryItem.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 #import "ScanTaskInput.h"
 
 

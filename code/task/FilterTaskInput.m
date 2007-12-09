@@ -1,6 +1,6 @@
 #import "FilterTaskInput.h"
 
-#import "TreeHistory.h"
+#import "TreeContext.h"
 
 
 @implementation FilterTaskInput

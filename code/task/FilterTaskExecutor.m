@@ -2,7 +2,7 @@
 
 #import "TreeFilter.h"
 #import "FilterTaskInput.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 
 
 @implementation FilterTaskExecutor

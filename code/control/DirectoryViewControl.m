@@ -6,7 +6,7 @@
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 #import "EditFilterWindowControl.h"
 #import "ItemTreeDrawerSettings.h"
 

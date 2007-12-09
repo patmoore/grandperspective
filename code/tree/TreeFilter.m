@@ -2,7 +2,7 @@
 
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 #import "TreeBalancer.h"
 #import "FileItemTest.h"
 #import "FileItemPathStringCache.h"

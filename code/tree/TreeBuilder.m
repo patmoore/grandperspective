@@ -4,7 +4,7 @@
 #import "DirectoryItem.h" // Also imports FileItem.h
 #import "TreeBalancer.h"
 #import "ItemInventory.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 
 
 NSString  *LogicalFileSize = @"logical";

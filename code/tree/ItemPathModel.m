@@ -2,7 +2,7 @@
 
 #import "CompoundItem.h"
 #import "DirectoryItem.h" // Imports FileItem.h
-#import "TreeHistory.h"
+#import "TreeContext.h"
 
 
 #define STICK_TO_ENDPOINT  0xFFFF

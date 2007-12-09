@@ -11,7 +11,7 @@
 
 #import "ItemPathModel.h"
 #import "TreeFilter.h"
-#import "TreeHistory.h"
+#import "TreeContext.h"
 
 #import "WindowManager.h"
 
