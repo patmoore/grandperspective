@@ -65,9 +65,10 @@
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
-  NSString  *rootPathName;
+  // The (absolute) path of the scan tree.
+  NSString  *scanPathName;
   
-  // The part of the pathname that is outside the visible tree.
+  // The part of the (absolute) path that is outside the visible tree.
   NSString  *invisiblePathName;
 }
 

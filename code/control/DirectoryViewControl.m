@@ -93,7 +93,7 @@
   
   [editMaskFilterWindowControl release];
 
-  [rootPathName release];
+  [scanPathName release];
   [invisiblePathName release];
   
   [super dealloc];
@@ -421,7 +421,8 @@
                             [itemPathModel visibleTree] )] ;
   [openButton setEnabled: [itemPathModel isVisiblePathLocked] ];
   
-  NSString  *selectedFileTitle = 
+  // Set to default (it may be changed)
+  NSString  *selectedItemTitle = 
     NSLocalizedString( @"Selected file:", "Label in Focus panel" );
 
   FileItem  *selectedItem = [mainView selectedItem];
@@ -439,14 +440,15 @@
       relativeItemPath = 
         [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
                                  value: nil table: @"Names"];
-      itemPath = [rootPathName stringByAppendingFormat: @" [%@]", 
-                                 relativeItemPath];
+      itemPath = relativeItemPath;
+      selectedItemTitle = 
+        NSLocalizedString( @"Selected area:", "Label in Focus panel" );
     }
     else {
       itemPath = [selectedItem stringForFileItemPath];
       
-      NSAssert([itemPath hasPrefix: rootPathName], @"Invalid path prefix.");
-      relativeItemPath = [itemPath substringFromIndex: [rootPathName length]];
+      NSAssert([itemPath hasPrefix: scanPathName], @"Invalid path prefix.");
+      relativeItemPath = [itemPath substringFromIndex: [scanPathName length]];
       if ([relativeItemPath isAbsolutePath]) {
         // Strip leading slash.
         relativeItemPath = [relativeItemPath substringFromIndex: 1];
@@ -471,13 +473,15 @@
 
         relativeItemPath = (NSString *)attributedPath;
       }
+      
+      if (! [selectedItem isPlainFile]) {
+        selectedItemTitle = 
+           NSLocalizedString( @"Selected folder:", "Label in Focus panel" );
+      }
     }
+
     [itemPathField setStringValue: relativeItemPath];
 
-    [selectedItemTitleField setStringValue:
-      ([selectedItem isPlainFile] ?
-         selectedFileTitle :
-         NSLocalizedString( @"Selected folder:", "Label in Focus panel" ) )];
     [selectedItemPathTextView setString: itemPath];
     [selectedItemExactSizeField setStringValue: 
        [FileItem exactStringForFileItemSize: itemSize]];
@@ -488,11 +492,12 @@
     // There's no selected item
     [itemSizeField setStringValue: @""];
     [itemPathField setStringValue: @""];
-    [selectedItemTitleField setStringValue: selectedFileTitle];
     [selectedItemPathTextView setString: @""];
     [selectedItemExactSizeField setStringValue: @""];
     [selectedItemSizeField setStringValue: @""];
   }
+
+  [selectedItemTitleField setStringValue: selectedItemTitle];
 }
 
 
