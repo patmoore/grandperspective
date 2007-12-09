@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="0.99"
-VERSION_ID="0_99"
+VERSION="0.9.10"
+VERSION_ID="0_9_10"
 
 if [ $# -ne "1" ]
 then
@@ -29,15 +29,15 @@ OUT_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 mkdir $OUTER_DIR_PATH
 
 echo "Exporting text files."
-./export-docs.sh trunk/docs 383 $OUTER_DIR_PATH $VERSION $VERSION_ID
+./export-docs.sh trunk/docs 500 $OUTER_DIR_PATH $VERSION $VERSION_ID
 
 mkdir $OUTER_DIR_PATH/src
 echo "Exporting source code."
-./export-source.sh trunk/code 385 $OUTER_DIR_PATH/src $VERSION
+./export-source.sh trunk/code 499 $OUTER_DIR_PATH/src $VERSION
 
 echo "Exporting help documentation."
-./export-help.sh 390 $OUTER_DIR_PATH/src English
-./export-help.sh 390 $OUTER_DIR_PATH/src nl
+./export-help.sh 497 $OUTER_DIR_PATH/src English
+./export-help.sh 497 $OUTER_DIR_PATH/src nl
 
 echo "Generating help indexes."
 ./update-help-index.sh $OUTER_DIR_PATH/src/English.lproj/$HELP_FOLDER English
