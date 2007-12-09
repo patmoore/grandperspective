@@ -3,6 +3,39 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.9.10, 12-12-2007
+----------------------------------------------------------------------
+
+New functionality:
+- Added ability to show the entire volume on which the scanned folder
+  resides, including free space.
+- Added ability to select folders in the view window. By default, 
+  files are still selected, but you can select folders using the
+  scrollwheel of the mouse or the "[" and "]" keys.
+
+Minor improvements:
+- The "Info" panel has been pimped:
+  - It more elegantly shows the folder that has been scanned, 
+    together with the volume it is on.
+  - It now also shows the size of volume and the amount of 
+    miscellaneous used space. 
+- Added more color palettes, each with at least eight colors. Removed
+  several old palettes that had relatively few colors.
+- Made the path to the selected file more clearly visible in the view.
+- Improved drawing of the view so that it does not unnecessarily
+  "flash" when it is updated.
+
+Minor meta changes:
+- Changed version numbering scheme to allow this release before
+  releasing Version 1.00. (Just insert a dot in the version numbers
+  of all earlier releases for the new numbering to make sense)
+
+Code clean-up:
+- Drastically refactored the code in order to cleanly add the new
+  functionality.
+
+
+----------------------------------------------------------------------
   Version 0.99 (localized), 28-03-2007
 ----------------------------------------------------------------------
 

@@ -21,12 +21,12 @@ rectangles as square as possible.
 
 - PowerPC/Intel processor
 
-  This version of the application has released as a Universal Binary.
-  This was possible, because I had access to a machine that can build 
-  these. However, I still cannot build Universal Binaries from my own
-  machine. So, donations to support the required upgrade of my
-  operating system are greatly appreciated (you can find how to make 
-  a donation from the GrandPerspective website).
+  This version of the application has been released as a Universal 
+  Binary. This was possible because I had access to a machine that 
+  can build these. However, I cannot yet build Universal Binaries
+  from my own machine; donations to support the required upgrade
+  are greatly appreciated :-). You can find out how to make a donation
+  on the GrandPerspective website.
 
   Many thanks to Martin Kahr who has been making Universal Binaries
   available for earlier releases of GrandPerspective. Also thanks
