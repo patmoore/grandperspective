@@ -327,8 +327,6 @@
 				AAC9B6490B7FA94A002B3ECE,
 				AA13BAD30B8A5747000AEAA9,
 				AADD34930B8B902000AC2C97,
-				AA62D5DA0BCA67BB0095A09A,
-				AAE87FDB0CE10B9B00A99883,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1526,12 +1524,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA62D5DA0BCA67BB0095A09A = {
-			fileRef = AA62D5D80BCA67BB0095A09A;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		AA62D5DB0BCA67BB0095A09A = {
 			fileRef = AA62D5D90BCA67BB0095A09A;
 			isa = PBXBuildFile;
@@ -2326,12 +2318,6 @@
 		};
 		AAE87FDA0CE10B9B00A99883 = {
 			fileRef = AAE87FD80CE10B9B00A99883;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AAE87FDB0CE10B9B00A99883 = {
-			fileRef = AAE87FD90CE10B9B00A99883;
 			isa = PBXBuildFile;
 			settings = {
 			};
