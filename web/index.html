@@ -45,6 +45,8 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
 <p>
 <ul>
 
+<li><p><b>12 Dec 2007</b> GrandPerspective 0.9.10 has been released. Newly added is the ability to select folders in the view, and the ability to show the entire volume (including free space). There have been a few other improvements as well. By the way, don't be confused by the new version numbering scheme. This release is the successor of Version 0.99 (which would be called 0.9.9 under the new naming scheme). I changed the naming scheme as I do not yet consider this Version 1.00.</p></li>
+
 <li><p><b>24 Jul 2007</b> GrandPerspective has been downloaded more than 50.000 times. Great! However, I should apologise for the recent lull in activities. I have just been too busy lately. Nevertheless, Version 1.00 is in the making and will appear sometime. Patience, my friends...</p></li>
 
 <li><p><b>18 Apr 2007</b> Thanks to <a href="http://lifehacker.com/software/disk-space/download-of-the-day-grandperspective-mac-253364.php">lifehacker.com</a> for featuring GrandPerspective as download of the day. It has resulted in another spike in the <a href="http://sourceforge.net/project/stats/?group_id=148156&ugn=grandperspectiv">download stats</a>.</p></li>
@@ -71,10 +73,10 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
 <h2>Download it</h2></a>
 
 <p>GrandPerspective has been released as <a href="http://www.opensource.org/">Open Source</a> under the <a href="http://www.gnu.org/licenses/licenses.html#GPL">GNU General Public License</a>. The official release files are available from the <a href="http://sourceforge.net/project/showfiles.php?group_id=148156">GrandPerspective download area</a>.
-The latest release (Version 0.99) consists of three files:
+The latest release (Version 0.9.10) consists of three files:
 
 <ul>
-<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_99.dmg?download">GrandPerspective-0_99.dmg</a></b> (English)
+<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_10.dmg?download">GrandPerspective-0_9_10.dmg</a></b> (English)
  
 <p>This is the main release file. It contains all you need to run
 the application. To install the application, open the disk 
@@ -82,19 +84,12 @@ image and drag the application icon onto your Applications
 folder, or wher'ever you want to put it onto your file system.
 Next, run the application by clicking on the icon.</p></li>
 
-<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_99-local.dmg?download">GrandPerspective-0_99-local.dmg</a></b> (English, Japanese, German, Dutch)
+<li><b>GrandPerspective-0_9_10-local.dmg</b> (English, Japanese, German, Dutch, and hopefully more)
  
 <p>This is the localized version of GrandPerspective. It includes
-support for languages other than English.</p>
+support for languages other than English. It has yet to be released, as the  translations are done by <a href="#localization">volunteers</a> after the official release has appeared. The target release date is four weeks after the release of the English version.</p>
 
-<p>You can also run GrandPerspective in French and Spanish even though they are not included in the above release. As these localizations have been created more recently, you need to download the archive with the localized resources directly from the <a href="http://sourceforge.net/tracker/?group_id=148156&atid=901452">Localization tracker</a>. Unzip the archive, and place the folder with the localized resources inside the package of the GrandPerspective application (it should be moved into the Contents/Resources folder). Here are the direct links to the archives:
-  <ul> 
-  <li><a href="http://sourceforge.net/tracker/download.php?group_id=148156&atid=901452&file_id=241377&aid=1772564">French-update1.lproj.zip</a> (French)</li>
-  <li><a href="http://sourceforge.net/tracker/download.php?group_id=148156&atid=901452&file_id=242143&aid=1775430">es.lproj.zip</a> (Spanish)</li>
-  </ul></p>
-</li>
-
-<li><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_99-src.tgz?download">GrandPerspective-0_99-src.tgz</a>
+<li><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_10-src.tgz?download">GrandPerspective-0_9_10-src.tgz</a>
 
 <p>This contains the source code of the application. It consists of
 the Objective C source code, as well as various auxiliary files,
@@ -108,21 +103,7 @@ such as the nib files that are used to construct the GUI. You need this file if 
 <a name="localization">
 <h2>Localization</h2></a>
 
-<p>From Version 0.97 onwards GrandPerspective is fully internationalized. This means that it can be localized to support languages other than English. I can manage the translation into Dutch, but for any other language, I will need your help. So, hereby a call for volunteers. If you want to help out with making GrandPerspective available in your mother tongue, or any other language you speak fluently, here is how to go about it:</p>
-
-<ol>
-
-<li><p>Go to the GrandPerspective <a href="https://sourceforge.net/forum/forum.php?forum_id=634668">Localization forum</a> to check if somebody is already working on the specific localization you have in mind. If so, see if you can somehow help out. Otherwise, you can announce your plans to work on a new localization on the forum.</p></li>
-
-<li><p>Localize the English resources in the <code>English.lproj</code> folder. You should take the resources from the source code distribution, as this includes the <code>classes.nib</code> and <code>info.nib</code> files that InterfaceBuilder needs. Localize all nib files and all strings files one by one. This requires the use of XCode and InterfaceBuilder. See Apple's developer documentation for details.</p></li>
-
-<li><p>When you think you're done, test your work. Run GrandPerspective using your locaized resources. First check that there is nothing you have forgotten to translate. Secondly, check that everything still works.</p></li>
-
-<li><p>All okay? Then upload your localized resources to the <a href="http://sourceforge.net/tracker/?group_id=148156&atid=901452">Localizations Tracker</a>. You could also add a message to the <a href="https://sourceforge.net/forum/forum.php?forum_id=634668">Localization forum</a>. This way, other users can already use them if they want, and report any problems there may be.</p></li>
-
-</ol>
-
-<p>I intend to release a localized version of GrandPerspective, which includes all localizations that have been provided. The aim is to do this <em>four weeks after the release of the English version</em>. This should give enough time for localization to take place, yet means that users won't have to wait too long for this localized release.</p>
+<p>From Version 0.97 onwards GrandPerspective is fully internationalized. This means that it can be localized to support languages other than English. I can manage the translation into Dutch, but for any other language, I will need your help. So, hereby a call for volunteers. If you want to help out with making GrandPerspective available in your mother tongue, or any other language you speak fluently, find out <a href="localization.html">how you can help</a>.</p>
 
 <h2>Feedback</h2>
 
@@ -268,7 +249,7 @@ Retain a sense of control.</p>
 
 <hr>
 
-<p>Copyright 2005-2007, Eriban. Last updated: 16 November 2007</p>
+<p>Copyright 2005-2007, Eriban. Last updated: 12 December 2007</p>
 
 </body>
 </html>

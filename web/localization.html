@@ -1,0 +1,42 @@
+<html>
+<head>
+<link href="favicon.ico" type="image/x-icon" rel="icon"/>
+<link href="favicon.ico" type="image/x-icon" rel="shortcut icon"/>
+<title>GrandPerspective localization</title>
+</head>
+
+<body>
+
+<h1>GrandPerspective localization</h1>
+
+<p>If you want to help out with making GrandPerspective available in your mother tongue, or any other language you speak fluently, here is how to go about it:</p>
+
+<ol>
+
+<li><p>Go to the GrandPerspective <a href="https://sourceforge.net/forum/forum.php?forum_id=634668">Localization forum</a> to check if somebody is already working on the specific localization you have in mind. If so, see if you can somehow help out. Otherwise, you can announce your plans to work on a new localization on the forum.</p></li>
+
+<li><p>Localize the English resources in the <code>English.lproj</code> folder. You should take the resources from the source code distribution, as this includes the <code>classes.nib</code> and <code>info.nib</code> files that InterfaceBuilder needs. Localize all nib files and all strings files one by one. This requires the use of XCode and InterfaceBuilder. See <a href="http://developer.apple.com/">Apple's developer documentation</a> for details. In particular, it includes documentation about how to <a href="http://developer.apple.com/internationalization/localization/gui.html">localize the GUI</a> as well as info on how to <a href="http://developer.apple.com/documentation/MacOSX/Conceptual/BPInternational/index.html">localize the other resources</a>.</p></li>
+
+<li><p>When you think you're done, test your work. Run GrandPerspective using your locaized resources. First check that there is nothing you have forgotten to translate. Secondly, check that everything still works.</p></li>
+
+<li><p>All okay? Then upload your localized resources to the <a href="http://sourceforge.net/tracker/?group_id=148156&atid=901452">Localizations Tracker</a>. You could also add a message to the <a href="https://sourceforge.net/forum/forum.php?forum_id=634668">Localization forum</a>. This way, other users can already use them if they want, and report any problems there may be.</p></li>
+
+</ol>
+
+<p>I intend to release a localized version of GrandPerspective, which includes all localizations that have been provided. The aim is to do this <em>four weeks after the release of the English version</em>. This should give enough time for localization to take place, yet means that users won't have to wait too long for this localized release.</p>
+
+<h2>Gotcha's</h2>
+
+<p>Below you can find some things to watch out for:</p>
+
+<ul>
+
+<li><p><b>Make sure that text files are using the right text encoding</b>: 
+  <ul><li>Strings files should be encoded using <em>UTF-16</em>.</li>
+      <li>The HTML help documentation is using the <em>Western (ISO Latin 1)</em> text encoding. This is therefore also the text encoding specified in the head of the HTML page, i.e. using <tt>charset=iso-8859-1</tt>. You can use a different text encoding if you need to (i.e. when you need characters that are not available in the <em>Western (ISO Latin 1)</em>. However, you then need to update the <tt>Content-Type</tt> meta tag in the head of the HTML file(s) accordingly.</li>
+  </ul></p></li>
+
+</ul>
+
+</body>
+</html>
