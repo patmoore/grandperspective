@@ -33,7 +33,7 @@ echo "Exporting text files."
 
 mkdir $OUTER_DIR_PATH/src
 echo "Exporting source code."
-./export-source.sh trunk/code 502 $OUTER_DIR_PATH/src $VERSION
+./export-source.sh trunk/code 504 $OUTER_DIR_PATH/src $VERSION
 
 echo "Exporting help documentation."
 ./export-help.sh 497 $OUTER_DIR_PATH/src English
