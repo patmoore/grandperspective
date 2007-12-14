@@ -19,6 +19,7 @@
   IBOutlet NSButton  *upButton;
   IBOutlet NSButton  *downButton;
   IBOutlet NSButton  *openButton;
+  IBOutlet NSButton  *deleteButton;
   
   IBOutlet NSDrawer  *drawer;
   
@@ -75,6 +76,7 @@
 - (IBAction) upAction: (id) sender;
 - (IBAction) downAction: (id) sender;
 - (IBAction) openFileInFinder: (id) sender;
+- (IBAction) deleteFile: (id) sender;
 
 - (IBAction) maskCheckBoxChanged: (id) sender;
 - (IBAction) editMask: (id) sender;
