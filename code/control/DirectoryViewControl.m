@@ -440,9 +440,7 @@
 - (void) updateButtonState:(NSNotification*)notification {
   [upButton setEnabled: [itemPathModel canMoveVisibleTreeUp]];
   [downButton setEnabled: [itemPathModel isVisiblePathLocked] &&
-                          [itemPathModel canMoveVisibleTreeDown] &&
-                          ( [itemPathModel selectedFileItem] !=
-                            [itemPathModel visibleTree] )] ;
+                          [itemPathModel canMoveVisibleTreeDown]];
   [openButton setEnabled: [self canRevealSelectedFile] ];
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
   

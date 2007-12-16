@@ -244,7 +244,7 @@
 }
 
 - (BOOL) canMoveVisibleTreeDown {
-  return (visibleTreeRootIndex < lastFileItemIndex);
+  return (visibleTreeRootIndex < selectedFileItemIndex);
 }
 
 - (void) moveVisibleTreeUp {
