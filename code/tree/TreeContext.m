@@ -3,11 +3,16 @@
 #import "CompoundAndItemTest.h"
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
+#import "ItemPathModel.h"
 
 
 NSString  *FreeSpace = @"free";
 NSString  *UsedSpace = @"used";
 NSString  *MiscUsedSpace = @"misc used";
+NSString  *FreedSpace = @"freed";
+
+NSString  *TreeItemReplacedEvent = @"treeItemReplaced";
+NSString  *TreeItemReplacedHandledEvent = @"treeItemReplacedHandled";
 
 
 static int  nextFilterId = 1;
@@ -43,6 +48,12 @@ static int  nextFilterId = 1;
 // which case it will not do anything.
 - (void) emptyCloset;
 
+// Signals that an item in the tree has been replaced (by another one, of the
+// same size). The item itself is not part of the notification, but can be 
+// recognized because its parent directory has been cleared.
+- (void) postItemReplaced;
+- (void) treeItemReplacedHandled: (NSNotification *)notification;
+
 @end
 
 
@@ -71,6 +82,8 @@ static int  nextFilterId = 1;
 
 
 - (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+
   [self emptyCloset];
 
   [scanTree release];
@@ -78,6 +91,9 @@ static int  nextFilterId = 1;
   [fileSizeMeasure release];
   [scanTime release];
   [filter release];
+  
+  [replacedItem release];
+  [replacingItem release];
 
   [super dealloc];
 }
@@ -157,6 +173,65 @@ static int  nextFilterId = 1;
   }
 }
 
+
+- (void) replaceSelectedItem: (ItemPathModel *)path 
+           bySpecialItemWithName: (NSString *)newName {
+  NSAssert(replacedItem == nil, @"Replaced item not nil.");
+  NSAssert(replacingItem == nil, @"Replacing item not nil.");  
+           
+  replacedItem = [[path selectedFileItem] retain];
+  
+  // Let path end at selected item (as it simplifies finding the containing
+  // item)
+  [path clearPathBeyondSelection];
+  NSArray  *itemsInPath = [path itemPath];
+  int  pathLen = [itemsInPath count];
+  
+  NSAssert([itemsInPath objectAtIndex: pathLen - 1] == replacedItem,
+             @"Inconsistent path.");
+  Item  *containingItem = [itemsInPath objectAtIndex: pathLen - 2];
+
+  replacingItem = 
+    [[FileItem specialFileItemWithName: newName
+                 parent: [replacedItem parentDirectory] 
+                 size: [replacedItem itemSize]] retain];
+  
+  if ([containingItem isVirtual]) {
+    CompoundItem  *compoundItem = (CompoundItem *)containingItem;
+    
+    if ([compoundItem getFirst] == replacedItem) {
+      [compoundItem replaceFirst: replacingItem];
+    }
+    else if ([compoundItem getSecond] == replacedItem) {
+      [compoundItem replaceSecond: replacingItem];
+    }
+    else {
+      NSAssert(NO, @"Selected item not found.");
+    }
+  } 
+  else {
+    DirectoryItem  *dirItem = (DirectoryItem *)containingItem;
+  
+    NSAssert(! [dirItem isPlainFile], @"Expected a DirectoryItem.");
+    NSAssert([dirItem getContents] == replacedItem, 
+               @"Selected item not found.");
+    
+    [dirItem replaceDirectoryContents: replacingItem];
+  }
+
+  [self postItemReplaced];
+}
+
+- (FileItem *) replacedFileItem {
+  NSAssert(replacedItem != nil, @"replacedFileItem is nil.");
+  return replacedItem;
+}
+
+- (FileItem *) replacingFileItem {
+  NSAssert(replacingItem != nil, @"replacingFileItem is nil.");
+  return replacingItem;
+}
+
 @end // TreeContext
 
 
@@ -182,6 +257,11 @@ static int  nextFilterId = 1;
 
     filter = [filterVal retain];
     filterId = filterIdVal;
+
+    // Listen to self
+    [[NSNotificationCenter defaultCenter] 
+        addObserver: self selector: @selector(treeItemReplacedHandled:)
+        name: TreeItemReplacedHandledEvent object: self];
   }
   
   return self;
@@ -276,6 +356,21 @@ static int  nextFilterId = 1;
 
   [usedSpaceItem release];
   [volumeItem release];
+}
+
+- (void) postItemReplaced {
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+
+  [nc postNotificationName: TreeItemReplacedEvent object: self];
+  [nc postNotificationName: TreeItemReplacedHandledEvent object: self];
+}
+
+- (void) treeItemReplacedHandled: (NSNotification *)notification {
+  [replacedItem release];
+  replacedItem = nil;
+  
+  [replacingItem release];
+  replacingItem = nil;  
 }
 
 @end // TreeContext (PrivateMethods)

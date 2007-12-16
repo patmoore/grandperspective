@@ -10,8 +10,16 @@
 
 @interface ItemPathModel (PrivateMethods)
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
-         scanTree: (DirectoryItem *)scanTree;
+// Initialiser used to implement copying.
+//
+// Note: To properly allow subclassing, this method should maybe be moved
+// to the public interface. However, this is currently not relevant, as this
+// class is not subclassed.
+- (id) initByCopying: (ItemPathModel *)source;
+
+- (void) observeEvents;
+
+- (void) treeItemReplaced: (NSNotification *)notification;
 
 - (void) postSelectedItemChanged;
 - (void) postVisibleTreeChanged;
@@ -34,37 +42,48 @@
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use -initWithTree instead.");
+  NSAssert(NO, @"Use -initWithTreeContext: instead.");
 }
 
-- (id) initWithTreeContext: (TreeContext *)treeContext {
-  return [self initWithVolumeTree: [treeContext volumeTree]
-                 scanTree: [treeContext scanTree]];
+- (id) initWithTreeContext: (TreeContext *)treeContextVal {
+  if (self = [super init]) {
+    treeContext = [treeContextVal retain];
+  
+    path = [[NSMutableArray alloc] initWithCapacity: 64];
+    
+    [path addObject: [treeContext volumeTree]];
+    lastFileItemIndex = 0;
+    visibleTreeRootIndex = 0;
+    selectedFileItemIndex = 0;
+    
+    preferredSelectionDepth = STICK_TO_ENDPOINT;
+    selectionDepth = 0;
+
+    BOOL  ok = [self buildPathToFileItem: [treeContext scanTree]];
+    NSAssert(ok, @"Failed to extend path to scan tree.");
+    scanTreeIndex = lastFileItemIndex;
+    visibleTreeRootIndex = lastFileItemIndex;
+      
+    visiblePathLocked = NO;
+    lastNotifiedSelectedFileItemIndex = -1;
+    
+    [self observeEvents];
+  }
+
+  return self;
 }
 
 - (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+  
+  [treeContext release];
   [path release];
   
   [super dealloc];
 }
 
 - (id) copyWithZone:(NSZone*) zone {
-  ItemPathModel  *copy = 
-    [[[self class] allocWithZone: zone] initWithVolumeTree: [self volumeTree]
-                                          scanTree: [self scanTree]];
-    
-  [copy->path removeAllObjects];
-  [copy->path addObjectsFromArray: path];
-
-  copy->visibleTreeRootIndex = visibleTreeRootIndex;
-  copy->selectedFileItemIndex = selectedFileItemIndex;
-  copy->lastFileItemIndex = lastFileItemIndex;
-  copy->visiblePathLocked = visiblePathLocked;
-  copy->lastNotifiedSelectedFileItemIndex = -1;
-  copy->selectionDepth = selectionDepth;
-  copy->preferredSelectionDepth = preferredSelectionDepth;
-  
-  return copy;
+  return [[[self class] allocWithZone: zone] initByCopying: self];
 }
 
 
@@ -196,6 +215,21 @@
 }
 
 
+- (BOOL) clearPathBeyondSelection {
+  int  num = [path count] - selectedFileItemIndex - 1;
+
+  if (num > 0) {
+    [path removeObjectsInRange: NSMakeRange(selectedFileItemIndex + 1, num)];
+    
+    lastFileItemIndex = selectedFileItemIndex;
+
+    return YES;
+  }
+
+  return NO;
+}
+
+
 - (BOOL) extendVisiblePathToFileItem: (FileItem *)item {
   return [self extendVisiblePathToFileItem: item similar: NO];
 }
@@ -290,30 +324,86 @@
 
 @implementation ItemPathModel (PrivateMethods)
 
-- (id) initWithVolumeTree: (DirectoryItem *)volumeTree
-         scanTree: (DirectoryItem *)scanTree {
+// Note: this initialisation method does not invoke the designated initialiser
+// of its own class (that does not make much sense for copy-initialisation).
+// So subclasses that have their own member fields will have to extend this 
+// method.
+- (id) initByCopying: (ItemPathModel *)source {
   if (self = [super init]) {
-    path = [[NSMutableArray alloc] initWithCapacity: 64];
-    
-    [path addObject: volumeTree];
-    lastFileItemIndex = 0;
-    visibleTreeRootIndex = 0;
-    selectedFileItemIndex = 0;
-    
-    preferredSelectionDepth = STICK_TO_ENDPOINT;
-    selectionDepth = 0;
+    treeContext = [source->treeContext retain];
+    path = [[NSMutableArray alloc] initWithArray: source->path];
 
-    BOOL  ok = [self buildPathToFileItem: scanTree];
-    NSAssert(ok, @"Failed to extend path to scan tree.");
-    scanTreeIndex = lastFileItemIndex;
-    visibleTreeRootIndex = lastFileItemIndex;
-      
-    visiblePathLocked = NO;
+    visibleTreeRootIndex = source->visibleTreeRootIndex;
+    scanTreeIndex = source->scanTreeIndex;
+    selectedFileItemIndex = source->selectedFileItemIndex;
+    lastFileItemIndex = source->lastFileItemIndex;
+    
+    visiblePathLocked = source->visiblePathLocked;
     lastNotifiedSelectedFileItemIndex = -1;
+    
+    selectionDepth = source->selectionDepth;
+    preferredSelectionDepth = source->preferredSelectionDepth;
+    
+    [self observeEvents];
   }
 
   return self;  
 }
+
+- (void) observeEvents {
+ [[NSNotificationCenter defaultCenter] 
+      addObserver: self selector: @selector(treeItemReplaced:)
+      name: TreeItemReplacedEvent object: treeContext];
+}
+
+- (void) treeItemReplaced: (NSNotification *)notification {
+  FileItem  *replacedItem = [treeContext replacedFileItem];
+  FileItem  *replacingItem = [treeContext replacingFileItem];
+
+  // Check if all items in the path are still valid
+  unsigned  i = [path count];
+  while (--i >= 0) {
+    Item  *item = [path objectAtIndex: i];
+    if (item == replacedItem) {
+      if (i != [path count] - 1) {
+        // The replaced item was not the last in the path, so clear the rest
+        // This needs to be done carefully, as the visible tree and selection
+        // may actually be inside the bit that is to be removed.
+
+        while (visibleTreeRootIndex > i) {
+          [self moveVisibleTreeUp];
+        }
+        
+        unsigned  oldValue = preferredSelectionDepth;
+        while (selectedFileItemIndex > i) {
+          [self moveSelectionUp];
+        }
+        // Do not let a forced move affect the preferred selection depth.
+        preferredSelectionDepth = oldValue;
+
+        [path removeObjectsInRange: NSMakeRange(i + 1, [path count] - i - 1)];
+        
+        if (lastFileItemIndex > i) {
+          lastFileItemIndex = i;
+        }
+      }
+
+      [path replaceObjectAtIndex: i withObject: replacingItem];
+      if (i == selectedFileItemIndex) {
+        [self postSelectedItemChanged];
+      }
+
+      // If the item was anywhere in the path, the contents of the visible
+      // tree will always have changed (either it was part of the item that
+      // has been removed and has moved up as a result, or the item that was
+      // removed was part of it).
+      [self postVisibleTreeChanged];
+      
+      break;
+    }
+  }
+}
+
 
 - (void) postSelectedItemChanged {
   if (lastNotifiedSelectedFileItemIndex == -1) {

@@ -35,6 +35,16 @@
 }
 
 
+- (void) replaceDirectoryContents: (Item *)newItem {
+  NSAssert([newItem itemSize] == [contents itemSize], @"Sizes must be equal.");
+  
+  if (contents != newItem) {
+    [contents release];
+    contents = [newItem retain];
+  }
+}
+
+
 - (NSString*) description {
   return [NSString stringWithFormat:@"DirectoryItem(%@, %qu, %@)", name, size,
                      [contents description]];

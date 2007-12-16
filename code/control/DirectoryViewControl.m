@@ -12,7 +12,12 @@
 
 
 @interface DirectoryViewControl (PrivateMethods)
-                   
+
+- (BOOL) canRevealSelectedFile;
+
+- (BOOL) canDeleteSelectedFile;
+- (BOOL) confirmDeleteSelectedFile;
+
 - (void) createEditMaskFilterWindow;
 
 - (void) updateButtonState:(NSNotification*)notification;
@@ -273,6 +278,13 @@
     selectFile: filePath inFileViewerRootedAtPath: invisiblePathName];
 }
 
+- (IBAction) deleteFile: (id) sender {
+  if ([self confirmDeleteSelectedFile]) {
+    [treeContext replaceSelectedItem: itemPathModel
+                   bySpecialItemWithName: FreedSpace ];
+  }
+}
+
 
 - (IBAction) maskCheckBoxChanged:(id)sender {
   [self updateMask];
@@ -365,6 +377,25 @@
 
 @implementation DirectoryViewControl (PrivateMethods)
 
+- (BOOL) canRevealSelectedFile {
+  return ([itemPathModel isVisiblePathLocked] &&
+          ![[itemPathModel selectedFileItem] isSpecial]);
+}
+
+- (BOOL) canDeleteSelectedFile {
+  return ([itemPathModel isVisiblePathLocked] &&
+          ![[itemPathModel selectedFileItem] isSpecial]);
+}
+
+- (BOOL) confirmDeleteSelectedFile {
+  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+
+  // TODO
+
+  return YES;
+}
+
+
 - (void) createEditMaskFilterWindow {  
   editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
 
@@ -412,7 +443,8 @@
                           [itemPathModel canMoveVisibleTreeDown] &&
                           ( [itemPathModel selectedFileItem] !=
                             [itemPathModel visibleTree] )] ;
-  [openButton setEnabled: [itemPathModel isVisiblePathLocked] ];
+  [openButton setEnabled: [self canRevealSelectedFile] ];
+  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
   
   // Set to default (it may be changed)
   NSString  *selectedItemTitle = 

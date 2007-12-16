@@ -193,11 +193,15 @@
       if ([file isSpecial] && [[file name] isEqualToString: FreeSpace]) {
         [self drawBasicFilledRect: rect intColor: freeSpaceColor];
       }
-    
-      if (insideVisibleTree) {
-        if ( fileItemMask==nil 
-             || [fileItemMask testFileItem: file 
-                                context: fileItemPathStringCache] ) {
+      else if (insideVisibleTree) {
+        if ([file isSpecial]) {
+          if ([[file name] isEqualToString: FreedSpace]) {
+            [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+          }
+        }
+        else if ( fileItemMask==nil 
+                  || [fileItemMask testFileItem: file 
+                                     context: fileItemPathStringCache] ) {
           [self drawGradientFilledRect: rect 
                   colorHash: [colorMapping hashForFileItem: file depth: depth]];
         }

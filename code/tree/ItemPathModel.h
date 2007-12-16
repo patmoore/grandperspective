@@ -6,6 +6,8 @@
 @class TreeContext;
 
 @interface ItemPathModel : NSObject<NSCopying> {
+  TreeContext  *treeContext;
+
   // Contains the FileItems from the root until the end of the path.
   NSMutableArray  *path;
 
@@ -83,6 +85,8 @@
 
 - (BOOL) clearVisiblePath;
 - (void) extendVisiblePath: (Item *)nextItem;
+
+- (BOOL) clearPathBeyondSelection;
 
 // Attemps to extend the path with a file item equal to the specified one.
 //

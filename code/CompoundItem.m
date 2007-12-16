@@ -61,4 +61,23 @@
   return second;
 }
 
+
+- (void) replaceFirst: (Item *)newItem {
+  NSAssert([newItem itemSize] == [first itemSize], @"Sizes must be equal.");
+  
+  if (first != newItem) {
+    [first release];
+    first = [newItem retain];
+  }
+}
+
+- (void) replaceSecond: (Item *)newItem {
+  NSAssert([newItem itemSize] == [second itemSize], @"Sizes must be equal.");
+  
+  if (second != newItem) {
+    [second release];
+    second = [newItem retain];
+  }
+}
+
 @end
