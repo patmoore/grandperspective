@@ -9,6 +9,7 @@
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
 #import "ItemTreeDrawerSettings.h"
+#import "ControlConstants.h"
 
 
 @interface DirectoryViewControl (PrivateMethods)
@@ -16,7 +17,8 @@
 - (BOOL) canRevealSelectedFile;
 
 - (BOOL) canDeleteSelectedFile;
-- (BOOL) confirmDeleteSelectedFile;
+- (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
+           returnCode: (int) returnCode contextInfo: (void *)contextInfo;
 
 - (void) createEditMaskFilterWindow;
 
@@ -279,10 +281,39 @@
 }
 
 - (IBAction) deleteFile: (id) sender {
-  if ([self confirmDeleteSelectedFile]) {
-    [treeContext replaceSelectedItem: itemPathModel
-                   bySpecialItemWithName: FreedSpace ];
+  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+
+  NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
+  NSString  *mainMsg;
+  NSString  *infoMsgFmt;
+
+  if ([selectedFile isPlainFile]) {
+    mainMsg = NSLocalizedString( @"Delete the selected file?", 
+                                 @"Alert message" );
+    infoMsgFmt = NSLocalizedString( 
+      @"The file \"%@\" will be moved to Trash.", 
+      @"Alert informative text" );
   }
+  else {
+    mainMsg = NSLocalizedString( @"Delete the selected folder?", 
+                                 @"Alert message" );
+    infoMsgFmt = NSLocalizedString( 
+      @"The folder \"%@\" and all its contents will be moved to Trash.", 
+      @"Alert informative text" );
+  }
+
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  
+  [alert addButtonWithTitle: DELETE_BUTTON_TITLE];
+  [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
+  [alert setMessageText: mainMsg];
+  [alert setInformativeText: [NSString stringWithFormat: infoMsgFmt, 
+                                [selectedFile name]]];
+
+  [alert beginSheetModalForWindow: [self window] modalDelegate: self
+           didEndSelector: @selector(confirmDeleteSelectedFileAlertDidEnd: 
+                                       returnCode:contextInfo:) 
+           contextInfo: nil];
 }
 
 
@@ -387,12 +418,14 @@
           ![[itemPathModel selectedFileItem] isSpecial]);
 }
 
-- (BOOL) confirmDeleteSelectedFile {
-  FileItem  *selectedFile = [itemPathModel selectedFileItem];
-
-  // TODO
-
-  return YES;
+- (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
+           returnCode: (int) returnCode contextInfo: (void *)contextInfo {
+  if (returnCode == NSAlertFirstButtonReturn) {
+    // Delete confirmed.
+    
+    [treeContext replaceSelectedItem: itemPathModel
+                   bySpecialItemWithName: FreedSpace ];
+  }
 }
 
 
