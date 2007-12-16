@@ -5,6 +5,7 @@
             ACTIONS = {
                 colorMappingChanged = id; 
                 colorPaletteChanged = id; 
+                deleteFile = id; 
                 downAction = id; 
                 editMask = id; 
                 maskCheckBoxChanged = id; 
@@ -17,6 +18,7 @@
             OUTLETS = {
                 colorMappingPopUp = NSPopUpButton; 
                 colorPalettePopUp = NSPopUpButton; 
+                deleteButton = NSButton; 
                 downButton = NSButton; 
                 drawer = NSDrawer; 
                 fileSizeMeasureField = NSTextField; 
