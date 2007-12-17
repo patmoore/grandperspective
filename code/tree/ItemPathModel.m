@@ -361,8 +361,8 @@
   FileItem  *replacingItem = [treeContext replacingFileItem];
 
   // Check if all items in the path are still valid
-  unsigned  i = [path count];
-  while (--i >= 0) {
+  unsigned  i = [path count] - 1;
+  do {
     Item  *item = [path objectAtIndex: i];
     if (item == replacedItem) {
       if (i != [path count] - 1) {
@@ -392,16 +392,24 @@
       if (i == selectedFileItemIndex) {
         [self postSelectedItemChanged];
       }
-
-      // If the item was anywhere in the path, the contents of the visible
-      // tree will always have changed (either it was part of the item that
-      // has been removed and has moved up as a result, or the item that was
-      // removed was part of it).
-      [self postVisibleTreeChanged];
       
+      // Replaced item found, so iteration can be aborted.
+      break;
+    } 
+  } while (i-- > 0); // Condition handles fact that "i" is unsigned. 
+
+  // Check if the replaced item was part of the visible tree.
+  FileItem  *visibleTree = [self visibleTree];
+  FileItem  *item = replacingItem;
+  do {
+    if (item == visibleTree) {
+      // The item was (part of) the visible tree, so signal that it changed.
+      [self postVisibleTreeChanged];
       break;
     }
-  }
+    
+    item = [item parentDirectory];
+  } while (item != nil);
 }
 
 
