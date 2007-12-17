@@ -5,9 +5,12 @@
 @class DirectoryItem;
 @class ItemTreeDrawer;
 @class ItemTreeDrawerSettings;
+@class TreeContext;
 
 
 @interface DrawTaskExecutor : NSObject <TaskExecutor> {
+  TreeContext  *treeContext;
+
   ItemTreeDrawer  *treeDrawer;
   
   ItemTreeDrawerSettings  *treeDrawerSettings;
@@ -16,8 +19,9 @@
   BOOL  enabled;
 }
 
-- (id) init;
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (id) initWithTreeContext: (TreeContext *)treeContext;
+- (id) initWithTreeContext: (TreeContext *)treeContext 
+         drawingSettings: (ItemTreeDrawerSettings *)settings;
 
 - (ItemTreeDrawerSettings *) treeDrawerSettings;
 - (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;

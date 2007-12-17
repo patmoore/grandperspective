@@ -104,6 +104,10 @@
 }
 
 
+- (TreeContext *) treeContext {
+  return treeContext;
+}
+
 - (DirectoryItem*) volumeTree {
   return [path objectAtIndex: 0];
 }

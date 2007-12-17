@@ -15,6 +15,11 @@ NSString  *TreeItemReplacedEvent = @"treeItemReplaced";
 NSString  *TreeItemReplacedHandledEvent = @"treeItemReplacedHandled";
 
 
+#define IDLE      100
+#define READING   101
+#define WRITING   102
+
+
 static int  nextFilterId = 1;
 
 
@@ -94,6 +99,9 @@ static int  nextFilterId = 1;
   
   [replacedItem release];
   [replacingItem release];
+  
+  [mutex release];
+  [lock release];
 
   [super dealloc];
 }
@@ -177,8 +185,8 @@ static int  nextFilterId = 1;
 - (void) replaceSelectedItem: (ItemPathModel *)path 
            bySpecialItemWithName: (NSString *)newName {
   NSAssert(replacedItem == nil, @"Replaced item not nil.");
-  NSAssert(replacingItem == nil, @"Replacing item not nil.");  
-           
+  NSAssert(replacingItem == nil, @"Replacing item not nil.");
+  
   replacedItem = [[path selectedFileItem] retain];
   
   // Let path end at selected item (as it simplifies finding the containing
@@ -196,6 +204,7 @@ static int  nextFilterId = 1;
                  parent: [replacedItem parentDirectory] 
                  size: [replacedItem itemSize]] retain];
   
+  [self obtainWriteLock];
   if ([containingItem isVirtual]) {
     CompoundItem  *compoundItem = (CompoundItem *)containingItem;
     
@@ -217,7 +226,8 @@ static int  nextFilterId = 1;
                @"Selected item not found.");
     
     [dirItem replaceDirectoryContents: replacingItem];
-  }
+  }  
+  [self releaseWriteLock];
 
   [self postItemReplaced];
 }
@@ -230,6 +240,115 @@ static int  nextFilterId = 1;
 - (FileItem *) replacingFileItem {
   NSAssert(replacingItem != nil, @"replacingFileItem is nil.");
   return replacingItem;
+}
+
+
+- (void) obtainReadLock {
+  BOOL  wait = NO;
+
+  [mutex lock];
+  if (numReaders > 0) {
+    // Already in READING state
+    numReaders++;
+  }
+  else if ([lock tryLockWhenCondition: IDLE]) {
+    NSLog(@"READING");
+    // Was in IDLE state, start reading
+    numReaders++;
+    [lock unlockWithCondition: READING];
+  }
+  else {
+    // Currently in WRITE state, so will have to wait.
+    numWaitingReaders++;
+    wait = YES;
+  }
+  [mutex unlock];
+  
+  if (wait) {
+    [lock lockWhenCondition: READING];
+    // We are now allowed to read.
+   
+    [mutex lock];
+    numWaitingReaders--;
+    numReaders++;
+    [mutex unlock];
+     
+    // Give up lock, allowing other readers to wake up as well.
+    [lock unlockWithCondition: READING];
+  }
+}
+
+- (void) releaseReadLock {
+  [mutex lock];
+  numReaders--;
+  
+  if (numReaders == 0) {
+    [lock lockWhenCondition: READING]; // Immediately succeeds.
+    
+    if (numWaitingReaders > 0) {
+      // Although there is no need for waiting readers in the READING state,
+      // this can happen if waiting readers are not woken up quickly enough.
+      NSLog(@"READING");
+      [lock unlockWithCondition: READING];
+    }
+    else if (numWaitingWriters > 0) {
+      NSLog(@"WRITING");
+      [lock unlockWithCondition: WRITING];
+    }
+    else {
+      NSLog(@"IDLE");
+      [lock unlockWithCondition: IDLE];
+    }
+  }
+  
+  [mutex unlock];
+}
+
+- (void) obtainWriteLock {
+  BOOL  wait = NO;
+
+  [mutex lock];
+  if ([lock tryLockWhenCondition: IDLE]) {
+    NSLog(@"WRITING");
+    // Was in IDLE state, start writing
+    [lock unlockWithCondition: WRITING];
+  }
+  else {
+    // Currently in READING or WRITING state 
+    numWaitingWriters++;
+    wait = YES;
+  }
+  [mutex unlock];
+  
+  if (wait) {
+    [lock lockWhenCondition: WRITING];
+    // We are now in the WRITING state.
+   
+    [mutex lock];
+    numWaitingWriters--;
+    [mutex unlock];
+    
+    // Note: not releasing lock, to ensure that only this thread writes.
+  }
+}
+
+- (void) releaseWriteLock {
+  [mutex lock];  
+
+  if (numWaitingReaders > 0) {
+    NSLog(@"READING");
+    [lock unlockWithCondition: READING];
+  }
+  else if (numWaitingWriters > 0) {
+    NSLog(@"WRITING");
+    [lock unlockWithCondition: WRITING];
+  }
+  else {
+    NSLog(@"IDLE");
+    [lock unlockWithCondition: IDLE];
+  }
+  
+  [mutex unlock];
 }
 
 @end // TreeContext
@@ -262,6 +381,12 @@ static int  nextFilterId = 1;
     [[NSNotificationCenter defaultCenter] 
         addObserver: self selector: @selector(treeItemReplacedHandled:)
         name: TreeItemReplacedHandledEvent object: self];
+        
+    mutex = [[NSLock alloc] init];
+    lock = [[NSConditionLock alloc] initWithCondition: IDLE];
+    numReaders = 0;
+    numWaitingReaders = 0;
+    numWaitingWriters = 0;
   }
   
   return self;

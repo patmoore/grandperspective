@@ -61,6 +61,8 @@
 - (NSArray*) itemPathToSelectedFileItem;
 
 
+- (TreeContext *) treeContext;
+
 // Returns the volume tree.
 - (DirectoryItem*) volumeTree;
 

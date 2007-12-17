@@ -54,11 +54,6 @@
     
     invisibleSelectedItem = nil;
     
-    DrawTaskExecutor  *drawTaskExecutor = [[DrawTaskExecutor alloc] init];
-    drawTaskManager = 
-      [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-    [drawTaskExecutor release];
-    
     scrollWheelDelta = 0;
   }
 
@@ -306,6 +301,12 @@
   NSAssert(pathModel==nil, @"The item path model should only be set once.");
 
   pathModel = [pathModelVal retain];
+  
+  DrawTaskExecutor  *drawTaskExecutor = 
+    [[DrawTaskExecutor alloc] initWithTreeContext: [pathModel treeContext]];
+  drawTaskManager = 
+    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+  [drawTaskExecutor release];
 
   [[NSNotificationCenter defaultCenter]
       addObserver: self selector: @selector(selectedItemChanged:)

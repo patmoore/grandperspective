@@ -3,18 +3,28 @@
 #import "ItemTreeDrawer.h"
 #import "ItemTreeDrawerSettings.h"
 #import "DrawTaskInput.h"
+#import "TreeContext.h"
 
 
 @implementation DrawTaskExecutor
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithTreeDrawerSettings:
-                 [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+  NSAssert(NO, @"Use initWithTreeContext: instead.");
 }
 
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+
+- (id) initWithTreeContext: (TreeContext *)treeContextVal {
+  return [self initWithTreeContext: treeContextVal 
+                 drawingSettings:
+                   [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+}
+
+- (id) initWithTreeContext: (TreeContext *)treeContextVal
+         drawingSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
+    treeContext = [treeContextVal retain];
+  
     treeDrawer = [[ItemTreeDrawer alloc] initWithTreeDrawerSettings: settings];
     treeDrawerSettings = [settings retain];
     
@@ -26,6 +36,8 @@
 }
 
 - (void) dealloc {
+  [treeContext release];
+
   [treeDrawer release];
   [treeDrawerSettings release];
   
@@ -59,10 +71,17 @@
 
     DrawTaskInput  *drawingInput = input;
     
-    return [treeDrawer drawImageOfVisibleTree: [drawingInput visibleTree] 
-                         startingAtTree: [drawingInput treeInView]
-                         usingLayoutBuilder: [drawingInput layoutBuilder]
-                         inRect: [drawingInput bounds]];
+    [treeContext obtainReadLock];
+    
+    NSImage  *image = 
+      [treeDrawer drawImageOfVisibleTree: [drawingInput visibleTree] 
+                    startingAtTree: [drawingInput treeInView]
+                    usingLayoutBuilder: [drawingInput layoutBuilder]
+                    inRect: [drawingInput bounds]];
+                         
+    [treeContext releaseReadLock];
+    
+    return image;
   }
   else {
     return nil;

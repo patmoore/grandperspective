@@ -27,6 +27,18 @@ extern NSString  *TreeItemReplacedEvent;
   
   FileItem  *replacedItem;
   FileItem  *replacingItem;
+  
+  /* Variables used for synchronizing read/write access to the tree.
+   */
+  NSLock  *mutex;
+  NSConditionLock  *lock;
+  
+  // The number of active reading threads.
+  int  numReaders;
+  
+  // The number of threads currently waiting using "lock"
+  int  numWaitingReaders;
+  int  numWaitingWriters;
 }
 
 
@@ -78,5 +90,29 @@ extern NSString  *TreeItemReplacedEvent;
 // They will return "nil" otherwise.
 - (FileItem *) replacedFileItem;
 - (FileItem *) replacingFileItem;
+
+/* Obtains a read lock on the tree. This is required before reading, e.g.
+ * traversing, (parts of) the tree. There can be multiple readers active 
+ * simultaneously.
+ */
+- (void) obtainReadLock;
+
+- (void) releaseReadLock;
+
+/* Obtains a write lock. This is required before modifying the tree. A write
+ * lock is only given out when there are no readers. A thread should only try
+ * to acquire a write lock, if it does not already own a read lock, otherwise a 
+ * deadlock will result.
+ *
+ * Note: Although not required by the implementation of the lock, the current
+ * usage is as follows. Only the main thread will make modifications (after
+ * having acquired a write lock). The background threads that read the tree
+ * (e.g. to draw it) always obtain read locks first. However, the main thread
+ * never acquires a read lock; there is no need because writing is not done 
+ * from other threads.
+ */
+- (void) obtainWriteLock;
+
+- (void) releaseWriteLock;
 
 @end
