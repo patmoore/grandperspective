@@ -1,5 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
+
+extern NSString  *SelectedItemChangedEvent;
+extern NSString  *VisibleTreeChangedEvent;
+extern NSString  *VisiblePathLockingChangedEvent;
+
+
 @class Item;
 @class FileItem;
 @class DirectoryItem;

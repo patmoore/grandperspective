@@ -1,6 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
 
+extern NSString  *ObjectAddedEvent;
+extern NSString  *ObjectRemovedEvent;
+extern NSString  *ObjectUpdatedEvent;
+extern NSString  *ObjectRenamedEvent;
+
+
+
 @interface NotifyingDictionary : NSObject {
 
   NSMutableDictionary  *dict;
@@ -21,8 +28,8 @@
 /**
  * Adds the object to the dictionary.
  *
- * Returns "YES" if the operation succeeded, and fires a notification named 
- * "objectAdded". The key is available in the userInfo under the "key" string.
+ * Returns "YES" if the operation succeeded, and fires an ObjectAddedEvent
+ * notification. The key is available in the userInfo under the "key" string.
  *
  * Returns "NO" if the operation failed (because an object for this key already
  * existed).
@@ -32,9 +39,8 @@
 /**
  * Removes the object from the dictionary.
  *
- * Returns "YES" if the operation succeeded, and fires a notification named 
- * "objectRemoved". The key is available in the userInfo under the "key" 
- * string.
+ * Returns "YES" if the operation succeeded, and fires an ObjectRemovedEvent
+ * notification. The key is available in the userInfo under the "key" string.
  *
  * Returns "NO" if the operation failed (because no object was stored under
  * the given key.
@@ -44,9 +50,8 @@
 /**
  * Updates the object in the dictionary.
  *
- * Returns "YES" if the operation succeeded, and fires a notification named 
- * "objectUpdated". The key is available in the userInfo under the "key"
- * string.
+ * Returns "YES" if the operation succeeded, and fires an ObjectUpdatedEvent
+ * notification. The key is available in the userInfo under the "key" string.
  *
  * Returns "NO" if the operation failed (because no object was stored under
  * the given key.
@@ -62,8 +67,8 @@
  * the object itself did not change. If it did, you should also invoke
  * updateObject:forKey:.
  *
- * Returns "YES" if the operation succeeded, and fires a notification named 
- * "objectRenamed". The old key is available in the userInfo under the "oldkey"
+ * Returns "YES" if the operation succeeded, and fires an ObjectRenamedEvent
+ * notification. The old key is available in the userInfo under the "oldkey"
  * string, and the new key similarly under the "newkey" string.
  *
  * Returns "NO" if the operation failed (because no object was stored under

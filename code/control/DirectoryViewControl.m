@@ -236,11 +236,11 @@
   // path, as the selected item returned by the view can change without a
   // change to the selected item in the path.
   [nc addObserver:self selector: @selector(updateButtonState:)
-        name: @"selectedItemChanged" object: mainView];
+        name: SelectedItemChangedEvent object: mainView];
   [nc addObserver:self selector: @selector(updateButtonState:)
-        name: @"visiblePathLockingChanged" object: itemPathModel];
+        name: VisiblePathLockingChangedEvent object: itemPathModel];
   [nc addObserver:self selector: @selector(visibleTreeChanged:)
-        name: @"visibleTreeChanged" object: itemPathModel];
+        name: VisibleTreeChangedEvent object: itemPathModel];
 
   [self visibleTreeChanged: nil];
 
@@ -435,17 +435,17 @@
   [editMaskFilterWindowControl setAllowEmptyFilter: YES];
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver:self selector:@selector(maskWindowApplyAction:)
-        name:@"applyPerformed" object:editMaskFilterWindowControl];
-  [nc addObserver:self selector:@selector(maskWindowCancelAction:)
-        name:@"cancelPerformed" object:editMaskFilterWindowControl];
-  [nc addObserver:self selector:@selector(maskWindowOkAction:)
-        name:@"okPerformed" object:editMaskFilterWindowControl];
-  // Note: the "closePerformed" notification can be ignored here.
+  [nc addObserver:self selector: @selector(maskWindowApplyAction:)
+        name: ApplyPerformedEvent object: editMaskFilterWindowControl];
+  [nc addObserver:self selector: @selector(maskWindowCancelAction:)
+        name: CancelPerformedEvent object: editMaskFilterWindowControl];
+  [nc addObserver:self selector: @selector(maskWindowOkAction:)
+        name: OkPerformedEvent object: editMaskFilterWindowControl];
+  // Note: the ClosePerformedEvent notification can be ignored here.
 
   [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
-        name:@"NSWindowDidBecomeKeyNotification"
-        object:[editMaskFilterWindowControl window]];
+        name: NSWindowDidBecomeKeyNotification
+        object: [editMaskFilterWindowControl window]];
 
   [[editMaskFilterWindowControl window] setTitle: 
       NSLocalizedString( @"Edit mask", @"Window title" ) ];

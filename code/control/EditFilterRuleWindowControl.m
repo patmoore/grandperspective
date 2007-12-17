@@ -12,6 +12,8 @@
 #import "StringPrefixTest.h"
 #import "StringSuffixTest.h"
 
+#import "EditFilterWindowControl.h"
+
 
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
@@ -168,13 +170,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (IBAction) cancelAction:(id)sender {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
-                                          object:self];
+  [[NSNotificationCenter defaultCenter] 
+      postNotificationName: CancelPerformedEvent object: self];
 }
 
 - (IBAction) okAction:(id)sender {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
-                                          object:self];
+  [[NSNotificationCenter defaultCenter] 
+      postNotificationName: OkPerformedEvent object: self];
 }
 
 

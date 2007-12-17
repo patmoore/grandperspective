@@ -5,6 +5,11 @@
 #import "TreeContext.h"
 
 
+NSString  *SelectedItemChangedEvent = @"selectedItemChanged";
+NSString  *VisibleTreeChangedEvent = @"visibleTreeChanged";
+NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
+
+
 #define STICK_TO_ENDPOINT  0xFFFF
 
 
@@ -423,17 +428,17 @@
   }
 
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"selectedItemChanged" object:self];
+      postNotificationName: SelectedItemChangedEvent object: self];
 }
 
 - (void) postVisibleTreeChanged {
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"visibleTreeChanged" object:self];
+      postNotificationName: VisibleTreeChangedEvent object: self];
 }
 
 - (void) postVisiblePathLockingChanged {
   [[NSNotificationCenter defaultCenter]
-      postNotificationName:@"visiblePathLockingChanged" object:self];
+      postNotificationName: VisiblePathLockingChangedEvent object: self];
 }
 
 

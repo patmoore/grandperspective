@@ -10,6 +10,12 @@
 #import "EditFilterRuleWindowControl.h"
 
 
+NSString  *ClosePerformedEvent = @"closePerformed";
+NSString  *ApplyPerformedEvent = @"applyPerformed";
+NSString  *CancelPerformedEvent = @"cancelPerformed";
+NSString  *OkPerformedEvent = @"okPerformed";
+
+
 // Handles closing of the "Edit Filter Rule Window", including a validity
 // check before the window is closed.
 @interface EditFilterRuleWindowTerminationControl : NSObject {
@@ -79,14 +85,14 @@
 
     NSNotificationCenter  *nc = [repositoryTestsByName notificationCenter];
     
-    [nc addObserver:self selector:@selector(testAddedToRepository:) 
-          name:@"objectAdded" object:repositoryTestsByName];
-    [nc addObserver:self selector:@selector(testRemovedFromRepository:) 
-          name:@"objectRemoved" object:repositoryTestsByName];
-    [nc addObserver:self selector:@selector(testUpdatedInRepository:) 
-          name:@"objectUpdated" object:repositoryTestsByName];
-    [nc addObserver:self selector:@selector(testRenamedInRepository:) 
-          name:@"objectRenamed" object:repositoryTestsByName];
+    [nc addObserver:self selector: @selector(testAddedToRepository:) 
+          name: ObjectAddedEvent object: repositoryTestsByName];
+    [nc addObserver:self selector: @selector(testRemovedFromRepository:) 
+          name: ObjectRemovedEvent object: repositoryTestsByName];
+    [nc addObserver:self selector: @selector(testUpdatedInRepository:) 
+          name: ObjectUpdatedEvent object: repositoryTestsByName];
+    [nc addObserver:self selector: @selector(testRenamedInRepository:) 
+          name: ObjectRenamedEvent object: repositoryTestsByName];
           
     filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity:8];
             
@@ -158,30 +164,30 @@
     // been fired yet. This means that the user is closing the window using
     // the window's red close button.
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"closePerformed"
-                                          object:self];
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName: ClosePerformedEvent object: self];
   }
 }
 
 - (IBAction) applyAction:(id)sender {
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"applyPerformed"
-                                          object:self];
+  [[NSNotificationCenter defaultCenter] 
+      postNotificationName: ApplyPerformedEvent object: self];
 }
 
 - (IBAction) cancelAction:(id)sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
 
   finalNotificationFired = YES;
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"cancelPerformed"
-                                          object:self];
+  [[NSNotificationCenter defaultCenter] 
+      postNotificationName: CancelPerformedEvent object: self];
 }
 
 - (IBAction) okAction:(id)sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
 
   finalNotificationFired = YES;
-  [[NSNotificationCenter defaultCenter] postNotificationName:@"okPerformed"
-                                          object:self];
+  [[NSNotificationCenter defaultCenter] 
+      postNotificationName: OkPerformedEvent object: self];
 }
 
 
@@ -770,12 +776,12 @@
     done = NO;
     
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector:@selector(cancelAction:)
-          name:@"cancelPerformed" object:windowControl];
-    [nc addObserver:self selector:@selector(okAction:)
-          name:@"okPerformed" object:windowControl];
-    [nc addObserver:self selector:@selector(windowClosing:)
-          name:@"NSWindowWillCloseNotification" object:[windowControl window]];
+    [nc addObserver: self selector: @selector(cancelAction:)
+          name: CancelPerformedEvent object:windowControl];
+    [nc addObserver: self selector: @selector(okAction:)
+          name: OkPerformedEvent object:windowControl];
+    [nc addObserver: self selector: @selector(windowClosing:)
+          name: NSWindowWillCloseNotification object: [windowControl window]];
   }
   
   return self;

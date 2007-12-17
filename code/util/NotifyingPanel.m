@@ -1,5 +1,9 @@
 #import "NotifyingPanel.h"
 
+
+NSString  *FirstResponderChangedEvent = @"firstResponderChanged";
+
+
 @interface NotifyingPanel (PrivateMethods) 
 
 - (void) windowFirstResponderChanged_: (NSNotification*) notification;
@@ -17,8 +21,8 @@
   if (self = [super initWithContentRect: contentRect styleMask: styleMask
                       backing: backingType defer: flag]) {
     [[NSNotificationCenter defaultCenter]
-        addObserver:self selector:@selector(windowFirstResponderChanged_:) 
-          name:@"firstResponderChanged" object:self];
+        addObserver: self selector: @selector(windowFirstResponderChanged_:) 
+          name: FirstResponderChangedEvent object: self];
   }
   return self;
 }
@@ -27,7 +31,7 @@
 - (BOOL) makeFirstResponder: (NSResponder *)aResponder {
   BOOL  retVal = [super makeFirstResponder: aResponder];
 
-  // Note: Using notification queue here to exploat coalescing behaviour.
+  // Note: Using notification queue here to exploit coalescing behaviour.
   // Sometimes a single click can trigger multiple calls to makeFirstResponder.
   // This is for instance the case when clicking on an instance of NSBrowser.
   // In this case it's nice to only call the delegate once, instead of 
@@ -42,7 +46,7 @@
   // Apple Mailing list by Dustin Voss, dd. 30 Mar 2004].
 
   NSNotification  *notification = 
-    [NSNotification notificationWithName: @"firstResponderChanged"
+    [NSNotification notificationWithName: FirstResponderChangedEvent
                       object: self];
 
   [[NSNotificationQueue defaultQueue]

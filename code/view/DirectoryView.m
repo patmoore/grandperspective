@@ -90,11 +90,11 @@
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
   [nc addObserver: self selector: @selector(selectedItemChanged:)
-        name: @"selectedItemChanged" object: pathModel];
+        name: SelectedItemChangedEvent object: pathModel];
   [nc addObserver: self selector: @selector(visibleTreeChanged:)
-        name: @"visibleTreeChanged" object: pathModel];
+        name: VisibleTreeChangedEvent object: pathModel];
   [nc addObserver: self selector: @selector(visiblePathLockingChanged:)
-        name: @"visiblePathLockingChanged" object: pathModel];
+        name: VisiblePathLockingChangedEvent object: pathModel];
           
   [nc addObserver: self selector: @selector(windowMainStatusChanged:)
         name: NSWindowDidBecomeMainNotification object: [self window]];
@@ -342,7 +342,7 @@
 
 - (void) postSelectedItemChanged {
   [[NSNotificationCenter defaultCenter]
-      postNotificationName: @"selectedItemChanged" object: self];
+      postNotificationName: SelectedItemChangedEvent object: self];
 }
 
 

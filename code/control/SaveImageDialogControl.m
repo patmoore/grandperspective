@@ -43,7 +43,7 @@
 - (void) windowDidLoad {
   [[NSNotificationCenter defaultCenter]
       addObserver: self selector: @selector(windowWillClose:)
-      name: @"NSWindowWillCloseNotification" object: [self window]];
+      name: NSWindowWillCloseNotification object: [self window]];
 
   [[self window] center];
   [[self window] makeKeyAndOrderFront: self];

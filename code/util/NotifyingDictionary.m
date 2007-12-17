@@ -1,5 +1,12 @@
 #import "NotifyingDictionary.h"
 
+
+NSString  *ObjectAddedEvent = @"objectAdded";
+NSString  *ObjectRemovedEvent = @"objectRemoved";
+NSString  *ObjectUpdatedEvent = @"objectUpdated";
+NSString  *ObjectRenamedEvent = @"objectRenamed";
+
+
 // Just for checking which methods are safe to invoke on the dictionary (i.e.
 // which won't mutate it).
 static NSDictionary  *immutableDict = nil;
@@ -62,10 +69,10 @@ static NSDictionary  *immutableDict = nil;
   }
   else {
     [dict setObject:object forKey:key];
-    [notificationCenter postNotificationName:@"objectAdded"
-                          object:self
-                          userInfo:[NSDictionary dictionaryWithObject:key
-                                                   forKey:@"key"]];
+    [notificationCenter postNotificationName: ObjectAddedEvent
+                          object: self
+                          userInfo: [NSDictionary dictionaryWithObject: key
+                                                    forKey: @"key"]];
     return YES;
   }
 }
@@ -76,10 +83,10 @@ static NSDictionary  *immutableDict = nil;
   }
   else {
     [dict removeObjectForKey:key];
-    [notificationCenter postNotificationName:@"objectRemoved"
-                          object:self
-                          userInfo:[NSDictionary dictionaryWithObject:key
-                                                   forKey:@"key"]];
+    [notificationCenter postNotificationName: ObjectRemovedEvent
+                          object: self
+                          userInfo: [NSDictionary dictionaryWithObject: key
+                                                    forKey: @"key"]];
     return YES;
   }
 }
@@ -97,10 +104,10 @@ static NSDictionary  *immutableDict = nil;
     
     // Fire notification even when reference stayed the same. Object may have
     // been internally modified.
-    [notificationCenter postNotificationName:@"objectUpdated"
-                          object:self
-                          userInfo:[NSDictionary dictionaryWithObject:key
-                                                   forKey:@"key"]];
+    [notificationCenter postNotificationName: ObjectUpdatedEvent
+                          object: self
+                          userInfo: [NSDictionary dictionaryWithObject: key
+                                                    forKey: @"key"]];
     return YES;
   }
 }
@@ -114,11 +121,11 @@ static NSDictionary  *immutableDict = nil;
   else {
     [dict removeObjectForKey:oldKey];
     [dict setObject:object forKey:newKey];
-    [notificationCenter postNotificationName:@"objectRenamed"
-                          object:self
-                          userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                   oldKey, @"oldkey", 
-                                                   newKey, @"newkey", nil]];
+    [notificationCenter postNotificationName: ObjectRenamedEvent
+                          object: self
+                          userInfo: [NSDictionary dictionaryWithObjectsAndKeys:
+                                                    oldKey, @"oldkey", 
+                                                    newKey, @"newkey", nil]];
     return YES;
   }
 }
