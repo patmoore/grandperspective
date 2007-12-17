@@ -14,13 +14,13 @@ fi
 FROM_DIR=$1
 TO_DIR=$2
 
-for fold in `find ${TO_DIR} -not -path \*/.svn/\* -and -type f`
+find ${TO_DIR} -not -path \*/.svn/\* -and -type f | while read fold
 do
-  rm $fold
+  rm "$fold"
 done
 
-for fin in `find ${FROM_DIR} -type f`
+find ${FROM_DIR} -type f | while read fin
 do
   fout=${TO_DIR}${fin#${FROM_DIR}}
-  cp $fin $fout
+  cp "$fin" "$fout"
 done
