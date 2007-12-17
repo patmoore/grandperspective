@@ -23,9 +23,6 @@
 
 @interface DirectoryView (PrivateMethods)
 
-// Called as part of "postInit"
-- (void) setItemPathModel:(ItemPathModel*)pathModelVal;
-
 - (void) forceRedraw;
 
 - (void) itemTreeImageReady: (id) image;
@@ -78,8 +75,34 @@
   [super dealloc];
 }
 
+
 - (void) postInitWithPathModel: (ItemPathModel *)pathModelVal {
-  [self setItemPathModel: pathModelVal];
+  NSAssert(pathModel==nil, @"The item path model should only be set once.");
+
+  pathModel = [pathModelVal retain];
+  
+  DrawTaskExecutor  *drawTaskExecutor = 
+    [[DrawTaskExecutor alloc] initWithTreeContext: [pathModel treeContext]];
+  drawTaskManager = 
+    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
+  [drawTaskExecutor release];
+  
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+
+  [nc addObserver: self selector: @selector(selectedItemChanged:)
+        name: @"selectedItemChanged" object: pathModel];
+  [nc addObserver: self selector: @selector(visibleTreeChanged:)
+        name: @"visibleTreeChanged" object: pathModel];
+  [nc addObserver: self selector: @selector(visiblePathLockingChanged:)
+        name: @"visiblePathLockingChanged" object: pathModel];
+          
+  [nc addObserver: self selector: @selector(windowMainStatusChanged:)
+        name: NSWindowDidBecomeMainNotification object: [self window]];
+  [nc addObserver: self selector: @selector(windowMainStatusChanged:)
+        name: NSWindowDidResignMainNotification object: [self window]];
+  
+  [self visiblePathLockingChanged: nil];
+  [self setNeedsDisplay: YES];
 }
 
 
@@ -296,39 +319,6 @@
 
 
 @implementation DirectoryView (PrivateMethods)
-
-- (void) setItemPathModel:(ItemPathModel*)pathModelVal {
-  NSAssert(pathModel==nil, @"The item path model should only be set once.");
-
-  pathModel = [pathModelVal retain];
-  
-  DrawTaskExecutor  *drawTaskExecutor = 
-    [[DrawTaskExecutor alloc] initWithTreeContext: [pathModel treeContext]];
-  drawTaskManager = 
-    [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-  [drawTaskExecutor release];
-
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(selectedItemChanged:)
-      name: @"selectedItemChanged" object: pathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visibleTreeChanged:)
-      name: @"visibleTreeChanged" object: pathModel];
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(visiblePathLockingChanged:)
-      name: @"visiblePathLockingChanged" object: pathModel];
-          
-  [[NSNotificationCenter defaultCenter]
-    addObserver: self selector: @selector(windowMainStatusChanged:)
-    name: NSWindowDidBecomeMainNotification object: [self window]];
-  [[NSNotificationCenter defaultCenter]
-    addObserver: self selector: @selector(windowMainStatusChanged:)
-    name: NSWindowDidResignMainNotification object: [self window]];
-  
-  [self visiblePathLockingChanged: nil];
-  [self setNeedsDisplay: YES];
-}
-
 
 - (void) forceRedraw {
   [self setNeedsDisplay: YES];
