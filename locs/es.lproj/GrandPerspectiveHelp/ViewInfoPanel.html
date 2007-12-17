@@ -1,10 +1,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>La pesta&ntilde;a Informaci&oacute;n de la vista</title>
+<title>The view's Info panel</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<meta name="description" content="Describe el panel Información de la vista.">
-<meta name="keywords" content="GrandPerspective, vista, panel, información, pestaña, escaneando" >
+<meta name="description" content="Describes the view's Info panel.">
+<meta name="keywords" content="GrandPerspective, vista, pestaña, información, panel, escaneando, carpeta, volumen" >
 </head>
 <body>
 
@@ -16,10 +16,27 @@
 </div>
 
 <p>
-La pesta&ntilde;a Informaci&oacute;n en el  <a href="ViewDrawer.html">panel de la vista</a> muestra informaci&oacute;n sobre la carpeta que ha sido escaneada.
-Muestra el nombre de la carpeta, y tambi&eacute;n el momento cuando fue escaneada.
-Cuando un  <a href="MasksAndFilters.html">filtro</a> ha sido aplicado, tambi&eacute;n ser&aacute; mostrado sus detalles.
-Adem&aacute;s tambi&eacute;n muestra cual <a href="FileSizeMeasures.html">medida de tama&ntilde;o de archivo</a> ha sido usado, y el tama&ntilde;o total de la carpeta escaneada.</p>
+La pesta&ntilde;a Informaci&oacute;n en el <a href="ViewDrawer.html">panel de la vista</a> muestra informaci&oacute;n sobre la carpeta que ha sido escaneada. Es mostrado el volumen en el que reside la carpeta, el nombre de la carpeta, y la hora cuando fu&eacute; escaneada.
+La <a href="FileSizeMeasures.html">medida de tama&ntilde;o de archivo</a> que ha sido usada tambi&eacute;n es mostrada.
+Cuando un  <a href="MasksAndFilters.html">filtro</a> ha sido aplicado, tambi&eacute;n ser&aacute; mostrado sus detalles.</p>
+
+<p>
+El panel adem&aacute;s muestra los siguiente cuatro tama&ntilde;os:
+
+<ul>
+<li><b>Tama&ntilde;o de volumen</b>: El tama&ntilde;o total del volumen.</li>
+<li><b>Tama&ntilde;o de los archivos escaneados</b>: El tama&ntilde;o total de los archivos escaneados, usando la medida de tama&ntilde;o especificada y despu&eacute;s de aplicar los filtros (de haberlo).</li>
+<li><b>Tama&ntilde;o libre</b>: El espacio disponible en el volumen, como el obtenido por el Sistema Operativo en el momento del escaneo.</li>
+<li><b>Espacio variado usado</b>: Todo el espacio que no es contado por el tama&ntilde;o de los archivos escaeados. Esto incluye los siguientes:
+  <ul>
+  <li>Archivos que no han sido escaneados, porque la carpeta escaneada no est&aacute; en la raiz del volumen, o el usuario no ten&iacute;a permisos para acceder a todas las subcarpetas.  </li>
+  <li>Archivos que son excluidos por el filtro (de haberlo).  </li>
+  <li>Espacio del disco que no es contado debido a la L&oacute;gica de <a href="FileSizeMeasures.html">medida de tama&ntilde;o de archivo</a> que es usada, que infravalora el espacio que los archivos actualmente ocupan.  </li>
+  <li>Archivos de datos de sistema de Bajo-nivel, necesarios para almacenar la jerarqu&iacute;a de las otras carpetas que la rodean.  </li>
+  </ul>  
+</li>
+</ul>
+</p>
 
 </body>
 </html>
