@@ -285,20 +285,19 @@
 
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
   NSString  *mainMsg;
-  NSString  *infoMsgFmt;
+  NSString  *infoMsg;
 
   if ([selectedFile isPlainFile]) {
-    mainMsg = NSLocalizedString( @"Delete the selected file?", 
+    mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 
                                  @"Alert message" );
-    infoMsgFmt = NSLocalizedString( 
-      @"The file \"%@\" will be moved to Trash.", 
-      @"Alert informative text" );
+    infoMsg = NSLocalizedString( @"The selected file will be moved to Trash.", 
+                                 @"Alert informative text" );
   }
   else {
-    mainMsg = NSLocalizedString( @"Delete the selected folder?", 
+    mainMsg = NSLocalizedString( @"Do you want to delete the folder \"%@\"?", 
                                  @"Alert message" );
-    infoMsgFmt = NSLocalizedString( 
-      @"The folder \"%@\" and all its contents will be moved to Trash.", 
+    infoMsg = NSLocalizedString( 
+      @"The selected folder, with all its contents, will be moved to Trash.", 
       @"Alert informative text" );
   }
 
@@ -306,9 +305,12 @@
   
   [alert addButtonWithTitle: DELETE_BUTTON_TITLE];
   [alert addButtonWithTitle: CANCEL_BUTTON_TITLE];
-  [alert setMessageText: mainMsg];
-  [alert setInformativeText: [NSString stringWithFormat: infoMsgFmt, 
-                                [selectedFile name]]];
+  [alert setMessageText: [NSString stringWithFormat: mainMsg, 
+                                     [[selectedFile name] lastPathComponent]]];
+                                     // Note: using lastPathComponent, as the
+                                     // scan tree item's name is relative to 
+                                     // the volume root.
+  [alert setInformativeText: infoMsg];
 
   [alert beginSheetModalForWindow: [self window] modalDelegate: self
            didEndSelector: @selector(confirmDeleteSelectedFileAlertDidEnd: 
