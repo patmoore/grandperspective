@@ -51,8 +51,6 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
       addObserver: self selector: @selector(windowWillClose:)
         name: NSWindowWillCloseNotification object: [self window]];
 
-  // Note: These collections take care of setting the application default, so
-  // they should be initialised before the defaults are retrieved.
   FileItemHashingCollection  *colorMappings = 
       [FileItemHashingCollection defaultFileItemHashingCollection];
   ColorListCollection  *colorPalettes = 

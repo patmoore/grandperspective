@@ -36,6 +36,12 @@
         <string>delete nothing</string>
         <key>confirmFileDeletion</key>
         <true/>
+        <key>defaultColorPalette</key>
+        <string>CoffeeBeans</string>
+        <key>defaultColorMapping</key>
+        <string>folder</string>
+        <key>fileSizeMeasure</key>
+        <string>logical</string>        
     </dict>
     <key>GPDefaultFileItemTests</key>
     <array>

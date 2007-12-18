@@ -3,17 +3,6 @@
 
 @implementation ColorListCollection
 
-+ (void) initialize {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-  NSDictionary *appDefaults = 
-    [NSDictionary
-       dictionaryWithObject: @"CoffeeBeans" forKey: @"defaultColorPalette"];
-
-  [defaults registerDefaults: appDefaults];
-}
-
-
 + (ColorListCollection*) defaultColorListCollection {
   static ColorListCollection  *defaultColorListCollectionInstance = nil;
 

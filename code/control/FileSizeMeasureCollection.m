@@ -4,17 +4,6 @@
 
 @implementation FileSizeMeasureCollection
 
-+ (void) initialize {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-  NSDictionary *appDefaults = 
-    [NSDictionary
-       dictionaryWithObject: LogicalFileSize forKey: @"fileSizeMeasure"];
-
-  [defaults registerDefaults: appDefaults];
-}
-
-
 + (FileSizeMeasureCollection*) defaultFileSizeMeasureCollection {
   static  FileSizeMeasureCollection  
     *defaultFileSizeMeasureCollectionInstance = nil;

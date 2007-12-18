@@ -77,16 +77,6 @@
 
 @implementation FileItemHashingCollection
 
-+ (void) initialize {
-  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-
-  NSDictionary *appDefaults = 
-    [NSDictionary
-       dictionaryWithObject: @"folder" forKey: @"defaultColorMapping"];
-
-  [defaults registerDefaults: appDefaults];
-}
-
 + (FileItemHashingCollection*) defaultFileItemHashingCollection {
   static  FileItemHashingCollection  
     *defaultFileItemHashingCollectionInstance = nil;
