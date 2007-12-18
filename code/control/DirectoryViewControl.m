@@ -159,7 +159,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *selectedMappingName = 
     ( [initialSettings colorMappingKey] != nil ?
          [initialSettings colorMappingKey] :
-         [userDefaults stringForKey: @"defaultColorMapping"] );
+         [userDefaults stringForKey: DefaultColorMappingKey] );
   localizedColorMappingNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: colorMappingPopUp
@@ -172,7 +172,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *selectedPaletteName =
     ( [initialSettings colorPaletteKey] != nil ?
          [initialSettings colorPaletteKey] :
-         [userDefaults stringForKey: @"defaultColorPalette"] );
+         [userDefaults stringForKey: DefaultColorPaletteKey] );
   localizedColorPaletteNamesReverseLookup =
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: colorPalettePopUp

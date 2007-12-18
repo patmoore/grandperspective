@@ -5,6 +5,9 @@ extern NSString  *PreferencesChangedEvent;
 
 extern NSString  *FileDeletionTargetsKey;
 extern NSString  *ConfirmFileDeletionKey;
+extern NSString  *FileSizeMeasureKey;
+extern NSString  *DefaultColorMappingKey;
+extern NSString  *DefaultColorPaletteKey;
 
 
 @interface PreferencesPanelControl : NSWindowController {

@@ -10,6 +10,9 @@ NSString  *PreferencesChangedEvent = @"preferencesChanged";
 
 NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
 NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
+NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
+NSString  *DefaultColorMappingKey = @"defaultColorMapping";
+NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
 
 @interface PreferencesPanelControl (PrivateMethods)
@@ -74,7 +77,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: fileSizeMeasurePopUp
         names: [fileSizeMeasures allKeys]
-        selectName: [userDefaults stringForKey: @"fileSizeMeasure"]
+        selectName: [userDefaults stringForKey: FileSizeMeasureKey]
         table: @"Names"] retain];
 
   [defaultColorMappingPopUp removeAllItems];  
@@ -82,7 +85,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: defaultColorMappingPopUp
         names: [colorMappings allKeys]
-        selectName: [userDefaults stringForKey: @"defaultColorMapping"]
+        selectName: [userDefaults stringForKey: DefaultColorMappingKey]
         table: @"Names"] retain];
 
   [defaultColorPalettePopUp removeAllItems];
@@ -90,7 +93,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     [[DirectoryViewControl
         addLocalisedNamesToPopUp: defaultColorPalettePopUp
         names: [colorPalettes allKeys]
-        selectName: [userDefaults stringForKey: @"defaultColorPalette"] 
+        selectName: [userDefaults stringForKey: DefaultColorPaletteKey] 
         table: @"Names"] retain];
 
   [self updateButtonState];
@@ -133,7 +136,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     NSString  *name = 
       [localizedFileSizeMeasureNamesReverseLookup objectForKey: localizedName];
 
-    [userDefaults setObject: name forKey: @"fileSizeMeasure"];
+    [userDefaults setObject: name forKey: FileSizeMeasureKey];
   }
 
   if ([changeSet containsObject: defaultColorMappingPopUp]) {
@@ -141,7 +144,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     NSString  *name = 
       [localizedColorMappingNamesReverseLookup objectForKey: localizedName];
 
-    [userDefaults setObject: name forKey: @"defaultColorMapping"];
+    [userDefaults setObject: name forKey: DefaultColorMappingKey];
   }
   
   if ([changeSet containsObject: defaultColorPalettePopUp]) {
@@ -149,7 +152,7 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
     NSString  *name = 
       [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
     
-    [userDefaults setObject: name forKey: @"defaultColorPalette"];
+    [userDefaults setObject: name forKey: DefaultColorPaletteKey];
   }
   
   [changeSet removeAllObjects];

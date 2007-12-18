@@ -180,12 +180,8 @@ NSString* scanActivityFormatString() {
   if ([openPanel runModalForTypes:nil] == NSOKButton) {
     NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
 
-    // Note: The collection class sets the application default, so its
-    // singleton instance needs to be created before looking up the key.
-    FileSizeMeasureCollection  *fileSizeMeasures = 
-      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
     NSString  *fileSizeMeasure =
-      [[NSUserDefaults standardUserDefaults] stringForKey: @"fileSizeMeasure"];
+      [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
 
     FreshDirViewWindowCreator  *windowCreator =
       [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
