@@ -11,8 +11,8 @@ NSString  *UsedSpace = @"used";
 NSString  *MiscUsedSpace = @"misc used";
 NSString  *FreedSpace = @"freed";
 
-NSString  *TreeItemReplacedEvent = @"treeItemReplaced";
-NSString  *TreeItemReplacedHandledEvent = @"treeItemReplacedHandled";
+NSString  *FileItemDeletedEvent = @"fileItemDeleted";
+NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 
 
 #define IDLE      100
@@ -56,8 +56,14 @@ static int  nextFilterId = 1;
 // Signals that an item in the tree has been replaced (by another one, of the
 // same size). The item itself is not part of the notification, but can be 
 // recognized because its parent directory has been cleared.
-- (void) postItemReplaced;
-- (void) treeItemReplacedHandled: (NSNotification *)notification;
+- (void) postFileItemDeleted;
+- (void) fileItemDeletedHandled: (NSNotification *)notification;
+
+// Recursively calculates the total size of all plain files inside the given
+// item. It excludes "special" file item so that already freed space is not
+// taken into account. This is required to accurately keep track of the total
+// freed space.
+- (ITEM_SIZE) totalPlainFileSize: (Item *)item;
 
 @end
 
@@ -152,6 +158,10 @@ static int  nextFilterId = 1;
   return freeSpace;
 }
 
+- (unsigned long long) freedSpace {
+  return freedSpace;
+}
+
 - (NSString*) fileSizeMeasure {
   return fileSizeMeasure;
 }
@@ -182,8 +192,7 @@ static int  nextFilterId = 1;
 }
 
 
-- (void) replaceSelectedItem: (ItemPathModel *)path 
-           bySpecialItemWithName: (NSString *)newName {
+- (void) deleteSelectedFileItem: (ItemPathModel *)path {
   NSAssert(replacedItem == nil, @"Replaced item not nil.");
   NSAssert(replacingItem == nil, @"Replacing item not nil.");
   
@@ -200,7 +209,7 @@ static int  nextFilterId = 1;
   Item  *containingItem = [itemsInPath objectAtIndex: pathLen - 2];
 
   replacingItem = 
-    [[FileItem specialFileItemWithName: newName
+    [[FileItem specialFileItemWithName: FreedSpace
                  parent: [replacedItem parentDirectory] 
                  size: [replacedItem itemSize]] retain];
   
@@ -228,8 +237,10 @@ static int  nextFilterId = 1;
     [dirItem replaceDirectoryContents: replacingItem];
   }  
   [self releaseWriteLock];
+  
+  freedSpace += [self totalPlainFileSize: replacedItem];
 
-  [self postItemReplaced];
+  [self postFileItemDeleted];
 }
 
 - (FileItem *) replacedFileItem {
@@ -371,6 +382,7 @@ static int  nextFilterId = 1;
     fileSizeMeasure = [fileSizeMeasureVal retain];
     volumeSize = volumeSizeVal;
     freeSpace = freeSpaceVal;
+    freedSpace = 0;
     
     scanTime = [scanTimeVal retain];
 
@@ -379,8 +391,8 @@ static int  nextFilterId = 1;
 
     // Listen to self
     [[NSNotificationCenter defaultCenter] 
-        addObserver: self selector: @selector(treeItemReplacedHandled:)
-        name: TreeItemReplacedHandledEvent object: self];
+        addObserver: self selector: @selector(fileItemDeletedHandled:)
+        name: FileItemDeletedHandledEvent object: self];
         
     mutex = [[NSLock alloc] init];
     lock = [[NSConditionLock alloc] initWithCondition: IDLE];
@@ -483,19 +495,32 @@ static int  nextFilterId = 1;
   [volumeItem release];
 }
 
-- (void) postItemReplaced {
+- (void) postFileItemDeleted {
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
-  [nc postNotificationName: TreeItemReplacedEvent object: self];
-  [nc postNotificationName: TreeItemReplacedHandledEvent object: self];
+  [nc postNotificationName: FileItemDeletedEvent object: self];
+  [nc postNotificationName: FileItemDeletedHandledEvent object: self];
 }
 
-- (void) treeItemReplacedHandled: (NSNotification *)notification {
+- (void) fileItemDeletedHandled: (NSNotification *)notification {
   [replacedItem release];
   replacedItem = nil;
   
   [replacingItem release];
   replacingItem = nil;  
+}
+
+- (ITEM_SIZE) totalPlainFileSize: (Item *)item {
+  if ( [item isVirtual] ) {
+    return ( [self totalPlainFileSize: [((CompoundItem *)item) getFirst]] +
+             [self totalPlainFileSize: [((CompoundItem *)item) getSecond]] );
+  }
+  else if ( [((FileItem *)item) isPlainFile] ) {
+    return [((FileItem *)item) isSpecial] ? 0 : [item itemSize];
+  }
+  else {
+    return [self totalPlainFileSize: [((DirectoryItem *)item) getContents]];
+  }
 }
 
 @end // TreeContext (PrivateMethods)

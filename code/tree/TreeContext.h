@@ -5,7 +5,7 @@ extern NSString  *UsedSpace;
 extern NSString  *MiscUsedSpace;
 extern NSString  *FreedSpace;
 
-extern NSString  *TreeItemReplacedEvent;
+extern NSString  *FileItemDeletedEvent;
 
 @protocol FileItemTest;
 @class FileItem;
@@ -15,6 +15,7 @@ extern NSString  *TreeItemReplacedEvent;
 @interface TreeContext : NSObject {
   unsigned long long  volumeSize;
   unsigned long long  freeSpace;
+  unsigned long long  freedSpace;
 
   DirectoryItem  *volumeTree;
   DirectoryItem  *scanTree;
@@ -71,6 +72,7 @@ extern NSString  *TreeItemReplacedEvent;
 
 - (unsigned long long) volumeSize;
 - (unsigned long long) freeSpace;
+- (unsigned long long) freedSpace;
 
 - (NSString*) fileSizeMeasure;
 - (NSDate*) scanTime;
@@ -83,8 +85,7 @@ extern NSString  *TreeItemReplacedEvent;
 // Returns a localized string, based on the filter identifier.
 - (NSString*) filterName;
 
-- (void) replaceSelectedItem: (ItemPathModel *)path 
-           bySpecialItemWithName: (NSString *)newName;
+- (void) deleteSelectedFileItem: (ItemPathModel *)path;
 
 // These method should only be called in response to a TreeItemReplacedEvent.
 // They will return "nil" otherwise.

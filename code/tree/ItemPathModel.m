@@ -24,7 +24,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 - (void) observeEvents;
 
-- (void) treeItemReplaced: (NSNotification *)notification;
+- (void) fileItemDeleted: (NSNotification *)notification;
 
 - (void) postSelectedItemChanged;
 - (void) postVisibleTreeChanged;
@@ -361,11 +361,11 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 - (void) observeEvents {
  [[NSNotificationCenter defaultCenter] 
-      addObserver: self selector: @selector(treeItemReplaced:)
-      name: TreeItemReplacedEvent object: treeContext];
+      addObserver: self selector: @selector(fileItemDeleted:)
+      name: FileItemDeletedEvent object: treeContext];
 }
 
-- (void) treeItemReplaced: (NSNotification *)notification {
+- (void) fileItemDeleted: (NSNotification *)notification {
   FileItem  *replacedItem = [treeContext replacedFileItem];
   FileItem  *replacingItem = [treeContext replacingFileItem];
 
