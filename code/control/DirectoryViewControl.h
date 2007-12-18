@@ -48,6 +48,7 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *miscUsedSpaceField;
   IBOutlet NSTextField  *treeSizeField;
   IBOutlet NSTextField  *freeSpaceField;
+  IBOutlet NSTextField  *freedSpaceField;
   
   // "Focus" drawer panel
   IBOutlet NSTextView  *visibleFolderPathTextView;

@@ -26,6 +26,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
 - (void) deleteSelectedFile;
+- (void) fileItemDeleted: (NSNotification *)notification;
 
 - (void) createEditMaskFilterWindow;
 
@@ -240,6 +241,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                             [FileItem stringForFileItemSize: miscUsedSpace]];
   [freeSpaceField setStringValue: 
                             [FileItem stringForFileItemSize: freeSpace]];
+  [freedSpaceField setStringValue: 
+                   [FileItem stringForFileItemSize: [treeContext freedSpace]]];
 
   //---------------------------------------------------------------- 
   // Miscellaneous initialisation
@@ -263,6 +266,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         
   [nc addObserver:self selector: @selector(preferencesChanged:)
         name: PreferencesChangedEvent object: userDefaults];
+
+  [nc addObserver:self selector: @selector(fileItemDeleted:)
+        name: FileItemDeletedEvent object: treeContext];
 
   [self visibleTreeChanged: nil];
 
@@ -468,8 +474,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (void) deleteSelectedFile {
-  [treeContext replaceSelectedItem: itemPathModel
-                 bySpecialItemWithName: FreedSpace ];
+  [treeContext deleteSelectedFileItem: itemPathModel];
+}
+
+- (void) fileItemDeleted: (NSNotification *)notification {
+  [freedSpaceField setStringValue: 
+                   [FileItem stringForFileItemSize: [treeContext freedSpace]]];
 }
 
 

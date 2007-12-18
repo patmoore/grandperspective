@@ -25,6 +25,7 @@
                 filterDescriptionTextView = NSTextView; 
                 filterNameField = NSTextField; 
                 freeSpaceField = NSTextField; 
+                freedSpaceField = NSTextField; 
                 itemPathField = NSTextField; 
                 itemSizeField = NSTextField; 
                 mainView = DirectoryView; 
