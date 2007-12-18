@@ -1,5 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
+
+extern NSString  *DeleteNothing;
+extern NSString  *OnlyDeleteFiles;
+extern NSString  *DeleteFilesAndFolders;
+
+
 @class DirectoryItem;
 @class DirectoryView;
 @class ItemPathModel;
@@ -57,6 +63,10 @@
   TreeContext  *treeContext;
 
   NSObject <FileItemTest>  *fileItemMask;
+  
+  BOOL  canDeleteFiles;
+  BOOL  canDeleteFolders;
+  BOOL  confirmDeletion;
 
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
@@ -100,6 +110,8 @@
 
 // Returns the current settings of the view.
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
+
++ (NSArray *) fileDeletionTargetNames;
 
 // TO DO: Move somewhere more appropriate?
 + (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp

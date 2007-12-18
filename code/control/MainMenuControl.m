@@ -72,6 +72,21 @@ NSString* scanActivityFormatString() {
 
 @implementation MainMenuControl
 
++ (void) initialize {
+  NSLog( @"Registering application defaults." );
+
+  NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+
+  // Load application-defaults from the information properties file.
+  NSBundle  *bundle = [NSBundle mainBundle];
+      
+  NSDictionary  *appDefaults = 
+    [bundle objectForInfoDictionaryKey: @"GPApplicationDefaults"];
+
+  [defaults registerDefaults: appDefaults];
+}
+
+
 - (id) init {
   if (self = [super init]) {
     windowManager = [[WindowManager alloc] init];  

@@ -8,8 +8,14 @@
 #import "DirectoryViewControlSettings.h"
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
+#import "PreferencesPanelControl.h"
 #import "ItemTreeDrawerSettings.h"
 #import "ControlConstants.h"
+
+
+NSString  *DeleteNothing = @"delete nothing";
+NSString  *OnlyDeleteFiles = @"only delete files";
+NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 @interface DirectoryViewControl (PrivateMethods)
@@ -19,6 +25,7 @@
 - (BOOL) canDeleteSelectedFile;
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
+- (void) deleteSelectedFile;
 
 - (void) createEditMaskFilterWindow;
 
@@ -26,6 +33,8 @@
 - (void) visibleTreeChanged:(NSNotification*)notification;
 - (void) maskChanged;
 - (void) updateMask;
+
+- (void) preferencesChanged: (NSNotification *)notification;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -137,9 +146,14 @@
 
 - (void) windowDidLoad {
   [mainView postInitWithPathModel: itemPathModel];
+  
+  [self preferencesChanged: nil];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
+  
+  //----------------------------------------------------------------
+  // Configure the "Display" panel
   
   [colorMappingPopUp removeAllItems];  
   NSString  *selectedMappingName = 
@@ -179,11 +193,13 @@
   [initialSettings release];
   initialSettings = nil;
   
+  //---------------------------------------------------------------- 
+  // Configure the "Info" panel
+
   FileItem  *volumeTree = [itemPathModel volumeTree];
   FileItem  *scanTree = [itemPathModel scanTree];
   FileItem  *visibleTree = [itemPathModel visibleTree];
 
-  // Configure the "Info" panel
   NSString  *volumeName = [volumeTree name];
   NSImage  *volumeIcon = 
     [[NSWorkspace sharedWorkspace] iconForFile: volumeName];
@@ -225,6 +241,9 @@
   [freeSpaceField setStringValue: 
                             [FileItem stringForFileItemSize: freeSpace]];
 
+  //---------------------------------------------------------------- 
+  // Miscellaneous initialisation
+
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
@@ -241,6 +260,9 @@
         name: VisiblePathLockingChangedEvent object: itemPathModel];
   [nc addObserver:self selector: @selector(visibleTreeChanged:)
         name: VisibleTreeChangedEvent object: itemPathModel];
+        
+  [nc addObserver:self selector: @selector(preferencesChanged:)
+        name: PreferencesChangedEvent object: userDefaults];
 
   [self visibleTreeChanged: nil];
 
@@ -281,6 +303,13 @@
 }
 
 - (IBAction) deleteFile: (id) sender {
+  if (! confirmDeletion) {
+    // Delete immediately, without asking for confirmation.
+    [self deleteSelectedFile];
+    
+    return;
+  }
+
   FileItem  *selectedFile = [itemPathModel selectedFileItem];
 
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
@@ -370,6 +399,11 @@
 }
 
 
++ (NSArray *) fileDeletionTargetNames {
+  return [NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
+                                    DeleteFilesAndFolders, nil];
+}
+
 + (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
                     names: (NSArray *)names
                     selectName: (NSString *)selectName
@@ -416,8 +450,12 @@
 }
 
 - (BOOL) canDeleteSelectedFile {
-  return ([itemPathModel isVisiblePathLocked] &&
-          ![[itemPathModel selectedFileItem] isSpecial]);
+  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+
+  return ( [itemPathModel isVisiblePathLocked] &&
+           ! [selectedFile isSpecial] &&
+           ( (canDeleteFiles && [selectedFile isPlainFile]) ||
+             (canDeleteFolders && ! [selectedFile isPlainFile]) ) );
 }
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
@@ -425,9 +463,13 @@
   if (returnCode == NSAlertFirstButtonReturn) {
     // Delete confirmed.
     
-    [treeContext replaceSelectedItem: itemPathModel
-                   bySpecialItemWithName: FreedSpace ];
+    [self deleteSelectedFile];
   }
+}
+
+- (void) deleteSelectedFile {
+  [treeContext replaceSelectedItem: itemPathModel
+                 bySpecialItemWithName: FreedSpace ];
 }
 
 
@@ -579,6 +621,25 @@
 
   [mainView setTreeDrawerSettings: 
     [[mainView treeDrawerSettings] copyWithFileItemMask: newMask]];
+}
+
+
+- (void) preferencesChanged: (NSNotification *)notification {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  
+  NSString  *fileDeletionTargets = 
+    [userDefaults stringForKey: FileDeletionTargetsKey];
+  canDeleteFiles = 
+    ([fileDeletionTargets isEqualToString: OnlyDeleteFiles] ||
+     [fileDeletionTargets isEqualToString: DeleteFilesAndFolders]);
+  canDeleteFolders =
+     [fileDeletionTargets isEqualToString: DeleteFilesAndFolders];
+  confirmDeletion = 
+    [[userDefaults objectForKey: ConfirmFileDeletionKey] boolValue];
+
+  if (notification != nil) {
+    [deleteButton setEnabled: [self canDeleteSelectedFile] ];
+  }
 }
 
 

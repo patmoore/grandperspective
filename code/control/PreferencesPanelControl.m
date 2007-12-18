@@ -5,6 +5,13 @@
 #import "ColorListCollection.h"
 #import "FileSizeMeasureCollection.h"
 
+
+NSString  *PreferencesChangedEvent = @"preferencesChanged";
+
+NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
+NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
+
+
 @interface PreferencesPanelControl (PrivateMethods)
 
 - (void) updateButtonState;
@@ -53,6 +60,17 @@
   FileSizeMeasureCollection  *fileSizeMeasures = 
       [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
 
+  [fileDeletionPopUp removeAllItems];
+  localizedFileDeletionTargetNamesReverseLookup =
+    [[DirectoryViewControl
+        addLocalisedNamesToPopUp: fileDeletionPopUp
+        names: [DirectoryViewControl fileDeletionTargetNames]
+        selectName: [userDefaults stringForKey: FileDeletionTargetsKey]
+        table: @"Names"] retain];
+  [fileDeletionConfirmationCheckBox setState: 
+     ([userDefaults boolForKey: ConfirmFileDeletionKey]
+        ? NSOnState : NSOffState)];
+
   [fileSizeMeasurePopUp removeAllItems];
   localizedFileSizeMeasureNamesReverseLookup =
     [[DirectoryViewControl
@@ -98,6 +116,20 @@
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
+  if ([changeSet containsObject: fileDeletionPopUp]) {
+    NSString  *localizedName = [fileDeletionPopUp titleOfSelectedItem];
+    NSString  *name = [localizedFileDeletionTargetNamesReverseLookup 
+                                          objectForKey: localizedName];
+
+    [userDefaults setObject: name forKey: FileDeletionTargetsKey];
+  }
+  
+  if ([changeSet containsObject: fileDeletionConfirmationCheckBox]) {
+    BOOL  enabled = [fileDeletionConfirmationCheckBox state] == NSOnState;
+
+    [userDefaults setBool: enabled forKey: ConfirmFileDeletionKey];
+  }
+
   if ([changeSet containsObject: fileSizeMeasurePopUp]) {
     NSString  *localizedName = [fileSizeMeasurePopUp titleOfSelectedItem];
     NSString  *name = 
@@ -125,6 +157,9 @@
   [changeSet removeAllObjects];
   
   [self updateButtonState];
+  
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName: PreferencesChangedEvent object: userDefaults];
 }
 
 
@@ -141,6 +176,12 @@
 
 - (void) updateButtonState {
   [okButton setEnabled: [changeSet count] > 0];
+  
+  NSString  *localizedName = [fileDeletionPopUp titleOfSelectedItem];
+  NSString  *name = 
+    [localizedFileDeletionTargetNamesReverseLookup objectForKey: localizedName];
+  [fileDeletionConfirmationCheckBox setEnabled:
+    ! [name isEqualToString: DeleteNothing]];
 }
 
 @end // @implementation PreferencesPanelControl (PrivateMethods)

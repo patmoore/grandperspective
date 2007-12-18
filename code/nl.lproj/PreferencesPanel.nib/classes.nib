@@ -8,6 +8,8 @@
             OUTLETS = {
                 defaultColorMappingPopUp = NSPopUpButton; 
                 defaultColorPalettePopUp = NSPopUpButton; 
+                fileDeletionConfirmationCheckBox = NSButton; 
+                fileDeletionPopUp = NSPopUpButton; 
                 fileSizeMeasurePopUp = NSPopUpButton; 
                 okButton = NSButton; 
             }; 

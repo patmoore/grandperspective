@@ -30,6 +30,13 @@
     <string>GrandPerspectiveHelp</string>
     <key>CFBundleHelpBookName</key>
     <string>GrandPerspective Help</string>
+    <key>GPApplicationDefaults</key>
+    <dict>
+        <key>fileDeletionTargets</key>
+        <string>delete nothing</string>
+        <key>confirmFileDeletion</key>
+        <true/>
+    </dict>
     <key>GPDefaultFileItemTests</key>
     <array>
 		<dict>
