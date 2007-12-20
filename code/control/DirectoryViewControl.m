@@ -12,6 +12,8 @@
 #import "ItemTreeDrawerSettings.h"
 #import "ControlConstants.h"
 
+#import "UniqueTagsTransformer.h"
+
 
 NSString  *DeleteNothing = @"delete nothing";
 NSString  *OnlyDeleteFiles = @"only delete files";
@@ -103,9 +105,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [colorMappings release];
   [colorPalettes release];
   
-  [localizedColorMappingNamesReverseLookup release];
-  [localizedColorPaletteNamesReverseLookup release];
-  
   [editMaskFilterWindowControl release];
 
   [scanPathName release];
@@ -128,12 +127,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (DirectoryViewControlSettings*) directoryViewControlSettings {
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
   NSString  *colorMappingKey = 
-    [localizedColorMappingNamesReverseLookup 
-       objectForKey: [colorMappingPopUp titleOfSelectedItem]];
+    [tagMaker nameForItem: [colorMappingPopUp selectedItem]];
   NSString  *colorPaletteKey = 
-    [localizedColorPaletteNamesReverseLookup
-       objectForKey: [colorPalettePopUp titleOfSelectedItem]];
+    [tagMaker nameForItem: [colorPalettePopUp selectedItem]];
 
   return [[[DirectoryViewControlSettings alloc]
               initWithColorMappingKey: colorMappingKey
@@ -160,17 +159,18 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   //----------------------------------------------------------------
   // Configure the "Display" panel
   
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  
   [colorMappingPopUp removeAllItems];  
   NSString  *selectedMappingName = 
     ( [initialSettings colorMappingKey] != nil ?
          [initialSettings colorMappingKey] :
          [userDefaults stringForKey: DefaultColorMappingKey] );
-  localizedColorMappingNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: colorMappingPopUp
-        names: [colorMappings allKeys]
-        selectName: selectedMappingName 
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: colorMappingPopUp
+              names: [colorMappings allKeys]
+              select: selectedMappingName 
+              table: @"Names"];
   [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
@@ -178,12 +178,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     ( [initialSettings colorPaletteKey] != nil ?
          [initialSettings colorPaletteKey] :
          [userDefaults stringForKey: DefaultColorPaletteKey] );
-  localizedColorPaletteNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: colorPalettePopUp
-        names: [colorPalettes allKeys]
-        selectName: selectedPaletteName  
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: colorPalettePopUp
+              names: [colorPalettes allKeys]
+              select: selectedPaletteName  
+              table: @"Names"];
   [self colorPaletteChanged: nil];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
@@ -389,9 +387,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (IBAction) colorMappingChanged: (id) sender {
-  NSString  *localizedName = [colorMappingPopUp titleOfSelectedItem];
-  NSString  *name = 
-    [localizedColorMappingNamesReverseLookup objectForKey: localizedName];
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+
+  NSString  *name = [tagMaker nameForItem: [colorMappingPopUp selectedItem]];
   FileItemHashing  *mapping = [colorMappings fileItemHashingForKey: name];
 
   if (mapping != nil) {
@@ -401,9 +400,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (IBAction) colorPaletteChanged: (id) sender {
-  NSString  *localizedName = [colorPalettePopUp titleOfSelectedItem];
-  NSString  *name = 
-    [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  NSString  *name = [tagMaker nameForItem: [colorPalettePopUp selectedItem]];
   NSColorList  *palette = [colorPalettes colorListForKey: name];
 
   if (palette != nil) {  
@@ -421,41 +420,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 + (NSArray *) fileDeletionTargetNames {
   return [NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
                                     DeleteFilesAndFolders, nil];
-}
-
-+ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
-                    names: (NSArray *)names
-                    selectName: (NSString *)selectName
-                    table: (NSString *)tableName {
-                   
-  NSBundle  *mainBundle = [NSBundle mainBundle];
-  
-  NSMutableDictionary  *reverseLookup = 
-    [NSMutableDictionary dictionaryWithCapacity: [names count]];
-
-  NSEnumerator  *enumerator = [names objectEnumerator];
-  NSString  *name;
-  NSString  *localizedSelect = nil;
-  
-  while (name = [enumerator nextObject]) {
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: tableName];
-
-    [reverseLookup setObject: name forKey: localizedName];
-    if ([name isEqualToString: selectName]) {
-      localizedSelect = localizedName;
-    }
-  }
-  
-  [popUp addItemsWithTitles:
-     [[reverseLookup allKeys] 
-         sortedArrayUsingSelector: @selector(caseInsensitiveCompare:)]];
-  
-  if (localizedSelect != nil) {
-    [popUp selectItemWithTitle: localizedSelect];
-  }
-  
-  return reverseLookup;
 }
 
 @end // @implementation DirectoryViewControl

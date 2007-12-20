@@ -20,11 +20,6 @@ extern NSString  *DefaultColorPaletteKey;
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
-  NSDictionary  *localizedFileDeletionTargetNamesReverseLookup;
-  NSDictionary  *localizedFileSizeMeasureNamesReverseLookup;
-  NSDictionary  *localizedColorMappingNamesReverseLookup;
-  NSDictionary  *localizedColorPaletteNamesReverseLookup;
-  
   NSMutableSet  *changeSet;
 }
 

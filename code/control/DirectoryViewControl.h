@@ -72,9 +72,6 @@ extern NSString  *DeleteFilesAndFolders;
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   
-  NSDictionary  *localizedColorMappingNamesReverseLookup;
-  NSDictionary  *localizedColorPaletteNamesReverseLookup;
-  
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
   // The (absolute) path of the scan tree.
@@ -113,11 +110,5 @@ extern NSString  *DeleteFilesAndFolders;
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
 
 + (NSArray *) fileDeletionTargetNames;
-
-// TO DO: Move somewhere more appropriate?
-+ (NSDictionary*) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
-                    names: (NSArray *)names
-                    selectName: (NSString *)defaultName
-                    table: (NSString *)tableName;
 
 @end

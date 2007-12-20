@@ -5,6 +5,8 @@
 #import "ColorListCollection.h"
 #import "FileSizeMeasureCollection.h"
 
+#import "UniqueTagsTransformer.h"
+
 
 NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
 NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
@@ -25,7 +27,7 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 // NSWindowController's case
 - (id) init {
   if (self = [super initWithWindowNibName: @"PreferencesPanel" owner: self]) {
-    changeSet = [[NSMutableSet alloc] initWithCapacity: 4];
+    changeSet = [[NSMutableSet alloc] initWithCapacity: 8];
     
     // Trigger loading of the window
     [self window];
@@ -35,10 +37,6 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 }
 
 - (void) dealloc {
-  [localizedFileSizeMeasureNamesReverseLookup release];
-  [localizedColorMappingNamesReverseLookup release];
-  [localizedColorPaletteNamesReverseLookup release];
-  
   [changeSet release];
   
   [super dealloc];
@@ -58,41 +56,37 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
       [ColorListCollection defaultColorListCollection];
   FileSizeMeasureCollection  *fileSizeMeasures = 
       [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
+      
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
   [fileDeletionPopUp removeAllItems];
-  localizedFileDeletionTargetNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: fileDeletionPopUp
-        names: [DirectoryViewControl fileDeletionTargetNames]
-        selectName: [userDefaults stringForKey: FileDeletionTargetsKey]
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: fileDeletionPopUp
+              names: [DirectoryViewControl fileDeletionTargetNames]
+              select: [userDefaults stringForKey: FileDeletionTargetsKey]
+              table: @"Names"];
+
   [fileDeletionConfirmationCheckBox setState: 
      ([userDefaults boolForKey: ConfirmFileDeletionKey]
         ? NSOnState : NSOffState)];
 
   [fileSizeMeasurePopUp removeAllItems];
-  localizedFileSizeMeasureNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: fileSizeMeasurePopUp
-        names: [fileSizeMeasures allKeys]
-        selectName: [userDefaults stringForKey: FileSizeMeasureKey]
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: fileSizeMeasurePopUp
+              names: [fileSizeMeasures allKeys]
+              select: [userDefaults stringForKey: FileSizeMeasureKey]
+              table: @"Names"];
 
   [defaultColorMappingPopUp removeAllItems];  
-  localizedColorMappingNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: defaultColorMappingPopUp
-        names: [colorMappings allKeys]
-        selectName: [userDefaults stringForKey: DefaultColorMappingKey]
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: defaultColorMappingPopUp
+              names: [colorMappings allKeys]
+              select: [userDefaults stringForKey: DefaultColorMappingKey]
+              table: @"Names"];
 
   [defaultColorPalettePopUp removeAllItems];
-  localizedColorPaletteNamesReverseLookup =
-    [[DirectoryViewControl
-        addLocalisedNamesToPopUp: defaultColorPalettePopUp
-        names: [colorPalettes allKeys]
-        selectName: [userDefaults stringForKey: DefaultColorPaletteKey] 
-        table: @"Names"] retain];
+  [tagMaker addLocalisedNamesToPopUp: defaultColorPalettePopUp
+              names: [colorPalettes allKeys]
+              select: [userDefaults stringForKey: DefaultColorPaletteKey] 
+              table: @"Names"];
 
   [self updateButtonState];
   
@@ -114,11 +108,11 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   [[self window] close];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
   if ([changeSet containsObject: fileDeletionPopUp]) {
-    NSString  *localizedName = [fileDeletionPopUp titleOfSelectedItem];
-    NSString  *name = [localizedFileDeletionTargetNamesReverseLookup 
-                                          objectForKey: localizedName];
+    NSString  *name = [tagMaker nameForItem: [fileDeletionPopUp selectedItem]];
 
     [userDefaults setObject: name forKey: FileDeletionTargetsKey];
   }
@@ -130,25 +124,22 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   }
 
   if ([changeSet containsObject: fileSizeMeasurePopUp]) {
-    NSString  *localizedName = [fileSizeMeasurePopUp titleOfSelectedItem];
     NSString  *name = 
-      [localizedFileSizeMeasureNamesReverseLookup objectForKey: localizedName];
+      [tagMaker nameForItem: [fileSizeMeasurePopUp selectedItem]];
 
     [userDefaults setObject: name forKey: FileSizeMeasureKey];
   }
 
   if ([changeSet containsObject: defaultColorMappingPopUp]) {
-    NSString  *localizedName = [defaultColorMappingPopUp titleOfSelectedItem];
     NSString  *name = 
-      [localizedColorMappingNamesReverseLookup objectForKey: localizedName];
+      [tagMaker nameForItem: [defaultColorMappingPopUp selectedItem]];
 
     [userDefaults setObject: name forKey: DefaultColorMappingKey];
   }
   
   if ([changeSet containsObject: defaultColorPalettePopUp]) {
-    NSString  *localizedName = [defaultColorPalettePopUp titleOfSelectedItem];
-    NSString  *name = 
-      [localizedColorPaletteNamesReverseLookup objectForKey: localizedName];
+    NSString  *name =  
+      [tagMaker nameForItem: [defaultColorPalettePopUp selectedItem]];
     
     [userDefaults setObject: name forKey: DefaultColorPaletteKey];
   }
@@ -173,9 +164,10 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 - (void) updateButtonState {
   [okButton setEnabled: [changeSet count] > 0];
   
-  NSString  *localizedName = [fileDeletionPopUp titleOfSelectedItem];
-  NSString  *name = 
-    [localizedFileDeletionTargetNamesReverseLookup objectForKey: localizedName];
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  NSString  *name = [tagMaker nameForItem: [fileDeletionPopUp selectedItem]];
+
   [fileDeletionConfirmationCheckBox setEnabled:
     ! [name isEqualToString: DeleteNothing]];
 }
