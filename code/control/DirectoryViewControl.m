@@ -35,7 +35,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) maskChanged;
 - (void) updateMask;
 
-- (void) preferencesChanged: (NSNotification *)notification;
+- (void) updateFileDeletionSupport;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -89,6 +89,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (void) dealloc {
   [[NSNotificationCenter defaultCenter] removeObserver:self];
+  
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  [userDefaults removeObserver: self forKeyPath: FileDeletionTargetsKey];
+  [userDefaults removeObserver: self forKeyPath: ConfirmFileDeletionKey];
   
   [treeContext release];
   [itemPathModel release];
@@ -148,7 +152,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) windowDidLoad {
   [mainView postInitWithPathModel: itemPathModel];
   
-  [self preferencesChanged: nil];
+  [self updateFileDeletionSupport];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -264,8 +268,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [nc addObserver:self selector: @selector(visibleTreeChanged:)
         name: VisibleTreeChangedEvent object: itemPathModel];
         
-  [nc addObserver:self selector: @selector(preferencesChanged:)
-        name: PreferencesChangedEvent object: userDefaults];
+  [userDefaults addObserver: self forKeyPath: FileDeletionTargetsKey
+                  options: nil context: nil];
+  [userDefaults addObserver: self forKeyPath: ConfirmFileDeletionKey
+                  options: nil context: nil];
 
   [nc addObserver:self selector: @selector(fileItemDeleted:)
         name: FileItemDeletedEvent object: treeContext];
@@ -287,6 +293,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 // Invoked because the controller is the delegate for the window.
 - (void) windowWillClose:(NSNotification*)notification {
   [self autorelease];
+}
+
+- (void) observeValueForKeyPath: (NSString *)keyPath ofObject: (id) object 
+           change: (NSDictionary *)change context: (void *)context {
+  if (object == [NSUserDefaults standardUserDefaults]) {
+    [self updateFileDeletionSupport];
+  }
 }
 
 - (IBAction) upAction:(id)sender {
@@ -634,11 +647,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) preferencesChanged: (NSNotification *)notification {
+- (void) updateFileDeletionSupport {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
   NSString  *fileDeletionTargets = 
     [userDefaults stringForKey: FileDeletionTargetsKey];
+
   canDeleteFiles = 
     ([fileDeletionTargets isEqualToString: OnlyDeleteFiles] ||
      [fileDeletionTargets isEqualToString: DeleteFilesAndFolders]);
@@ -647,9 +661,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   confirmDeletion = 
     [[userDefaults objectForKey: ConfirmFileDeletionKey] boolValue];
 
-  if (notification != nil) {
-    [deleteButton setEnabled: [self canDeleteSelectedFile] ];
-  }
+  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
 }
 
 

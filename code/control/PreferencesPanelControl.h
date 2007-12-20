@@ -1,8 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-extern NSString  *PreferencesChangedEvent;
-
 extern NSString  *FileDeletionTargetsKey;
 extern NSString  *ConfirmFileDeletionKey;
 extern NSString  *FileSizeMeasureKey;

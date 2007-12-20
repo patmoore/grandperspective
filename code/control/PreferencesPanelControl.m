@@ -6,8 +6,6 @@
 #import "FileSizeMeasureCollection.h"
 
 
-NSString  *PreferencesChangedEvent = @"preferencesChanged";
-
 NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
 NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
@@ -158,9 +156,6 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   [changeSet removeAllObjects];
   
   [self updateButtonState];
-  
-  [[NSNotificationCenter defaultCenter]
-      postNotificationName: PreferencesChangedEvent object: userDefaults];
 }
 
 
