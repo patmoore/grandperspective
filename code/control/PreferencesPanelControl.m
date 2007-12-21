@@ -3,7 +3,7 @@
 #import "DirectoryViewControl.h"
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
-#import "FileSizeMeasureCollection.h"
+#import "TreeBuilder.h"
 
 #import "UniqueTagsTransformer.h"
 
@@ -54,8 +54,6 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
       [FileItemHashingCollection defaultFileItemHashingCollection];
   ColorListCollection  *colorPalettes = 
       [ColorListCollection defaultColorListCollection];
-  FileSizeMeasureCollection  *fileSizeMeasures = 
-      [FileSizeMeasureCollection defaultFileSizeMeasureCollection];
       
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
@@ -72,7 +70,7 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
   [fileSizeMeasurePopUp removeAllItems];
   [tagMaker addLocalisedNamesToPopUp: fileSizeMeasurePopUp
-              names: [fileSizeMeasures allKeys]
+              names: [TreeBuilder fileSizeMeasureNames]
               select: [userDefaults stringForKey: FileSizeMeasureKey]
               table: @"Names"];
 

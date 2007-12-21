@@ -7,7 +7,6 @@
 #import "SaveImageDialogControl.h"
 #import "EditFilterWindowControl.h"
 #import "PreferencesPanelControl.h"
-#import "FileSizeMeasureCollection.h"
 
 #import "ItemPathModel.h"
 #import "TreeFilter.h"

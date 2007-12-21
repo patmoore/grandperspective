@@ -70,6 +70,19 @@ static struct {
 
 @implementation TreeBuilder
 
++ (NSArray *) fileSizeMeasureNames {
+  static NSArray  *fileSizeMeasureNames = nil;
+
+  if (fileSizeMeasureNames == nil) {
+    fileSizeMeasureNames = 
+      [[NSArray arrayWithObjects: LogicalFileSize, PhysicalFileSize, nil]
+         retain];
+  }
+  
+  return fileSizeMeasureNames;
+}
+
+
 - (id) init {
   if (self = [super init]) {
     treeBalancer = [[TreeBalancer alloc] init];

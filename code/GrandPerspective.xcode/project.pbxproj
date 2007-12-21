@@ -394,7 +394,6 @@
 				AAD8DFB30B077ED20060DADA,
 				AA5974CA0B31687600EF3248,
 				AA8FEB510B6CD0810049FF42,
-				AA8FECA00B6CFC990049FF42,
 				AA62D5DB0BCA67BB0095A09A,
 				AAE87FDA0CE10B9B00A99883,
 				AA8877EB0D0C0E3500F52571,
@@ -1813,30 +1812,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA8FEC9D0B6CFC990049FF42 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FileSizeMeasureCollection.h;
-			path = control/FileSizeMeasureCollection.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA8FEC9E0B6CFC990049FF42 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = FileSizeMeasureCollection.m;
-			path = control/FileSizeMeasureCollection.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA8FECA00B6CFC990049FF42 = {
-			fileRef = AA8FEC9E0B6CFC990049FF42;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		AAB35D3F0A33057E006535FF = {
 			children = (
 				AA21849D0A25FDDB000E1C8C,
@@ -2024,8 +1999,6 @@
 				AAEF604F0B028DD800C7134A,
 				AAD8DD180B062AB00060DADA,
 				AAD8DD1A0B062AC40060DADA,
-				AA8FEC9D0B6CFC990049FF42,
-				AA8FEC9E0B6CFC990049FF42,
 			);
 			isa = PBXGroup;
 			name = control;

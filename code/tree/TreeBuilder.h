@@ -20,6 +20,8 @@ extern NSString  *PhysicalFileSize;
   TreeBalancer  *treeBalancer;
 }
 
++ (NSArray *) fileSizeMeasureNames;
+
 - (id) init;
 
 - (void) abort;
