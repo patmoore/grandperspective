@@ -20,6 +20,7 @@ extern NSString  *DefaultColorPaletteKey;
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
 
+  NSArray  *popUps;
   NSMutableSet  *changeSet;
 }
 

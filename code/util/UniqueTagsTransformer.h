@@ -44,6 +44,6 @@
  * as the item was created by this transformer using the
  * -addLocalisedNamesToPopUp:names:select:table method.
  */
-- (NSString *) nameForItem: (id <NSMenuItem>)item;
+- (NSString *) nameForTag: (int) tag;
 
 @end

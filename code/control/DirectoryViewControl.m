@@ -130,9 +130,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   NSString  *colorMappingKey = 
-    [tagMaker nameForItem: [colorMappingPopUp selectedItem]];
+    [tagMaker nameForTag: [[colorMappingPopUp selectedItem] tag]];
   NSString  *colorPaletteKey = 
-    [tagMaker nameForItem: [colorPalettePopUp selectedItem]];
+    [tagMaker nameForTag: [[colorPalettePopUp selectedItem] tag]];
 
   return [[[DirectoryViewControlSettings alloc]
               initWithColorMappingKey: colorMappingKey
@@ -390,7 +390,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
-  NSString  *name = [tagMaker nameForItem: [colorMappingPopUp selectedItem]];
+  NSString  *name = 
+    [tagMaker nameForTag: [[colorMappingPopUp selectedItem] tag]];
   FileItemHashing  *mapping = [colorMappings fileItemHashingForKey: name];
 
   if (mapping != nil) {
@@ -402,7 +403,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (IBAction) colorPaletteChanged: (id) sender {
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
-  NSString  *name = [tagMaker nameForItem: [colorPalettePopUp selectedItem]];
+  NSString  *name = 
+    [tagMaker nameForTag: [[colorPalettePopUp selectedItem] tag]];
   NSColorList  *palette = [colorPalettes colorListForKey: name];
 
   if (palette != nil) {  
@@ -418,8 +420,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 + (NSArray *) fileDeletionTargetNames {
-  return [NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
-                                    DeleteFilesAndFolders, nil];
+  static NSArray  *fileDeletionTargetNames = nil;
+  
+  if (fileDeletionTargetNames == nil) {
+    fileDeletionTargetNames = 
+      [[NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
+                                    DeleteFilesAndFolders, nil] retain];
+  }
+  
+  return fileDeletionTargetNames;
 }
 
 @end // @implementation DirectoryViewControl

@@ -94,8 +94,8 @@
   }
 }
 
-- (NSString *) nameForItem: (id <NSMenuItem>)item {
-  return [self reverseTransformedValue: [NSNumber numberWithInt: [item tag]]];
+- (NSString *) nameForTag: (int) tag {
+  return [self reverseTransformedValue: [NSNumber numberWithInt: tag]];
 }
 
 @end

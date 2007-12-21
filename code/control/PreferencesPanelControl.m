@@ -17,6 +17,9 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
 @interface PreferencesPanelControl (PrivateMethods)
 
+- (void) setupPopUp: (NSPopUpButton *)popUp key: (NSString *)key
+           content: (NSArray *)names;
+
 - (void) updateButtonState;
 
 @end
@@ -38,53 +41,35 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
 - (void) dealloc {
   [changeSet release];
+  [popUps release];
   
   [super dealloc];
 }
 
 
 - (void) windowDidLoad {
-  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-  
   [[NSNotificationCenter defaultCenter]
       addObserver: self selector: @selector(windowWillClose:)
         name: NSWindowWillCloseNotification object: [self window]];
 
-  FileItemHashingCollection  *colorMappings = 
-      [FileItemHashingCollection defaultFileItemHashingCollection];
-  ColorListCollection  *colorPalettes = 
-      [ColorListCollection defaultColorListCollection];
-      
-  UniqueTagsTransformer  *tagMaker = 
-    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
-  [fileDeletionPopUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: fileDeletionPopUp
-              names: [DirectoryViewControl fileDeletionTargetNames]
-              select: [userDefaults stringForKey: FileDeletionTargetsKey]
-              table: @"Names"];
+  // Configure all pop-up buttons.
+  popUps = [NSMutableArray arrayWithCapacity: 4];
+  [self setupPopUp: fileDeletionPopUp key: FileDeletionTargetsKey
+          content: [DirectoryViewControl fileDeletionTargetNames]];
+  [self setupPopUp: fileSizeMeasurePopUp key: FileSizeMeasureKey
+          content: [TreeBuilder fileSizeMeasureNames]];
+  [self setupPopUp: defaultColorMappingPopUp key: DefaultColorMappingKey
+          content:  [[FileItemHashingCollection 
+                        defaultFileItemHashingCollection] allKeys]];
+  [self setupPopUp: defaultColorPalettePopUp key: DefaultColorPaletteKey
+          content: [[ColorListCollection defaultColorListCollection] allKeys]];
+  popUps = [[NSArray alloc] initWithArray: popUps]; // Make it immutable.
 
   [fileDeletionConfirmationCheckBox setState: 
      ([userDefaults boolForKey: ConfirmFileDeletionKey]
         ? NSOnState : NSOffState)];
-
-  [fileSizeMeasurePopUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: fileSizeMeasurePopUp
-              names: [TreeBuilder fileSizeMeasureNames]
-              select: [userDefaults stringForKey: FileSizeMeasureKey]
-              table: @"Names"];
-
-  [defaultColorMappingPopUp removeAllItems];  
-  [tagMaker addLocalisedNamesToPopUp: defaultColorMappingPopUp
-              names: [colorMappings allKeys]
-              select: [userDefaults stringForKey: DefaultColorMappingKey]
-              table: @"Names"];
-
-  [defaultColorPalettePopUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: defaultColorPalettePopUp
-              names: [colorPalettes allKeys]
-              select: [userDefaults stringForKey: DefaultColorPaletteKey] 
-              table: @"Names"];
 
   [self updateButtonState];
   
@@ -109,37 +94,22 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
-  if ([changeSet containsObject: fileDeletionPopUp]) {
-    NSString  *name = [tagMaker nameForItem: [fileDeletionPopUp selectedItem]];
+  // Iterate over all pop-ups, and update prefs for those that have changed.    
+  NSEnumerator  *popUpEnum = [popUps objectEnumerator];
+  NSPopUpButton  *popUp;
+  while (popUp = [popUpEnum nextObject]) {
+    if ([changeSet containsObject: popUp]) {
+      NSString  *name = [tagMaker nameForTag: [[popUp selectedItem] tag]];
+      NSString  *key = [tagMaker nameForTag: [popUp tag]];
 
-    [userDefaults setObject: name forKey: FileDeletionTargetsKey];
+      [userDefaults setObject: name forKey: key];
+    }
   }
   
   if ([changeSet containsObject: fileDeletionConfirmationCheckBox]) {
     BOOL  enabled = [fileDeletionConfirmationCheckBox state] == NSOnState;
 
     [userDefaults setBool: enabled forKey: ConfirmFileDeletionKey];
-  }
-
-  if ([changeSet containsObject: fileSizeMeasurePopUp]) {
-    NSString  *name = 
-      [tagMaker nameForItem: [fileSizeMeasurePopUp selectedItem]];
-
-    [userDefaults setObject: name forKey: FileSizeMeasureKey];
-  }
-
-  if ([changeSet containsObject: defaultColorMappingPopUp]) {
-    NSString  *name = 
-      [tagMaker nameForItem: [defaultColorMappingPopUp selectedItem]];
-
-    [userDefaults setObject: name forKey: DefaultColorMappingKey];
-  }
-  
-  if ([changeSet containsObject: defaultColorPalettePopUp]) {
-    NSString  *name =  
-      [tagMaker nameForItem: [defaultColorPalettePopUp selectedItem]];
-    
-    [userDefaults setObject: name forKey: DefaultColorPaletteKey];
   }
   
   [changeSet removeAllObjects];
@@ -159,12 +129,30 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
 @implementation PreferencesPanelControl (PrivateMethods)
 
+- (void) setupPopUp: (NSPopUpButton *)popUp key: (NSString *)key
+           content: (NSArray *)names {
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  
+  // Associate the pop-up with its key in the preferences by their tag.
+  [popUp setTag: [[tagMaker transformedValue: key] intValue]];
+
+  // Initialise the pop-up with its (localized) content
+  [popUp removeAllItems];
+  [tagMaker addLocalisedNamesToPopUp: popUp names: names
+              select: [userDefaults stringForKey: key] table: @"Names"];
+              
+  [((NSMutableArray *)popUps) addObject: popUp];
+}
+
 - (void) updateButtonState {
   [okButton setEnabled: [changeSet count] > 0];
   
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
-  NSString  *name = [tagMaker nameForItem: [fileDeletionPopUp selectedItem]];
+  NSString  *name = 
+    [tagMaker nameForTag: [[fileDeletionPopUp selectedItem] tag]];
 
   [fileDeletionConfirmationCheckBox setEnabled:
     ! [name isEqualToString: DeleteNothing]];
