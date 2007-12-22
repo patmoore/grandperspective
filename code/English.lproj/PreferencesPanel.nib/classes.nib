@@ -2,7 +2,7 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {cancelAction = id; okAction = id; valueChanged = id; }; 
+            ACTIONS = {popUpValueChanged = id; valueChanged = id; }; 
             CLASS = PreferencesPanelControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {
@@ -11,7 +11,6 @@
                 fileDeletionConfirmationCheckBox = NSButton; 
                 fileDeletionPopUp = NSPopUpButton; 
                 fileSizeMeasurePopUp = NSPopUpButton; 
-                okButton = NSButton; 
             }; 
             SUPERCLASS = NSWindowController; 
         }

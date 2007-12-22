@@ -30,20 +30,11 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 // NSWindowController's case
 - (id) init {
   if (self = [super initWithWindowNibName: @"PreferencesPanel" owner: self]) {
-    changeSet = [[NSMutableSet alloc] initWithCapacity: 8];
-    
     // Trigger loading of the window
     [self window];
   }
 
   return self;
-}
-
-- (void) dealloc {
-  [changeSet release];
-  [popUps release];
-  
-  [super dealloc];
 }
 
 
@@ -55,7 +46,6 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
   // Configure all pop-up buttons.
-  popUps = [NSMutableArray arrayWithCapacity: 4];
   [self setupPopUp: fileDeletionPopUp key: FileDeletionTargetsKey
           content: [DirectoryViewControl fileDeletionTargetNames]];
   [self setupPopUp: fileSizeMeasurePopUp key: FileSizeMeasureKey
@@ -65,8 +55,7 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
                         defaultFileItemHashingCollection] allKeys]];
   [self setupPopUp: defaultColorPalettePopUp key: DefaultColorPaletteKey
           content: [[ColorListCollection defaultColorListCollection] allKeys]];
-  popUps = [[NSArray alloc] initWithArray: popUps]; // Make it immutable.
-
+  
   [fileDeletionConfirmationCheckBox setState: 
      ([userDefaults boolForKey: ConfirmFileDeletionKey]
         ? NSOnState : NSOffState)];
@@ -78,50 +67,38 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 }
 
 
-- (void) windowWillClose:(NSNotification*)notification {
+- (void) windowWillClose: (NSNotification *)notification {
    [self autorelease];
 }
 
 
-- (IBAction) cancelAction: (id)sender {
-  [[self window] close];
-}
-
-- (IBAction) okAction: (id)sender {
-  [[self window] close];
-
+- (IBAction) popUpValueChanged: (id)sender {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
-  // Iterate over all pop-ups, and update prefs for those that have changed.    
-  NSEnumerator  *popUpEnum = [popUps objectEnumerator];
-  NSPopUpButton  *popUp;
-  while (popUp = [popUpEnum nextObject]) {
-    if ([changeSet containsObject: popUp]) {
-      NSString  *name = [tagMaker nameForTag: [[popUp selectedItem] tag]];
-      NSString  *key = [tagMaker nameForTag: [popUp tag]];
+  NSPopUpButton  *popUp = sender;
+  NSString  *name = [tagMaker nameForTag: [[popUp selectedItem] tag]];
+  NSString  *key = [tagMaker nameForTag: [popUp tag]];
 
-      [userDefaults setObject: name forKey: key];
-    }
-  }
+  [userDefaults setObject: name forKey: key];
   
-  if ([changeSet containsObject: fileDeletionConfirmationCheckBox]) {
+  if (popUp == fileDeletionPopUp) {
+    [self updateButtonState];
+  }
+}
+
+- (IBAction) valueChanged: (id) sender {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+
+  if (sender == fileDeletionConfirmationCheckBox) {
     BOOL  enabled = [fileDeletionConfirmationCheckBox state] == NSOnState;
 
     [userDefaults setBool: enabled forKey: ConfirmFileDeletionKey];
   }
-  
-  [changeSet removeAllObjects];
-  
-  [self updateButtonState];
-}
-
-
-- (IBAction) valueChanged: (id) sender {
-  [changeSet addObject: sender];
-
-  [self updateButtonState];
+  else {
+    NSAssert(NO, @"Unexpected sender for -valueChanged.");
+  }
 }
 
 @end // @implementation PreferencesPanelControl
@@ -142,13 +119,9 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
   [popUp removeAllItems];
   [tagMaker addLocalisedNamesToPopUp: popUp names: names
               select: [userDefaults stringForKey: key] table: @"Names"];
-              
-  [((NSMutableArray *)popUps) addObject: popUp];
 }
 
 - (void) updateButtonState {
-  [okButton setEnabled: [changeSet count] > 0];
-  
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   NSString  *name = 

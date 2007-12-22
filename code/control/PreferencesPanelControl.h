@@ -10,8 +10,6 @@ extern NSString  *DefaultColorPaletteKey;
 
 @interface PreferencesPanelControl : NSWindowController {
 
-  IBOutlet NSButton  *okButton;
-
   IBOutlet NSPopUpButton  *fileDeletionPopUp;
   IBOutlet NSButton  *fileDeletionConfirmationCheckBox;
   
@@ -19,13 +17,9 @@ extern NSString  *DefaultColorPaletteKey;
 
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
-
-  NSArray  *popUps;
-  NSMutableSet  *changeSet;
 }
 
-- (IBAction) cancelAction: (id)sender;
-- (IBAction) okAction: (id)sender;
+- (IBAction) popUpValueChanged: (id)sender;
 
 - (IBAction) valueChanged: (id)sender;
 
