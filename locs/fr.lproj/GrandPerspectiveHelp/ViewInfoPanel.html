@@ -3,8 +3,8 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <title>L'interface du panneau d'Information</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<meta name="description" content="Describes the view's Info panel.">
-<meta name="keywords" content="GrandPerspective, view, drawer, info, panel, scanning" >
+<meta name="description" content="D&eacute;crit l'interface du panneau Info.">
+<meta name="keywords" content="GrandPerspective, interface, tiroir, info, panneau, scanner" >
 </head>
 <body>
 
@@ -16,10 +16,33 @@
 </div>
 
 <p>
-Le panneau d'information dans le <a href="ViewDrawer.html">"tiroir"</a> donne des informations � propos du dossier qui a �t� analys�.
-Il montre le nom du dossier ainsi que l'heure ou il a �t� analys�.
-Quand un <a href="MasksAndFilters.html">filtre</a> a �t� appliqu�, il affiche �galement les d�tails de ce dernier.
-On y trouv� �galement le type de <a href="FileSizeMeasures.html">mesure de la taille des fichiers</a> qui a �t� utilis� ainsi que la taille totale du dossier analys�.
+Le panneau d'information dans le <a href="ViewDrawer.html">"tiroir"</a> donne des informations à propos du dossier qui a été analysé.
+Il montre le nom du dossier ainsi que l'heure ou il a été analysé.
+Quand un <a href="MasksAndFilters.html">filtre</a> a été appliqué, il affiche également les détails de ce dernier.
+</p>
+
+<p>
+Le panneau montre également 4 informations :
+<ul>
+<li><b>Taille du volume<b>: La taille totale du volume.
+</li>
+<li><b>Taille des fichiers scannés</b>: La taille total des fichiers scannés, utilisant la méthode de calcul spécifié et après application du(des) filtres si il y'avait lieu.
+</li>
+<li><b>Espace libre</b>: Espace disponible sur le volume, valeur identique à celle raportée par votre système d'exploitation au moment de l'analyse.
+</li>
+<li><b>Espace utilisé</b>: Tout l'espace utilisé qui n'est pas compté pour la taille des fichiers scannés. Cela inclus les fichiers suivants : 
+  <ul>
+  <li>Fichier qui ne sont pas scannés soit parce que le dossier scanné n'est pas à la racine du volume ou bien parce que l'utilisateur n'a pas la permission d'accéder à tout les sous dossiers.
+  </li>
+  <li>Les fichiers ont été exclus par un filtre (si il y'en a un).
+  </li>
+  <li>L'espace disque qui n'est pas compté car la <a href="FileSizeMeasures.html">mesure de la taille des fichiers</a> "logique" est utilisé, cette dernière sous estime l'espace réellement utilisé par ces fichiers.
+  </li>
+  <li>Fichier bas niveau, utilisé pour stocké la structure des dossiers.
+  </li>
+  </ul>  
+</li>
+</ul>
 </p>
 
 </body>

@@ -1,58 +1,117 @@
-{
-    IBClasses = (
-        {CLASS = DirectoryView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {
-                colorMappingChanged = id; 
-                colorPaletteChanged = id; 
-                downAction = id; 
-                editMask = id; 
-                maskCheckBoxChanged = id; 
-                openFileInFinder = id; 
-                upAction = id; 
-            }; 
-            CLASS = DirectoryViewControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                colorMappingPopUp = NSPopUpButton; 
-                colorPalettePopUp = NSPopUpButton; 
-                downButton = NSButton; 
-                drawer = NSDrawer; 
-                fileSizeMeasureField = NSTextField; 
-                filterDescriptionTextView = NSTextView; 
-                filterNameField = NSTextField; 
-                itemPathField = NSTextField; 
-                itemSizeField = NSTextField; 
-                mainView = DirectoryView; 
-                maskCheckBox = NSButton; 
-                maskDescriptionTextView = NSTextView; 
-                openButton = NSButton; 
-                scanTimeField = NSTextField; 
-                selectedFileExactSizeField = NSTextField; 
-                selectedFilePathTextView = NSTextView; 
-                selectedFileSizeField = NSTextField; 
-                treePathTextView = NSTextView; 
-                treeSizeField = NSTextField; 
-                upButton = NSButton; 
-                visibleFolderExactSizeField = NSTextField; 
-                visibleFolderPathTextView = NSTextView; 
-                visibleFolderSizeField = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = DummyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {abort = id; }; 
-            CLASS = StartupControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                progressIndicator = NSProgressIndicator; 
-                progressPanel = NSPanel; 
-                progressText = NSTextField; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>DirectoryView</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSView</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>colorMappingChanged</key>
+				<string>id</string>
+				<key>colorPaletteChanged</key>
+				<string>id</string>
+				<key>downAction</key>
+				<string>id</string>
+				<key>editMask</key>
+				<string>id</string>
+				<key>maskCheckBoxChanged</key>
+				<string>id</string>
+				<key>openFileInFinder</key>
+				<string>id</string>
+				<key>showEntireVolumeCheckBoxChanged</key>
+				<string>id</string>
+				<key>upAction</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DirectoryViewControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>colorMappingPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>colorPalettePopUp</key>
+				<string>NSPopUpButton</string>
+				<key>downButton</key>
+				<string>NSButton</string>
+				<key>drawer</key>
+				<string>NSDrawer</string>
+				<key>fileSizeMeasureField</key>
+				<string>NSTextField</string>
+				<key>filterDescriptionTextView</key>
+				<string>NSTextView</string>
+				<key>filterNameField</key>
+				<string>NSTextField</string>
+				<key>freeSpaceField</key>
+				<string>NSTextField</string>
+				<key>itemPathField</key>
+				<string>NSTextField</string>
+				<key>itemSizeField</key>
+				<string>NSTextField</string>
+				<key>mainView</key>
+				<string>DirectoryView</string>
+				<key>maskCheckBox</key>
+				<string>NSButton</string>
+				<key>maskDescriptionTextView</key>
+				<string>NSTextView</string>
+				<key>miscUsedSpaceField</key>
+				<string>NSTextField</string>
+				<key>openButton</key>
+				<string>NSButton</string>
+				<key>scanPathTextView</key>
+				<string>NSTextView</string>
+				<key>scanTimeField</key>
+				<string>NSTextField</string>
+				<key>selectedItemExactSizeField</key>
+				<string>NSTextField</string>
+				<key>selectedItemPathTextView</key>
+				<string>NSTextView</string>
+				<key>selectedItemSizeField</key>
+				<string>NSTextField</string>
+				<key>selectedItemTitleField</key>
+				<string>NSTextField</string>
+				<key>showEntireVolumeCheckBox</key>
+				<string>NSButton</string>
+				<key>treeSizeField</key>
+				<string>NSTextField</string>
+				<key>upButton</key>
+				<string>NSButton</string>
+				<key>visibleFolderExactSizeField</key>
+				<string>NSTextField</string>
+				<key>visibleFolderPathTextView</key>
+				<string>NSTextView</string>
+				<key>visibleFolderSizeField</key>
+				<string>NSTextField</string>
+				<key>volumeIconView</key>
+				<string>NSImageView</string>
+				<key>volumeNameTextView</key>
+				<string>NSTextView</string>
+				<key>volumeSizeField</key>
+				<string>NSTextField</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
