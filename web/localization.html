@@ -36,6 +36,8 @@
       <li>The HTML help documentation is using the <em>Western (ISO Latin 1)</em> text encoding. This is therefore also the text encoding specified in the head of the HTML page, i.e. using <tt>charset=iso-8859-1</tt>. You can use a different text encoding if you need to (i.e. when you need characters that are not available in the <em>Western (ISO Latin 1)</em>. However, you then need to update the <tt>Content-Type</tt> meta tag in the head of the HTML file(s) accordingly.</li>
   </ul></p></li>
 
+<li><p><b>Do not translate the content of the AppleTitle meta tag in the main help file</b>. The content of this tag in the <tt>GrandPerspectiveHelp.html</tt> should be set to "GrandPerspective Help", as the help documentation will otherwise not load in the Help Viewer. The reason is that the content must match the value of <em>CFBundleHelpBookName</em> in the application's <tt>Info.plist</tt> file (which is not localizable).</p></li>
+
 </ul>
 
 </body>
