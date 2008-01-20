@@ -18,7 +18,9 @@ The following localizations have been provided so far:
 
   * Japanese (Version 0.97 and up), by Chris Li
   * German (Version 0.97 and up), by Helge Baumann
-  * Dutch (Version 0.97 and up), by Erwin Bonsma 
+  * Spanish (Version 0.9.10), by Javier Alfonso
+  * French (Version 0.9.10), by Maxime Hadjinlian
+  * Dutch (Version 0.97 and up), by Erwin Bonsma
 
 Thanks,
 
