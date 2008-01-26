@@ -446,12 +446,17 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   return ( [itemPathModel isVisiblePathLocked] &&
            ! [selectedFile isSpecial] &&
+           selectedFile != [itemPathModel volumeTree] && // Cannot delete volume
            ( (canDeleteFiles && [selectedFile isPlainFile]) ||
              (canDeleteFolders && ! [selectedFile isPlainFile]) ) );
 }
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo {
+  // Let the alert disappear, so that it is gone before the file is being
+  // deleted as this can trigger another alert (namely when it fails).
+  [[alert window] orderOut: self];
+  
   if (returnCode == NSAlertFirstButtonReturn) {
     // Delete confirmed.
     
@@ -460,7 +465,41 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (void) deleteSelectedFile {
-  [treeContext deleteSelectedFileItem: itemPathModel];
+  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+
+  NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
+  NSString  *sourceDir = [[selectedFile parentDirectory] stringForFileItemPath];
+    // Note: Can always obtain the encompassing directory this way. The 
+    // volume tree cannot be deleted so there is always a valid parent
+    // directory.
+  int  tag;
+  if ([workspace performFileOperation: NSWorkspaceRecycleOperation
+                   source: sourceDir
+                   destination: @""
+                   files: [NSArray arrayWithObject: [selectedFile name]]
+                   tag: &tag]) {
+    [treeContext deleteSelectedFileItem: itemPathModel];
+  }
+  else {
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+    NSString  *msgFmt = 
+      ( [selectedFile isPlainFile] ?
+          NSLocalizedString( @"Failed to delete the file \"%@\"", 
+                             @"Alert message") :
+          NSLocalizedString( @"Failed to delete the folder \"%@\"", 
+                             @"Alert message"));
+    NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
+    NSString  *info =
+      NSLocalizedString(@"This can for example happen when the item has already been deleted (by other means), if it has been moved or renamed, or if you do not have the appropriate permissions.", 
+                        @"Alert message (Note: the item can refer to a file or a folder)"); 
+         
+    [alert addButtonWithTitle: OK_BUTTON_TITLE];
+    [alert setMessageText: msg];
+    [alert setInformativeText: info];
+
+    [alert runModal];
+  }
 }
 
 - (void) fileItemDeleted: (NSNotification *)notification {
