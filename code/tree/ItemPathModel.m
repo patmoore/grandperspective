@@ -495,22 +495,22 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
   
   Item  *pathEndPoint = [path lastObject];
-  
   if ([pathEndPoint isVirtual] || 
       [((FileItem *)pathEndPoint) isPlainFile]) {
     // Can only extend from a DirectoryItem
     return NO;
   }
   
-  if (! [self extendVisiblePathToFileItem: target similar: similar
-                fromItem: [((DirectoryItem *)pathEndPoint) getContents]] ) {
+  Item  *contents = [((DirectoryItem *)pathEndPoint) getContents];
+  if (contents == nil ||
+      ! [self extendVisiblePathToFileItem: target similar: similar
+                fromItem: contents] ) {
     // Failed to find a similar file item
     return NO;
   }
   
   NSAssert(! [[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
   lastFileItemIndex = [path count] - 1;
-
 
   if (selectionDepth < preferredSelectionDepth) {
     // Automatically move the selection down.
@@ -522,6 +522,8 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 - (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
            similar: (BOOL) similar fromItem: (Item *)current {
+  NSAssert(current != nil, @"current cannot be nil.");
+           
   [path addObject: current];
   
   if ([current isVirtual]) {
