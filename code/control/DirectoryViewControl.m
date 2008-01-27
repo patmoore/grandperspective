@@ -444,11 +444,21 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (BOOL) canDeleteSelectedFile {
   FileItem  *selectedFile = [itemPathModel selectedFileItem];
 
-  return ( [itemPathModel isVisiblePathLocked] &&
-           ! [selectedFile isSpecial] &&
-           selectedFile != [itemPathModel volumeTree] && // Cannot delete volume
-           ( (canDeleteFiles && [selectedFile isPlainFile]) ||
-             (canDeleteFolders && ! [selectedFile isPlainFile]) ) );
+  return 
+    ( [itemPathModel isVisiblePathLocked] 
+
+      // Special files cannot be deleted, as these are not actual files
+      && ! [selectedFile isSpecial] 
+
+      // Can this type of item be deleted (according to the preferences)?
+      && ( (canDeleteFiles && [selectedFile isPlainFile])
+           || (canDeleteFolders && ! [selectedFile isPlainFile]) ) 
+
+      // Can only delete the entire scan tree when it is an actual folder 
+      // within the volume. You cannot delete the root folder.
+      && ! ( (selectedFile == [itemPathModel scanTree])
+             && [[[itemPathModel scanTree] name] isEqualToString: @""])
+    );
 }
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
