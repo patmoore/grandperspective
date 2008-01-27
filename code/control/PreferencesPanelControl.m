@@ -14,6 +14,11 @@ NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";
 NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 
+// Note: Confirmation of folder deletion can currently not be configured using 
+// the preferences panel; it is only controlled by way of the application 
+// defaults.
+NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
+
 
 @interface PreferencesPanelControl (PrivateMethods)
 

@@ -67,7 +67,8 @@ extern NSString  *DeleteFilesAndFolders;
   
   BOOL  canDeleteFiles;
   BOOL  canDeleteFolders;
-  BOOL  confirmDeletion;
+  BOOL  confirmFileDeletion;
+  BOOL  confirmFolderDeletion;
 
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;

@@ -36,6 +36,8 @@
         <string>delete nothing</string>
         <key>confirmFileDeletion</key>
         <true/>
+        <key>confirmFolderDeletion</key>
+        <true/>
         <key>defaultColorPalette</key>
         <string>CoffeeBeans</string>
         <key>defaultColorMapping</key>

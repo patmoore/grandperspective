@@ -320,20 +320,22 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (IBAction) deleteFile: (id) sender {
-  if (! confirmDeletion) {
-    // Delete immediately, without asking for confirmation.
+  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+  BOOL  isFile = [selectedFile isPlainFile];
+
+  if ((  isFile && !confirmFileDeletion) ||
+      ( !isFile && !confirmFolderDeletion) ) {
+    // Delete the file/folder immediately, without asking for confirmation.
     [self deleteSelectedFile];
     
     return;
   }
 
-  FileItem  *selectedFile = [itemPathModel selectedFileItem];
-
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
   NSString  *mainMsg;
   NSString  *infoMsg;
 
-  if ([selectedFile isPlainFile]) {
+  if (isFile) {
     mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 
                                  @"Alert message" );
     infoMsg = NSLocalizedString( @"The selected file will be moved to Trash.", 
@@ -343,7 +345,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     mainMsg = NSLocalizedString( @"Do you want to delete the folder \"%@\"?", 
                                  @"Alert message" );
     infoMsg = NSLocalizedString( 
-      @"The selected folder, with all its contents, will be moved to Trash.", 
+      @"The selected folder, with all its contents, will be moved to Trash. Beware, any files in the folder that are not shown in the view will also be deleted.", 
       @"Alert informative text" );
   }
 
@@ -501,7 +503,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                              @"Alert message"));
     NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
     NSString  *info =
-      NSLocalizedString(@"This can for example happen when the item has already been deleted (by other means), if it has been moved or renamed, or if you do not have the appropriate permissions.", 
+      NSLocalizedString(@"Possible reasons are that the item does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
                         @"Alert message (Note: the item can refer to a file or a folder)"); 
          
     [alert addButtonWithTitle: OK_BUTTON_TITLE];
@@ -680,8 +682,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
      [fileDeletionTargets isEqualToString: DeleteFilesAndFolders]);
   canDeleteFolders =
      [fileDeletionTargets isEqualToString: DeleteFilesAndFolders];
-  confirmDeletion = 
+  confirmFileDeletion = 
     [[userDefaults objectForKey: ConfirmFileDeletionKey] boolValue];
+  confirmFolderDeletion = 
+    [[userDefaults objectForKey: ConfirmFolderDeletionKey] boolValue];
 
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
 }
