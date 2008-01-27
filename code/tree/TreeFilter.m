@@ -149,9 +149,12 @@
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getFirst]];
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
-  else if ([((FileItem*)item) isPlainFile]) {
-    if ([itemTest testFileItem: ((FileItem*)item)
-                    context: fileItemPathStringCache] ) {
+  else if ([((FileItem *)item) isPlainFile]) {
+    if (! [((FileItem *)item) isSpecial] // Exclude all special items (inside
+                                         // the volume tree, these all 
+                                         // represent freed space).
+        && [itemTest testFileItem: ((FileItem*)item)
+                       context: fileItemPathStringCache] ) {
       // File item passed the test, so include it 
       [tmpFileItems addObject: item];
     }
