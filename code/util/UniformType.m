@@ -25,7 +25,7 @@
 
     description = 
       [dict objectForKey: (NSString*)kUTTypeDescriptionKey];
-    if (description == NULL) {
+    if (description == nil) {
       description = uti;
     }
     [description retain];

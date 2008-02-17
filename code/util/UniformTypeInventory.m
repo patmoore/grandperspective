@@ -54,7 +54,7 @@
   NSString  *ext = [[item name] pathExtension];
   
   UniformType  *type = [typeForExtension objectForKey: ext];
-  if (type != NULL) {
+  if (type != nil) {
     // The extension was already encountered, and corresponds to a valid UTI.
     return type;
   }
@@ -62,7 +62,7 @@
   if ([untypedExtensions containsObject: ext]) {
     // The extension was already encountered, and has no proper UTI associated
     // with it.
-    return NULL;
+    return nil;
   }
 
   NSString  *uti = 
@@ -72,7 +72,7 @@
 
   if ([uti hasPrefix: @"dyn."]) {
     [untypedExtensions addObject: ext];
-    return NULL;
+    return nil;
   }
   else {
     type = [self uniformTypeForIdentifier: uti];
@@ -86,7 +86,7 @@
 - (UniformType *)uniformTypeForIdentifier: (NSString *)uti {
   UniformType  *type = [typeForUTI objectForKey: uti];
 
-  if (type != NULL) {
+  if (type != nil) {
     // It has already been registered
     return type;
   }
