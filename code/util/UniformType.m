@@ -89,6 +89,31 @@
   return parents;
 }
 
+- (NSSet *)ancestorTypes {
+  NSMutableSet  *ancestors = [NSMutableSet setWithCapacity: 16];
+
+  NSMutableArray  *toVisit = [NSMutableArray arrayWithCapacity: 8];
+  [toVisit addObject: self];
+  
+  while ([toVisit count] > 0) {
+    // Visit next node in the list.
+    UniformType  *current = [toVisit lastObject];
+    [toVisit removeLastObject];
+  
+    // Add parents that have not yet been encountered to list of nodes to visit. 
+    NSEnumerator  *parentsEnum = [[current parentTypes] objectEnumerator];
+    UniformType  *parentType;
+    while (parentType = [parentsEnum nextObject]) {
+      if (! [ancestors containsObject: parentType]) {
+        [ancestors addObject: parentType];
+        [toVisit addObject: parentType];
+      }
+    }
+  }
+
+  return ancestors;
+}
+
 - (NSSet *)childTypes {
   return children;
 }
@@ -104,43 +129,6 @@
   
   [children release];
   children = [[NSSet setWithSet: mutableSet] retain];
-}
-
-
-- (BOOL) conformsToType: (UniformType *)type {
-  NSMutableArray  *toVisit = [NSMutableArray arrayWithCapacity: 16];
-  [toVisit addObject: self];
-
-  // The "encountered" set is used to ensure that each (ancestor) type is
-  // checked only once. This is not only more efficient, but also prevents
-  // the search from entering an endless loop should the type "hierarchy"
-  // unexpectedly contain cycles.
-  NSMutableSet  *encountered = [NSMutableSet setWithCapacity: 16];
-  [encountered addObject: self];
-
-  while ([toVisit count] > 0) {
-    // Visit next node in the list.
-    UniformType  *current = [toVisit lastObject];
-    [toVisit removeLastObject];
-  
-    if (type == current) {
-      // Found it!
-      return YES;
-    }
-
-    // Add parents that have not yet been encountered to list of nodes to visit. 
-    NSEnumerator  *parentsEnum = [[current parentTypes] objectEnumerator];
-    UniformType  *parentType;
-    while (parentType = [parentsEnum nextObject]) {
-      if (! [encountered containsObject: parentType]) {
-        [encountered addObject: parentType];
-        [toVisit addObject: parentType];
-      }
-    }
-  }
-  
-  // Visited all ancestor nodes without any luck.
-  return NO;
 }
 
 @end

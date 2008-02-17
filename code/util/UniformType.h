@@ -25,9 +25,10 @@
 
 - (NSSet *)parentTypes;
 
+// Calculated dynamically (so should be invoked with a bit of care)
+- (NSSet *)ancestorTypes;
+
 - (NSSet *)childTypes;
 - (void) addChildType: (UniformType *)childType;
-
-- (BOOL) conformsToType: (UniformType *)type;
 
 @end
