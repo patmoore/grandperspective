@@ -1,4 +1,4 @@
-#import "ItemInventory.h"
+#import "UniformTypeInventory.h"
 
 #import "FileItem.h"
 #import "UniformType.h"

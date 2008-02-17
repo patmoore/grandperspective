@@ -1,6 +1,6 @@
 #import "UniformType.h"
 
-#import "ItemInventory.h"
+#import "UniformTypeInventory.h"
 
 @implementation UniformType
 

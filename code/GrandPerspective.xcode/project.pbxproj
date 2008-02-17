@@ -324,7 +324,6 @@
 				AA3B38E30D17EEF60070E889,
 				AA3B38E50D17EEF60070E889,
 				AA3B40E00D1AF2B70070E889,
-				AA7DEA090D6718ED0057F5F8,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1735,12 +1734,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA7DEA090D6718ED0057F5F8 = {
-			fileRef = AA7DEA070D6718ED0057F5F8;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		AA7DEA0A0D6718ED0057F5F8 = {
 			fileRef = AA7DEA080D6718ED0057F5F8;
 			isa = PBXBuildFile;
@@ -2383,8 +2376,8 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			name = ItemInventory.m;
-			path = util/ItemInventory.m;
+			name = UniformTypeInventory.m;
+			path = util/UniformTypeInventory.m;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -2392,8 +2385,8 @@
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.h;
-			name = ItemInventory.h;
-			path = util/ItemInventory.h;
+			name = UniformTypeInventory.h;
+			path = util/UniformTypeInventory.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
