@@ -1,43 +1,20 @@
 #import "ItemInventory.h"
 
 #import "FileItem.h"
-
-@interface FileTypeInfo : NSObject {
-  NSSet*  parents;
-  NSMutableSet*  children;
-  NSString*  description;
-}
-
-- (id) initWithType: (NSString *)uti;
-
-- (NSSet *)getFileTypeParents;
-
-- (NSSet *)getFileTypeChildren;
-- (void) addChildType: (NSString *)uti;
-
-- (NSString *)getFileTypeDescription;
-
-@end // @interface FileTypeInfo
+#import "UniformType.h"
 
 
-@interface ItemInventory (PrivateMethods)
+@implementation UniformTypeInventory
 
-- (FileTypeInfo *)infoForFileType: (NSString *)uti;
-- (void) registerFileType: (NSString *)uti;
++ (UniformTypeInventory *)defaultUniformTypeInventory {
+  static UniformTypeInventory
+    *defaultUniformTypeInventoryInstance = nil;
 
-@end
-
-@implementation ItemInventory
-
-+ (ItemInventory *)defaultItemInventory {
-  static ItemInventory
-    *defaultItemInventoryInstance = nil;
-
-  if (defaultItemInventoryInstance==nil) {
-    defaultItemInventoryInstance = [[ItemInventory alloc] init];
+  if (defaultUniformTypeInventoryInstance==nil) {
+    defaultUniformTypeInventoryInstance = [[UniformTypeInventory alloc] init];
   }
   
-  return defaultItemInventoryInstance;
+  return defaultUniformTypeInventoryInstance;
 }
 
 
@@ -46,7 +23,7 @@
   if (self = [super init]) {
     typeForExtension = [[NSMutableDictionary alloc] initWithCapacity: 32];
     untypedExtensions = [[NSMutableSet alloc] initWithCapacity: 32];
-    infoForFileType = [[NSMutableDictionary alloc] initWithCapacity: 32];
+    typeForUTI = [[NSMutableDictionary alloc] initWithCapacity: 32];
     parentlessTypes = [[NSMutableSet alloc] initWithCapacity: 8];
   }
   
@@ -56,30 +33,30 @@
 - (void) dealloc {
   [typeForExtension release];
   [untypedExtensions release];
-  [infoForFileType release];
+  [typeForUTI release];
   [parentlessTypes release];
     
   [super dealloc];
 }
 
 
-- (NSEnumerator *)knownTypesEnumerator {
-  return [infoForFileType keyEnumerator];
+- (NSEnumerator *)uniformTypeEnumerator {
+  return [typeForUTI objectEnumerator];
 }
 
 
 - (void) registerFileItem: (FileItem *)item {
   // Implicitly registers type for the file (if any)
-  [self typeForFileItem: item];
+  [self uniformTypeForFileItem: item];
 }
 
-- (NSString *)typeForFileItem: (FileItem *)item {
+- (UniformType *)uniformTypeForFileItem: (FileItem *)item {
   NSString  *ext = [[item name] pathExtension];
   
-  NSString  *uti = [typeForExtension objectForKey: ext];
-  if (uti != NULL) {
+  UniformType  *type = [typeForExtension objectForKey: ext];
+  if (type != NULL) {
     // The extension was already encountered, and corresponds to a valid UTI.
-    return uti;
+    return type;
   }
   
   if ([untypedExtensions containsObject: ext]) {
@@ -88,128 +65,74 @@
     return NULL;
   }
 
-  uti = (NSString*) UTTypeCreatePreferredIdentifierForTag
-                      (kUTTagClassFilenameExtension, (CFStringRef)ext, NULL); 
-        // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up.  
+  NSString  *uti = 
+    (NSString*) UTTypeCreatePreferredIdentifierForTag
+                  (kUTTagClassFilenameExtension, (CFStringRef)ext, NULL); 
+    // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up.  
 
   if ([uti hasPrefix: @"dyn."]) {
     [untypedExtensions addObject: ext];
     return NULL;
   }
   else {
-    [typeForExtension setObject: uti forKey: ext];
+    type = [self uniformTypeForIdentifier: uti];
     
-    [self registerFileType: uti];
-    return uti;
+    [typeForExtension setObject: type forKey: ext];
+    
+    return type;
   }
 }
 
-@end // @implementation ItemInventory
+- (UniformType *)uniformTypeForIdentifier: (NSString *)uti {
+  UniformType  *type = [typeForUTI objectForKey: uti];
 
-
-@implementation ItemInventory (PrivateMethods)
-
-- (FileTypeInfo *)infoForFileType: (NSString *)uti {
-  FileTypeInfo  *info = [infoForFileType objectForKey: uti];
-
-  if (info != NULL) {
+  if (type != NULL) {
     // It has already been registered
-    return info;
+    return type;
   }
 
   NSLog(@"Registering file type %@", uti);
   
-  info = [[[FileTypeInfo alloc] initWithType: uti] autorelease];
-  [infoForFileType setObject: info forKey: uti];
-
-  NSSet  *parents = [info getFileTypeParents];
-  if ([parents count] == 0) {
-    [parentlessTypes addObject: uti];
-  }
-  else {
-    // Recursively register all parent file types as well.    
-    NSEnumerator  *parentEnum = [parents objectEnumerator];
-    NSString  *parent;
-    
-    while (parent = [parentEnum nextObject]) {
-      FileTypeInfo  *parentInfo = [self infoForFileType: parent];
-      [parentInfo addChildType: uti];
-    }
+  type = [[UniformType alloc] initWithUniformTypeIdentifier: uti 
+                                inventory: self];
+  [typeForUTI setObject: type forKey: uti];
+  
+  // Register as a child to each parent
+  NSEnumerator  *parentEnum = [[type parentTypes] objectEnumerator];
+  UniformType  *parentType;
+  while (parentType = [parentEnum nextObject]) {
+    [parentType addChildType: type];
   }
   
-  return info;
+  return type;
 }
 
-- (void) registerFileType: (NSString *)uti {
-  // Implicitly registers info if it was not yet available
-  [self infoForFileType: uti];
-}
+
+- (void) dumpTypesToLog {
+  NSEnumerator  *typesEnum = [self uniformTypeEnumerator];
+  UniformType  *type;
+  while (type = [typesEnum nextObject]) {
+    NSLog(@"Type: %@", [type uniformTypeIdentifier]);
+    NSLog(@"  Description: %@", [type description]);
+
+    NSMutableString  *s = [NSMutableString stringWithCapacity: 64];
+    NSEnumerator  *typesEnum2 = [[type parentTypes] objectEnumerator];
+    UniformType  *type2;
+    while (type2 = [typesEnum2 nextObject]) {
+      [s appendFormat: @" %@", [type2 uniformTypeIdentifier]];
+    }
+    NSLog(@"  Parents:%@", s);
+    
+    [s deleteCharactersInRange: NSMakeRange(0, [s length])];
+    typesEnum2 = [[type childTypes] objectEnumerator];
+    while (type2 = [typesEnum2 nextObject]) {
+      [s appendFormat: @" %@", [type2 uniformTypeIdentifier]];
+    }
+    NSLog(@"  Children:%@", s);
+  }
+}  
+
       
-@end // @implementation ItemInventory (PrivateMethods)
+@end // @implementation UniformTypeInventory
 
-
-@implementation FileTypeInfo
-
-// Overrides super's designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use initWithType: instead.");  
-}
-
-- (id) initWithType: (NSString *)uti {
-  if (self = [super init]) {  
-    NSDictionary  *dict = 
-      (NSDictionary*) UTTypeCopyDeclaration( (CFStringRef)uti );
-    
-    description = 
-      [dict objectForKey: (NSString*)kUTTypeDescriptionKey];
-    if (description == NULL) {
-      description = uti;
-    }
-    [description retain];
-    
-    NSObject  *conforms = 
-      [dict objectForKey: (NSString*)kUTTypeConformsToKey];
-    if ([conforms isKindOfClass: [NSArray class]]) {
-      parents = [NSSet setWithArray: (NSArray*) conforms];
-    }
-    else if ([conforms isKindOfClass: [NSString class]]) {
-      parents = [NSSet setWithObject: conforms];
-    }
-    else {
-      parents = [NSSet set];
-    }
-    [parents retain];
-    
-    children = [[NSMutableSet alloc] initWithCapacity: 4];
-  }
-  
-  return self;
-  
-}
-
-- (void) dealloc {
-  [description release];
-  [parents release];
-  [children release];
-  
-  [super dealloc];
-}
-
-- (NSSet *)getFileTypeParents {
-  return parents;
-}
-
-- (NSSet *)getFileTypeChildren {
-  return children;
-}
-
-- (void) addChildType: (NSString *)uti {
-  [children addObject: uti];
-}
-
-- (NSString *)getFileTypeDescription {
-  return description;
-}
-
-@end // @implementation FileTypeInfo
 

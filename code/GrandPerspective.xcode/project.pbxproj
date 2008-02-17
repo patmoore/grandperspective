@@ -324,6 +324,7 @@
 				AA3B38E30D17EEF60070E889,
 				AA3B38E50D17EEF60070E889,
 				AA3B40E00D1AF2B70070E889,
+				AA7DEA090D6718ED0057F5F8,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -402,6 +403,7 @@
 				AA3B38E40D17EEF60070E889,
 				AA3B38E60D17EEF60070E889,
 				AA3B40E10D1AF2B70070E889,
+				AA7DEA0A0D6718ED0057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1570,8 +1572,10 @@
 			children = (
 				AA3B40DE0D1AF2B70070E889,
 				AA3B40DF0D1AF2B70070E889,
-				AAE87FD80CE10B9B00A99883,
+				AA7DEA070D6718ED0057F5F8,
+				AA7DEA080D6718ED0057F5F8,
 				AAE87FD90CE10B9B00A99883,
+				AAE87FD80CE10B9B00A99883,
 				AA5974C70B31687600EF3248,
 				AA5974C80B31687600EF3248,
 				AA16DAB90AF93C7D005052D1,
@@ -1712,6 +1716,36 @@
 			path = nl.lproj/MainMenu.nib;
 			refType = 4;
 			sourceTree = "<group>";
+		};
+		AA7DEA070D6718ED0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UniformType.h;
+			path = util/UniformType.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEA080D6718ED0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = UniformType.m;
+			path = util/UniformType.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEA090D6718ED0057F5F8 = {
+			fileRef = AA7DEA070D6718ED0057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DEA0A0D6718ED0057F5F8 = {
+			fileRef = AA7DEA080D6718ED0057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
 		AA84171A088E5BD40074E92A = {
 			isa = PBXFileReference;

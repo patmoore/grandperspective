@@ -3,29 +3,42 @@
 #import "Item.h"
 
 @class FileItem;
+@class UniformType;
 
-@interface ItemInventory : NSObject {
 
+@interface UniformTypeInventory : NSObject {
+
+  // Maps NSStrings to UniformTypes
   NSMutableDictionary  *typeForExtension;
+
+  // Contains NSStrings
   NSMutableSet  *untypedExtensions;
-  NSMutableDictionary  *infoForFileType;
+
+  // Maps NSStrings to UniformTypes
+  NSMutableDictionary  *typeForUTI;
+
+  // Contains UniformTypes
   NSMutableSet  *parentlessTypes;
 }
 
-+ (ItemInventory *)defaultItemInventory;
++ (UniformTypeInventory *)defaultUniformTypeInventory;
 
 - (void) registerFileItem: (FileItem *)item;
 
-// Returns the UTI for the given file, or "NULL" if there is no properly 
-// defined UTI for this file (i.e. this is the case when the UTI string is
-// dynamically generated).
-- (NSString *)typeForFileItem: (FileItem *)item;
+// Returns the FileType object for the UTI for the given file, or "NULL" if 
+// there is no properly defined UTI for this file (i.e. this is the case when 
+// the UTI string is dynamically generated).
+- (UniformType *)uniformTypeForFileItem: (FileItem *)item;
 
-- (NSEnumerator *)knownTypesEnumerator;
+- (UniformType *)uniformTypeForIdentifier: (NSString *)uti;
 
-// TODO: Expose and implement, or expose FileTypeInfo directly?
-//- (NSEnumerator *)childrenOfType: (NSString *)uti;
-//- (NSEnumerator *)parentsOfType: (NSString *)uti;
-//- (NSString *)descriptionOfType: (NSString *)uti;
+/* Enumerates over all types maintained by this inventory. These types include
+ * those that have been registered directly, as well as those that have been
+ * registered indirectly (as a result of being ancestors of a registered type).
+ */
+- (NSEnumerator *)uniformTypeEnumerator;
+
+// For debugging.
+- (void) dumpTypesToLog;
 
 @end

@@ -4,6 +4,7 @@
 #import "DirectoryItem.h" // Also imports FileItem.h
 #import "TreeBalancer.h"
 #import "TreeContext.h"
+#import "ItemInventory.h"
 
 
 NSString  *LogicalFileSize = @"logical";
@@ -196,6 +197,10 @@ static struct {
   
   [scanResult postInit];
   
+  UniformTypeInventory  *typeInventory = 
+    [UniformTypeInventory defaultUniformTypeInventory];
+  [typeInventory dumpTypesToLog];
+    
   return scanResult;
 }
 
@@ -215,6 +220,9 @@ static struct {
     [[NSMutableArray alloc] initWithCapacity:32];
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
+  
+  UniformTypeInventory  *typeInventory = 
+    [UniformTypeInventory defaultUniformTypeInventory];
   
   NSString  *path = [parentPath stringByAppendingPathComponent:[dirItem name]];
   int  i;
@@ -278,6 +286,8 @@ static struct {
             FileItem  *fileChildItem =
               [[FileItem alloc] initWithName:childName parent:dirItem 
                                   size:childSize];
+                                  
+            [typeInventory registerFileItem: fileChildItem];
 
             [fileChildren addObject:fileChildItem];
             [fileChildItem release];
