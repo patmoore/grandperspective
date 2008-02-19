@@ -2,6 +2,7 @@
 
 #import "DirectoryItem.h" // Imports FileItem.h
 #import "FileItemHashing.h"
+#import "HashingByUniformType.h"
 
 @interface HashingByDepth : FileItemHashing {
 }
@@ -103,6 +104,9 @@
     [instance addFileItemHashing:
                   [[[FileItemHashing alloc] init] autorelease]
                 key: @"nothing"];
+    [instance addFileItemHashing:
+                  [[[HashingByUniformType alloc] init] autorelease]
+                key: @"uniform type"];
 
     defaultFileItemHashingCollectionInstance = [instance retain];
   }

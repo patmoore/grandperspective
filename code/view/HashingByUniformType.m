@@ -11,7 +11,7 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
 
 - (id) init {
   if (self = [super init]) {
-    hashForTypeCache = 
+    hashForUTICache = 
       [[NSMutableDictionary dictionaryWithCapacity: 16] retain];
     
     typeInventory = [[UniformTypeInventory defaultUniformTypeInventory] retain];
@@ -19,19 +19,25 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
     orderedUTIs = [[userDefaults arrayForKey: UniformTypesOrderingKey] retain];
+    if (orderedUTIs == nil) {
+      orderedUTIs = [[NSArray array] retain];
+    }
+    
     unorderedUTIs = [[NSMutableSet setWithCapacity: [orderedUTIs count] + 16]
                          retain];
     [unorderedUTIs addObjectsFromArray: orderedUTIs];
     
     [userDefaults addObserver: self forKeyPath: UniformTypesOrderingKey
                     options: nil context: nil];
+                    
+    pendingOwnChanges = 0;
   }
   
   return self;
 }
 
 - (void) dealloc {
-  [hashForTypeCache release];
+  [hashForUTICache release];
   [typeInventory release];
 
   [orderedUTIs release];
@@ -49,7 +55,8 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
     return INT_MAX;
   }
   
-  NSNumber  *hash = [hashForTypeCache objectForKey: type];
+  NSNumber  *hash = 
+              [hashForUTICache objectForKey: [type uniformTypeIdentifier]];
   if (hash != nil) {
     return [hash intValue];
   }
@@ -65,11 +72,10 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
     
     [unorderedUTIs addObject: uti];
     
+    pendingOwnChanges++;    
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject: orderedUTIs forKey: UniformTypesOrderingKey];
 
-    pendingOwnChanges++;
-    
     // TODO: Once the order of the UTIs can be manipulated by user, all
     // (possibly virtual) ancestor types should automatically appear in this
     // list as well. Currently, only the actual types of encountered files
@@ -80,6 +86,7 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
   NSSet  *ancestorTypes = [type ancestorTypes];
   int  utiIndex = 0;
   
+  NSLog(@"Searching for %@", uti);
   while (utiIndex < [orderedUTIs count]) {
     UniformType  *orderedType = 
       [typeInventory uniformTypeForIdentifier: 
@@ -88,8 +95,10 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
     if (type == orderedType || [ancestorTypes containsObject: orderedType]) {
       // Found the first type in the list that the file item conforms to.
       
-      [hashForTypeCache setObject: [NSNumber numberWithInt: utiIndex]
-                          forKey: type];
+      NSLog(@"Match found: %@", [orderedType uniformTypeIdentifier]);
+      
+      [hashForUTICache setObject: [NSNumber numberWithInt: utiIndex]
+                         forKey: [type uniformTypeIdentifier]];
       return utiIndex;
     }
     
@@ -112,7 +121,7 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
       }
       else {
         NSLog(@"External change. Clearing cache");
-        [hashForTypeCache removeAllObjects];
+        [hashForUTICache removeAllObjects];
       }
     }
   }

@@ -9,8 +9,8 @@ extern NSString  *UniformTypesOrderingKey;
 
 @interface HashingByUniformType : FileItemHashing {
 
-  // Cache mapping types (UniformType) to integer values (NSNumber)
-  NSMutableDictionary  *hashForTypeCache;
+  // Cache mapping UTIs (NSString) to integer values (NSNumber)
+  NSMutableDictionary  *hashForUTICache;
   
   // Number of changes to the UTI list in the preferences initiated by this
   // object.
@@ -18,7 +18,6 @@ extern NSString  *UniformTypesOrderingKey;
   
   UniformTypeInventory  *typeInventory;
   
- 
   NSArray  *orderedUTIs;
   NSMutableSet  *unorderedUTIs;
 }
