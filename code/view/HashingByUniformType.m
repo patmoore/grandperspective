@@ -108,6 +108,21 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
   NSAssert(NO, @"No conforming type found.");
 }
 
+- (BOOL) canProvideLegend {
+  return YES;
+}
+
+- (NSString *) descriptionForHash: (int)hash {
+  if (hash < 0 || hash >= [orderedUTIs count]) {
+    return nil;
+  }
+  
+  NSString  *uti = [orderedUTIs objectAtIndex: hash];
+  UniformType  *type = [typeInventory uniformTypeForIdentifier: uti];
+  
+  return [uti description];
+}
+
 
 - (void) observeValueForKeyPath: (NSString *)keyPath ofObject: (id) object 
            change: (NSDictionary *)change context: (void *)context {

@@ -30,6 +30,23 @@
   return depth;
 }
 
+- (BOOL) canProvideLegend {
+  return YES;
+}
+
+- (NSString *) descriptionForHash: (int)hash {
+  if (hash == 0) {
+    return NSLocalizedString(@"Top level", 
+                             @"Legend for Depth color mapping scheme.");
+  }
+  else {
+    NSString  
+      *fmt = NSLocalizedString(@"Depth %d", 
+                               @"Legend for Depth color mapping scheme.");
+    return [NSString stringWithFormat: fmt, hash];
+  }
+}
+
 @end // @implementation HashingByDepth
 
 

@@ -6,4 +6,12 @@
   return 0;
 }
 
+- (BOOL) canProvideLegend {
+  return NO;
+}
+
+- (NSString *) descriptionForHash: (int)hash {
+  return nil;
+}
+
 @end

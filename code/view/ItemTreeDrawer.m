@@ -15,7 +15,7 @@
 
 - (void) drawBasicFilledRect: (NSRect) rect intColor: (UInt32) intColor;
 
-- (void) drawGradientFilledRect:(NSRect)rect colorHash:(int)hash;
+- (void) drawGradientFilledRect: (NSRect) rect colorIndex: (int) colorIndex;
 - (void) initGradientColors;
 
 @end
@@ -202,8 +202,16 @@
         else if ( fileItemMask==nil 
                   || [fileItemMask testFileItem: file 
                                      context: fileItemPathStringCache] ) {
-          [self drawGradientFilledRect: rect 
-                  colorHash: [colorMapping hashForFileItem: file depth: depth]];
+          int  colorIndex = [colorMapping hashForFileItem: file depth: depth];
+          if ([colorMapping canProvideLegend]) {
+            NSAssert(colorIndex >= 0, @"Negative hash value.");
+            colorIndex = MIN(colorIndex, numGradientColors - 1);
+          }
+          else {
+            colorIndex = abs(colorIndex) % numGradientColors;
+          }
+
+          [self drawGradientFilledRect: rect colorIndex: colorIndex];
         }
       }
     }
@@ -278,11 +286,10 @@
 }
 
 
-- (void) drawGradientFilledRect: (NSRect) rect colorHash: (int) colorHash {
-  UInt32  *intColors = 
-    &gradientColors[(abs(colorHash) % numGradientColors) * 256];
+- (void) drawGradientFilledRect: (NSRect) rect colorIndex: (int) colorIndex {
+  UInt32  *intColors = &gradientColors[colorIndex * 256];
   UInt32  intColor;
-  int  colorIndex;
+  int  gradient;
   
   UInt32  *data = (UInt32*)[drawBitmap bitmapData];
   UInt32  *pos;
@@ -304,15 +311,9 @@
  
   // Horizontal lines
   for (y=0; y<height; y++) {
-    colorIndex = 256 * (y0 + y + 0.5f - rect.origin.y) / rect.size.height;
+    gradient = 256 * (y0 + y + 0.5f - rect.origin.y) / rect.size.height;
     // Check for out of bounds, rarely happens but can due to rounding errors.
-    if (colorIndex < 0) {
-      colorIndex = 0;
-    }
-    else if (colorIndex > 255) {
-      colorIndex = 255;
-    }
-    intColor = intColors[colorIndex];
+    intColor = intColors[ MIN(255, MAX(0, gradient)) ];
     
     x = (height - y - 1) * width / height; // Maximum x. 
     pos = &data[ (bitmapHeight - y0 - y - 1) * bitmapWidth + x0 ];
@@ -325,15 +326,9 @@
   
   // Vertical lines
   for (x=0; x<width; x++) {
-    colorIndex = 256 * (1 - (x0 + x + 0.5f - rect.origin.x) / rect.size.width);
+    gradient = 256 * (1 - (x0 + x + 0.5f - rect.origin.x) / rect.size.width);
     // Check for out of bounds, rarely happens but can due to rounding errors.
-    if (colorIndex < 0) {
-      colorIndex = 0;
-    }
-    else if (colorIndex > 255) {
-      colorIndex = 255;
-    }
-    intColor = intColors[colorIndex];
+    intColor = intColors[ MIN(255, MAX(0, gradient)) ];
     
     y = (width - x - 1) * height / width; // Minimum y.
     pos = &data[ (bitmapHeight - y0 - height) * bitmapWidth + x + x0 ];
