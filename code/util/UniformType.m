@@ -1,65 +1,23 @@
 #import "UniformType.h"
 
-#import "UniformTypeInventory.h"
-
 @implementation UniformType
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use initWithUniformTypeIdentifier: instead.");  
+  NSAssert(NO, 
+           @"Use initWithUniformTypeIdentifier:description:parents instead.");  
 }
 
-- (id) initWithUniformTypeIdentifier: (NSString *)utiVal {
-  return [self initWithUniformTypeIdentifier: utiVal
-                 inventory: [UniformTypeInventory defaultUniformTypeInventory]];
-}
 
-- (id) initWithUniformTypeIdentifier: (NSString *)utiVal 
-         inventory: (UniformTypeInventory *)inventory {
+- (id) initWithUniformTypeIdentifier: (NSString *)utiVal
+         description: (NSString *)descriptionVal
+         parents: (NSArray *)parentTypes {
 
   if (self = [super init]) {  
     uti = [utiVal retain];
+    description = [descriptionVal retain];
     
-    NSDictionary  *dict = 
-      (NSDictionary*) UTTypeCopyDeclaration( (CFStringRef)uti );
-
-    description = 
-      [dict objectForKey: (NSString*)kUTTypeDescriptionKey];
-    if (description == nil) {
-      description = uti;
-    }
-    [description retain];
-    
-    NSObject  *conforms = 
-      [dict objectForKey: (NSString*)kUTTypeConformsToKey];
-    if ([conforms isKindOfClass: [NSArray class]]) {
-      NSArray  *utiArray = (NSArray *)conforms;
-
-      // Create the corresponding array of type objects.
-      NSMutableArray  *typeArray = 
-        [NSMutableArray arrayWithCapacity: [utiArray count]];
-      
-      NSEnumerator  *utiEnum = [utiArray objectEnumerator];
-      NSString  *parentUti;
-      while (parentUti = [utiEnum nextObject]) {
-        UniformType  *parentType =
-           [inventory uniformTypeForIdentifier: (NSString *)parentUti];
-        [typeArray addObject: parentType];
-      }
-
-      parents = [NSSet setWithArray: typeArray];
-    }
-    else if ([conforms isKindOfClass: [NSString class]]) {
-      UniformType  *parentType = 
-        [inventory uniformTypeForIdentifier: (NSString *)conforms];
-      parents = [NSSet setWithObject: parentType];
-    }
-    else {
-      parents = [NSSet set];
-    }
-    [parents retain];
-    
-    children = [[NSSet set] retain];
+    parents = [[NSSet setWithArray: parentTypes] retain];
   }
   
   return self;
@@ -70,7 +28,6 @@
   [uti release];
   [description release];
   [parents release];
-  [children release];
   
   [super dealloc];
 }
@@ -84,10 +41,10 @@
   return description;
 }
 
-
 - (NSSet *)parentTypes {
   return parents;
 }
+
 
 - (NSSet *)ancestorTypes {
   NSMutableSet  *ancestors = [NSMutableSet setWithCapacity: 16];
@@ -112,23 +69,6 @@
   }
 
   return ancestors;
-}
-
-- (NSSet *)childTypes {
-  return children;
-}
-
-- (void) addChildType: (UniformType *)child {
-  NSAssert(! [children containsObject: child], @"Child already added.");
- 
-  // Add child to (immutable) children set 
-  NSMutableSet  *mutableSet = 
-    [NSMutableSet setWithCapacity: [children count] + 1];
-  [mutableSet setSet: children];
-  [mutableSet addObject: child];
-  
-  [children release];
-  children = [[NSSet setWithSet: mutableSet] retain];
 }
 
 @end

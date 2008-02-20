@@ -1,23 +1,19 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class UniformTypeInventory;
-
+// Note: Instances are immutable (and as a result, the class is thread-safe). 
 @interface UniformType : NSObject {
   NSString*  uti;
   NSString*  description;
 
   // An immutable set of "UniformType"s
   NSSet*  parents;
-
-  // An immutable set of "UniformType"s
-  NSSet*  children;
 }
 
 
-- (id) initWithUniformTypeIdentifier: (NSString *)uti;
-- (id) initWithUniformTypeIdentifier: (NSString *)uti 
-         inventory: (UniformTypeInventory *)inventory;
+- (id) initWithUniformTypeIdentifier: (NSString *)uti
+         description: (NSString *)description
+         parents: (NSArray *)parentTypes;
 
 - (NSString *)uniformTypeIdentifier;
 
@@ -27,8 +23,5 @@
 
 // Calculated dynamically (so should be invoked with a bit of care)
 - (NSSet *)ancestorTypes;
-
-- (NSSet *)childTypes;
-- (void) addChildType: (UniformType *)childType;
 
 @end
