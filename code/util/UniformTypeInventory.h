@@ -32,12 +32,9 @@
 
 + (UniformTypeInventory *)defaultUniformTypeInventory;
 
-- (void) registerFileItem: (FileItem *)item;
-
-// Returns the FileType object for the UTI for the given file, or "nil" if 
-// there is no properly defined UTI for this file (i.e. this is the case when 
-// the UTI string is dynamically generated).
-- (UniformType *)uniformTypeForFileItem: (FileItem *)item;
+// Returns the FileType object for the UTI for the given file extension, or 
+// "nil" if there is no properly defined UTI for this extension.
+- (UniformType *)uniformTypeForExtension: (NSString *)ext;
 
 - (UniformType *)uniformTypeForIdentifier: (NSString *)uti;
 

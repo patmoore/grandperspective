@@ -1,5 +1,6 @@
 #import "HashingByUniformType.h"
 
+#import "PlainFileItem.h"
 #import "UniformType.h"
 #import "UniformTypeInventory.h"
 
@@ -47,8 +48,8 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
 }
 
 
-- (int) hashForFileItem: (FileItem *)item depth: (int)depth {
-  UniformType  *type = [typeInventory uniformTypeForFileItem: item];
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int)depth {
+  UniformType  *type = [item uniformType];
   
   if (type == nil) {
     // Unknown type
@@ -62,6 +63,9 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
   }
   
   NSString  *uti = [type uniformTypeIdentifier];
+
+  // FIXME: This is not thread-safe. Should list of UTIs be extended from
+  // background thread at all?
   if (! [unorderedUTIs containsObject: uti]) {
     // This type has not yet been encountered. Add it to (the back of) the
     // list of ordered UTIs.
@@ -71,7 +75,7 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
     orderedUTIs = [newArray retain];
     
     [unorderedUTIs addObject: uti];
-    
+
     pendingOwnChanges++;    
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults setObject: orderedUTIs forKey: UniformTypesOrderingKey];
@@ -97,6 +101,9 @@ NSString  *UniformTypesOrderingKey = @"uniformTypesOrdering";
       
       NSLog(@"Match found: %@", [orderedType uniformTypeIdentifier]);
       
+      // FIXME: This is not thread-safe. Each thread should probably use its
+      // own cache (as is done using a context by file item tests for caching 
+      // path names).
       [hashForUTICache setObject: [NSNumber numberWithInt: utiIndex]
                          forKey: [type uniformTypeIdentifier]];
       return utiIndex;

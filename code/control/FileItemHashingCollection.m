@@ -1,6 +1,7 @@
 #import "FileItemHashingCollection.h"
 
-#import "DirectoryItem.h" // Imports FileItem.h
+#import "PlainFileItem.h"
+#import "DirectoryItem.h"
 #import "FileItemHashing.h"
 #import "HashingByUniformType.h"
 
@@ -26,7 +27,7 @@
 
 @implementation HashingByDepth
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem:(PlainFileItem*)item depth:(int)depth {
   return depth;
 }
 
@@ -52,7 +53,7 @@
 
 @implementation HashingByExtension
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
   return [[[item name] pathExtension] hash];
 }
 
@@ -61,7 +62,7 @@
 
 @implementation HashingByFilename
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
   return [[item name] hash];
 }
 
@@ -70,7 +71,7 @@
 
 @implementation HashingByDirectoryName
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
   return [[[item parentDirectory] name] hash];
 }
 
@@ -79,7 +80,7 @@
 
 @implementation HashingByTopDirectoryName
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
   DirectoryItem  *dir = [item parentDirectory];
   int  i = depth-2;
 

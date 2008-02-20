@@ -54,14 +54,7 @@
 }
 
 
-- (void) registerFileItem: (FileItem *)item {
-  // Implicitly registers type for the file (if any)
-  [self uniformTypeForFileItem: item];
-}
-
-- (UniformType *)uniformTypeForFileItem: (FileItem *)item {
-  NSString  *ext = [[item name] pathExtension];
-  
+- (UniformType *)uniformTypeForExtension: (NSString *)ext {  
   UniformType  *type = [typeForExtension objectForKey: ext];
   if (type != nil) {
     // The extension was already encountered, and corresponds to a valid UTI.

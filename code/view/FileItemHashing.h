@@ -1,11 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
-@class FileItem;
+@class PlainFileItem;
 
 @interface FileItemHashing : NSObject {
 }
 
-- (int) hashForFileItem: (FileItem *)item depth: (int)depth;
+- (int) hashForFileItem: (PlainFileItem *)item depth: (int)depth;
 
 /* Returns "YES" iff there are meaningful descriptions for each hash value.
  * In this case, the range of hash values is expected to be the consecutive 

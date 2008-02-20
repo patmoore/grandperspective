@@ -2,7 +2,7 @@
 
 @implementation FileItemHashing
 
-- (int) hashForFileItem:(FileItem*)item depth:(int)depth {
+- (int) hashForFileItem:(PlainFileItem*)item depth:(int)depth {
   return 0;
 }
 

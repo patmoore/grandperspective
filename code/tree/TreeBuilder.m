@@ -1,7 +1,8 @@
 #import "TreeBuilder.h"
 
 #import "CompoundItem.h"
-#import "DirectoryItem.h" // Also imports FileItem.h
+#import "DirectoryItem.h"
+#import "PlainFileItem.h"
 #import "TreeBalancer.h"
 #import "TreeContext.h"
 #import "UniformTypeInventory.h"
@@ -282,13 +283,15 @@ static struct {
                  bulkCatalogInfo.catalogInfoArray[i].rsrcLogicalSize) :
                 (bulkCatalogInfo.catalogInfoArray[i].dataPhysicalSize +
                  bulkCatalogInfo.catalogInfoArray[i].rsrcPhysicalSize));
+            
+            UniformType  *fileType = 
+              [typeInventory uniformTypeForExtension: 
+                               [childName pathExtension]];
       
-            FileItem  *fileChildItem =
-              [[FileItem alloc] initWithName:childName parent:dirItem 
-                                  size:childSize];
+            PlainFileItem  *fileChildItem =
+              [[PlainFileItem alloc] initWithName: childName parent: dirItem 
+                                       size: childSize type: fileType];
                                   
-            [typeInventory registerFileItem: fileChildItem];
-
             [fileChildren addObject:fileChildItem];
             [fileChildItem release];
           }
