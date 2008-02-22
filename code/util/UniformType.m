@@ -62,6 +62,9 @@
     UniformType  *parentType;
     while (parentType = [parentsEnum nextObject]) {
       if (! [ancestors containsObject: parentType]) {
+        // Only visit ancestor types that have not yet been encountered. This
+        // ensures that the search time is lineair in the number of ancestors
+        // (despite there possibly being multiple paths to certain ancestors).
         [ancestors addObject: parentType];
         [toVisit addObject: parentType];
       }

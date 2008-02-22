@@ -21,7 +21,9 @@
 
 - (NSSet *)parentTypes;
 
-// Calculated dynamically (so should be invoked with a bit of care)
+/* Dynamically constructs the set of types that the receiving type conforms to
+ * (directly or indirectly).
+ */
 - (NSSet *)ancestorTypes;
 
 @end
