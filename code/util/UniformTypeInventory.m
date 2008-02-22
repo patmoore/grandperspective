@@ -4,7 +4,15 @@
 #import "UniformType.h"
 
 
+
+NSString  *UniformTypeAddedEvent = @"uniformTypeAdded";
+
+NSString  *UniformTypeKey = @"uniformType";
+
+
 @interface UniformTypeInventory (PrivateMethods) 
+
+- (void) postNotification: (NSNotification *)notification;
 
 - (UniformType *)createUniformTypeForIdentifier: (NSString *)uti;
 
@@ -120,6 +128,15 @@
                       forKey: parentUTI];
   }
   
+  // Notify interested observers
+  NSNotification  *notification = 
+    [NSNotification notificationWithName: UniformTypeAddedEvent 
+                      object: self
+                      userInfo: [NSDictionary dictionaryWithObject: type
+                                                forKey: UniformTypeKey]];
+  [self performSelectorOnMainThread: @selector(postNotification:)
+          withObject: notification waitUntilDone: NO];
+  
   return type;
 }
 
@@ -157,6 +174,10 @@
 
 
 @implementation UniformTypeInventory (PrivateMethods)
+
+- (void) postNotification: (NSNotification *)notification {
+  [[NSNotificationCenter defaultCenter] postNotification: notification];
+}
 
 - (id) createUniformTypeForIdentifier:  (NSString *)uti {
 

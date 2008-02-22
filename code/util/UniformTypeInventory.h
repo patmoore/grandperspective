@@ -1,6 +1,10 @@
 #import <Cocoa/Cocoa.h>
 
 
+extern NSString  *UniformTypeAddedEvent;
+extern NSString  *UniformTypeKey;
+
+
 @class FileItem;
 @class UniformType;
 
@@ -9,7 +13,10 @@
  * various look-up tables to speed-up the mapping from a file to the 
  * associated uniform type.
  *
- * Note: The implementation of this class is not thread-safe.
+ * Note: The implementation of this class is not thread-safe. However, it has
+ * been implemented so that it can be used in a background thread (in 
+ * particular, it ensures that notifications are always posted from the main 
+ * thread).
  */
 @interface UniformTypeInventory : NSObject {
 
