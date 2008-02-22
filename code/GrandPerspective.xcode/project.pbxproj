@@ -405,6 +405,8 @@
 				AA7DEA0A0D6718ED0057F5F8,
 				AA7DEAEC0D68B68C0057F5F8,
 				AA7DEC1B0D6CD38E0057F5F8,
+				AA7DEC8E0D6EDE820057F5F8,
+				AA7DEDB60D6F1E3B0057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1794,6 +1796,54 @@
 			settings = {
 			};
 		};
+		AA7DEC8B0D6EDE820057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UniformTypeRanking.h;
+			path = control/UniformTypeRanking.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEC8C0D6EDE820057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = UniformTypeRanking.m;
+			path = control/UniformTypeRanking.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEC8E0D6EDE820057F5F8 = {
+			fileRef = AA7DEC8C0D6EDE820057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DEDB30D6F1E3B0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = EditUniformTypeRankingWindowControl.h;
+			path = control/EditUniformTypeRankingWindowControl.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEDB40D6F1E3B0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = EditUniformTypeRankingWindowControl.m;
+			path = control/EditUniformTypeRankingWindowControl.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEDB60D6F1E3B0057F5F8 = {
+			fileRef = AA7DEDB40D6F1E3B0057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		AA84171A088E5BD40074E92A = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.nib;
@@ -2080,6 +2130,10 @@
 				AAEF604F0B028DD800C7134A,
 				AAD8DD180B062AB00060DADA,
 				AAD8DD1A0B062AC40060DADA,
+				AA7DEC8B0D6EDE820057F5F8,
+				AA7DEC8C0D6EDE820057F5F8,
+				AA7DEDB30D6F1E3B0057F5F8,
+				AA7DEDB40D6F1E3B0057F5F8,
 			);
 			isa = PBXGroup;
 			name = control;

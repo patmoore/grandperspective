@@ -25,6 +25,9 @@
 
 #import "FileItemTestRepository.h"
 
+#import "UniformTypeRanking.h"
+#import "UniformTypeInventory.h"
+
 NSString* scanActivityFormatString() {
   return NSLocalizedString( @"Scanning %@", 
                             @"Message in progress panel while scanning" );
@@ -83,6 +86,26 @@ NSString* scanActivityFormatString() {
     [bundle objectForInfoDictionaryKey: @"GPApplicationDefaults"];
 
   [defaults registerDefaults: appDefaults];
+  
+  // Load the ranked list of uniform types and observe the inventory to ensure 
+  // that it will be extended when new types are encountered (as a result of
+  // scanning).
+  UniformTypeRanking  *uniformTypeRanking = 
+    [UniformTypeRanking defaultUniformTypeRanking];
+  UniformTypeInventory  *uniformTypeInventory = 
+    [UniformTypeInventory defaultUniformTypeInventory];
+    
+  [uniformTypeRanking loadRanking: uniformTypeInventory];
+
+  // Observe the inventory for newly added types. Note: we do not want to
+  // receive notifications about types that have been added to the
+  // inventory as a result of the recent invocation of -loadRanking:. Calling 
+  // -observerUniformTypeInventory: using -performSelectorOnMainThread:...
+  // ensures that any pending notifications are fired before uniformTypeRanking
+  // is added as an observer. 
+  [uniformTypeRanking 
+     performSelectorOnMainThread: @selector(observeUniformTypeInventory:)
+     withObject: uniformTypeInventory waitUntilDone: NO];
 }
 
 
@@ -145,6 +168,8 @@ NSString* scanActivityFormatString() {
 - (void) applicationWillTerminate:(NSNotification *)notification {
   [[FileItemTestRepository defaultFileItemTestRepository]
        storeUserCreatedTests];
+       
+  [[UniformTypeRanking defaultUniformTypeRanking] storeRanking];
        
   [self release];
 }

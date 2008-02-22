@@ -43,7 +43,12 @@
         <key>defaultColorMapping</key>
         <string>folder</string>
         <key>fileSizeMeasure</key>
-        <string>logical</string>        
+        <string>logical</string>
+        <key>uniformTypesRanking</key>
+        <array>
+            <string>public.image</string>
+            <string>public.text</string>
+        </array>
     </dict>
     <key>GPDefaultFileItemTests</key>
     <array>

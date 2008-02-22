@@ -200,7 +200,7 @@ static struct {
   
   UniformTypeInventory  *typeInventory = 
     [UniformTypeInventory defaultUniformTypeInventory];
-  [typeInventory dumpTypesToLog];
+  // [typeInventory dumpTypesToLog];
     
   return scanResult;
 }
