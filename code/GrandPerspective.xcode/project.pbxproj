@@ -7,6 +7,7 @@
 	objects = {
 		080E96DDFE201D6D7F000001 = {
 			children = (
+				AA7DEF000D70B7F10057F5F8,
 				AAFDC5FF0A8BD6F800DB84D7,
 				AA6178720A38B8E600B8AB16,
 				AA6012020A5AEE6200DEBCB8,
@@ -389,7 +390,6 @@
 				AAC26BCD0A8CAF4800F2DA33,
 				AA16DABC0AF93C7D005052D1,
 				AAEF60510B028DD800C7134A,
-				AAD8DD1B0B062AC40060DADA,
 				AAD8DFB30B077ED20060DADA,
 				AA5974CA0B31687600EF3248,
 				AA8FEB510B6CD0810049FF42,
@@ -405,9 +405,10 @@
 				AA7DEC1B0D6CD38E0057F5F8,
 				AA7DEC8E0D6EDE820057F5F8,
 				AA7DEDB60D6F1E3B0057F5F8,
-				AA7DEE230D7089F00057F5F8,
-				AA7DEE2D0D708BE80057F5F8,
-				AA7DEE5D0D708E7B0057F5F8,
+				AA7DEF0D0D70B7F10057F5F8,
+				AA7DEF100D70B7F10057F5F8,
+				AA7DEF120D70B7F10057F5F8,
+				AA7DEF140D70B7F10057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1260,14 +1261,6 @@
 				AA6012F80A5AFC2500DEBCB8,
 				AA6012FB0A5AFC2500DEBCB8,
 				AA6012FA0A5AFC2500DEBCB8,
-				AA7DEE030D70889C0057F5F8,
-				AA6012FF0A5AFC2500DEBCB8,
-				AA7DEE260D708A060057F5F8,
-				AA7DEE220D7089F00057F5F8,
-				AA7DEE2A0D708BE80057F5F8,
-				AA7DEE2B0D708BE80057F5F8,
-				AA7DEE5A0D708E7B0057F5F8,
-				AA7DEE5B0D708E7B0057F5F8,
 			);
 			isa = PBXGroup;
 			name = view;
@@ -1406,15 +1399,6 @@
 			lastKnownFileType = sourcecode.c.h;
 			name = ItemPathBuilder.h;
 			path = view/ItemPathBuilder.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA6012FF0A5AFC2500DEBCB8 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FileItemHashing.h;
-			path = view/FileItemHashing.h;
 			refType = 4;
 			sourceTree = "<group>";
 		};
@@ -1810,83 +1794,124 @@
 			settings = {
 			};
 		};
-		AA7DEE030D70889C0057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FileItemHashingScheme.h;
-			path = view/FileItemHashingScheme.h;
+		AA7DEF000D70B7F10057F5F8 = {
+			children = (
+				AA7DEF010D70B7F10057F5F8,
+				AA7DEF040D70B7F10057F5F8,
+				AA7DEF020D70B7F10057F5F8,
+				AA7DEF030D70B7F10057F5F8,
+				AA7DEF050D70B7F10057F5F8,
+				AA7DEF060D70B7F10057F5F8,
+				AA7DEF070D70B7F10057F5F8,
+				AA7DEF080D70B7F10057F5F8,
+				AA7DEF090D70B7F10057F5F8,
+				AA7DEF0A0D70B7F10057F5F8,
+			);
+			isa = PBXGroup;
+			path = hashing;
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA7DEE220D7089F00057F5F8 = {
+		AA7DEF010D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = FileItemHashing.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF020D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = FileItemHashingCollection.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF030D70B7F10057F5F8 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
 			lastKnownFileType = sourcecode.c.objc;
-			name = StatelessFileItemHashing.m;
-			path = view/StatelessFileItemHashing.m;
+			path = FileItemHashingCollection.m;
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA7DEE230D7089F00057F5F8 = {
-			fileRef = AA7DEE220D7089F00057F5F8;
+		AA7DEF040D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = FileItemHashingScheme.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF050D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = StatefulFileItemHashing.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF060D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = StatefulFileItemHashing.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF070D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = StatelessFileItemHashing.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF080D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = StatelessFileItemHashing.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF090D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			path = UniformTypeHashingScheme.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF0A0D70B7F10057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = UniformTypeHashingScheme.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF0D0D70B7F10057F5F8 = {
+			fileRef = AA7DEF030D70B7F10057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		AA7DEE260D708A060057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = StatelessFileItemHashing.h;
-			path = view/StatelessFileItemHashing.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEE2A0D708BE80057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = StatefulFileItemHashing.h;
-			path = view/StatefulFileItemHashing.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEE2B0D708BE80057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = StatefulFileItemHashing.m;
-			path = view/StatefulFileItemHashing.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEE2D0D708BE80057F5F8 = {
-			fileRef = AA7DEE2B0D708BE80057F5F8;
+		AA7DEF100D70B7F10057F5F8 = {
+			fileRef = AA7DEF060D70B7F10057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};
 		};
-		AA7DEE5A0D708E7B0057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = UniformTypeHashingScheme.h;
-			path = view/UniformTypeHashingScheme.h;
-			refType = 4;
-			sourceTree = "<group>";
+		AA7DEF120D70B7F10057F5F8 = {
+			fileRef = AA7DEF080D70B7F10057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
 		};
-		AA7DEE5B0D708E7B0057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = UniformTypeHashingScheme.m;
-			path = view/UniformTypeHashingScheme.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEE5D0D708E7B0057F5F8 = {
-			fileRef = AA7DEE5B0D708E7B0057F5F8;
+		AA7DEF140D70B7F10057F5F8 = {
+			fileRef = AA7DEF0A0D70B7F10057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -2175,8 +2200,6 @@
 				AA402FF00A5B01A6004EAAF3,
 				AAEF604E0B028DD800C7134A,
 				AAEF604F0B028DD800C7134A,
-				AAD8DD180B062AB00060DADA,
-				AAD8DD1A0B062AC40060DADA,
 				AA7DEC8B0D6EDE820057F5F8,
 				AA7DEC8C0D6EDE820057F5F8,
 				AA7DEDB30D6F1E3B0057F5F8,
@@ -2419,30 +2442,6 @@
 			path = nl.lproj/InfoPlist.strings;
 			refType = 4;
 			sourceTree = "<group>";
-		};
-		AAD8DD180B062AB00060DADA = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = FileItemHashingCollection.h;
-			path = control/FileItemHashingCollection.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AAD8DD1A0B062AC40060DADA = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = FileItemHashingCollection.m;
-			path = control/FileItemHashingCollection.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AAD8DD1B0B062AC40060DADA = {
-			fileRef = AAD8DD1A0B062AC40060DADA;
-			isa = PBXBuildFile;
-			settings = {
-			};
 		};
 		AAD8DFB00B077EB90060DADA = {
 			fileEncoding = 30;
