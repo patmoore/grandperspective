@@ -2,26 +2,27 @@
 
 #import "PlainFileItem.h"
 #import "DirectoryItem.h"
-#import "FileItemHashing.h"
-#import "HashingByUniformType.h"
 
-@interface HashingByDepth : FileItemHashing {
+#import "StatelessFileItemHashing.h"
+#import "UniformTypeHashingScheme.h"
+
+@interface HashingByDepth : StatelessFileItemHashing {
 }
 @end
 
-@interface HashingByExtension : FileItemHashing {
+@interface HashingByExtension : StatelessFileItemHashing {
 }
 @end
 
-@interface HashingByFilename : FileItemHashing {
+@interface HashingByFilename : StatelessFileItemHashing {
 }
 @end
 
-@interface HashingByDirectoryName : FileItemHashing {
+@interface HashingByDirectoryName : StatelessFileItemHashing {
 }
 @end
 
-@interface HashingByTopDirectoryName : FileItemHashing {
+@interface HashingByTopDirectoryName : StatelessFileItemHashing {
 }
 @end
 
@@ -104,26 +105,26 @@
     FileItemHashingCollection  *instance = 
       [[[FileItemHashingCollection alloc] init] autorelease];
     
-    [instance addFileItemHashing:
+    [instance addFileItemHashingScheme:
                   [[[HashingByTopDirectoryName alloc] init] autorelease]
                 key: @"top folder"];
-    [instance addFileItemHashing:
+    [instance addFileItemHashingScheme:
                   [[[HashingByDirectoryName alloc] init] autorelease]
                 key: @"folder"];
-    [instance addFileItemHashing:
+    [instance addFileItemHashingScheme:
                   [[[HashingByExtension alloc] init] autorelease]
                 key: @"extension"];
-    [instance addFileItemHashing:
+    [instance addFileItemHashingScheme:
                   [[[HashingByFilename alloc] init] autorelease]
                 key: @"name"];
-    [instance addFileItemHashing:
+    [instance addFileItemHashingScheme:
                   [[[HashingByDepth alloc] init] autorelease]
                 key: @"depth"];
-    [instance addFileItemHashing:
-                  [[[FileItemHashing alloc] init] autorelease]
+    [instance addFileItemHashingScheme:
+                  [[[StatelessFileItemHashing alloc] init] autorelease]
                 key: @"nothing"];
-    [instance addFileItemHashing:
-                  [[[HashingByUniformType alloc] init] autorelease]
+    [instance addFileItemHashingScheme:
+                  [[[UniformTypeHashingScheme alloc] init] autorelease]
                 key: @"uniform type"];
 
     defaultFileItemHashingCollectionInstance = [instance retain];
@@ -140,31 +141,33 @@
 
 - (id) initWithDictionary: (NSDictionary *)dictionary {
   if (self = [super init]) {
-    hashingDictionary = [dictionary retain];
+    schemesDictionary = [dictionary retain];
   }
   return self;
 }
 
 - (void) dealloc {
-  [hashingDictionary release];
+  [schemesDictionary release];
   
   [super dealloc];
 }
 
-- (void) addFileItemHashing: (FileItemHashing *)hashing key: (NSString *)key {
-  [hashingDictionary setObject: hashing forKey: key];
+- (void) addFileItemHashingScheme: (NSObject <FileItemHashingScheme> *)scheme 
+           key: (NSString *)key {
+  [schemesDictionary setObject: scheme forKey: key];
 }
 
-- (void) removeFileItemHashingForKey: (NSString *)key {
-  [hashingDictionary removeObjectForKey: key];
+- (void) removeFileItemHashingSchemeForKey: (NSString *)key {
+  [schemesDictionary removeObjectForKey: key];
 }
 
 - (NSArray*) allKeys {
-  return [hashingDictionary allKeys];
+  return [schemesDictionary allKeys];
 }
 
-- (FileItemHashing*) fileItemHashingForKey: (NSString *)key {
-  return [hashingDictionary objectForKey: key];
+- (NSObject <FileItemHashingScheme> *) fileItemHashingSchemeForKey: 
+                                                              (NSString *)key {
+  return [schemesDictionary objectForKey: key];
 }
 
 @end // @implementation FileItemHashingCollection

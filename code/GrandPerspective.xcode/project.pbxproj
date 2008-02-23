@@ -366,7 +366,6 @@
 				AA6013060A5AFC2500DEBCB8,
 				AA6013080A5AFC2500DEBCB8,
 				AA60130A0A5AFC2500DEBCB8,
-				AA60130E0A5AFC2500DEBCB8,
 				AA6013250A5AFCC500DEBCB8,
 				AA6013270A5AFCC500DEBCB8,
 				AA6013290A5AFCC500DEBCB8,
@@ -403,10 +402,12 @@
 				AA3B38E60D17EEF60070E889,
 				AA3B40E10D1AF2B70070E889,
 				AA7DEA0A0D6718ED0057F5F8,
-				AA7DEAEC0D68B68C0057F5F8,
 				AA7DEC1B0D6CD38E0057F5F8,
 				AA7DEC8E0D6EDE820057F5F8,
 				AA7DEDB60D6F1E3B0057F5F8,
+				AA7DEE230D7089F00057F5F8,
+				AA7DEE2D0D708BE80057F5F8,
+				AA7DEE5D0D708E7B0057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1259,10 +1260,14 @@
 				AA6012F80A5AFC2500DEBCB8,
 				AA6012FB0A5AFC2500DEBCB8,
 				AA6012FA0A5AFC2500DEBCB8,
+				AA7DEE030D70889C0057F5F8,
 				AA6012FF0A5AFC2500DEBCB8,
-				AA6012FE0A5AFC2500DEBCB8,
-				AA7DEAE90D68B68C0057F5F8,
-				AA7DEAEA0D68B68C0057F5F8,
+				AA7DEE260D708A060057F5F8,
+				AA7DEE220D7089F00057F5F8,
+				AA7DEE2A0D708BE80057F5F8,
+				AA7DEE2B0D708BE80057F5F8,
+				AA7DEE5A0D708E7B0057F5F8,
+				AA7DEE5B0D708E7B0057F5F8,
 			);
 			isa = PBXGroup;
 			name = view;
@@ -1404,15 +1409,6 @@
 			refType = 4;
 			sourceTree = "<group>";
 		};
-		AA6012FE0A5AFC2500DEBCB8 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = FileItemHashing.m;
-			path = view/FileItemHashing.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
 		AA6012FF0A5AFC2500DEBCB8 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;
@@ -1436,12 +1432,6 @@
 		};
 		AA60130A0A5AFC2500DEBCB8 = {
 			fileRef = AA6012FA0A5AFC2500DEBCB8;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		AA60130E0A5AFC2500DEBCB8 = {
-			fileRef = AA6012FE0A5AFC2500DEBCB8;
 			isa = PBXBuildFile;
 			settings = {
 			};
@@ -1748,30 +1738,6 @@
 			settings = {
 			};
 		};
-		AA7DEAE90D68B68C0057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.h;
-			name = HashingByUniformType.h;
-			path = view/HashingByUniformType.h;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEAEA0D68B68C0057F5F8 = {
-			fileEncoding = 4;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.c.objc;
-			name = HashingByUniformType.m;
-			path = view/HashingByUniformType.m;
-			refType = 4;
-			sourceTree = "<group>";
-		};
-		AA7DEAEC0D68B68C0057F5F8 = {
-			fileRef = AA7DEAEA0D68B68C0057F5F8;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
 		AA7DEC180D6CD38E0057F5F8 = {
 			fileEncoding = 4;
 			isa = PBXFileReference;
@@ -1840,6 +1806,87 @@
 		};
 		AA7DEDB60D6F1E3B0057F5F8 = {
 			fileRef = AA7DEDB40D6F1E3B0057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DEE030D70889C0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = FileItemHashingScheme.h;
+			path = view/FileItemHashingScheme.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE220D7089F00057F5F8 = {
+			fileEncoding = 30;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = StatelessFileItemHashing.m;
+			path = view/StatelessFileItemHashing.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE230D7089F00057F5F8 = {
+			fileRef = AA7DEE220D7089F00057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DEE260D708A060057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = StatelessFileItemHashing.h;
+			path = view/StatelessFileItemHashing.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE2A0D708BE80057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = StatefulFileItemHashing.h;
+			path = view/StatefulFileItemHashing.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE2B0D708BE80057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = StatefulFileItemHashing.m;
+			path = view/StatefulFileItemHashing.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE2D0D708BE80057F5F8 = {
+			fileRef = AA7DEE2B0D708BE80057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DEE5A0D708E7B0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = UniformTypeHashingScheme.h;
+			path = view/UniformTypeHashingScheme.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE5B0D708E7B0057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = UniformTypeHashingScheme.m;
+			path = view/UniformTypeHashingScheme.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEE5D0D708E7B0057F5F8 = {
+			fileRef = AA7DEE5B0D708E7B0057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};

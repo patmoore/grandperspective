@@ -394,7 +394,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   NSString  *name = 
     [tagMaker nameForTag: [[colorMappingPopUp selectedItem] tag]];
-  FileItemHashing  *mapping = [colorMappings fileItemHashingForKey: name];
+  NSObject <FileItemHashingScheme>  *mapping = 
+    [colorMappings fileItemHashingSchemeForKey: name];
 
   if (mapping != nil) {
     [mainView setTreeDrawerSettings: 

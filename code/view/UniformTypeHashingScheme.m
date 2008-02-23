@@ -1,15 +1,38 @@
-#import "HashingByUniformType.h"
+#import "UniformTypeHashingScheme.h"
 
+#import "StatefulFileItemHashing.h"
 #import "PlainFileItem.h"
 #import "UniformType.h"
-#import "UniformTypeInventory.h"
 #import "UniformTypeRanking.h"
+
+
+@interface HashingByUniformType : StatefulFileItemHashing {
+
+  // Cache mapping UTIs (NSString) to integer values (NSNumber)
+  NSMutableDictionary  *hashForUTICache;
+  
+  NSArray  *orderedTypes;
+}
+
+@end
+
+
+@implementation UniformTypeHashingScheme
+
+- (NSObject <FileItemHashing> *) fileItemHashing {
+  return [[[HashingByUniformType alloc] initWithFileItemHashingScheme: self]
+              autorelease];
+}
+
+@end
 
 
 @implementation HashingByUniformType
 
-- (id) init {
-  if (self = [super init]) {
+- (id) initWithFileItemHashingScheme: 
+                                (NSObject <FileItemHashingScheme> *)schemeVal {
+
+  if (self = [super initWithFileItemHashingScheme: schemeVal]) {
     hashForUTICache = 
       [[NSMutableDictionary dictionaryWithCapacity: 16] retain];
     
@@ -37,31 +60,24 @@
     return INT_MAX;
   }
   
-  NSNumber  *hash =  
-              [hashForUTICache objectForKey: [type uniformTypeIdentifier]];
+  NSString  *uti = [type uniformTypeIdentifier];
+  NSNumber  *hash = [hashForUTICache objectForKey: uti];
   if (hash != nil) {
     return [hash intValue];
   }
-  
-  NSString  *uti = [type uniformTypeIdentifier];
-  
+    
   NSSet  *ancestorTypes = [type ancestorTypes];
   int  utiIndex = 0;
   
-  NSLog(@"Searching for %@", uti);
   while (utiIndex < [orderedTypes count]) {
     UniformType  *orderedType = [orderedTypes objectAtIndex: utiIndex];
   
     if (type == orderedType || [ancestorTypes containsObject: orderedType]) {
       // Found the first type in the list that the file item conforms to.
       
-      NSLog(@"Match found: %@", [orderedType uniformTypeIdentifier]);
-      
-      // FIXME: This is not thread-safe. Each thread should probably use its
-      // own cache (as is done using a context by file item tests for caching 
-      // path names).
+      // Add it to the cache for next time.
       [hashForUTICache setObject: [NSNumber numberWithInt: utiIndex]
-                         forKey: [type uniformTypeIdentifier]];
+                         forKey: uti];
       return utiIndex;
     }
     

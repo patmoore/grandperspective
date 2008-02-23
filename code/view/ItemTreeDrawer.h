@@ -5,15 +5,16 @@
 @class FileItem;
 @class DirectoryItem;
 @class TreeLayoutBuilder;
-@class FileItemHashing;
 @class ColorPalette;
 @class FileItemPathStringCache;
 @class ItemTreeDrawerSettings;
+@protocol FileItemHashing;
+@protocol FileItemHashingScheme;
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : NSObject <TreeLayoutTraverser> {
-  FileItemHashing  *colorMapping;
-  NSObject<FileItemTest>  *fileItemMask;
+  NSObject <FileItemHashing>  *colorMapper;
+  NSObject <FileItemTest>  *fileItemMask;
   
   FileItemPathStringCache  *fileItemPathStringCache;
   
@@ -38,8 +39,8 @@
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
 
-- (void) setColorMapping: (FileItemHashing *)colorMapping;
-- (FileItemHashing *) colorMapping;
+- (void) setColorMapping: (NSObject <FileItemHashingScheme> *)colorMapping;
+- (NSObject <FileItemHashingScheme> *) colorMapping;
 
 - (void) setColorPalette: (NSColorList *)colorPalette;
 - (NSColorList *) colorPalette;

@@ -1,9 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
 @class PlainFileItem;
+@protocol FileItemHashingScheme;
 
-@interface FileItemHashing : NSObject {
-}
+/* An implementation of a particular file item hashing scheme. It can derive
+ * hash values for file items.
+ *
+ * Implementations are not (necessarily) thread-safe. Each thread should get
+ * an instance it can safely use by invoking -fileItemHashing on the file
+ * item hashing scheme.
+ */
+@protocol FileItemHashing
+
+- (NSObject <FileItemHashingScheme> *) fileItemHashingScheme;
 
 - (int) hashForFileItem: (PlainFileItem *)item depth: (int)depth;
 

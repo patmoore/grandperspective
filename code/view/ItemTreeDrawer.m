@@ -2,6 +2,7 @@
 
 #import "DirectoryItem.h"
 #import "FileItemHashing.h"
+#import "FileItemHashingScheme.h"
 #import "TreeLayoutBuilder.h"
 #import "FileItemPathStringCache.h"
 #import "ItemTreeDrawerSettings.h"
@@ -32,7 +33,7 @@
 - (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super init]) {
     // Make sure values are nil before calling updateSettings. 
-    colorMapping = nil;
+    colorMapper = nil;
     colorPalette = nil;
     fileItemMask = nil;
     
@@ -51,7 +52,7 @@
 }
 
 - (void) dealloc {
-  [colorMapping release];
+  [colorMapper release];
   [colorPalette release];
   [fileItemMask release];
   
@@ -65,19 +66,18 @@
   [super dealloc];
 }
 
-
-- (void) setColorMapping: (FileItemHashing *)colorMappingVal {
-  NSAssert(colorMappingVal != nil, 
+- (void) setColorMapping: (NSObject <FileItemHashingScheme> *)colorMapping {
+  NSAssert(colorMapping != nil, 
            @"Cannot set an invalid color mapping.");
 
-  if (colorMappingVal != colorMapping) {
-    [colorMapping release];
-    colorMapping = [colorMappingVal retain];
+  if (colorMapping != [colorMapper fileItemHashingScheme]) {
+    [colorMapper release];
+    colorMapper = [[colorMapping fileItemHashing] retain];
   }
 }
 
-- (FileItemHashing *) colorMapping {
-  return colorMapping;
+- (NSObject <FileItemHashingScheme> *) colorMapping {
+  return [colorMapper fileItemHashingScheme];
 }
 
 
@@ -202,9 +202,9 @@
         else if ( fileItemMask==nil 
                   || [fileItemMask testFileItem: file 
                                      context: fileItemPathStringCache] ) {
-          int  colorIndex = [colorMapping hashForFileItem: (PlainFileItem *)file 
+          int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
                                            depth: depth];
-          if ([colorMapping canProvideLegend]) {
+          if ([colorMapper canProvideLegend]) {
             NSAssert(colorIndex >= 0, @"Negative hash value.");
             colorIndex = MIN(colorIndex, numGradientColors - 1);
           }

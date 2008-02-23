@@ -1,10 +1,10 @@
 #import <Cocoa/Cocoa.h>
 
-@class FileItemHashing;
+@protocol FileItemHashingScheme;
 
 @interface FileItemHashingCollection : NSObject {
 
-  NSMutableDictionary  *hashingDictionary;
+  NSMutableDictionary  *schemesDictionary;
 
 }
 
@@ -12,10 +12,12 @@
 
 - (id) initWithDictionary: (NSDictionary *)dictionary;
 
-- (void) addFileItemHashing: (FileItemHashing *)hashing key: (NSString *)key;
-- (void) removeFileItemHashingForKey: (NSString *)key;
+- (void) addFileItemHashingScheme: (NSObject <FileItemHashingScheme> *)scheme 
+           key: (NSString *)key;
+- (void) removeFileItemHashingSchemeForKey: (NSString *)key;
 
 - (NSArray*) allKeys;
-- (FileItemHashing*) fileItemHashingForKey: (NSString *)key;
+- (NSObject <FileItemHashingScheme> *) fileItemHashingSchemeForKey: 
+                                                              (NSString *)key;
 
 @end
