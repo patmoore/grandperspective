@@ -161,8 +161,6 @@
 // Delegate methods for NSWindow
 
 - (void) windowDidBecomeKey: (NSNotification *)notification {
-  NSLog(@"WindowDidBecomeKey");
-  
   [self fetchCurrentTypeList];
   [self updateWindowState];
 }
@@ -254,7 +252,6 @@
   int  i = [typesBrowser selectedRowInColumn: 0];
   int  numCells =  [typeCells count];
   
-  NSLog(@"SelectedRow: %d", i);
   NSAssert(i >= 0 && i < numCells, @"Invalid selected type.");
   
   TypeCell  *typeCell = [typeCells objectAtIndex: i];
