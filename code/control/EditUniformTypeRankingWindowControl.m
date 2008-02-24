@@ -164,6 +164,7 @@
   NSLog(@"WindowDidBecomeKey");
   
   [self fetchCurrentTypeList];
+  [self updateWindowState];
 }
 
 //----------------------------------------------------------------------------
