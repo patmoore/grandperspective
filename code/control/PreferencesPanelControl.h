@@ -9,6 +9,8 @@ extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
 
 
+@class EditUniformTypeRankingWindowControl;
+
 @interface PreferencesPanelControl : NSWindowController {
 
   IBOutlet NSPopUpButton  *fileDeletionPopUp;
@@ -18,10 +20,14 @@ extern NSString  *DefaultColorPaletteKey;
 
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
+  
+  EditUniformTypeRankingWindowControl  *uniformTypeWindowControl;
 }
 
 - (IBAction) popUpValueChanged: (id)sender;
 
 - (IBAction) valueChanged: (id)sender;
+
+- (IBAction) editUniformTypeRanking: (id) sender;
 
 @end

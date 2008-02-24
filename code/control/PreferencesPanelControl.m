@@ -5,6 +5,8 @@
 #import "ColorListCollection.h"
 #import "TreeBuilder.h"
 
+#import "EditUniformTypeRankingWindowControl.h"
+
 #import "UniqueTagsTransformer.h"
 
 
@@ -40,6 +42,12 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
   }
 
   return self;
+}
+
+- (void) dealloc {
+  [uniformTypeWindowControl release];
+  
+  [super dealloc];
 }
 
 
@@ -105,6 +113,18 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
     NSAssert(NO, @"Unexpected sender for -valueChanged.");
   }
 }
+
+- (IBAction) editUniformTypeRanking: (id) sender {
+  if (uniformTypeWindowControl == nil) {
+    // Lazily construct the window
+    uniformTypeWindowControl = 
+      [[EditUniformTypeRankingWindowControl alloc] init];
+  }
+  
+  // [uniformTypeWindowControl refreshTypeList];
+  [[uniformTypeWindowControl window] makeKeyAndOrderFront: self];
+}
+
 
 @end // @implementation PreferencesPanelControl
 

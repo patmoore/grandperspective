@@ -1,0 +1,33 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {
+                cancelAction = id; 
+                handleBrowserClick = id; 
+                moveDownAction = id; 
+                moveToBottomAction = id; 
+                moveToHideAction = id; 
+                moveToRevealAction = id; 
+                moveToTopAction = id; 
+                moveUpAction = id; 
+                okAction = id; 
+            }; 
+            CLASS = EditUniformTypeRankingWindowControl; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                hideButton = NSButton; 
+                moveDownButton = NSButton; 
+                moveToBottomButton = NSButton; 
+                moveToTopButton = NSButton; 
+                moveUpButton = NSButton; 
+                revealButton = NSButton; 
+                typeDescriptionDrawer = NSDrawer; 
+                typeDescriptionView = NSTextView; 
+                typesBrowser = NSBrowser; 
+            }; 
+            SUPERCLASS = NSWindowController; 
+        }, 
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
+    ); 
+    IBVersion = 1; 
+}

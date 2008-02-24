@@ -177,6 +177,7 @@
 				AA49218108DC10C9003E1652,
 				29B97318FDCFA39411CA2CEA,
 				AA6814840A07D6FC00802D88,
+				AA7DEF4A0D7176030057F5F8,
 				AA13BA8D0B8A5746000AEAA9,
 				AAC9B6340B7FA94A002B3ECE,
 			);
@@ -325,6 +326,7 @@
 				AA3B38E30D17EEF60070E889,
 				AA3B38E50D17EEF60070E889,
 				AA3B40E00D1AF2B70070E889,
+				AA7DEF4B0D7176030057F5F8,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1916,6 +1918,29 @@
 			settings = {
 			};
 		};
+		AA7DEF480D7175D50057F5F8 = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			name = English;
+			path = English.lproj/EditUniformTypeRankingWindow.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF4A0D7176030057F5F8 = {
+			children = (
+				AA7DEF480D7175D50057F5F8,
+			);
+			isa = PBXVariantGroup;
+			name = EditUniformTypeRankingWindow.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DEF4B0D7176030057F5F8 = {
+			fileRef = AA7DEF4A0D7176030057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		AA84171A088E5BD40074E92A = {
 			isa = PBXFileReference;
 			lastKnownFileType = wrapper.nib;
@@ -2196,14 +2221,14 @@
 				AA402FEB0A5B01A6004EAAF3,
 				AA402FF80A5B01A6004EAAF3,
 				AA402FEF0A5B01A6004EAAF3,
+				AA7DEDB30D6F1E3B0057F5F8,
+				AA7DEDB40D6F1E3B0057F5F8,
 				AA402FF40A5B01A6004EAAF3,
 				AA402FF00A5B01A6004EAAF3,
 				AAEF604E0B028DD800C7134A,
 				AAEF604F0B028DD800C7134A,
 				AA7DEC8B0D6EDE820057F5F8,
 				AA7DEC8C0D6EDE820057F5F8,
-				AA7DEDB30D6F1E3B0057F5F8,
-				AA7DEDB40D6F1E3B0057F5F8,
 			);
 			isa = PBXGroup;
 			name = control;
