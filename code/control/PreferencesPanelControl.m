@@ -52,10 +52,6 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
 
 
 - (void) windowDidLoad {
-  [[NSNotificationCenter defaultCenter]
-      addObserver: self selector: @selector(windowWillClose:)
-        name: NSWindowWillCloseNotification object: [self window]];
-
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
   // Configure all pop-up buttons.
@@ -76,12 +72,6 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
   [self updateButtonState];
   
   [[self window] center];
-  [[self window] makeKeyAndOrderFront: self];
-}
-
-
-- (void) windowWillClose: (NSNotification *)notification {
-   [self autorelease];
 }
 
 
