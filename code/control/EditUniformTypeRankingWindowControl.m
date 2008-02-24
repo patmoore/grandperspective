@@ -23,6 +23,8 @@
 - (void) fetchCurrentTypeList;
 - (void) commitChangedTypeList;
 
+- (void) closeWindow;
+
 - (void) updateWindowState;
 - (void) updateDominatedStatusInRange: (NSRange) range;
 
@@ -68,13 +70,13 @@
 
 
 - (IBAction) cancelAction: (id) sender {
-  [[self window] close];
+  [self closeWindow];
 }
 
 - (IBAction) okAction: (id) sender {
   [self commitChangedTypeList];
 
-  [[self window] close];
+  [self closeWindow];
 }
 
 - (IBAction) moveToTopAction: (id) sender {
@@ -160,9 +162,13 @@
 //----------------------------------------------------------------------------
 // Delegate methods for NSWindow
 
-- (void) windowDidBecomeKey: (NSNotification *)notification {
-  [self fetchCurrentTypeList];
-  [self updateWindowState];
+- (void) windowDidBecomeKey: (NSNotification *)notification {  
+  if ([typeCells count] == 0) {
+    // The window has just been opened. Fetch the latest type list.
+    
+    [self fetchCurrentTypeList];
+    [self updateWindowState];
+  }
 }
 
 //----------------------------------------------------------------------------
@@ -245,6 +251,19 @@
   }
   
   [typeRanking updateRankedUniformTypes: newRanking];
+}
+
+
+- (void) closeWindow {
+  [[self window] close];
+  
+  // Clear the array. This signals that it should be reloaded when the window
+  // appears again. This is needed because there is (apparently) no good way to
+  // find out when a window has just been opened. The
+  // NSWindowDidBecomeKeyNotification is used here, but this is also fired when
+  // the window is already open (but lost and subsequently regained its key
+  // status).
+  [typeCells removeAllObjects];
 }
 
 
