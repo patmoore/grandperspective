@@ -1,5 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
+
+/* Event that is fired when there have been changes to the hashing scheme
+ * that may cause one or more file items to map to a different hash value.
+ */
+extern NSString  *HashingSchemeChangedEvent;
+
+
 @protocol FileItemHashing;
 
 /* A file item hashing scheme. It represents a particular algorithm for 

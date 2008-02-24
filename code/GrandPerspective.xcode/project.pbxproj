@@ -411,6 +411,7 @@
 				AA7DEF100D70B7F10057F5F8,
 				AA7DEF120D70B7F10057F5F8,
 				AA7DEF140D70B7F10057F5F8,
+				AA7DF05E0D71D6990057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1800,6 +1801,7 @@
 			children = (
 				AA7DEF010D70B7F10057F5F8,
 				AA7DEF040D70B7F10057F5F8,
+				AA7DF05D0D71D6990057F5F8,
 				AA7DEF020D70B7F10057F5F8,
 				AA7DEF030D70B7F10057F5F8,
 				AA7DEF050D70B7F10057F5F8,
@@ -1937,6 +1939,20 @@
 		};
 		AA7DEF4B0D7176030057F5F8 = {
 			fileRef = AA7DEF4A0D7176030057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DF05D0D71D6990057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			path = FileItemHashingScheme.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DF05E0D71D6990057F5F8 = {
+			fileRef = AA7DF05D0D71D6990057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};

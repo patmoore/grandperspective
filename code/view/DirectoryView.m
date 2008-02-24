@@ -17,6 +17,9 @@
 #import "DrawTaskExecutor.h"
 #import "DrawTaskInput.h"
 
+#import "FileItemHashing.h"
+#import "FileItemHashingScheme.h"
+
 
 #define SCROLL_WHEEL_SENSITIVITY  6.0
 
@@ -35,6 +38,9 @@
 - (void) visibleTreeChanged: (NSNotification *)notification;
 - (void) visiblePathLockingChanged: (NSNotification *)notification;
 - (void) windowMainStatusChanged: (NSNotification *) notification;
+
+- (void) observeColorMapping;
+- (void) colorMappingChanged: (NSNotification *) notification;
 
 - (void) updateSelectedItem: (NSPoint) point;
 
@@ -67,6 +73,8 @@
   [pathDrawer release];
   [pathBuilder release];
   
+  [observedColorMapping release];
+  
   [pathModel release];
   [invisibleSelectedItem release];
   
@@ -86,6 +94,7 @@
   drawTaskManager = 
     [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
   [drawTaskExecutor release];
+  [self observeColorMapping];
   
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
@@ -135,6 +144,10 @@
 
   if (settings != [drawTaskExecutor treeDrawerSettings]) {
     [drawTaskExecutor setTreeDrawerSettings: settings];
+    
+    // Observe the color mapping (in case it has changed)
+    [self observeColorMapping];
+
     [self forceRedraw];
   }
 }
@@ -383,6 +396,35 @@
   [[self window] setAcceptsMouseMovedEvents: 
                    ![pathModel isVisiblePathLocked] && 
                    [[self window] isMainWindow]];
+}
+
+
+
+- (void) observeColorMapping {
+  ItemTreeDrawerSettings  *treeDrawerSettings = [self treeDrawerSettings];
+  NSObject <FileItemHashingScheme>  *colorMapping = 
+    [[treeDrawerSettings colorMapper] fileItemHashingScheme];
+    
+  if (colorMapping != observedColorMapping) {
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+    
+    if (observedColorMapping != nil) {
+      [nc removeObserver: self name: HashingSchemeChangedEvent 
+            object: observedColorMapping];
+      [observedColorMapping release];
+    }
+
+    [nc addObserver: self selector: @selector(colorMappingChanged:)
+          name: HashingSchemeChangedEvent object: colorMapping];
+    observedColorMapping = [colorMapping retain];
+  }
+}
+
+- (void) colorMappingChanged: (NSNotification *) notification {
+  // Replace the mapper that is used by a new one (still from the same scheme)
+  [self setTreeDrawerSettings: 
+         [[self treeDrawerSettings] copyWithColorMapper: 
+                                      [observedColorMapping fileItemHashing]]];
 }
 
 

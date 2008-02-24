@@ -1,6 +1,15 @@
 #import <Cocoa/Cocoa.h>
 
+/* Event that signals that the (relative) order of two or more uniform types
+ * changes.
+ *
+ * Note: This event is not fired when new types are added at the end of the
+ * ranking.
+ */
+extern NSString  *UniformTypeRankingChangedEvent;
 
+/* The key that is used to store the ranking in the user preferences.
+ */
 extern NSString  *UniformTypesRankingKey;
 
 
@@ -28,7 +37,7 @@ extern NSString  *UniformTypesRankingKey;
  */
 - (void) observeUniformTypeInventory: (UniformTypeInventory *)typeInventory;
 
-- (NSArray *) uniformTypeRanking;
+- (NSArray *) rankedUniformTypes;
 
 /* Updates the ranking of the uniform types.
  *
@@ -40,6 +49,6 @@ extern NSString  *UniformTypesRankingKey;
  * background thread). The provided ranking will be used, with any new types 
  * appended to the back.
  */
-- (void) updateUniformTypeRanking: (NSArray *)ranking;
+- (void) updateRankedUniformTypes: (NSArray *)ranking;
 
 @end

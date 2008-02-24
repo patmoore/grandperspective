@@ -7,6 +7,7 @@
 @class ItemPathDrawer;
 @class ItemPathBuilder;
 @class ItemPathModel;
+@protocol FileItemHashingScheme;
 
 @interface DirectoryView : NSView {
   AsynchronousTaskManager  *drawTaskManager;
@@ -19,8 +20,13 @@
   ItemPathDrawer  *pathDrawer;
   ItemPathBuilder  *pathBuilder;
   
+  /* The current color mapping, which is being observed for any changes to the
+   * scheme.
+   */
+  NSObject <FileItemHashingScheme>  *observedColorMapping;
+
   ItemPathModel  *pathModel;
-  
+
   // Maintains the selected item if it is outside the visible tree (in which
   // case it cannot be maintained by the pathModel). This can happen when the
   // entire volume is shown.

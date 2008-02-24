@@ -6,6 +6,13 @@
 #import "UniformTypeRanking.h"
 
 
+@interface UniformTypeHashingScheme (PrivateMethods)
+
+- (void) typeRankingChanged: (NSNotification *)notification;
+
+@end
+
+
 @interface HashingByUniformType : StatefulFileItemHashing {
 
   // Cache mapping UTIs (NSString) to integer values (NSNumber)
@@ -19,12 +26,59 @@
 
 @implementation UniformTypeHashingScheme
 
+- (id) init {
+  return [self initWithUniformTypeRanking: 
+                 [UniformTypeRanking defaultUniformTypeRanking]];
+
+}
+
+- (id) initWithUniformTypeRanking: (UniformTypeRanking *)typeRankingVal {
+  if (self = [super init]) {
+    typeRanking = [typeRankingVal retain];
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver: self selector: @selector(typeRankingChanged:)
+          name: UniformTypeRankingChangedEvent object: typeRanking];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+  
+  [typeRanking release];
+  
+  [super dealloc];
+}
+
+
+- (UniformTypeRanking *)uniformTypeRanking {
+  return typeRanking;
+}
+
+
+//----------------------------------------------------------------------------
+// Implementation of FileItemHashingScheme protocol
+
 - (NSObject <FileItemHashing> *) fileItemHashing {
   return [[[HashingByUniformType alloc] initWithFileItemHashingScheme: self]
               autorelease];
 }
 
-@end
+@end // @implementation UniformTypeHashingScheme
+
+
+@implementation UniformTypeHashingScheme (PrivateMethods)
+
+- (void) typeRankingChanged: (NSNotification *)notification {
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  
+  [nc postNotificationName: HashingSchemeChangedEvent object: self];
+}
+
+@end // @implementation UniformTypeHashingScheme (PrivateMethods)
 
 
 @implementation HashingByUniformType
@@ -36,8 +90,10 @@
     hashForUTICache = 
       [[NSMutableDictionary dictionaryWithCapacity: 16] retain];
     
-    orderedTypes = [[[UniformTypeRanking defaultUniformTypeRanking]
-                       uniformTypeRanking] retain];
+    UniformTypeRanking  *typeRanking =
+      [((UniformTypeHashingScheme *)schemeVal) uniformTypeRanking];
+    
+    orderedTypes = [[typeRanking rankedUniformTypes] retain];
   }
   
   return self;
@@ -51,6 +107,9 @@
   [super dealloc];
 }
 
+
+//----------------------------------------------------------------------------
+// Implementation of FileItemHashing protocol
 
 - (int) hashForFileItem: (PlainFileItem *)item depth: (int)depth {
   UniformType  *type = [item uniformType];

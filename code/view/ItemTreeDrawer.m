@@ -2,7 +2,6 @@
 
 #import "DirectoryItem.h"
 #import "FileItemHashing.h"
-#import "FileItemHashingScheme.h"
 #import "TreeLayoutBuilder.h"
 #import "FileItemPathStringCache.h"
 #import "ItemTreeDrawerSettings.h"
@@ -66,18 +65,17 @@
   [super dealloc];
 }
 
-- (void) setColorMapping: (NSObject <FileItemHashingScheme> *)colorMapping {
-  NSAssert(colorMapping != nil, 
-           @"Cannot set an invalid color mapping.");
+- (void) setColorMapper: (NSObject <FileItemHashing> *)colorMapperVal {
+  NSAssert(colorMapperVal != nil, @"Cannot set an invalid color mapper.");
 
-  if (colorMapping != [colorMapper fileItemHashingScheme]) {
+  if (colorMapperVal != colorMapper) {
     [colorMapper release];
-    colorMapper = [[colorMapping fileItemHashing] retain];
+    colorMapper = [colorMapperVal retain];
   }
 }
 
-- (NSObject <FileItemHashingScheme> *) colorMapping {
-  return [colorMapper fileItemHashingScheme];
+- (NSObject <FileItemHashing> *) colorMapper {
+  return colorMapper;
 }
 
 
@@ -111,7 +109,7 @@
 
 
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings {
-  [self setColorMapping: [settings colorMapping]];
+  [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
   [self setFileItemMask: [settings fileItemMask]];
 }

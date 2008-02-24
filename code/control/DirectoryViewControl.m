@@ -3,6 +3,7 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
+#import "FileItemHashingScheme.h"
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
@@ -398,8 +399,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [colorMappings fileItemHashingSchemeForKey: name];
 
   if (mapping != nil) {
+    NSObject <FileItemHashing>  *mapper = [mapping fileItemHashing];
+  
     [mainView setTreeDrawerSettings: 
-      [[mainView treeDrawerSettings] copyWithColorMapping: mapping]];
+      [[mainView treeDrawerSettings] copyWithColorMapper: mapper]];
   }
 }
 

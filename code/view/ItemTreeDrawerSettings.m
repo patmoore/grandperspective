@@ -15,18 +15,18 @@
 // Creates default settings.
 - (id) init {
   return 
-    [self initWithColorMapping: 
+    [self initWithColorMapper: 
                           [[[StatelessFileItemHashing alloc] init] autorelease]
             colorPalette: [ItemTreeDrawerSettings defaultColorPalette]
             fileItemMask: nil];
 }
 
 
-- (id) initWithColorMapping: (NSObject <FileItemHashing> *)colorMappingVal
+- (id) initWithColorMapper: (NSObject <FileItemHashing> *)colorMapperVal
          colorPalette: (NSColorList *)colorPaletteVal
          fileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal {
   if (self = [super init]) {
-    colorMapping = [colorMappingVal retain];
+    colorMapper = [colorMapperVal retain];
     colorPalette = [colorPaletteVal retain];
     fileItemMask = [fileItemMaskVal retain];
   }
@@ -35,7 +35,7 @@
 }
 
 - (void) dealloc {
-  [colorMapping release];
+  [colorMapper release];
   [colorPalette release];
   [fileItemMask release];
   
@@ -43,30 +43,30 @@
 }
 
 
-- (id) copyWithColorMapping: (NSObject <FileItemHashing> *)colorMappingVal {
+- (id) copyWithColorMapper: (NSObject <FileItemHashing> *)colorMapperVal {
   return [[[ItemTreeDrawerSettings alloc]
-              initWithColorMapping: colorMappingVal
+              initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
               fileItemMask: fileItemMask] autorelease];
 }
 
 - (id) copyWithColorPalette: (NSColorList *)colorPaletteVal {
   return [[[ItemTreeDrawerSettings alloc]
-              initWithColorMapping: colorMapping
+              initWithColorMapper: colorMapper
               colorPalette: colorPaletteVal
               fileItemMask: fileItemMask] autorelease];
 }
 
 - (id) copyWithFileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal {
   return [[[ItemTreeDrawerSettings alloc]
-              initWithColorMapping: colorMapping
+              initWithColorMapper: colorMapper
               colorPalette: colorPalette
               fileItemMask: fileItemMaskVal] autorelease];
 }
 
 
-- (NSObject <FileItemHashing> *) colorMapping {
-  return colorMapping;
+- (NSObject <FileItemHashing> *) colorMapper {
+  return colorMapper;
 }
 
 - (NSColorList *) colorPalette {

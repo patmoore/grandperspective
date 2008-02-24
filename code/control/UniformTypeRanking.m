@@ -4,6 +4,8 @@
 #import "UniformTypeInventory.h"
 
 
+NSString  *UniformTypeRankingChangedEvent = @"uniformTypeRankingChanged";
+
 NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
 
 @interface UniformTypeRanking (PrivateMethods) 
@@ -102,16 +104,20 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
 }
 
 
-- (NSArray *) uniformTypeRanking {
+- (NSArray *) rankedUniformTypes {
   // Return an immutable copy of the array.
   return [NSArray arrayWithArray: rankedTypes];  
 }
 
-- (void) updateUniformTypeRanking: (NSArray *)ranking {
+- (void) updateRankedUniformTypes: (NSArray *)ranking {
   // Updates the ranking while keeping new types that may have appeared in the
   // meantime.
   [rankedTypes replaceObjectsInRange: NSMakeRange(0, [ranking count])
                  withObjectsFromArray: ranking];
+  
+  // Notify any observers.
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];  
+  [nc postNotificationName: UniformTypeRankingChangedEvent object: self];
 }
 
 @end // @implementation UniformTypeRanking

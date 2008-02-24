@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@protocol FileItemHashingScheme;
+@protocol FileItemHashing;
 @protocol FileItemTest;
 
 
@@ -9,23 +9,23 @@
 // facilitate use in multi-threading context. 
 @interface ItemTreeDrawerSettings : NSObject {
   NSColorList  *colorPalette;
-  NSObject <FileItemHashingScheme>  *colorMapping;
+  NSObject <FileItemHashing>  *colorMapper;
   NSObject <FileItemTest>  *fileItemMask;
 }
 
 // Creates default settings.
 - (id) init;
 
-- (id) initWithColorMapping: (NSObject <FileItemHashingScheme> *)colorMapping
+- (id) initWithColorMapper: (NSObject <FileItemHashing> *)colorMapper
          colorPalette: (NSColorList *)colorPalette
          fileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 
 - (id) copyWithColorPalette: (NSColorList *)colorPalette;
-- (id) copyWithColorMapping: (NSObject <FileItemHashingScheme> *)colorMapping;
+- (id) copyWithColorMapper: (NSObject <FileItemHashing> *)colorMapper;
 - (id) copyWithFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 
 - (NSColorList *)colorPalette;
-- (NSObject <FileItemHashingScheme> *)colorMapping;
+- (NSObject <FileItemHashing> *)colorMapper;
 - (NSObject <FileItemTest> *)fileItemMask;
 
 @end

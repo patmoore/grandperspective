@@ -46,7 +46,7 @@
                       owner: self]) {
     typeRanking = [typeRankingVal retain];
     typeCells = [[NSMutableArray arrayWithCapacity: 
-                    [[typeRanking uniformTypeRanking] count]] retain];
+                    [[typeRanking rankedUniformTypes] count]] retain];
   }
   
   return self;
@@ -217,7 +217,7 @@
 - (void) fetchCurrentTypeList {
   [typeCells removeAllObjects];
   
-  NSArray  *currentRanking = [typeRanking uniformTypeRanking];
+  NSArray  *currentRanking = [typeRanking rankedUniformTypes];
   
   NSEnumerator  *typeEnum = [currentRanking objectEnumerator];
   UniformType  *type;
@@ -245,7 +245,7 @@
     [newRanking addObject: [typeCell uniformType]];
   }
   
-  [typeRanking updateUniformTypeRanking: newRanking];
+  [typeRanking updateRankedUniformTypes: newRanking];
 }
 
 
