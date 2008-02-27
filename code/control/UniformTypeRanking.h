@@ -33,7 +33,8 @@ extern NSString  *UniformTypesRankingKey;
 - (void) storeRanking;
 
 /* Observes the given type inventory for the addition of new types. These are
- * then automatically added at the end of the ranking.
+ * then automatically added at the end of the ranking. Furthermore, any types
+ * in the inventory that are not yet in the ranking, are added (to the end).
  */
 - (void) observeUniformTypeInventory: (UniformTypeInventory *)typeInventory;
 

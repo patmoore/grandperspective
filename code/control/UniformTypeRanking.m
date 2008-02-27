@@ -99,8 +99,24 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
 - (void) observeUniformTypeInventory: (UniformTypeInventory *)typeInventory {
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
+  // Observe the inventory to for newly added types so that these can be added
+  // to (the end of) the ranked list. 
   [nc addObserver: self selector: @selector(uniformTypeAdded:)
         name: UniformTypeAddedEvent object: typeInventory];
+        
+  // Also add any types in the inventory that are not yet in the ranking
+  NSMutableSet  *typesInRanking = 
+    [NSMutableSet setWithCapacity: ([rankedTypes count] + 16)];
+
+  [typesInRanking addObjectsFromArray: rankedTypes];
+  NSEnumerator  *typesEnum = [typeInventory uniformTypeEnumerator];
+  UniformType  *type;
+  while (type = [typesEnum nextObject]) {
+    if (! [typesInRanking containsObject: type]) {
+      [rankedTypes addObject: type];
+      [typesInRanking addObject: type];  
+    }
+  }
 }
 
 
