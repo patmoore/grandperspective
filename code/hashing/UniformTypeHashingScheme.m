@@ -93,7 +93,7 @@
     UniformTypeRanking  *typeRanking =
       [((UniformTypeHashingScheme *)schemeVal) uniformTypeRanking];
     
-    orderedTypes = [[typeRanking rankedUniformTypes] retain];
+    orderedTypes = [[typeRanking undominatedRankedUniformTypes] retain];
   }
   
   return self;

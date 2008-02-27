@@ -52,4 +52,26 @@ extern NSString  *UniformTypesRankingKey;
  */
 - (void) updateRankedUniformTypes: (NSArray *)ranking;
 
+
+/* Returns YES if the given type is dominated. A type is considered dominated
+ * if one of the types is conforms to (directly or indirectly) appears higher
+ * in the list than the type itself.
+ *
+ * Note: Should the specified type not actually be the list, then this method
+ * acts as if it resides at the bottom of the list. I.e. it return YES if the 
+ * type is dominated by any type in the list.
+ *
+ * Note: This method checks dynamically if a given type is dominated, so it
+ * should be invoked with a bit of care.
+ */
+- (BOOL) isUniformTypeDominated: (UniformType *)type;
+
+/* Returns the ranked list of types, excluding those that are dominated. See
+ * also -isUniformTypeDominated:.
+ *
+ * Note: This list is calculated dynamically, so it should be invoked with a
+ * little bit of care.
+ */
+- (NSArray *) undominatedRankedUniformTypes;
+
 @end

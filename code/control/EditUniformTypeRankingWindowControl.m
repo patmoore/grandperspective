@@ -6,10 +6,10 @@
 
 @interface TypeCell : NSObject {
   UniformType  *type;
-  BOOL  isDominated;
+  BOOL  dominated;
 }
 
-- (id) initWithUniformType: (UniformType *)type;
+- (id) initWithUniformType: (UniformType *)type dominated: (BOOL) dominated;
 
 - (UniformType *) uniformType;
 - (BOOL) isDominated;
@@ -26,7 +26,6 @@
 - (void) closeWindow;
 
 - (void) updateWindowState;
-- (void) updateDominatedStatusInRange: (NSRange) range;
 
 - (void) moveCellUpFromIndex: (int) index;
 - (void) moveCellDownFromIndex: (int) index;
@@ -227,13 +226,13 @@
   NSEnumerator  *typeEnum = [currentRanking objectEnumerator];
   UniformType  *type;
   while (type = [typeEnum nextObject]) {
+    BOOL  dominated = [typeRanking isUniformTypeDominated: type];
     TypeCell  *typeCell = 
-                 [[[TypeCell alloc] initWithUniformType: type] autorelease];
+                 [[[TypeCell alloc] initWithUniformType: type
+                                      dominated: dominated] autorelease];
 
     [typeCells addObject: typeCell];
   }
-  
-  [self updateDominatedStatusInRange: NSMakeRange(0, [typeCells count])];
   
   [typesBrowser validateVisibleColumns];  
   [typesBrowser selectRow: 0 inColumn: 0];
@@ -283,33 +282,6 @@
 
   [moveDownButton setEnabled: i < numCells - 1];
   [moveToBottomButton setEnabled: i < numCells - 1];
-}
-
-- (void) updateDominatedStatusInRange: (NSRange) range {
-  int  i = range.location;
-  int  i_max = range.location + range.length;
-  
-  while (i < i_max) {
-    TypeCell  *cell = [typeCells objectAtIndex: i];
-    NSSet  *ancestors = [[cell uniformType] ancestorTypes];
-  
-    int  j = 0;
-    BOOL  dominated = NO;
-
-    while (j < i && !dominated) {
-      UniformType  *higherType = [[typeCells objectAtIndex: j] uniformType];
-    
-      if ([ancestors containsObject: higherType]) {
-        dominated = YES;
-      }
-    
-      j++;
-    }
-    
-    [cell setDominated: dominated];
-  
-    i++;
-  }
 }
 
 
@@ -366,9 +338,11 @@
 
 @implementation TypeCell
 
-- (id) initWithUniformType: (UniformType *)typeVal {
+- (id) initWithUniformType: (UniformType *)typeVal
+         dominated: (BOOL) dominatedVal {
   if (self = [super init]) {
     type = [typeVal retain];
+    dominated = dominatedVal;
   }
   
   return self;
@@ -385,11 +359,11 @@
 }
 
 - (BOOL) isDominated {
-  return isDominated;
+  return dominated;
 }
 
 - (void) setDominated: (BOOL) flag {
-  isDominated = flag;
+  dominated = flag;
 }
 
 @end

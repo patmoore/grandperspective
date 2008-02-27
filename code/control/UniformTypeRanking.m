@@ -136,6 +136,51 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
   [nc postNotificationName: UniformTypeRankingChangedEvent object: self];
 }
 
+
+- (BOOL) isUniformTypeDominated: (UniformType *)type {
+  int  i = 0;
+  int  i_max = [rankedTypes count];
+  
+  NSSet  *ancestors = [type ancestorTypes];
+  
+  while (i < i_max) {
+    UniformType  *higherType = [rankedTypes objectAtIndex: i];
+    
+    if (higherType == type) {
+      // Found the type in the list, without encountering any type that 
+      // dominates it.
+      return NO;
+    }
+
+    if ([ancestors containsObject: higherType]) {
+      // Found a type that dominates this one.
+      return YES;
+    }
+    
+    i++;
+  }
+}
+
+- (NSArray *) undominatedRankedUniformTypes {
+  NSMutableArray  *undominatedTypes = 
+    [NSMutableArray arrayWithCapacity: [rankedTypes count]];
+    
+  int  i = 0;
+  int  i_max = [rankedTypes count];
+
+  while (i < i_max) {
+    UniformType  *type = [rankedTypes objectAtIndex: i];
+    
+    if (! [self isUniformTypeDominated: type]) {
+      [undominatedTypes addObject: type];
+    }
+    
+    i++;
+  }
+  
+  return undominatedTypes;
+}
+
 @end // @implementation UniformTypeRanking
 
 
