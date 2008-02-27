@@ -87,7 +87,14 @@ NSString  *UniformTypeKey = @"uniformType";
   else {
     type = [self uniformTypeForIdentifier: uti];
     
-    [typeForExtension setObject: type forKey: ext];
+    if (type != nil) {
+      // It is possible that a UTI has been registered for an extension, but
+      // that the corresponding UniformType could not be created (because no
+      // further information could be established). That is why it is checked 
+      // that the type is not nil.
+      
+      [typeForExtension setObject: type forKey: ext];
+    }
     
     return type;
   }
