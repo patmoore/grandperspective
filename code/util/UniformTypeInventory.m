@@ -4,10 +4,13 @@
 #import "UniformType.h"
 
 
-
 NSString  *UniformTypeAddedEvent = @"uniformTypeAdded";
 
 NSString  *UniformTypeKey = @"uniformType";
+
+// The UTI that is used when the type is unknown (i.e. when there is no proper 
+// UTI associated with a given file or extension).
+NSString  *UnknownTypeUTI = @"unknown";
 
 
 @interface UniformTypeInventory (PrivateMethods) 
@@ -41,12 +44,24 @@ NSString  *UniformTypeKey = @"uniformType";
     typeForUTI = [[NSMutableDictionary alloc] initWithCapacity: 32];
     childrenForUTI = [[NSMutableDictionary alloc] initWithCapacity: 32];
     parentlessTypes = [[NSMutableSet alloc] initWithCapacity: 8];
+    
+    // Create the UniformType object used when the type is unknown.
+    NSString  *descr = NSLocalizedString( @"Unknown file type", 
+                                          @"Description for \"unknown\" UTI.");
+    unknownType = 
+      [[UniformType alloc] initWithUniformTypeIdentifier: UnknownTypeUTI
+                             description: descr
+                             parents: [NSArray array]];
+    [typeForUTI setObject: unknownType forKey: UnknownTypeUTI];
+    [parentlessTypes addObject: unknownType];
   }
   
   return self;
 }
 
 - (void) dealloc {
+  [unknownType release];
+  
   [typeForExtension release];
   [untypedExtensions release];
   [typeForUTI release];
@@ -56,6 +71,10 @@ NSString  *UniformTypeKey = @"uniformType";
   [super dealloc];
 }
 
+
+- (UniformType *)unknownUniformType; {
+  return unknownType;
+}
 
 - (NSEnumerator *)uniformTypeEnumerator {
   return [typeForUTI objectEnumerator];
@@ -72,7 +91,7 @@ NSString  *UniformTypeKey = @"uniformType";
   if ([untypedExtensions containsObject: ext]) {
     // The extension was already encountered, and has no proper UTI associated
     // with it.
-    return nil;
+    return unknownType;
   }
 
   NSString  *uti = 
@@ -80,13 +99,9 @@ NSString  *UniformTypeKey = @"uniformType";
                   (kUTTagClassFilenameExtension, (CFStringRef)ext, NULL); 
     // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up.  
 
-  if ([uti hasPrefix: @"dyn."]) {
-    [untypedExtensions addObject: ext];
-    return nil;
-  }
-  else {
+  if (! [uti hasPrefix: @"dyn."]) {
     type = [self uniformTypeForIdentifier: uti];
-    
+
     if (type != nil) {
       // It is possible that a UTI has been registered for an extension, but
       // that the corresponding UniformType could not be created (because no
@@ -94,10 +109,15 @@ NSString  *UniformTypeKey = @"uniformType";
       // that the type is not nil.
       
       [typeForExtension setObject: type forKey: ext];
-    }
     
-    return type;
+      return type;
+    }
   }
+  
+  // No proper type could be constructed for the given UTI.
+  [untypedExtensions addObject: ext];
+
+  return unknownType;
 }
 
 - (UniformType *)uniformTypeForIdentifier: (NSString *)uti {
@@ -105,7 +125,10 @@ NSString  *UniformTypeKey = @"uniformType";
 
   if (type == self) {
     // Encountered cycle in the type conformance relationships. Breaking the 
-    // loop and avoiding infinite recursion by returning "nil".
+    // loop to avoid infinite recursion.
+    //
+    // Note: We can only get here if the caller was "self". Therefore returning
+    // "nil" here instead of "unknownType".
     return nil;
   }
 
@@ -123,7 +146,8 @@ NSString  *UniformTypeKey = @"uniformType";
   if (type == nil) {
     // No uniform type could be created for the UTI
     [typeForUTI removeObjectForKey: uti];
-    return nil;
+
+    return unknownType;
   }
   
   [typeForUTI setObject: type forKey: uti];
@@ -151,6 +175,7 @@ NSString  *UniformTypeKey = @"uniformType";
   
   return type;
 }
+
 
 - (NSSet *)childrenOfUniformType: (UniformType *)type {
   return [NSSet setWithArray: [childrenForUTI objectForKey: 

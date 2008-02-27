@@ -20,6 +20,9 @@ extern NSString  *UniformTypeKey;
  */
 @interface UniformTypeInventory : NSObject {
 
+  // The generic "unknown" type.
+  UniformType  *unknownType;
+
   // Maps NSStrings to UniformTypes
   NSMutableDictionary  *typeForExtension;
 
@@ -39,19 +42,26 @@ extern NSString  *UniformTypeKey;
 
 + (UniformTypeInventory *)defaultUniformTypeInventory;
 
-// Returns the FileType object for the UTI for the given file extension, or 
-// "nil" if there is no properly defined UTI for this extension.
+- (NSSet *)childrenOfUniformType: (UniformType *)type;
+
+/* Returns the type for the UTI for the given file extension. If there is no
+ * properly defined type, it returns the type the generic "unknown" type
+ * (see -unknownUniformType).
+ */
 - (UniformType *)uniformTypeForExtension: (NSString *)ext;
 
 - (UniformType *)uniformTypeForIdentifier: (NSString *)uti;
-
-- (NSSet *)childrenOfUniformType: (UniformType *)type;
 
 /* Enumerates over all types maintained by this inventory. These types include
  * those that have been registered directly, as well as those that have been
  * registered indirectly (as a result of being ancestors of a registered type).
  */
 - (NSEnumerator *)uniformTypeEnumerator;
+
+/* Returns the generic unknown type. It can be used whenever there is no proper
+ * uniform type for a given file, extension or UTI.
+ */
+- (UniformType *)unknownUniformType;
 
 // For debugging.
 - (void) dumpTypesToLog;
