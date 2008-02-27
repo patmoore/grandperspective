@@ -112,6 +112,13 @@ NSString  *UniformTypeKey = @"uniformType";
   // recursion should there be a cycle in the type-conformance relationsships.
   [typeForUTI setObject: self forKey: uti];
   type = [self createUniformTypeForIdentifier: uti];
+
+  if (type == nil) {
+    // No uniform type could be created for the UTI
+    [typeForUTI removeObjectForKey: uti];
+    return nil;
+  }
+  
   [typeForUTI setObject: type forKey: uti];
   [childrenForUTI setObject: [NSArray array] forKey: uti];
   
@@ -181,6 +188,11 @@ NSString  *UniformTypeKey = @"uniformType";
 
   NSDictionary  *dict = 
     (NSDictionary*) UTTypeCopyDeclaration( (CFStringRef)uti );
+    
+  if (dict == nil) {
+    // The UTI is not recognized. 
+    return nil;
+  }
 
   NSString  *descr = [dict objectForKey: (NSString*)kUTTypeDescriptionKey];
   if (descr == nil) {
