@@ -156,8 +156,10 @@
   }
   
   UniformType  *type = [orderedTypes objectAtIndex: hash];
+  
+  NSString  *descr = [type description];
    
-  return [type description];
+  return (descr != nil) ? descr : [type uniformTypeIdentifier];
 }
 
 @end
