@@ -40,7 +40,10 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 - (id) tableView: (NSTableView *)tableView 
          objectValueForTableColumn: (NSTableColumn *)column row: (int) row;
          
+- (NSString *) descriptionForRow: (int) row;
+
 - (void) makeColorImages;
+- (void) updateDescriptionColumnWidth;
          
 - (void) colorPaletteChanged: (NSNotification *)notification;
 - (void) colorMappingChanged: (NSNotification *)notification;
@@ -782,6 +785,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     
     colorImages = nil;
     [self makeColorImages];
+    [self updateDescriptionColumnWidth];
     
     [tableView setDataSource: self];
     
@@ -818,22 +822,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     return [colorImages objectAtIndex: row];
   }
   else if ([column identifier] == ColorDescriptionColumnIdentifier) {
-    NSObject <FileItemHashing>
-      *colorMapper = [[dirView treeDrawerSettings] colorMapper];
-    
-    if ([colorMapper canProvideLegend]) {
-      if (row < [colorImages count] - 1) {
-        return [((LegendProvidingFileItemHashing *)colorMapper) 
-                    descriptionForHash: row];
-      }
-      else {
-        return [((LegendProvidingFileItemHashing *)colorMapper)
-                    descriptionForRemainingHashes];
-      }
-    }
-    else {
-      return @"";
-    }
+    return [self descriptionForRow: row];
   }
   else {
     NSAssert(NO, @"Unexpected column.");
@@ -843,6 +832,26 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 
 //-----------------------------------------------------------------------------
 // "Private" methods
+
+- (NSString *) descriptionForRow: (int) row {
+  NSObject <FileItemHashing>
+    *colorMapper = [[dirView treeDrawerSettings] colorMapper];
+    
+  if ([colorMapper canProvideLegend]) {
+    if (row < [colorImages count] - 1) {
+      return [((LegendProvidingFileItemHashing *)colorMapper) 
+                  descriptionForHash: row];
+    }
+    else {
+      return [((LegendProvidingFileItemHashing *)colorMapper)
+                  descriptionForRemainingHashes];
+    }
+  }
+  else {
+    return @"";
+  }
+}
+
 
 - (void) makeColorImages {
   NSColorList  *colorPalette = [[dirView treeDrawerSettings] colorPalette];
@@ -866,12 +875,45 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   }
 }
 
+- (void) updateDescriptionColumnWidth {
+  NSTableColumn  *descrColumn = 
+    [tableView tableColumnWithIdentifier: ColorDescriptionColumnIdentifier];
+  NSFont  *font = [[descrColumn dataCell] font];
+
+  int  numColors = [colorImages count];
+  int  i = 0;
+  float  maxWidth = 0;
+  while (i < numColors) {
+    NSString  *descr = [self descriptionForRow: i];
+    float  width = [font widthOfString: descr];
+    if (width > maxWidth) {
+      maxWidth = width;
+    }
+    i++;
+  }
+  
+  // Increase for the space at the right and left.
+  // TODO: Is there a way to get the exact value dynamically?
+  maxWidth += 6;
+  
+  NSLog(@"Setting width: %f", maxWidth);
+  [descrColumn setMaxWidth: maxWidth];
+  [descrColumn setWidth: maxWidth];
+}
+
+
 - (void) colorPaletteChanged: (NSNotification *)notification {
   [self makeColorImages];
+
+  // As the number of colors may have changed, the longest description may
+  // have changed as well.
+  [self updateDescriptionColumnWidth];
+
   [tableView reloadData];
 }
 
 - (void) colorMappingChanged: (NSNotification *)notification {
+  [self updateDescriptionColumnWidth];
   [tableView reloadData];
 }
 
