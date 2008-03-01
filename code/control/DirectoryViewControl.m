@@ -823,10 +823,12 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     
     if ([colorMapper canProvideLegend]) {
       if (row < [colorImages count] - 1) {
-        return [colorMapper descriptionForHash: row];
+        return [((LegendProvidingFileItemHashing *)colorMapper) 
+                    descriptionForHash: row];
       }
       else {
-        return [colorMapper descriptionForRemainingHashes];
+        return [((LegendProvidingFileItemHashing *)colorMapper)
+                    descriptionForRemainingHashes];
       }
     }
     else {

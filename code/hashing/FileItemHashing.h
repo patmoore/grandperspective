@@ -23,6 +23,14 @@
  */
 - (BOOL) canProvideLegend;
 
+@end
+
+
+/* Informal protocol to be implemented by FileItemHashing schemes for which 
+ * -canProvideLegend returns "YES".
+ */
+@interface LegendProvidingFileItemHashing
+
 /* Short descriptive string for the given hash value. Returns "nil" if no
  * description can be given (i.e. when -canProvideLegend returns "NO"), or if
  * the hash value is outside of the valid range.

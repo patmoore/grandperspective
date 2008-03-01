@@ -31,12 +31,4 @@
   return NO;
 }
 
-- (NSString *) descriptionForHash: (int) hash {
-  return nil;
-}
-
-- (NSString *) descriptionForRemainingHashes {
-  return nil;
-}
-
 @end

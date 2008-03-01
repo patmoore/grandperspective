@@ -150,6 +150,9 @@
   return YES;
 }
 
+//----------------------------------------------------------------------------
+// Implementation of informal LegendProvidingFileItemHashing protocol
+
 - (NSString *) descriptionForHash: (int)hash {
   if (hash < 0 || hash >= [orderedTypes count]) {
     return nil;
