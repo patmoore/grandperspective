@@ -22,18 +22,17 @@ rectangles as square as possible.
 - PowerPC/Intel processor
 
   This version of the application has been released as a Universal 
-  Binary. This was possible because I had access to a machine that 
-  can build these. However, I cannot yet build Universal Binaries
-  from my own machine; donations to support the required upgrade
-  are greatly appreciated :-). You can find out how to make a donation
-  on the GrandPerspective website.
+  Binary. Doing so is actually a bit of a hassle for me, as I cannot
+  build Universal Binaries from my own machine; donations to support
+  the required upgrade are therefore greatly appreciated :-). You can
+  find out how to make a donation on the GrandPerspective website.
 
   Many thanks to Martin Kahr who has been making Universal Binaries
   available for earlier releases of GrandPerspective. Also thanks
   to Craig Hughes who initially helped me to make the source code
   Intel-compatible.
 
-- Mac OS X, 10.2 or higher
+- Mac OS X, 10.3 or higher
 
 
 * CONTENTS
@@ -78,7 +77,8 @@ under the GNU General Public License. See COPYING.txt for details.
 For more information about the application, please visit the website
 at http://grandperspectiv.sourceforge.net. From there, you can 
 download the latest release of the software. It is also possible to
-report bugs, make a donation, request additional features, provide more general feedback, etc.
+report bugs, make a donation, request additional features, provide 
+more general feedback, etc.
 
 
 * CONTACT DETAILS
