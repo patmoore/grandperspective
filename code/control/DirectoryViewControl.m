@@ -11,6 +11,7 @@
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
 #import "PreferencesPanelControl.h"
+#import "GradientRectangleDrawer.h"
 #import "ItemTreeDrawerSettings.h"
 #import "ControlConstants.h"
 
@@ -771,6 +772,9 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     NSTableColumn  *imageColumn = [columns objectAtIndex: 0];
     [imageColumn setIdentifier: ColorImageColumnIdentifier];
     [imageColumn setEditable: NO];
+
+    NSImageCell  *imageCell = [[NSImageCell alloc] initImageCell: nil];
+    [imageColumn setDataCell: imageCell];
     
     NSTableColumn  *descrColumn = [columns objectAtIndex: 1];
     [descrColumn setIdentifier: ColorDescriptionColumnIdentifier];
@@ -834,16 +838,24 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 // "Private" methods
 
 - (void) makeColorImages {
-  [colorImages release];
-  
   NSColorList  *colorPalette = [[dirView treeDrawerSettings] colorPalette];
-  NSArray  *colorKeys = [colorPalette allKeys];
+  GradientRectangleDrawer  *drawer = 
+    [[[GradientRectangleDrawer alloc] initWithColorPalette: colorPalette]
+         autorelease];
   
-  colorImages = [[NSMutableArray alloc] initWithCapacity: [colorKeys count]];
-  NSEnumerator  *keyEnum = [colorKeys objectEnumerator];
-  NSString  *key;
-  while (key = [keyEnum nextObject]) {
-    [colorImages addObject: key];
+  int  numColors = [[colorPalette allKeys] count];
+  [colorImages release];
+  colorImages = [[NSMutableArray alloc] initWithCapacity: numColors];
+
+  NSTableColumn  *imageColumn = 
+    [tableView tableColumnWithIdentifier: ColorImageColumnIdentifier];
+  NSRect  bounds = NSMakeRect(0, 0, [imageColumn width], [tableView rowHeight]);
+
+  int  i = 0;
+  while (i < numColors) {
+    [colorImages addObject: [drawer drawImageOfGradientRectangleWithColor: i
+                                      inRect: bounds]];
+    i++;
   }
 }
 
