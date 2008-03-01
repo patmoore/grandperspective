@@ -7,8 +7,10 @@
 
   IBOutlet NSBrowser  *typesBrowser;
 
-  IBOutlet NSTextView  *typeDescriptionView;
   IBOutlet NSDrawer  *typeDescriptionDrawer;
+  IBOutlet NSTextField  *typeIdentifierField;
+  IBOutlet NSTextField  *typeDescriptionField;
+  IBOutlet NSTextField  *typeConformsToField;
   
   IBOutlet NSButton  *moveToTopButton;
   IBOutlet NSButton  *moveToBottomButton;
@@ -36,6 +38,8 @@
 - (IBAction) moveDownAction: (id) sender;
 
 - (IBAction) handleBrowserClick: (id) sender;
+
+- (IBAction) showTypeDescriptionChanged: (id) sender;
 
 
 - (id) initWithUniformTypeRanking: (UniformTypeRanking *)typeRanking;

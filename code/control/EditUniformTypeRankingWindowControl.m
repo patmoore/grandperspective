@@ -157,6 +157,16 @@
   [self updateWindowState];
 }
 
+- (IBAction) showTypeDescriptionChanged: (id) sender {
+  NSButton  *button = sender;
+  if ([button state] == NSOffState) {
+    [typeDescriptionDrawer close];
+  }
+  else if ([button state] == NSOnState) {
+    [typeDescriptionDrawer open];
+  }
+}
+
 
 //----------------------------------------------------------------------------
 // Delegate methods for NSWindow
@@ -282,6 +292,22 @@
 
   [moveDownButton setEnabled: i < numCells - 1];
   [moveToBottomButton setEnabled: i < numCells - 1];
+  
+  UniformType  *type = [typeCell uniformType];
+  
+  [typeIdentifierField setStringValue: [type uniformTypeIdentifier]];
+  [typeDescriptionField setStringValue: [type description]];
+
+  NSMutableString  *conformsTo = [NSMutableString stringWithCapacity: 64];
+  NSEnumerator  *parentEnum = [[type parentTypes] objectEnumerator];
+  UniformType  *parentType;
+  while (parentType = [parentEnum nextObject]) {
+    if ([conformsTo length] > 0) {
+      [conformsTo appendString: @", "];
+    }
+    [conformsTo appendString: [parentType uniformTypeIdentifier]];
+  }
+  [typeConformsToField setStringValue: conformsTo];
 }
 
 
