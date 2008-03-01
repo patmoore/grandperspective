@@ -1,5 +1,17 @@
 #import <Cocoa/Cocoa.h>
 
+
+/* Event fired when the color palette has changed. 
+ */
+extern NSString  *ColorPaletteChangedEvent;
+
+/* Event fired when the color mapper has changed. This is the case when the
+ * color mapping scheme changed, or when the scheme changed the way it maps
+ * file items to hash values.
+ */
+extern NSString  *ColorMappingChangedEvent;
+
+
 @class AsynchronousTaskManager;
 @class TreeLayoutBuilder;
 @class FileItem;

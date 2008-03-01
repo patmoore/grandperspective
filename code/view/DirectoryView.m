@@ -24,6 +24,10 @@
 #define SCROLL_WHEEL_SENSITIVITY  6.0
 
 
+NSString  *ColorPaletteChangedEvent = @"colorPaletteChanged";
+NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
+
+
 @interface DirectoryView (PrivateMethods)
 
 - (void) forceRedraw;
@@ -33,6 +37,9 @@
 // Sends selection-changed events, which comprise selection-changes inside
 // the path, as well as selection of "invisible" items outside the path.
 - (void) postSelectedItemChanged;
+
+- (void) postColorPaletteChanged;
+- (void) postColorMappingChanged;
 
 - (void) selectedItemChanged: (NSNotification *)notification;
 - (void) visibleTreeChanged: (NSNotification *)notification;
@@ -142,11 +149,25 @@
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
-  if (settings != [drawTaskExecutor treeDrawerSettings]) {
+  ItemTreeDrawerSettings  *oldSettings = [drawTaskExecutor treeDrawerSettings];
+  if (settings != oldSettings) {
+    [oldSettings retain];
+
     [drawTaskExecutor setTreeDrawerSettings: settings];
     
-    // Observe the color mapping (in case it has changed)
-    [self observeColorMapping];
+    if ([settings colorPalette] != [oldSettings colorPalette]) {
+      [self postColorPaletteChanged]; 
+    }
+    
+    if ([settings colorMapper] != [oldSettings colorMapper]) {
+      [self postColorMappingChanged]; 
+
+      // Observe the color mapping (for possible changes to its hashing
+      // implementation)
+      [self observeColorMapping];
+    }
+    
+    [oldSettings release];
 
     [self forceRedraw];
   }
@@ -358,6 +379,16 @@
       postNotificationName: SelectedItemChangedEvent object: self];
 }
 
+- (void) postColorPaletteChanged {
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName: ColorPaletteChangedEvent object: self];
+}
+
+- (void) postColorMappingChanged {
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName: ColorMappingChangedEvent object: self];
+}
+
 
 // Called when selection changes in path
 - (void) selectedItemChanged: (NSNotification *)notification {
@@ -425,6 +456,8 @@
   [self setTreeDrawerSettings: 
          [[self treeDrawerSettings] copyWithColorMapper: 
                                       [observedColorMapping fileItemHashing]]];
+
+  [self postColorMappingChanged];   
 }
 
 

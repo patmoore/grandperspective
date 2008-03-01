@@ -32,7 +32,7 @@ extern NSString  *DeleteFilesAndFolders;
   // "Display" drawer panel
   IBOutlet NSPopUpButton  *colorMappingPopUp;
   IBOutlet NSPopUpButton  *colorPalettePopUp;
-  IBOutlet NSTextView  *maskDescriptionTextView;
+  IBOutlet NSTableView  *colorLegendTable;
   IBOutlet NSButton  *maskCheckBox;
   IBOutlet NSButton  *showEntireVolumeCheckBox;
 
@@ -72,6 +72,7 @@ extern NSString  *DeleteFilesAndFolders;
 
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
+  NSObject  *colorLegendDataSource;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 

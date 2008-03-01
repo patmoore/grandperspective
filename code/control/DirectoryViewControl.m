@@ -3,6 +3,7 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
+#import "FileItemHashing.h"
 #import "FileItemHashingScheme.h"
 #import "FileItemHashingCollection.h"
 #import "ColorListCollection.h"
@@ -20,6 +21,30 @@ NSString  *DeleteNothing = @"delete nothing";
 NSString  *OnlyDeleteFiles = @"only delete files";
 NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
+NSString  *ColorImageColumnIdentifier = @"colorImage";
+NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
+
+@interface ColorLegendDataSource : NSObject {
+
+  DirectoryView  *dirView;
+  NSTableView  *tableView;
+  NSMutableArray  *colorImages;
+
+}
+
+- (id) initWithDirectoryView: (DirectoryView *)dirView 
+         tableView: (NSTableView *)tableView;
+
+- (int) numberOfRowsInTableView: (NSTableView *)tableView;
+- (id) tableView: (NSTableView *)tableView 
+         objectValueForTableColumn: (NSTableColumn *)column row: (int) row;
+         
+- (void) makeColorImages;
+         
+- (void) colorPaletteChanged: (NSNotification *)notification;
+- (void) colorMappingChanged: (NSNotification *)notification;
+
+@end
 
 @interface DirectoryViewControl (PrivateMethods)
 
@@ -105,6 +130,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   
   [colorMappings release];
   [colorPalettes release];
+  [colorLegendDataSource release];
   
   [editMaskFilterWindowControl release];
 
@@ -184,6 +210,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
               select: selectedPaletteName  
               table: @"Names"];
   [self colorPaletteChanged: nil];
+  
+  // NSTableView apparently does not retain its data source, so keeping a
+  // reference here so that it can be released.
+  colorLegendDataSource = 
+    [[ColorLegendDataSource alloc] initWithDirectoryView: mainView 
+                                      tableView: colorLegendTable];
   
   fileItemMask = [[initialSettings fileItemMask] retain];
   [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
@@ -655,10 +687,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) maskChanged {
   if (fileItemMask != nil) {
     [maskCheckBox setEnabled: YES];
-    [maskDescriptionTextView setString: [fileItemMask description]];
   }
   else {
-    [maskDescriptionTextView setString: @""];
     [maskCheckBox setEnabled: NO];
     [maskCheckBox setState: NSOffState];
   }
@@ -726,3 +756,104 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)
+
+
+@implementation ColorLegendDataSource
+
+- (id) initWithDirectoryView: (DirectoryView *)dirViewVal 
+         tableView: (NSTableView *)tableViewVal {
+  if (self = [super init]) {
+    dirView = [dirViewVal retain];
+    tableView = [tableViewVal retain];
+    
+    NSArray  *columns = [tableView tableColumns];
+    
+    NSTableColumn  *imageColumn = [columns objectAtIndex: 0];
+    [imageColumn setIdentifier: ColorImageColumnIdentifier];
+    [imageColumn setEditable: NO];
+    
+    NSTableColumn  *descrColumn = [columns objectAtIndex: 1];
+    [descrColumn setIdentifier: ColorDescriptionColumnIdentifier];
+    [descrColumn setEditable: NO];
+    
+    colorImages = nil;
+    [self makeColorImages];
+    
+    [tableView setDataSource: self];
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver: self selector: @selector(colorPaletteChanged:)
+          name: ColorPaletteChangedEvent object: dirView];
+    [nc addObserver: self selector: @selector(colorMappingChanged:)
+          name: ColorMappingChangedEvent object: dirView];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [dirView release];
+  [tableView release];
+  [colorImages release];
+  
+  [super dealloc];
+}
+
+
+//-----------------------------------------------------------------------------
+// Partial implementation of NSTableDataSource interface
+
+- (int) numberOfRowsInTableView: (NSTableView *)tableView {
+  return [colorImages count];
+}
+
+- (id) tableView: (NSTableView *)tableView 
+         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
+  if ([column identifier] == ColorImageColumnIdentifier) {
+    return [colorImages objectAtIndex: row];
+  }
+  else if ([column identifier] == ColorDescriptionColumnIdentifier) {
+    NSObject <FileItemHashing>
+      *colorMapper = [[dirView treeDrawerSettings] colorMapper];
+    
+    if ([colorMapper canProvideLegend]) {
+      return [colorMapper descriptionForHash: row];
+    }
+    else {
+      return @"";
+    }
+  }
+  else {
+    NSAssert(NO, @"Unexpected column.");
+  }
+}
+
+
+//-----------------------------------------------------------------------------
+// "Private" methods
+
+- (void) makeColorImages {
+  [colorImages release];
+  
+  NSColorList  *colorPalette = [[dirView treeDrawerSettings] colorPalette];
+  NSArray  *colorKeys = [colorPalette allKeys];
+  
+  colorImages = [[NSMutableArray alloc] initWithCapacity: [colorKeys count]];
+  NSEnumerator  *keyEnum = [colorKeys objectEnumerator];
+  NSString  *key;
+  while (key = [keyEnum nextObject]) {
+    [colorImages addObject: key];
+  }
+}
+
+- (void) colorPaletteChanged: (NSNotification *)notification {
+  [self makeColorImages];
+  [tableView reloadData];
+}
+
+- (void) colorMappingChanged: (NSNotification *)notification {
+  [tableView reloadData];
+}
+
+@end // @implementation ColorLegendDataSource
