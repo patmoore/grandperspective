@@ -412,6 +412,7 @@
 				AA7DEF120D70B7F10057F5F8,
 				AA7DEF140D70B7F10057F5F8,
 				AA7DF05E0D71D6990057F5F8,
+				AA7DF3240D79BEA80057F5F8,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1256,10 +1257,12 @@
 			children = (
 				AA6012E90A5AFB7F00DEBCB8,
 				AA6012EA0A5AFB7F00DEBCB8,
-				AA62D5D80BCA67BB0095A09A,
-				AA62D5D90BCA67BB0095A09A,
+				AA7DF3210D79BEA80057F5F8,
+				AA7DF3220D79BEA80057F5F8,
 				AA6012F70A5AFC2500DEBCB8,
 				AA6012F60A5AFC2500DEBCB8,
+				AA62D5D80BCA67BB0095A09A,
+				AA62D5D90BCA67BB0095A09A,
 				AA6012F90A5AFC2500DEBCB8,
 				AA6012F80A5AFC2500DEBCB8,
 				AA6012FB0A5AFC2500DEBCB8,
@@ -1953,6 +1956,30 @@
 		};
 		AA7DF05E0D71D6990057F5F8 = {
 			fileRef = AA7DF05D0D71D6990057F5F8;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		AA7DF3210D79BEA80057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = GradientRectangleDrawer.h;
+			path = view/GradientRectangleDrawer.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DF3220D79BEA80057F5F8 = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = GradientRectangleDrawer.m;
+			path = view/GradientRectangleDrawer.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA7DF3240D79BEA80057F5F8 = {
+			fileRef = AA7DF3220D79BEA80057F5F8;
 			isa = PBXBuildFile;
 			settings = {
 			};
