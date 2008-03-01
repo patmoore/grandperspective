@@ -23,4 +23,8 @@
   return nil;
 }
 
+- (NSString *) descriptionForRemainingHashes {
+  return nil;
+}
+
 @end

@@ -162,4 +162,10 @@
   return (descr != nil) ? descr : [type uniformTypeIdentifier];
 }
 
+- (NSString *) descriptionForRemainingHashes {
+  return NSLocalizedString
+           (@"other types",
+            @"Misc. description for Uniform Type hashing scheme.");
+}
+
 @end

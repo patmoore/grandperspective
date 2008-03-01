@@ -822,7 +822,12 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
       *colorMapper = [[dirView treeDrawerSettings] colorMapper];
     
     if ([colorMapper canProvideLegend]) {
-      return [colorMapper descriptionForHash: row];
+      if (row < [colorImages count] - 1) {
+        return [colorMapper descriptionForHash: row];
+      }
+      else {
+        return [colorMapper descriptionForRemainingHashes];
+      }
     }
     else {
       return @"";

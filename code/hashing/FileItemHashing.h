@@ -29,4 +29,6 @@
  */
 - (NSString *) descriptionForHash: (int)hash;
 
+- (NSString *) descriptionForRemainingHashes;
+
 @end

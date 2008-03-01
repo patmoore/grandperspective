@@ -39,14 +39,19 @@
 - (NSString *) descriptionForHash: (int)hash {
   if (hash == 0) {
     return NSLocalizedString(@"Top level", 
-                             @"Legend for Depth color mapping scheme.");
+                             @"Legend for Depth hashing scheme.");
   }
   else {
     NSString  
       *fmt = NSLocalizedString(@"Depth %d", 
-                               @"Legend for Depth color mapping scheme.");
+                               @"Legend for Depth hashing scheme.");
     return [NSString stringWithFormat: fmt, hash];
   }
+}
+
+- (NSString *) descriptionForRemainingHashes {
+  return NSLocalizedString(@"Other depths",
+                           @"Misc. description for Depth hashing scheme.");
 }
 
 @end // @implementation HashingByDepth
