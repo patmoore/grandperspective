@@ -227,9 +227,6 @@ NSString  *UnknownTypeUTI = @"unknown";
   }
 
   NSString  *descr = [dict objectForKey: (NSString*)kUTTypeDescriptionKey];
-  if (descr == nil) {
-    descr = uti;
-  }
     
   NSObject  *conforms = [dict objectForKey: (NSString*)kUTTypeConformsToKey];
   NSMutableArray  *parents;

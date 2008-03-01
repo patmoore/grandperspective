@@ -296,7 +296,9 @@
   UniformType  *type = [typeCell uniformType];
   
   [typeIdentifierField setStringValue: [type uniformTypeIdentifier]];
-  [typeDescriptionField setStringValue: [type description]];
+  
+  NSString  *descr = [type description];
+  [typeDescriptionField setStringValue: (descr != nil) ? descr : @""];
 
   NSMutableString  *conformsTo = [NSMutableString stringWithCapacity: 64];
   NSEnumerator  *parentEnum = [[type parentTypes] objectEnumerator];
