@@ -11,6 +11,7 @@
                 moveToTopAction = id; 
                 moveUpAction = id; 
                 okAction = id; 
+                showTypeDescriptionChanged = id; 
             }; 
             CLASS = EditUniformTypeRankingWindowControl; 
             LANGUAGE = ObjC; 
@@ -21,8 +22,10 @@
                 moveToTopButton = NSButton; 
                 moveUpButton = NSButton; 
                 revealButton = NSButton; 
+                typeConformsToField = NSTextField; 
                 typeDescriptionDrawer = NSDrawer; 
-                typeDescriptionView = NSTextView; 
+                typeDescriptionField = NSTextField; 
+                typeIdentifierField = NSTextField; 
                 typesBrowser = NSBrowser; 
             }; 
             SUPERCLASS = NSWindowController; 
