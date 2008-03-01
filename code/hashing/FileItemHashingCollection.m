@@ -53,7 +53,7 @@
 }
 
 - (NSString *) descriptionForRemainingHashes {
-  return NSLocalizedString(@"Other depths",
+  return NSLocalizedString(@"Higher depths",
                            @"Misc. description for Depth hashing scheme.");
 }
 
