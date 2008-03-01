@@ -46,7 +46,7 @@ NSString  *UnknownTypeUTI = @"unknown";
     parentlessTypes = [[NSMutableSet alloc] initWithCapacity: 8];
     
     // Create the UniformType object used when the type is unknown.
-    NSString  *descr = NSLocalizedString( @"Unknown file type", 
+    NSString  *descr = NSLocalizedString( @"unknown file type", 
                                           @"Description for \"unknown\" UTI.");
     unknownType = 
       [[UniformType alloc] initWithUniformTypeIdentifier: UnknownTypeUTI
