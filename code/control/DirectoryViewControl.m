@@ -836,19 +836,25 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 - (NSString *) descriptionForRow: (int) row {
   NSObject <FileItemHashing>
     *colorMapper = [[dirView treeDrawerSettings] colorMapper];
-    
+
   if ([colorMapper canProvideLegend]) {
+    LegendProvidingFileItemHashing  *legendProvider =
+      (LegendProvidingFileItemHashing *)colorMapper;
+  
     if (row < [colorImages count] - 1) {
-      return [((LegendProvidingFileItemHashing *)colorMapper) 
-                  descriptionForHash: row];
+      return [legendProvider descriptionForHash: row];
     }
     else {
-      return [((LegendProvidingFileItemHashing *)colorMapper)
-                  descriptionForRemainingHashes];
+      if ([legendProvider descriptionForHash: row + 1] != nil) {
+        return [legendProvider descriptionForRemainingHashes];
+      }
+      else {
+        return [legendProvider descriptionForHash: row];
+      }
     }
   }
   else {
-    return @"";
+    return nil;
   }
 }
 
