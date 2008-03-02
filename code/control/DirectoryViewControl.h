@@ -38,7 +38,7 @@ extern NSString  *DeleteFilesAndFolders;
 
   // "Info" drawer panel
   IBOutlet NSImageView  *volumeIconView;
-  IBOutlet NSTextView  *volumeNameTextView;
+  IBOutlet NSTextField  *volumeNameField;
   IBOutlet NSTextView  *scanPathTextView;
   IBOutlet NSTextField  *filterNameField;
   IBOutlet NSTextView  *filterDescriptionTextView;

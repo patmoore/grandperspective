@@ -46,7 +46,7 @@
                 visibleFolderPathTextView = NSTextView; 
                 visibleFolderSizeField = NSTextField; 
                 volumeIconView = NSImageView; 
-                volumeNameTextView = NSTextView; 
+                volumeNameField = NSTextField; 
                 volumeSizeField = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 

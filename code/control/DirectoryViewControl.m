@@ -245,10 +245,8 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     [[NSWorkspace sharedWorkspace] iconForFile: volumeName];
   [volumeIconView setImage: volumeIcon];
 
-  [volumeNameTextView setString: 
+  [volumeNameField setStringValue: 
     [[NSFileManager defaultManager] displayNameAtPath: volumeName]];
-  [volumeNameTextView setDrawsBackground: NO];
-  [[volumeNameTextView enclosingScrollView] setDrawsBackground: NO];
 
   [scanPathTextView setString: [scanTree name]];
   [scanPathTextView setDrawsBackground: NO];
