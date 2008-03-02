@@ -413,6 +413,7 @@
 				AA7DEF140D70B7F10057F5F8,
 				AA7DF05E0D71D6990057F5F8,
 				AA7DF3240D79BEA80057F5F8,
+				AA6E27A40D7AE95E00D5FBBA,
 			);
 			isa = PBXSourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1654,6 +1655,30 @@
 			settings = {
 			};
 		};
+		AA6E27A10D7AE95E00D5FBBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.h;
+			name = ColorLegendTableViewControl.h;
+			path = control/ColorLegendTableViewControl.h;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA6E27A20D7AE95E00D5FBBA = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			lastKnownFileType = sourcecode.c.objc;
+			name = ColorLegendTableViewControl.m;
+			path = control/ColorLegendTableViewControl.m;
+			refType = 4;
+			sourceTree = "<group>";
+		};
+		AA6E27A40D7AE95E00D5FBBA = {
+			fileRef = AA6E27A20D7AE95E00D5FBBA;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		AA7C64CA0AFE717A007B8CD2 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
@@ -2248,6 +2273,8 @@
 				AAF9F7D30B30118C00FA4C51,
 				AA402FED0A5B01A6004EAAF3,
 				AA402FF50A5B01A6004EAAF3,
+				AA6E27A10D7AE95E00D5FBBA,
+				AA6E27A20D7AE95E00D5FBBA,
 				AA402FF60A5B01A6004EAAF3,
 				AA402FF10A5B01A6004EAAF3,
 				AA1115C10A84CA320023C5CD,

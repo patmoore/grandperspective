@@ -12,6 +12,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class FileItemHashingCollection;
 @class ColorListCollection;
 @class EditFilterWindowControl;
+@class ColorLegendTableViewControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
 @protocol FileItemTest;
@@ -72,7 +73,7 @@ extern NSString  *DeleteFilesAndFolders;
 
   FileItemHashingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
-  NSObject  *colorLegendDataSource;
+  ColorLegendTableViewControl  *colorLegendControl;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
 
