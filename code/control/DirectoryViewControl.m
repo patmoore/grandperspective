@@ -681,8 +681,33 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     [selectedItemExactSizeField setStringValue: @""];
     [selectedItemSizeField setStringValue: @""];
   }
-
+  
   [selectedItemTitleField setStringValue: selectedItemTitle];
+
+  // Update the selected row in the color legend table. When the selected item 
+  // is a plain file, its color is selected. Otherwise, the selection is
+  // cleared.
+  BOOL  rowSelected = NO;
+
+  if ( selectedItem != nil && 
+       ![selectedItem isSpecial] &&
+       [selectedItem isPlainFile] ) {
+    NSObject <FileItemHashing>  *colorMapper =
+      [[mainView treeDrawerSettings] colorMapper];   
+       
+    if ([colorMapper canProvideLegend]) {
+      int  colorIndex = 
+             [colorMapper hashForFileItem: (PlainFileItem *)selectedItem
+                            inTree: [itemPathModel visibleTree]];
+      int  row = MIN(colorIndex, [colorLegendTable numberOfRows] - 1);
+      
+      [colorLegendTable selectRow: row byExtendingSelection: NO];
+      rowSelected = YES;
+    }
+  }
+  if ( !rowSelected ) {
+    [colorLegendTable deselectAll: self];
+  }
 }
 
 
