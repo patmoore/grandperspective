@@ -2,7 +2,7 @@
     IBClasses = (
         {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {popUpValueChanged = id; valueChanged = id; }; 
+            ACTIONS = {editUniformTypeRanking = id; popUpValueChanged = id; valueChanged = id; }; 
             CLASS = PreferencesPanelControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {

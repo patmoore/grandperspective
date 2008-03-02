@@ -16,6 +16,7 @@
             CLASS = DirectoryViewControl; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                colorLegendTable = NSTableView; 
                 colorMappingPopUp = NSPopUpButton; 
                 colorPalettePopUp = NSPopUpButton; 
                 deleteButton = NSButton; 
@@ -30,7 +31,6 @@
                 itemSizeField = NSTextField; 
                 mainView = DirectoryView; 
                 maskCheckBox = NSButton; 
-                maskDescriptionTextView = NSTextView; 
                 miscUsedSpaceField = NSTextField; 
                 openButton = NSButton; 
                 scanPathTextView = NSTextView; 
@@ -46,7 +46,7 @@
                 visibleFolderPathTextView = NSTextView; 
                 visibleFolderSizeField = NSTextField; 
                 volumeIconView = NSImageView; 
-                volumeNameTextView = NSTextView; 
+                volumeNameField = NSTextField; 
                 volumeSizeField = NSTextField; 
             }; 
             SUPERCLASS = NSWindowController; 

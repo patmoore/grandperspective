@@ -1679,6 +1679,14 @@
 			settings = {
 			};
 		};
+		AA6E27D00D7B02BE00D5FBBA = {
+			isa = PBXFileReference;
+			lastKnownFileType = wrapper.nib;
+			name = nl;
+			path = nl.lproj/EditUniformTypeRankingWindow.nib;
+			refType = 4;
+			sourceTree = "<group>";
+		};
 		AA7C64CA0AFE717A007B8CD2 = {
 			fileEncoding = 10;
 			isa = PBXFileReference;
@@ -1959,6 +1967,7 @@
 		AA7DEF4A0D7176030057F5F8 = {
 			children = (
 				AA7DEF480D7175D50057F5F8,
+				AA6E27D00D7B02BE00D5FBBA,
 			);
 			isa = PBXVariantGroup;
 			name = EditUniformTypeRankingWindow.nib;
