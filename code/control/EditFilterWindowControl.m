@@ -277,6 +277,18 @@ NSString  *OkPerformedEvent = @"okPerformed";
   NSWindow  *ruleWindow = [ruleWindowControl window];
 
   [ruleWindowControl representFileItemTest: oldTest];
+
+  if ([testRepository applicationProvidedTestForName: oldName] != nil) {
+    // The rule's name equals that of an application provided test. Show the
+    // localized version of the name (which implicitly prevents the name from
+    // being changed).
+  
+    NSBundle  *mainBundle = [NSBundle mainBundle];
+    NSString  *localizedName = 
+      [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
+      
+    [ruleWindowControl setVisibleName: localizedName];
+  }
   
   EditFilterRuleWindowTerminationControl  *terminationControl = 
     [[[EditFilterRuleWindowTerminationControl alloc]
@@ -387,7 +399,9 @@ NSString  *OkPerformedEvent = @"okPerformed";
 }
 
 
+//-----------------------------------------------------------------------------
 // Delegate methods for NSBrowser
+
 - (BOOL) browser:(NSBrowser*)sender isColumnValid:(int)column {
   NSAssert(column==0, @"Invalid column.");
   

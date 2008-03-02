@@ -27,6 +27,8 @@
 
   IBOutlet NSButton  *doneButton;
   
+  NSString  *ruleName;
+  
   StringBasedTestControls  *nameTestControls;
   StringBasedTestControls  *pathTestControls;
 }
@@ -52,5 +54,11 @@
 
 // Creates the test object that represents the current window state.
 - (NSObject <FileItemTest> *) createFileItemTest;
+
+/* Sets the name of the rule as it is shown in the window. This may be
+ * different from the actual name of the rule (in particular, the visible
+ * name may be localized). Once a visible name is set, it cannot be changed.
+ */
+- (void) setVisibleName: (NSString *)name;
 
 @end

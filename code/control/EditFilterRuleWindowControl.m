@@ -78,6 +78,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (void) dealloc {
   [nameTestControls release];
   [pathTestControls release];
+  [ruleName release];
 
   [super dealloc];
 }
@@ -100,7 +101,15 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (NSString*) fileItemTestName {
-  return [ruleNameField stringValue];
+  if ([ruleNameField isEnabled]) {
+    // No fixed "visible" name was set, so get the name from the text field.
+    return [ruleNameField stringValue];
+  }
+  else {
+    // The rule name field was showing the rule's visible name. Return its
+    // original name.
+    return ruleName;
+  }
 }
 
 // Configures the window to represent the given test.
@@ -112,7 +121,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     return;
   }
   
-  [ruleNameField setStringValue:[test name]];
+  // Remember the original name of the rule
+  [ruleName release];
+  ruleName = [[test name] retain];
+  
+  [ruleNameField setStringValue: ruleName];
   
   if ([test isKindOfClass:[CompoundAndItemTest class]]) {
     // It is a compound test. Iterate over all subtests.
@@ -162,11 +175,17 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     test = [[[CompoundAndItemTest alloc] initWithSubItemTests:subTests]
                 autorelease];
   }
-
-  [test setName:[ruleNameField stringValue]];
+  
+  [test setName: [self fileItemTestName]];
   
   return test;
 }
+
+- (void) setVisibleName: (NSString *)name {
+  [ruleNameField setStringValue: name];
+  [ruleNameField setEnabled: NO];
+}
+
 
 
 - (IBAction) cancelAction:(id)sender {
@@ -254,6 +273,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 - (void) resetState {
   [ruleNameField setStringValue:@""];
+  [ruleNameField setEnabled: YES];
 
   [nameTestControls resetState];
   [pathTestControls resetState];
