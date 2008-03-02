@@ -1,32 +1,32 @@
-#import "FileItemHashingCollection.h"
+#import "FileItemMappingCollection.h"
 
 #import "PlainFileItem.h"
 #import "DirectoryItem.h"
 
-#import "StatelessFileItemHashing.h"
-#import "UniformTypeHashingScheme.h"
+#import "StatelessFileItemMapping.h"
+#import "UniformTypeMappingScheme.h"
 
-@interface HashingByDepth : StatelessFileItemHashing {
+@interface MappingByLevel : StatelessFileItemMapping {
 }
 @end
 
-@interface HashingByExtension : StatelessFileItemHashing {
+@interface MappingByExtension : StatelessFileItemMapping {
 }
 @end
 
-@interface HashingByFilename : StatelessFileItemHashing {
+@interface MappingByFilename : StatelessFileItemMapping {
 }
 @end
 
-@interface HashingByDirectoryName : StatelessFileItemHashing {
+@interface MappingByDirectoryName : StatelessFileItemMapping {
 }
 @end
 
-@interface HashingByTopDirectoryName : StatelessFileItemHashing {
+@interface MappingByTopDirectoryName : StatelessFileItemMapping {
 }
 @end
 
-@implementation HashingByDepth
+@implementation MappingByLevel
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return depth;
@@ -53,7 +53,7 @@
 }
 
 //----------------------------------------------------------------------------
-// Implementation of informal LegendProvidingFileItemHashing protocol
+// Implementation of informal LegendProvidingFileItemMapping protocol
 
 - (NSString *) descriptionForHash: (int)hash {
   if (hash == 0) {
@@ -73,37 +73,37 @@
                            @"Misc. description for Level mapping scheme.");
 }
 
-@end // @implementation HashingByDepth
+@end // @implementation MappingByLevel
 
 
-@implementation HashingByExtension
+@implementation MappingByExtension
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[[item name] pathExtension] hash];
 }
 
-@end // @implementation HashingByExtension
+@end // @implementation MappingByExtension
 
 
-@implementation HashingByFilename
+@implementation MappingByFilename
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[item name] hash];
 }
 
-@end // @implementation HashingByFilename
+@end // @implementation MappingByFilename
 
 
-@implementation HashingByDirectoryName
+@implementation MappingByDirectoryName
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[[item parentDirectory] name] hash];
 }
 
-@end // @implementation HashingByDirectoryName 
+@end // @implementation MappingByDirectoryName 
 
 
-@implementation HashingByTopDirectoryName
+@implementation MappingByTopDirectoryName
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   if (depth == 0) {
@@ -136,45 +136,45 @@
   return [[oldDir name] hash];
 }
 
-@end // @implementation HashingByTopDirectoryName 
+@end // @implementation MappingByTopDirectoryName 
 
 
-@implementation FileItemHashingCollection
+@implementation FileItemMappingCollection
 
-+ (FileItemHashingCollection*) defaultFileItemHashingCollection {
-  static  FileItemHashingCollection  
-    *defaultFileItemHashingCollectionInstance = nil;
++ (FileItemMappingCollection*) defaultFileItemMappingCollection {
+  static  FileItemMappingCollection  
+    *defaultFileItemMappingCollectionInstance = nil;
 
-  if (defaultFileItemHashingCollectionInstance==nil) {
-    FileItemHashingCollection  *instance = 
-      [[[FileItemHashingCollection alloc] init] autorelease];
+  if (defaultFileItemMappingCollectionInstance==nil) {
+    FileItemMappingCollection  *instance = 
+      [[[FileItemMappingCollection alloc] init] autorelease];
     
-    [instance addFileItemHashingScheme:
-                  [[[HashingByTopDirectoryName alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[MappingByTopDirectoryName alloc] init] autorelease]
                 key: @"top folder"];
-    [instance addFileItemHashingScheme:
-                  [[[HashingByDirectoryName alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[MappingByDirectoryName alloc] init] autorelease]
                 key: @"folder"];
-    [instance addFileItemHashingScheme:
-                  [[[HashingByExtension alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[MappingByExtension alloc] init] autorelease]
                 key: @"extension"];
-    [instance addFileItemHashingScheme:
-                  [[[HashingByFilename alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[MappingByFilename alloc] init] autorelease]
                 key: @"name"];
-    [instance addFileItemHashingScheme:
-                  [[[HashingByDepth alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[MappingByLevel alloc] init] autorelease]
                 key: @"level"];
-    [instance addFileItemHashingScheme:
-                  [[[StatelessFileItemHashing alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[StatelessFileItemMapping alloc] init] autorelease]
                 key: @"nothing"];
-    [instance addFileItemHashingScheme:
-                  [[[UniformTypeHashingScheme alloc] init] autorelease]
+    [instance addFileItemMappingScheme:
+                  [[[UniformTypeMappingScheme alloc] init] autorelease]
                 key: @"uniform type"];
 
-    defaultFileItemHashingCollectionInstance = [instance retain];
+    defaultFileItemMappingCollectionInstance = [instance retain];
   }
   
-  return defaultFileItemHashingCollectionInstance;
+  return defaultFileItemMappingCollectionInstance;
 }
 
 // Overrides super's designated initialiser.
@@ -196,12 +196,12 @@
   [super dealloc];
 }
 
-- (void) addFileItemHashingScheme: (NSObject <FileItemHashingScheme> *)scheme 
+- (void) addFileItemMappingScheme: (NSObject <FileItemMappingScheme> *)scheme 
            key: (NSString *)key {
   [schemesDictionary setObject: scheme forKey: key];
 }
 
-- (void) removeFileItemHashingSchemeForKey: (NSString *)key {
+- (void) removeFileItemMappingSchemeForKey: (NSString *)key {
   [schemesDictionary removeObjectForKey: key];
 }
 
@@ -209,9 +209,9 @@
   return [schemesDictionary allKeys];
 }
 
-- (NSObject <FileItemHashingScheme> *) fileItemHashingSchemeForKey: 
+- (NSObject <FileItemMappingScheme> *) fileItemMappingSchemeForKey: 
                                                               (NSString *)key {
   return [schemesDictionary objectForKey: key];
 }
 
-@end // @implementation FileItemHashingCollection
+@end // @implementation FileItemMappingCollection

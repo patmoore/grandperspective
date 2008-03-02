@@ -19,7 +19,7 @@ extern NSString  *ColorMappingChangedEvent;
 @class ItemPathDrawer;
 @class ItemPathBuilder;
 @class ItemPathModel;
-@protocol FileItemHashingScheme;
+@protocol FileItemMappingScheme;
 
 @interface DirectoryView : NSView {
   AsynchronousTaskManager  *drawTaskManager;
@@ -35,7 +35,7 @@ extern NSString  *ColorMappingChangedEvent;
   /* The current color mapping, which is being observed for any changes to the
    * scheme.
    */
-  NSObject <FileItemHashingScheme>  *observedColorMapping;
+  NSObject <FileItemMappingScheme>  *observedColorMapping;
 
   ItemPathModel  *pathModel;
 

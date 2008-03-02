@@ -1,19 +1,19 @@
-#import "UniformTypeHashingScheme.h"
+#import "UniformTypeMappingScheme.h"
 
-#import "StatefulFileItemHashing.h"
+#import "StatefulFileItemMapping.h"
 #import "PlainFileItem.h"
 #import "UniformType.h"
 #import "UniformTypeRanking.h"
 
 
-@interface UniformTypeHashingScheme (PrivateMethods)
+@interface UniformTypeMappingScheme (PrivateMethods)
 
 - (void) typeRankingChanged: (NSNotification *)notification;
 
 @end
 
 
-@interface HashingByUniformType : StatefulFileItemHashing {
+@interface MappingByUniformType : StatefulFileItemMapping {
 
   // Cache mapping UTIs (NSString) to integer values (NSNumber)
   NSMutableDictionary  *hashForUTICache;
@@ -24,7 +24,7 @@
 @end
 
 
-@implementation UniformTypeHashingScheme
+@implementation UniformTypeMappingScheme
 
 - (id) init {
   return [self initWithUniformTypeRanking: 
@@ -60,38 +60,38 @@
 
 
 //----------------------------------------------------------------------------
-// Implementation of FileItemHashingScheme protocol
+// Implementation of FileItemMappingScheme protocol
 
-- (NSObject <FileItemHashing> *) fileItemHashing {
-  return [[[HashingByUniformType alloc] initWithFileItemHashingScheme: self]
+- (NSObject <FileItemMapping> *) fileItemMapping {
+  return [[[MappingByUniformType alloc] initWithFileItemMappingScheme: self]
               autorelease];
 }
 
-@end // @implementation UniformTypeHashingScheme
+@end // @implementation UniformTypeMappingScheme
 
 
-@implementation UniformTypeHashingScheme (PrivateMethods)
+@implementation UniformTypeMappingScheme (PrivateMethods)
 
 - (void) typeRankingChanged: (NSNotification *)notification {
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
   
-  [nc postNotificationName: HashingSchemeChangedEvent object: self];
+  [nc postNotificationName: MappingSchemeChangedEvent object: self];
 }
 
-@end // @implementation UniformTypeHashingScheme (PrivateMethods)
+@end // @implementation UniformTypeMappingScheme (PrivateMethods)
 
 
-@implementation HashingByUniformType
+@implementation MappingByUniformType
 
-- (id) initWithFileItemHashingScheme: 
-                                (NSObject <FileItemHashingScheme> *)schemeVal {
+- (id) initWithFileItemMappingScheme: 
+                                (NSObject <FileItemMappingScheme> *)schemeVal {
 
-  if (self = [super initWithFileItemHashingScheme: schemeVal]) {
+  if (self = [super initWithFileItemMappingScheme: schemeVal]) {
     hashForUTICache = 
       [[NSMutableDictionary dictionaryWithCapacity: 16] retain];
     
     UniformTypeRanking  *typeRanking =
-      [((UniformTypeHashingScheme *)schemeVal) uniformTypeRanking];
+      [((UniformTypeMappingScheme *)schemeVal) uniformTypeRanking];
     
     orderedTypes = [[typeRanking undominatedRankedUniformTypes] retain];
   }
@@ -109,7 +109,7 @@
 
 
 //----------------------------------------------------------------------------
-// Implementation of FileItemHashing protocol
+// Implementation of FileItemMapping protocol
 
 - (int) hashForFileItem: (PlainFileItem *)item atDepth: (int)depth {
   UniformType  *type = [item uniformType];
@@ -152,7 +152,7 @@
 }
 
 //----------------------------------------------------------------------------
-// Implementation of informal LegendProvidingFileItemHashing protocol
+// Implementation of informal LegendProvidingFileItemMapping protocol
 
 - (NSString *) descriptionForHash: (int)hash {
   if (hash < 0 || hash >= [orderedTypes count]) {

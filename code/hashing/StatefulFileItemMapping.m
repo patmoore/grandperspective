@@ -1,13 +1,26 @@
-#import "StatelessFileItemHashing.h"
+#import "StatefulFileItemMapping.h"
 
-@implementation StatelessFileItemHashing
 
-- (NSObject <FileItemHashing> *) fileItemHashing {
+@implementation StatefulFileItemMapping
+
+- (id) initWithFileItemMappingScheme: 
+                                (NSObject <FileItemMappingScheme> *)schemeVal {
+  if (self = [super init]) {
+    scheme = [schemeVal retain];
+  } 
+  
   return self;
 }
 
-- (NSObject <FileItemHashingScheme> *) fileItemHashingScheme {
-  return self;
+- (void) dealloc {
+  [scheme release];
+
+  [super dealloc];
+}
+
+
+- (NSObject <FileItemMappingScheme> *) fileItemMappingScheme {
+  return scheme;
 }
 
 

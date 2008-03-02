@@ -1,6 +1,6 @@
 #import "ItemTreeDrawerSettings.h"
 
-#import "StatelessFileItemHashing.h"
+#import "StatelessFileItemMapping.h"
 
 
 @interface ItemTreeDrawerSettings (PrivateMethods)
@@ -16,13 +16,13 @@
 - (id) init {
   return 
     [self initWithColorMapper: 
-                          [[[StatelessFileItemHashing alloc] init] autorelease]
+                          [[[StatelessFileItemMapping alloc] init] autorelease]
             colorPalette: [ItemTreeDrawerSettings defaultColorPalette]
             fileItemMask: nil];
 }
 
 
-- (id) initWithColorMapper: (NSObject <FileItemHashing> *)colorMapperVal
+- (id) initWithColorMapper: (NSObject <FileItemMapping> *)colorMapperVal
          colorPalette: (NSColorList *)colorPaletteVal
          fileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal {
   if (self = [super init]) {
@@ -43,7 +43,7 @@
 }
 
 
-- (id) copyWithColorMapper: (NSObject <FileItemHashing> *)colorMapperVal {
+- (id) copyWithColorMapper: (NSObject <FileItemMapping> *)colorMapperVal {
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
@@ -65,7 +65,7 @@
 }
 
 
-- (NSObject <FileItemHashing> *) colorMapper {
+- (NSObject <FileItemMapping> *) colorMapper {
   return colorMapper;
 }
 

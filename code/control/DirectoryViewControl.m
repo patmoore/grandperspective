@@ -3,8 +3,8 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
-#import "FileItemHashingScheme.h"
-#import "FileItemHashingCollection.h"
+#import "FileItemMappingScheme.h"
+#import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "TreeContext.h"
@@ -82,7 +82,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     invisiblePathName = nil;
        
     colorMappings = 
-      [[FileItemHashingCollection defaultFileItemHashingCollection] retain];
+      [[FileItemMappingCollection defaultFileItemMappingCollection] retain];
     colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
   }
@@ -401,11 +401,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   NSString  *name = 
     [tagMaker nameForTag: [[colorMappingPopUp selectedItem] tag]];
-  NSObject <FileItemHashingScheme>  *mapping = 
-    [colorMappings fileItemHashingSchemeForKey: name];
+  NSObject <FileItemMappingScheme>  *mapping = 
+    [colorMappings fileItemMappingSchemeForKey: name];
 
   if (mapping != nil) {
-    NSObject <FileItemHashing>  *mapper = [mapping fileItemHashing];
+    NSObject <FileItemMapping>  *mapper = [mapping fileItemMapping];
   
     [mainView setTreeDrawerSettings: 
       [[mainView treeDrawerSettings] copyWithColorMapper: mapper]];

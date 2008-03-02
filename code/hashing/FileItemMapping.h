@@ -2,18 +2,18 @@
 
 @class FileItem;
 @class PlainFileItem;
-@protocol FileItemHashingScheme;
+@protocol FileItemMappingScheme;
 
-/* An implementation of a particular file item hashing scheme. It can derive
- * hash values for file items.
+/* An implementation of a particular file item mapping scheme. It can map
+ * file items to hash values.
  *
  * Implementations are not (necessarily) thread-safe. Each thread should get
- * an instance it can safely use by invoking -fileItemHashing on the file
- * item hashing scheme.
+ * an instance it can safely use by invoking -fileItemMapping on the file
+ * item mapping scheme.
  */
-@protocol FileItemHashing
+@protocol FileItemMapping
 
-- (NSObject <FileItemHashingScheme> *) fileItemHashingScheme;
+- (NSObject <FileItemMappingScheme> *) fileItemMappingScheme;
 
 /* Calculates a hash value for a file item in a tree, when the item is 
  * encountered while traversing the tree. The calculation may use the
@@ -43,10 +43,10 @@
 @end
 
 
-/* Informal protocol to be implemented by FileItemHashing schemes for which 
+/* Informal protocol to be implemented by FileItemMapping schemes for which 
  * -canProvideLegend returns "YES".
  */
-@interface LegendProvidingFileItemHashing
+@interface LegendProvidingFileItemMapping
 
 /* Short descriptive string for the given hash value. Returns "nil" if no
  * description can be given (i.e. when -canProvideLegend returns "NO"), or if

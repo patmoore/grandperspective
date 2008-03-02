@@ -1,2 +1,0 @@
-
-NSString  *HashingSchemeChangedEvent = @"hashingSchemeChanged";

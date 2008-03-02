@@ -1,7 +1,7 @@
 #import "PreferencesPanelControl.h"
 
 #import "DirectoryViewControl.h"
-#import "FileItemHashingCollection.h"
+#import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "TreeBuilder.h"
 
@@ -60,8 +60,8 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
   [self setupPopUp: fileSizeMeasurePopUp key: FileSizeMeasureKey
           content: [TreeBuilder fileSizeMeasureNames]];
   [self setupPopUp: defaultColorMappingPopUp key: DefaultColorMappingKey
-          content:  [[FileItemHashingCollection 
-                        defaultFileItemHashingCollection] allKeys]];
+          content:  [[FileItemMappingCollection 
+                        defaultFileItemMappingCollection] allKeys]];
   [self setupPopUp: defaultColorPalettePopUp key: DefaultColorPaletteKey
           content: [[ColorListCollection defaultColorListCollection] allKeys]];
   

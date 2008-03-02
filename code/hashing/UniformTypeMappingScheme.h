@@ -1,11 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
-#import "FileItemHashingScheme.h"
+#import "FileItemMappingScheme.h"
 
 
 @class UniformTypeRanking;
 
-@interface UniformTypeHashingScheme : NSObject <FileItemHashingScheme> {
+@interface UniformTypeMappingScheme : NSObject <FileItemMappingScheme> {
 
   UniformTypeRanking  *typeRanking;
 

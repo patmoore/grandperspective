@@ -4,7 +4,7 @@
 #import "ItemPathModel.h"
 
 #import "FileItem.h"
-#import "FileItemHashing.h"
+#import "FileItemMapping.h"
 
 #import "GradientRectangleDrawer.h"
 #import "ItemTreeDrawerSettings.h"
@@ -116,12 +116,12 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 //-----------------------------------------------------------------------------
 
 - (NSString *) descriptionForRow: (int) row {
-  NSObject <FileItemHashing>
+  NSObject <FileItemMapping>
     *colorMapper = [[dirView treeDrawerSettings] colorMapper];
 
   if ([colorMapper canProvideLegend]) {
-    LegendProvidingFileItemHashing  *legendProvider =
-      (LegendProvidingFileItemHashing *)colorMapper;
+    LegendProvidingFileItemMapping  *legendProvider =
+      (LegendProvidingFileItemMapping *)colorMapper;
   
     if (row < [colorImages count] - 1) {
       return [legendProvider descriptionForHash: row];
@@ -202,7 +202,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   if ( selectedItem != nil && 
        ![selectedItem isSpecial] &&
        [selectedItem isPlainFile] ) {
-    NSObject <FileItemHashing>  *colorMapper =
+    NSObject <FileItemMapping>  *colorMapper =
       [[dirView treeDrawerSettings] colorMapper];   
        
     if ([colorMapper canProvideLegend]) {

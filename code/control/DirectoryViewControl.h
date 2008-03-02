@@ -9,7 +9,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class DirectoryItem;
 @class DirectoryView;
 @class ItemPathModel;
-@class FileItemHashingCollection;
+@class FileItemMappingCollection;
 @class ColorListCollection;
 @class EditFilterWindowControl;
 @class ColorLegendTableViewControl;
@@ -71,7 +71,7 @@ extern NSString  *DeleteFilesAndFolders;
   BOOL  confirmFileDeletion;
   BOOL  confirmFolderDeletion;
 
-  FileItemHashingCollection  *colorMappings;
+  FileItemMappingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   ColorLegendTableViewControl  *colorLegendControl;
   

@@ -17,8 +17,8 @@
 #import "DrawTaskExecutor.h"
 #import "DrawTaskInput.h"
 
-#import "FileItemHashing.h"
-#import "FileItemHashingScheme.h"
+#import "FileItemMapping.h"
+#import "FileItemMappingScheme.h"
 
 
 #define SCROLL_WHEEL_SENSITIVITY  6.0
@@ -443,20 +443,20 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 - (void) observeColorMapping {
   ItemTreeDrawerSettings  *treeDrawerSettings = [self treeDrawerSettings];
-  NSObject <FileItemHashingScheme>  *colorMapping = 
-    [[treeDrawerSettings colorMapper] fileItemHashingScheme];
+  NSObject <FileItemMappingScheme>  *colorMapping = 
+    [[treeDrawerSettings colorMapper] fileItemMappingScheme];
     
   if (colorMapping != observedColorMapping) {
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
     
     if (observedColorMapping != nil) {
-      [nc removeObserver: self name: HashingSchemeChangedEvent 
+      [nc removeObserver: self name: MappingSchemeChangedEvent 
             object: observedColorMapping];
       [observedColorMapping release];
     }
 
     [nc addObserver: self selector: @selector(colorMappingChanged:)
-          name: HashingSchemeChangedEvent object: colorMapping];
+          name: MappingSchemeChangedEvent object: colorMapping];
     observedColorMapping = [colorMapping retain];
   }
 }
@@ -465,7 +465,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   // Replace the mapper that is used by a new one (still from the same scheme)
   [self setTreeDrawerSettings: 
          [[self treeDrawerSettings] copyWithColorMapper: 
-                                      [observedColorMapping fileItemHashing]]];
+                                      [observedColorMapping fileItemMapping]]];
 
   [self postColorMappingChanged];   
 }

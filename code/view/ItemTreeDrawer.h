@@ -8,11 +8,11 @@
 @class TreeLayoutBuilder;
 @class FileItemPathStringCache;
 @class ItemTreeDrawerSettings;
-@protocol FileItemHashing;
+@protocol FileItemMapping;
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
-  NSObject <FileItemHashing>  *colorMapper;
+  NSObject <FileItemMapping>  *colorMapper;
   NSObject <FileItemTest>  *fileItemMask;
   
   FileItemPathStringCache  *fileItemPathStringCache;
@@ -33,8 +33,8 @@
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
 
-- (void) setColorMapper: (NSObject <FileItemHashing> *)colorMapper;
-- (NSObject <FileItemHashing> *) colorMapper;
+- (void) setColorMapper: (NSObject <FileItemMapping> *)colorMapper;
+- (NSObject <FileItemMapping> *) colorMapper;
 
 // Updates the drawer according to the given settings.
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings;
