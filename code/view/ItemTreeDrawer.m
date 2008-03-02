@@ -161,7 +161,7 @@
                   || [fileItemMask testFileItem: file 
                                      context: fileItemPathStringCache] ) {
           int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
-                                           depth: depth];
+                                           atDepth: depth];
           if ([colorMapper canProvideLegend]) {
             NSAssert(colorIndex >= 0, @"Negative hash value.");
             colorIndex = MIN(colorIndex, numGradientColors - 1);

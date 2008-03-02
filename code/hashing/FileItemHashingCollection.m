@@ -28,9 +28,25 @@
 
 @implementation HashingByDepth
 
-- (int) hashForFileItem:(PlainFileItem*)item depth:(int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return depth;
 }
+
+- (int) hashForFileItem: (PlainFileItem *)item inTree: (FileItem *)treeRoot {
+  // Establish the depth of the file item in the tree.
+  FileItem  *fileItem = item;
+  int  depth = 0;
+  
+  while (fileItem != treeRoot) {
+    fileItem = [fileItem parentDirectory];
+    depth++;
+    
+    NSAssert(item != nil, @"Failed to encounter treeRoot");
+  }
+  
+  return depth;
+}
+
 
 - (BOOL) canProvideLegend {
   return YES;
@@ -62,7 +78,7 @@
 
 @implementation HashingByExtension
 
-- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[[item name] pathExtension] hash];
 }
 
@@ -71,7 +87,7 @@
 
 @implementation HashingByFilename
 
-- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[item name] hash];
 }
 
@@ -80,7 +96,7 @@
 
 @implementation HashingByDirectoryName
 
-- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
   return [[[item parentDirectory] name] hash];
 }
 
@@ -89,7 +105,11 @@
 
 @implementation HashingByTopDirectoryName
 
-- (int) hashForFileItem: (PlainFileItem *)item depth: (int) depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int) depth {
+  if (depth == 0) {
+    return [[item name] hash];
+  }
+
   DirectoryItem  *dir = [item parentDirectory];
   int  i = depth-2;
 
@@ -98,6 +118,22 @@
   }
 
   return [[dir name] hash];
+}
+
+- (int) hashForFileItem: (PlainFileItem *)item inTree: (FileItem *)treeRoot {
+  if (item == treeRoot) {
+    return [[item name] hash];
+  }
+  
+  DirectoryItem  *dir = [item parentDirectory];  
+  DirectoryItem  *oldDir = dir;
+  while (dir != treeRoot) {
+    oldDir = dir;
+    dir = [dir parentDirectory];
+    NSAssert(dir != nil, @"Failed to encounter treeRoot");
+  }
+  
+  return [[oldDir name] hash];
 }
 
 @end // @implementation HashingByTopDirectoryName 

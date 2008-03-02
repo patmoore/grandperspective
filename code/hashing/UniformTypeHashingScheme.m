@@ -111,7 +111,7 @@
 //----------------------------------------------------------------------------
 // Implementation of FileItemHashing protocol
 
-- (int) hashForFileItem: (PlainFileItem *)item depth: (int)depth {
+- (int) hashForFileItem: (PlainFileItem *)item atDepth: (int)depth {
   UniformType  *type = [item uniformType];
   
   if (type == nil) {
@@ -145,6 +145,7 @@
   
   NSAssert(NO, @"No conforming type found.");
 }
+
 
 - (BOOL) canProvideLegend {
   return YES;
