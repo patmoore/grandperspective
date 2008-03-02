@@ -44,9 +44,11 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 
 - (void) makeColorImages;
 - (void) updateDescriptionColumnWidth;
+- (void) updateSelectedRow;
          
 - (void) colorPaletteChanged: (NSNotification *)notification;
 - (void) colorMappingChanged: (NSNotification *)notification;
+- (void) selectedItemChanged: (NSNotification *)notification;
 
 @end
 
@@ -683,31 +685,6 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   }
   
   [selectedItemTitleField setStringValue: selectedItemTitle];
-
-  // Update the selected row in the color legend table. When the selected item 
-  // is a plain file, its color is selected. Otherwise, the selection is
-  // cleared.
-  BOOL  rowSelected = NO;
-
-  if ( selectedItem != nil && 
-       ![selectedItem isSpecial] &&
-       [selectedItem isPlainFile] ) {
-    NSObject <FileItemHashing>  *colorMapper =
-      [[mainView treeDrawerSettings] colorMapper];   
-       
-    if ([colorMapper canProvideLegend]) {
-      int  colorIndex = 
-             [colorMapper hashForFileItem: (PlainFileItem *)selectedItem
-                            inTree: [itemPathModel visibleTree]];
-      int  row = MIN(colorIndex, [colorLegendTable numberOfRows] - 1);
-      
-      [colorLegendTable selectRow: row byExtendingSelection: NO];
-      rowSelected = YES;
-    }
-  }
-  if ( !rowSelected ) {
-    [colorLegendTable deselectAll: self];
-  }
 }
 
 
@@ -818,6 +795,8 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
           name: ColorPaletteChangedEvent object: dirView];
     [nc addObserver: self selector: @selector(colorMappingChanged:)
           name: ColorMappingChangedEvent object: dirView];
+    [nc addObserver:self selector: @selector(selectedItemChanged:)
+          name: SelectedItemChangedEvent object: dirView];
   }
   
   return self;
@@ -931,6 +910,37 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 }
 
 
+/* Update the selected row in the color legend table. When the selected item 
+ * is a plain file, its color is selected. Otherwise, the selection is
+ * cleared.
+ */
+- (void) updateSelectedRow {
+  FileItem  *selectedItem = [dirView selectedItem];
+
+  BOOL  rowSelected = NO;
+
+  if ( selectedItem != nil && 
+       ![selectedItem isSpecial] &&
+       [selectedItem isPlainFile] ) {
+    NSObject <FileItemHashing>  *colorMapper =
+      [[dirView treeDrawerSettings] colorMapper];   
+       
+    if ([colorMapper canProvideLegend]) {
+      int  colorIndex = 
+             [colorMapper hashForFileItem: (PlainFileItem *)selectedItem
+                            inTree: [dirView treeInView]];
+      int  row = MIN(colorIndex, [tableView numberOfRows] - 1);
+      
+      [tableView selectRow: row byExtendingSelection: NO];
+      rowSelected = YES;
+    }
+  }
+  if ( !rowSelected ) {
+    [tableView deselectAll: self];
+  }
+}
+
+
 - (void) colorPaletteChanged: (NSNotification *)notification {
   [self makeColorImages];
 
@@ -939,11 +949,19 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   [self updateDescriptionColumnWidth];
 
   [tableView reloadData];
+
+  [self updateSelectedRow];
 }
 
 - (void) colorMappingChanged: (NSNotification *)notification {
   [self updateDescriptionColumnWidth];
   [tableView reloadData];
+
+  [self updateSelectedRow];
+}
+
+- (void) selectedItemChanged: (NSNotification *)notification {
+  [self updateSelectedRow];
 }
 
 @end // @implementation ColorLegendDataSource
