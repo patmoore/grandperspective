@@ -32,6 +32,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 - (void) colorPaletteChanged: (NSNotification *)notification;
 - (void) colorMappingChanged: (NSNotification *)notification;
 - (void) selectedItemChanged: (NSNotification *)notification;
+- (void) visibleTreeChanged: (NSNotification *)notification;
 
 @end
 
@@ -71,6 +72,8 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
           name: ColorMappingChangedEvent object: dirView];
     [nc addObserver:self selector: @selector(selectedItemChanged:)
           name: SelectedItemChangedEvent object: dirView];
+    [nc addObserver:self selector: @selector(visibleTreeChanged:)
+          name: VisibleTreeChangedEvent object: dirView];
   }
   
   return self;
@@ -238,6 +241,13 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 }
 
 - (void) selectedItemChanged: (NSNotification *)notification {
+  [self updateSelectedRow];
+}
+
+
+- (void) visibleTreeChanged: (NSNotification *)notification {
+  // A change of the visible tree changes the level of the selected file item,
+  // which may affect its color.
   [self updateSelectedRow];
 }
 

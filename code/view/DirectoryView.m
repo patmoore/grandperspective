@@ -38,6 +38,8 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 // the path, as well as selection of "invisible" items outside the path.
 - (void) postSelectedItemChanged;
 
+- (void) postVisibleTreeChanged;
+
 - (void) postColorPaletteChanged;
 - (void) postColorMappingChanged;
 
@@ -379,6 +381,11 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
       postNotificationName: SelectedItemChangedEvent object: self];
 }
 
+- (void) postVisibleTreeChanged {
+  [[NSNotificationCenter defaultCenter]
+      postNotificationName: VisibleTreeChangedEvent object: self];
+}
+
 - (void) postColorPaletteChanged {
   [[NSNotificationCenter defaultCenter]
       postNotificationName: ColorPaletteChangedEvent object: self];
@@ -406,6 +413,9 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 - (void) visibleTreeChanged: (NSNotification *)notification {
   [self forceRedraw];
+  
+  // Propagate event to my listeners.
+  [self postVisibleTreeChanged];
 }
 
 - (void) visiblePathLockingChanged: (NSNotification *)notification {
