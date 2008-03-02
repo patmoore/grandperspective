@@ -57,20 +57,20 @@
 
 - (NSString *) descriptionForHash: (int)hash {
   if (hash == 0) {
-    return NSLocalizedString(@"Top level", 
-                             @"Legend for Depth hashing scheme.");
+    return NSLocalizedString(@"Outermost level", 
+                             @"Legend for Level mapping scheme.");
   }
   else {
     NSString  
-      *fmt = NSLocalizedString(@"Depth %d", 
-                               @"Legend for Depth hashing scheme.");
+      *fmt = NSLocalizedString(@"Level %d", 
+                               @"Legend for Level mapping scheme.");
     return [NSString stringWithFormat: fmt, hash];
   }
 }
 
 - (NSString *) descriptionForRemainingHashes {
-  return NSLocalizedString(@"Higher depths",
-                           @"Misc. description for Depth hashing scheme.");
+  return NSLocalizedString(@"Lower levels",
+                           @"Misc. description for Level mapping scheme.");
 }
 
 @end // @implementation HashingByDepth
@@ -163,7 +163,7 @@
                 key: @"name"];
     [instance addFileItemHashingScheme:
                   [[[HashingByDepth alloc] init] autorelease]
-                key: @"depth"];
+                key: @"level"];
     [instance addFileItemHashingScheme:
                   [[[StatelessFileItemHashing alloc] init] autorelease]
                 key: @"nothing"];

@@ -47,7 +47,7 @@ NSString  *UnknownTypeUTI = @"unknown";
     
     // Create the UniformType object used when the type is unknown.
     NSString  *descr = NSLocalizedString( @"unknown file type", 
-                                          @"Description for \"unknown\" UTI.");
+                                          @"Description for 'unknown' UTI.");
     unknownType = 
       [[UniformType alloc] initWithUniformTypeIdentifier: UnknownTypeUTI
                              description: descr

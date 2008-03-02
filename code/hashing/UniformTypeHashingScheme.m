@@ -168,8 +168,8 @@
 
 - (NSString *) descriptionForRemainingHashes {
   return NSLocalizedString
-           (@"other types",
-            @"Misc. description for Uniform Type hashing scheme.");
+           (@"other file types",
+            @"Misc. description for File type mapping scheme.");
 }
 
 @end
