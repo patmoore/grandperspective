@@ -47,7 +47,16 @@
         <key>uniformTypesRanking</key>
         <array>
             <string>public.image</string>
+            <string>public.movie</string>
+            <string>public.audio</string>
             <string>public.text</string>
+            <string>public.source-code</string>
+            <string>public.html</string>
+            <string>public.archive</string>
+            <string>public.executable</string>
+            <string>public.package</string>
+            <string>public.presentation</string>
+            <string>unknown</string>
         </array>
     </dict>
     <key>GPDefaultFileItemTests</key>
