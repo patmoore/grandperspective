@@ -59,6 +59,8 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *selectedItemExactSizeField;
   IBOutlet NSTextField  *selectedItemSizeField;
   IBOutlet NSTextField  *selectedItemTitleField;
+  IBOutlet NSTextField  *selectedItemTypeIdentifierField;
+  IBOutlet NSTextField  *selectedItemTypeDescriptionField;
 
   ItemPathModel  *itemPathModel;
   DirectoryViewControlSettings  *initialSettings;

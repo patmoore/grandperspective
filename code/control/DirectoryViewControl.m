@@ -1,5 +1,6 @@
 #import "DirectoryViewControl.h"
 
+#import "PlainFileItem.h"
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
@@ -13,6 +14,7 @@
 #import "PreferencesPanelControl.h"
 #import "ItemTreeDrawerSettings.h"
 #import "ControlConstants.h"
+#import "UniformType.h"
 
 #import "UniqueTagsTransformer.h"
 
@@ -655,6 +657,23 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
   
   [selectedItemTitleField setStringValue: selectedItemTitle];
+  
+  // Update the file type fields in the Focus panel
+  if ( selectedItem != nil && 
+       ![selectedItem isSpecial] &&
+       [selectedItem isPlainFile] ) {
+    UniformType  *type = [ ((PlainFileItem *)selectedItem) uniformType];
+    
+    [selectedItemTypeIdentifierField 
+       setStringValue: [type uniformTypeIdentifier]];
+       
+    [selectedItemTypeDescriptionField 
+       setStringValue: ([type description] != nil ? [type description] : @"")];
+  }
+  else {
+    [selectedItemTypeIdentifierField setStringValue: @""];
+    [selectedItemTypeDescriptionField setStringValue: @""];
+  }
 }
 
 

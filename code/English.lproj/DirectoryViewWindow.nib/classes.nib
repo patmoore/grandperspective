@@ -39,6 +39,8 @@
                 selectedItemPathTextView = NSTextView; 
                 selectedItemSizeField = NSTextField; 
                 selectedItemTitleField = NSTextField; 
+                selectedItemTypeDescriptionField = NSTextField; 
+                selectedItemTypeIdentifierField = NSTextField; 
                 showEntireVolumeCheckBox = NSButton; 
                 treeSizeField = NSTextField; 
                 upButton = NSButton; 
