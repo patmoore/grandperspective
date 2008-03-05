@@ -3,6 +3,49 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.9.11, xx-03-2008
+----------------------------------------------------------------------
+
+New functionality:
+- Files and folders can now be deleted from the view window:
+  - Deletion can be enabled and disabled from the Preferences, with
+    optional required confirmation.
+  - The view updates itself to show freed space.
+  - The Info panel shows the total amount of freed space.
+- Support coloring by file type:
+  - The hierarchical Uniform Type system of OS X is used as a basis.
+  - A color legend in the Display panel shows the file type that
+    corresponds to each color.
+  - The types that are assigned a different color can be controlled
+    in the Preferences, by changing the order of the uniform types.
+  - The list of new uniform types is dynamically extended as new 
+    types are encountered during scanning.
+ 
+Minor improvements:
+- Improved drawer of the view window:
+  - The Focus panel now shows the file type of the selected item.
+  - The width of the drawer can be increased.
+  - Improved wrapping/scrolling of text fields in the Info panel.
+- Renamed "Depth" color mapping scheme to "Level". The newly added
+  color legend shows the level that is associated with each color.
+
+Bug fixes:
+- Removed race condition in view redrawing code that could trigger
+  a near endless cycle of view redrawings.
+- It was possible to show multiple preference panels at once. Not 
+  anymore.
+- Made it impossible to change the names of application-provided 
+  rules. Furthermore, now correctly showing the localized namee.
+
+Code clean-up:
+- Using constants for all event strings and user default keys.
+- Application defaults are now set in the Info.plist file.
+- Improved reverse look-up of localized keys.
+- Moved all Item classes to the "tree" folder.
+- Moved all file item hashing related classes to a separate folder.
+
+
+----------------------------------------------------------------------
   Version 0.9.10 (localized), 20-01-2008
 ----------------------------------------------------------------------
 
