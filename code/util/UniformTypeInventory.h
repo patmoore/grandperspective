@@ -44,12 +44,15 @@ extern NSString  *UniformTypeKey;
 
 - (NSSet *)childrenOfUniformType: (UniformType *)type;
 
-/* Returns the type for the UTI for the given file extension. If there is no
+/* Returns the type associated with the given file extension. If there is no
  * properly defined type, it returns the type the generic "unknown" type
  * (see -unknownUniformType).
  */
 - (UniformType *)uniformTypeForExtension: (NSString *)ext;
 
+/* Returns the type that corresponds to the given UTI. If the UTI is not
+ * recognized, it returns "nil".
+ */
 - (UniformType *)uniformTypeForIdentifier: (NSString *)uti;
 
 /* Enumerates over all types maintained by this inventory. These types include

@@ -103,10 +103,11 @@ NSString  *UnknownTypeUTI = @"unknown";
     type = [self uniformTypeForIdentifier: uti];
 
     if (type != nil) {
-      // It is possible that a UTI has been registered for an extension, but
-      // that the corresponding UniformType could not be created (because no
-      // further information could be established). That is why it is checked 
-      // that the type is not nil.
+      // Successfully obtained a UniformType for the UTI.
+      //
+      // Note: It is possible that a UTI has been registered for an extension
+      // without additional information describing the type. In this case, no
+      // UniformType can be created, which is why the check is needed.
       
       [typeForExtension setObject: type forKey: ext];
     
@@ -126,9 +127,7 @@ NSString  *UnknownTypeUTI = @"unknown";
   if (type == self) {
     // Encountered cycle in the type conformance relationships. Breaking the 
     // loop to avoid infinite recursion.
-    //
-    // Note: We can only get here if the caller was "self". Therefore returning
-    // "nil" here instead of "unknownType".
+
     return nil;
   }
 
@@ -147,7 +146,7 @@ NSString  *UnknownTypeUTI = @"unknown";
     // No uniform type could be created for the UTI
     [typeForUTI removeObjectForKey: uti];
 
-    return unknownType;
+    return nil;
   }
   
   [typeForUTI setObject: type forKey: uti];
