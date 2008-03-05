@@ -216,7 +216,7 @@ NSString  *UnknownTypeUTI = @"unknown";
   [[NSNotificationCenter defaultCenter] postNotification: notification];
 }
 
-- (id) createUniformTypeForIdentifier:  (NSString *)uti {
+- (UniformType *) createUniformTypeForIdentifier: (NSString *)uti {
 
   NSDictionary  *dict = 
     (NSDictionary*) UTTypeCopyDeclaration( (CFStringRef)uti );
