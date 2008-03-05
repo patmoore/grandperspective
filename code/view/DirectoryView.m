@@ -365,14 +365,28 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 
+/**
+ * Callback method that signals that the drawing task has finished execution.
+ * It is also called when the drawing has been aborted, in which the image 
+ * will be nil.
+ */
 - (void) itemTreeImageReady: (id) image {
-  // Note: This method is called from the main thread (even though it has been
-  // triggered by the drawer's background thread). So calling setNeedsDisplay
-  // directly is okay.
-  [treeImage release];
-  treeImage = [image retain];
+  if (image != nil) {
+    // Only take action when the drawing task has completed succesfully. 
+    //
+    // Without this check, a race condition can occur. When a new drawing task
+    // aborts the execution of an ongoing task, the completion of the latter
+    // and subsequent invocation of -drawRect: results in the abortion of
+    // the new task (as long as it has not yet completed).
   
-  [self setNeedsDisplay: YES];  
+    // Note: This method is called from the main thread (even though it has been
+    // triggered by the drawer's background thread). So calling setNeedsDisplay
+    // directly is okay.
+    [treeImage release];
+    treeImage = [image retain];
+  
+    [self setNeedsDisplay: YES];
+  }
 }
 
 
