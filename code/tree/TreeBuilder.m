@@ -133,7 +133,8 @@ static struct {
   Boolean  isDir;
 
   OSStatus  status = 
-    FSPathMakeRef( [path fileSystemRepresentation], &pathRef, &isDir );
+    FSPathMakeRef( (const UInt8 *) [path fileSystemRepresentation], 
+	               &pathRef, &isDir );
   NSAssert(isDir, @"Path is not a directory.");
   
   NSFileManager  *manager = [NSFileManager defaultManager];
