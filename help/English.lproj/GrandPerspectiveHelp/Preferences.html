@@ -1,0 +1,53 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>User preferences</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Describes the user preferences.">
+<meta name="keywords" content="preferences, deletion, default, settings, configuration" >
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Preferences</h1>
+</div>
+
+<p>
+The application can be configured using the Preferences, accessible from the GrandPerspective menu.
+Changes to the settings are stored when the application terminates, so that the settings are also used the next time you run the application.
+The Preferences panel consists of three parts. 
+</p>
+
+<p>
+In the <b>View</b> section you can configure whether file deletion is supported in the <a href="Views.html">view window</a>.
+You can disable deletion, enable deletion of single files, or enable deletion of entire folders. 
+Furthermore, you can specify whether confirmation is required.
+<!-- Note: warning repeated in NavigatingViews.html -->
+<em>Beware: Deleting folders will move the <em>entire</em> folder to the Trash, including any files in the folder that are not shown in the view.
+Files that are not shown can include <a href="MasksAndFilters.html">masked or filtered</a> files, files that could not be scanned because of insufficent permissions, and files that have appeared in the folder after the scan was made.
+In short, you should be very careful when deleting folders.
+</em>
+</p>
+
+<p>
+In the <b>Info</b> section you can configure the <a href="FileSizeMeasures.html">file size measure</a> that is used to report file sizes.
+A change to this setting comes into effect when new folders are scanned.
+It does not affect existing views, or views that are <a href="CreatingViews.html">created</a> after re-scanning (as the latter take their settings from their original view).
+The file size measure that is used by a specific view window can be found in its <a href="ViewInfoPanel.html">Info panel</a>. 
+</p>
+
+<p>
+From the <b>Display</b> section you can control how a view is shown.
+Here you can specify the default color mapping and default color palette.
+These settings are used when new views are created. 
+You can subsequently still change the color mapping and color palette from the view's <a href="ViewDisplayPanel.html">Display panel</a>.
+By <a href="EditingFileTypeColorMapping.html">editing the file type color mapping</a> you can control how file types are mapped to different colors.
+Changes to this setting affect all views that use coloring by file type.
+</p>
+
+</body>
+</html>
+

@@ -4,7 +4,7 @@
 <title>Navigating views</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
 <meta name="description" content="Explains how to change the selected file and how to change the folder that is shown in the view.">
-<meta name="keywords" content="views, navigation, up, down, selection, lock, unlock, change, folder" >
+<meta name="keywords" content="views, navigation, up, down, selection, lock, unlock, change, folder, reveal, delete, deletion" >
 </head>
 <body>
 
@@ -43,7 +43,20 @@ Clicking <b>Up</b> will take you back up, one level at the time.
 
 <p> 
 When the selection is locked, you can also show the selected file or folder in Finder using the <b>Reveal</b> button. 
-There you can examine it, rename it, delete it, etc.
+There you can examine it, rename it, move it, etc.
+</p>
+
+<p>
+When the selection is locked, you can also delete the selected file or folder using the <b>Delete</b> button.
+Deleted items will be moved to the Trash and the view will be updated to show the freed space.
+By default, the button is disabled to reduce the chance of accidental file deletion.
+Deletion can be enabled from the <a href="Preferences.html">Preferences</a>.
+Here you can control whether you can only delete single files, or also entire folders. 
+Furthermore, you can specify whether confirmation is required.
+<em>Beware: Deleting folders will move the <em>entire</em> folder to the Trash, including any files in the folder that are not shown in the view.
+Files that are not shown can include <a href="MasksAndFilters.html">masked or filtered</a> files, files that could not be scanned because of insufficent permissions, and files that have appeared in the folder after the scan was made.
+In short, you should be very careful when deleting folders.
+</em>
 </p>
 
 </body>

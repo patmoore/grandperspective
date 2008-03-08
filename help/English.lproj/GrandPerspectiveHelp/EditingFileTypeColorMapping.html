@@ -1,0 +1,55 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Editing masks and filters</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Explains how to edit the File type color mapping.">
+<meta name="keywords" content="file type, order, color, mapping, edit">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Editing the order of file types</h1>
+</div>
+
+<p>
+From the <a href="Preferences.html">Preferences</a> you can edit the File type color mapping.
+You do so by changing the order of the <a href="FileTypes.html">file types</a> that are used by the color mapping.
+Each file is mapped to a color by determining the first file type in the list that the file conforms to. The order of file types is important for two reasons:
+
+<ul>
+
+<li>Many files conform to more than one file type: one specific file type, and possibly one or more general types.
+The order therefore determines which of these types is used to color the file.
+For example, if the <em>public.jpeg</em> type appears below the more general <em>public.image</em> type then JPEG images will be assigned the same color as other image files.
+If, on the other hand, the <em>public.jpeg</em> type appears above the <em>public.image</em> type, then JPEG images will be assigned a different color from other image files (assuming that there is not an even more general applicable file type above the "public.jpeg" in the list).
+</li>
+
+<li>The number of available colors is typically smaller than the number of file types.
+It is therefore not always possible to give each type its own color.
+Only the files at the top of the list may be assigned their own color, files lower down may all be mapped to the last color that represents all other file types.
+</li>
+
+</ul> 
+</p>
+
+<p>
+If a file type appears in the list below a (more general) file type that it conforms to, it is "hidden" because it will never be used
+(the more general file type will always be assigned to any file that also conforms to the more specific file type).
+Hidden file types are indicated in light gray.
+The <b>Move to reveal</b> button will move a hidden file type upwards in the list so that it is above all file types that it conforms to.
+The result is that the file type is now actively used by the color map.
+Similarly, the <b>Move to hide</b> button moves an active file downwards in the list so that it is below a type that it conforms to (or at the bottom of the list, in case it does not conform to any type).
+Hiding a file type means that it is not used in the color map anymore.
+</p>
+
+<p>
+The <b>Move to top</b> and <b>Move to bottom</b> can be used to respectively move a file type to the top or bottom of the list.
+The <b>Move up</b> and <b>Move down</b> buttons can be used to move a file type up or down by one position in the list.
+</p>
+
+</body>
+</html>
