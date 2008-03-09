@@ -3,7 +3,6 @@
         {
             ACTIONS = {
                 cancelAction = id; 
-                handleBrowserClick = id; 
                 moveDownAction = id; 
                 moveToBottomAction = id; 
                 moveToHideAction = id; 
@@ -26,7 +25,7 @@
                 typeDescriptionDrawer = NSDrawer; 
                 typeDescriptionField = NSTextField; 
                 typeIdentifierField = NSTextField; 
-                typesBrowser = NSBrowser; 
+                typesTable = NSTableView; 
             }; 
             SUPERCLASS = NSWindowController; 
         }, 

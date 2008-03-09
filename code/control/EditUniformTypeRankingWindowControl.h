@@ -5,7 +5,7 @@
 
 @interface EditUniformTypeRankingWindowControl : NSWindowController  {
 
-  IBOutlet NSBrowser  *typesBrowser;
+  IBOutlet NSTableView  *typesTable;
 
   IBOutlet NSDrawer  *typeDescriptionDrawer;
   IBOutlet NSTextField  *typeIdentifierField;
@@ -36,8 +36,6 @@
 
 - (IBAction) moveUpAction: (id) sender;
 - (IBAction) moveDownAction: (id) sender;
-
-- (IBAction) handleBrowserClick: (id) sender;
 
 - (IBAction) showTypeDescriptionChanged: (id) sender;
 

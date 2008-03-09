@@ -29,6 +29,7 @@
 
 - (void) moveCellUpFromIndex: (int) index;
 - (void) moveCellDownFromIndex: (int) index;
+- (void) movedCellToIndex: (int) index;
 
 @end
 
@@ -62,9 +63,8 @@
 
 
 - (void) windowDidLoad {
-  [typesBrowser setDelegate: self];
-    
-  // [self updateWindowState:nil];
+  [typesTable setDelegate: self];
+  [typesTable setDataSource: self];
 }
 
 
@@ -79,19 +79,18 @@
 }
 
 - (IBAction) moveToTopAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   
   while (i > 0) {
     [self moveCellUpFromIndex: i];
     i--;
   }
   
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
 - (IBAction) moveToBottomAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   int  max_i = [typeCells count] - 1;
   
   while (i < max_i) {
@@ -99,24 +98,22 @@
     i++;
   }
 
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
 - (IBAction) moveToRevealAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   
   while (i > 0 && [[typeCells objectAtIndex: i] isDominated]) {
     [self moveCellUpFromIndex: i];
     i--;
   }
   
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
 - (IBAction) moveToHideAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   int  max_i = [typeCells count] - 1;
   
   while (i < max_i && ![[typeCells objectAtIndex: i] isDominated]) {
@@ -124,24 +121,22 @@
     i++;
   }
   
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
 - (IBAction) moveUpAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   
   if (i > 0) {
     [self moveCellUpFromIndex: i];
     i--;
   }
   
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
 - (IBAction) moveDownAction: (id) sender {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   int  max_i = [typeCells count] - 1;
   
   if (i < max_i) {
@@ -149,13 +144,9 @@
     i++;
   }
   
-  [typesBrowser validateVisibleColumns];
-  [self updateWindowState];
+  [self movedCellToIndex: i];
 }
 
-- (IBAction) handleBrowserClick: (id) sender {
-  [self updateWindowState];
-}
 
 - (IBAction) showTypeDescriptionChanged: (id) sender {
   NSButton  *button = sender;
@@ -181,29 +172,23 @@
 }
 
 //----------------------------------------------------------------------------
-// Delegate methods for NSBrowser
+// NSTableSource
 
-- (BOOL) browser: (NSBrowser *)sender isColumnValid: (int) column {
-  NSAssert(column==0, @"Invalid column.");
-  NSAssert(sender == typesBrowser, @"Unexpected sender.");
-    
-  // When "validateVisibleColumns" is called, the visible column (just one)
-  // can always be assumed to invalid.
-  return NO;
-}
-
-- (int) browser: (NSBrowser *)sender numberOfRowsInColumn: (int) column {
-  NSAssert(column == 0, @"Invalid column.");
-  NSAssert(sender == typesBrowser, @"Unexpected sender.");
-  
+- (int) numberOfRowsInTableView: (NSTableView *)tableView {
   return [typeCells count];
 }
 
-- (void) browser: (NSBrowser *)sender willDisplayCell: (id) cell 
-           atRow: (int) row column: (int) column {
-  NSAssert(column==0, @"Invalid column.");
-  NSAssert(sender == typesBrowser, @"Unexpected sender.");
-  
+- (id) tableView: (NSTableView *)tableView 
+         objectValueForTableColumn: (NSTableColumn *)column row: (int)row {
+  return [[[typeCells objectAtIndex: row] uniformType] uniformTypeIdentifier];
+}
+
+
+//----------------------------------------------------------------------------
+// Delegate methods for NSTable
+
+- (void) tableView: (NSTableView *)tableView willDisplayCell: (id) cell 
+           forTableColumn: (NSTableColumn *)aTableColumn row: (int) row {
   TypeCell  *typeCell = [typeCells objectAtIndex: row];
   NSString  *uti = [[typeCell uniformType] uniformTypeIdentifier];
 
@@ -217,8 +202,10 @@
   }
   
   [cell setAttributedStringValue: cellValue];
-  
-  [cell setLeaf: YES];
+}
+
+- (void) tableViewSelectionDidChange: (NSNotification *)notification {
+  [self updateWindowState];
 }
 
 @end // @implementation EditUniformTypeRankingWindowControl
@@ -244,8 +231,8 @@
     [typeCells addObject: typeCell];
   }
   
-  [typesBrowser validateVisibleColumns];  
-  [typesBrowser selectRow: 0 inColumn: 0];
+  [typesTable reloadData];  
+  [typesTable selectRow: 0 byExtendingSelection: NO];
 }
 
 // Commits changes made in the window to the uniform type ranking.
@@ -277,7 +264,7 @@
 
 
 - (void) updateWindowState {
-  int  i = [typesBrowser selectedRowInColumn: 0];
+  int  i = [typesTable selectedRow];
   int  numCells =  [typeCells count];
   
   NSAssert(i >= 0 && i < numCells, @"Invalid selected type.");
@@ -360,6 +347,15 @@
 - (void) moveCellDownFromIndex: (int) index {
   [self moveCellUpFromIndex: index + 1];
 }
+
+/* Update the window after a cell has been moved.
+ */
+- (void) movedCellToIndex: (int) index {  
+  [typesTable selectRow: index byExtendingSelection: NO];
+  [typesTable reloadData];
+  [self updateWindowState];
+}
+
 
 @end // @implementation EditUniformTypeRankingWindowControl (PrivateMethods)
 
