@@ -4,6 +4,9 @@
 #import "UniformType.h"
 
 
+NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
+
+
 @interface TypeCell : NSObject {
   UniformType  *type;
   BOOL  dominated;
@@ -30,6 +33,8 @@
 - (void) moveCellUpFromIndex: (int) index;
 - (void) moveCellDownFromIndex: (int) index;
 - (void) movedCellToIndex: (int) index;
+
+- (int) getRowNumberFromDraggingInfo: (id <NSDraggingInfo>) info;
 
 @end
 
@@ -65,6 +70,9 @@
 - (void) windowDidLoad {
   [typesTable setDelegate: self];
   [typesTable setDataSource: self];
+  
+  [typesTable registerForDraggedTypes: 
+                [NSArray arrayWithObject: InternalTableDragType]];
 }
 
 
@@ -181,6 +189,68 @@
 - (id) tableView: (NSTableView *)tableView 
          objectValueForTableColumn: (NSTableColumn *)column row: (int)row {
   return [[[typeCells objectAtIndex: row] uniformType] uniformTypeIdentifier];
+}
+
+
+- (BOOL)tableView: (NSTableView *)tableView
+          writeRows: (NSArray *)rows toPasteboard: (NSPasteboard *)pboard {
+  // Note: This method is deprecated in Mac OS X 10.4 where 
+  // tableView:writeRowsWithIndexes:toPasteboard: should be used instead. For
+  // now, however, we want to support Mac OS X 10.3 as well.
+
+  // Store the source row number of the type that is being dragged.
+  NSNumber  *rowNum = (NSNumber *)[rows objectAtIndex: 0];
+  NSData  *data = [NSKeyedArchiver archivedDataWithRootObject: rowNum];
+
+  [pboard declareTypes: [NSArray arrayWithObject: InternalTableDragType]
+            owner: self];
+  [pboard setData: data forType: InternalTableDragType];
+
+  return YES;
+}
+
+- (NSDragOperation) tableView: (NSTableView *)tableView
+                      validateDrop: (id <NSDraggingInfo>) info
+                      proposedRow: (int) row
+                      proposedDropOperation: (NSTableViewDropOperation) op {
+  if (op == NSTableViewDropAbove) {
+    // Only allow drops in between two existing rows as otherwise it is not
+    // clear to the user where the dropped item will be moved to.
+  
+    int  fromRow = [self getRowNumberFromDraggingInfo: info];
+    if (row < fromRow || row > fromRow + 1) {
+      // Only allow drops that actually result in a move.
+      
+      return NSDragOperationMove;
+    }
+  }
+
+  return NSDragOperationNone;
+}
+
+- (BOOL) tableView: (NSTableView *)tableView
+           acceptDrop: (id <NSDraggingInfo>) info row: (int) row
+           dropOperation: (NSTableViewDropOperation) op {
+
+  int  i = [self getRowNumberFromDraggingInfo: info];
+
+  if (i > row) {
+    while (i > row) {
+      [self moveCellUpFromIndex: i];
+      i--;
+    }
+  }
+  else {
+    int  max_i = row - 1;
+    while (i < max_i) {
+      [self moveCellDownFromIndex: i];
+      i++;
+    }
+  }
+  
+  [self movedCellToIndex: i];
+  
+  return YES;
 }
 
 
@@ -356,6 +426,14 @@
   [self updateWindowState];
 }
 
+
+- (int) getRowNumberFromDraggingInfo: (id <NSDraggingInfo>) info {
+  NSPasteboard  *pboard = [info draggingPasteboard];
+  NSData  *data = [pboard dataForType: InternalTableDragType];
+  NSNumber  *rowNum = [NSKeyedUnarchiver unarchiveObjectWithData: data];
+  
+  return [rowNum intValue];
+}
 
 @end // @implementation EditUniformTypeRankingWindowControl (PrivateMethods)
 
