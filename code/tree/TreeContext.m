@@ -263,7 +263,6 @@ static int  nextFilterId = 1;
     numReaders++;
   }
   else if ([lock tryLockWhenCondition: IDLE]) {
-    NSLog(@"READING");
     // Was in IDLE state, start reading
     numReaders++;
     [lock unlockWithCondition: READING];
@@ -299,15 +298,12 @@ static int  nextFilterId = 1;
     if (numWaitingReaders > 0) {
       // Although there is no need for waiting readers in the READING state,
       // this can happen if waiting readers are not woken up quickly enough.
-      NSLog(@"READING");
       [lock unlockWithCondition: READING];
     }
     else if (numWaitingWriters > 0) {
-      NSLog(@"WRITING");
       [lock unlockWithCondition: WRITING];
     }
     else {
-      NSLog(@"IDLE");
       [lock unlockWithCondition: IDLE];
     }
   }
@@ -320,7 +316,6 @@ static int  nextFilterId = 1;
 
   [mutex lock];
   if ([lock tryLockWhenCondition: IDLE]) {
-    NSLog(@"WRITING");
     // Was in IDLE state, start writing
     [lock unlockWithCondition: WRITING];
   }
@@ -347,15 +342,12 @@ static int  nextFilterId = 1;
   [mutex lock];  
 
   if (numWaitingReaders > 0) {
-    NSLog(@"READING");
     [lock unlockWithCondition: READING];
   }
   else if (numWaitingWriters > 0) {
-    NSLog(@"WRITING");
     [lock unlockWithCondition: WRITING];
   }
   else {
-    NSLog(@"IDLE");
     [lock unlockWithCondition: IDLE];
   }
   

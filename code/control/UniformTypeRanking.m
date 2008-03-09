@@ -62,9 +62,6 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
       [rankedTypes addObject: type];
     }
   }
-  
-  NSLog(@"Loaded %d types from preferences (%d discarded)", 
-           [rankedTypes count], [rankedUTIs count] - [rankedTypes count]);
 }
 
 - (void) storeRanking {
@@ -90,9 +87,6 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
   [userDefaults setObject: rankedUTIs forKey: UniformTypesRankingKey];
-  
-  NSLog(@"Stored %d types to preferences (%d discarded)", 
-           [rankedUTIs count], [rankedTypes count] - [rankedUTIs count]);
 }
 
 
@@ -190,8 +184,6 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
   UniformType  *type = [[notification userInfo] objectForKey: UniformTypeKey];
 
   [rankedTypes addObject: type];
-
-  NSLog(@"uniformTypeAdded: %@", type);
 }
 
 @end // @implementation UniformTypeRanking (PrivateMethods) 

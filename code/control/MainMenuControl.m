@@ -75,8 +75,6 @@ NSString* scanActivityFormatString() {
 @implementation MainMenuControl
 
 + (void) initialize {
-  NSLog( @"Registering application defaults." );
-
   NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
 
   // Load application-defaults from the information properties file.

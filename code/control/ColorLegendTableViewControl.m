@@ -184,7 +184,6 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   // TODO: Is there a way to get the exact value dynamically?
   maxWidth += 6;
   
-  NSLog(@"Setting width: %f", maxWidth);
   [descrColumn setMaxWidth: maxWidth];
   [descrColumn setWidth: maxWidth];
 }

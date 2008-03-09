@@ -173,8 +173,8 @@ enum {
     
     [pool release];
   }
-  NSLog(@"Thread terminated.");
 
+  // NSLog(@"Thread terminated.");
 }
 
 @end // @implementation AsynchronousTaskManager (PrivateMethods)

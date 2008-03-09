@@ -114,7 +114,7 @@
   [fileItemPathStringCache clearCache];
 
   if (!abort) {
-    NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
+    // NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
     
     return [self createImageFromBitmap];
   }
