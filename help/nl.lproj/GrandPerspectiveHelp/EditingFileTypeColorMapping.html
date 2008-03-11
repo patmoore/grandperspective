@@ -1,0 +1,59 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>De kleuring naar Bestandstype aanpassen</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Legt uit hoe u de kleuring naar Bestandstype aan kan passen.">
+<meta name="keywords" content="bestandstype, volgorde, kleur, kleuring, wijzigen, aanpassen">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>De kleuring naar Bestandstype aanpassen</h1>
+</div>
+
+<p>
+Vanuit <a href="Preferences.html">Voorkeuren</a> kunt u de Bestandstype kleuring aanpassen.
+U kunt dit doen door de volgorde van de <a href="FileTypes.html">bestandstypen</a> die hiervoor gebruikt worden te wijzigen.
+De kleur van ieder bestand wordt hangt af van het eerste bestandstype in de lijst waar het bestand aan voldoet.
+De volgorde van de bestandstypen is van invloed om twee redenen:
+
+<ul>
+
+<li>Veel bestanden voldoen aan meer dan één bestandstype: een specifiek type en één of meer algemenere types.
+De volgorde bepaalt daarom welke van deze bestandstypes voor de toekenning van de kleur zorgt.
+Bijvoorbeeld, wanneer het <tt>public.jpeg</tt> bestandstype <em>onder</em> het meer algemene <tt>public.image</tt> bestandstype staat, dan krijgen JPEG afbeeldingen dezelfde kleur toegekend als andere afbeeldingen.
+Staat daarentegen het <tt>public.jpeg</tt> bestandstype <em>boven</em> het <tt>public.image</tt> bestandstype, dan zullen JPEG afbeeldingen een andere kleur toegekend krijgen dan afbeeldingen van een ander type.
+<!-- (er vanuit gaande dat er geen andere algemene bestandstypen boven <tt>public.jpeg</tt> staan waaraan  <tt>public.jpeg</tt> ook voldoet) -->
+</li>
+
+<li>Het aantal beschikbare kleuren is typisch kleiner dan het aantal bestandstypes.
+Het is daarom niet altijd mogelijk om iedere bestandstype een afzonderelijke kleur toe te kennen.
+In dat geval zullen enkel types bovenin de lijst een eigen kleur toegekend krijgen.
+Bestandstypes lager in de lijst krijgen dan allen dezelfde kleur toegekend.
+</li>
+
+</ul> 
+</p>
+
+<p>
+Wanneer een bestandstype onder een (meer algemeen) bestandstype staat waar het ook aan voldoet, dan is het "verborgen" omdat het niet gebruikt zal worden voor de kleuring
+(het meer algemene bestandstype zal altijd toegekend worden aan elk bestand dat ook aan het meer specifieke type voldoet).
+Verborgen bestandstypen worden getoond in licht grijs.
+De <b>Onthul</b> knop "onthult" een verborgen bestandstype door het boven alle meer algemene bestandstypen te plaatsen waar het aan voldoet.
+Als gevolg zal het bestandstype actief gebruikt worden voor de kleuring.
+Op soortgelijke wijze verplaatst de <b>Verberg</b> knop een actief bestandstype onder een bestandstype waaraan het voldoet (of mocht zo'n type niet bestaan, gewoon onderaan de lijst).
+Het verbergen van een bestandstype op deze manier zorgt ervoor dat het niet meer gebruikt wordt voor het toekennen van een kleur.
+</p>
+
+<p>
+De <b>Plaats bovenaan</b> en <b>Plaats onderaan</b> knoppen kunnen respectievelijk gebruikt worden om een bestandstype bovenaan of anderaan de lijst de plaatsen.
+De <b>Plekje omhoog</b> en <b>Plekje omlaag</b> knoppen kunnen gebruikt worden om een bestandstype één plekje omhoog of omlaag te bewegen.
+Daarnaast is het ook mogelijk via "Drag and Drop" de volgorde van bestandstypes in de lijst te wijzigen.
+</p>
+
+</body>
+</html>
