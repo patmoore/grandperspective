@@ -3,7 +3,7 @@
 ======================================================================
 
 ----------------------------------------------------------------------
-  Version 0.9.11, xx-03-2008
+  Version 0.9.11, 18-03-2008
 ----------------------------------------------------------------------
 
 New functionality:
@@ -11,13 +11,13 @@ New functionality:
   - Deletion can be enabled and disabled from the Preferences, with
     optional required confirmation.
   - The view updates itself to show freed space.
-  - The Info panel shows the total amount of freed space.
-- Support coloring by file type:
+  - The total amount of freed space is shown in the Info panel.
+- Added coloring by file type:
   - The hierarchical Uniform Type system of OS X is used as a basis.
   - A color legend in the Display panel shows the file type that
     corresponds to each color.
   - The types that are assigned a different color can be controlled
-    in the Preferences, by changing the order of the uniform types.
+    in the Preferences by changing the order of the uniform types.
   - The list of new uniform types is dynamically extended as new 
     types are encountered during scanning.
  
