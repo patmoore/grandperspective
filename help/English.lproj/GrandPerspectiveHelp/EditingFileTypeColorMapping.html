@@ -12,7 +12,7 @@
 <img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
 </div>
 <div id="pagetitle">
-<h1>Editing the order of file types</h1>
+<h1>Editing the "File type" color mapping</h1>
 </div>
 
 <p>
@@ -26,7 +26,7 @@ The order of file types is important for two reasons:
 <li>Many files conform to more than one file type: one specific file type, and possibly one or more general types.
 The order therefore determines which of these types is used to color the file.
 For example, if the <tt>public.jpeg</tt> type appears <em>below</em> the more general <tt>public.image</tt> type then JPEG images will be assigned the same color as other image files.
-If, on the other hand, the <tt>public.jpeg</tt> type appears <em>above</em> the <tt>public.image</tt> type, then JPEG images will be assigned a different color from other image files.
+If, on the other hand, the <tt>public.jpeg</tt> type appears <em>above</em> the <tt>public.image</tt> type, then JPEG images will be colored differently from other image files.
 <!-- (assuming that there is not an even more general applicable file type above the <tt>public.jpeg</tt> in the list) -->
 </li>
 
@@ -43,6 +43,9 @@ Types lower down may all be mapped to the last color that represents all other f
 If a file type appears in the list below a (more general) file type that it conforms to, it is "hidden" because it will never be used
 (the more general file type will always be assigned to any file that also conforms to the more specific file type).
 Hidden file types are indicated in light gray.
+</p>
+
+<p>
 The <b>Move to reveal</b> button will move a hidden file type upwards in the list so that it is above all file types that it conforms to.
 The result is that the file type is now actively used by the color map.
 Similarly, the <b>Move to hide</b> button moves an active file downwards in the list so that it is below a type that it conforms to (or at the bottom of the list, in case it does not conform to any type).
