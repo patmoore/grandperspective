@@ -42,7 +42,7 @@ tar cf - -C ${APP_PATH} . --exclude "CLASSES.NIB" --exclude "INFO.NIB" --exclude
 # Create application DMG file.
 #
 pushd $DEST_PATH > /dev/null
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 1 -compressionLevel 9 $OUTER_DIR_PATH/*.txt $OUTER_DIR_PATH/GrandPerspective.app
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 2 -compressionLevel 9 $OUTER_DIR_PATH/*.txt $OUTER_DIR_PATH/GrandPerspective.app
 popd > /dev/null
 
-rm -rf $TEMP_PUBLISH_DIR
+echo rm -rf $TEMP_PUBLISH_DIR
