@@ -1,18 +1,27 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {cancelAction = id; okAction = id; valueChanged = id; }; 
-            CLASS = PreferencesPanelControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                defaultColorMappingPopUp = NSPopUpButton; 
-                defaultColorPalettePopUp = NSPopUpButton; 
-                fileSizeMeasurePopUp = NSPopUpButton; 
-                okButton = NSButton; 
-            }; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                editUniformTypeRanking = id;
+                popUpValueChanged = id;
+                valueChanged = id;
+            };
+            CLASS = PreferencesPanelControl;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                defaultColorMappingPopUp = NSPopUpButton;
+                defaultColorPalettePopUp = NSPopUpButton;
+                fileDeletionConfirmationCheckBox = NSButton;
+                fileDeletionPopUp = NSPopUpButton;
+                fileSizeMeasurePopUp = NSPopUpButton;
+            };
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }

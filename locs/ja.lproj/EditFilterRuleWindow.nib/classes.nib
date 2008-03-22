@@ -1,39 +1,43 @@
 {
-    IBClasses = (
-        {
-            ACTIONS = {
-                cancelAction = id; 
-                lowerBoundCheckBoxChanged = id; 
-                nameCheckBoxChanged = id; 
-                okAction = id; 
-                pathCheckBoxChanged = id; 
-                updateEnabledState = id; 
-                upperBoundCheckBoxChanged = id; 
-                valueEntered = id; 
-            }; 
-            CLASS = EditFilterRuleWindowControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                doneButton = NSButton; 
-                nameCaseInsensitiveCheckBox = NSButton; 
-                nameCheckBox = NSButton; 
-                nameMatchPopUpButton = NSPopUpButton; 
-                nameTargetsView = NSTextView; 
-                pathCaseInsensitiveCheckBox = NSButton; 
-                pathCheckBox = NSButton; 
-                pathMatchPopUpButton = NSPopUpButton; 
-                pathTargetsView = NSTextView; 
-                ruleNameField = NSTextField; 
-                sizeLowerBoundCheckBox = NSButton; 
-                sizeLowerBoundField = NSTextField; 
-                sizeLowerBoundUnits = NSPopUpButton; 
-                sizeUpperBoundCheckBox = NSButton; 
-                sizeUpperBoundField = NSTextField; 
-                sizeUpperBoundUnits = NSPopUpButton; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
-    ); 
-    IBVersion = 1; 
+    IBClasses =     (
+                {
+            ACTIONS =             {
+                cancelAction = id;
+                lowerBoundCheckBoxChanged = id;
+                nameCheckBoxChanged = id;
+                okAction = id;
+                pathCheckBoxChanged = id;
+                updateEnabledState = id;
+                upperBoundCheckBoxChanged = id;
+                valueEntered = id;
+            };
+            CLASS = EditFilterRuleWindowControl;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                doneButton = NSButton;
+                nameCaseInsensitiveCheckBox = NSButton;
+                nameCheckBox = NSButton;
+                nameMatchPopUpButton = NSPopUpButton;
+                nameTargetsView = NSTextView;
+                pathCaseInsensitiveCheckBox = NSButton;
+                pathCheckBox = NSButton;
+                pathMatchPopUpButton = NSPopUpButton;
+                pathTargetsView = NSTextView;
+                ruleNameField = NSTextField;
+                sizeLowerBoundCheckBox = NSButton;
+                sizeLowerBoundField = NSTextField;
+                sizeLowerBoundUnits = NSPopUpButton;
+                sizeUpperBoundCheckBox = NSButton;
+                sizeUpperBoundField = NSTextField;
+                sizeUpperBoundUnits = NSPopUpButton;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        }
+    );
+    IBVersion = 1;
 }

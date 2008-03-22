@@ -1,66 +1,85 @@
 {
-    IBClasses = (
-        {CLASS = DirectoryView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {
-            ACTIONS = {
-                colorMappingChanged = id; 
-                colorPaletteChanged = id; 
-                downAction = id; 
-                editMask = id; 
-                maskCheckBoxChanged = id; 
-                openFileInFinder = id; 
-                showEntireVolumeCheckBoxChanged = id; 
-                upAction = id; 
-            }; 
-            CLASS = DirectoryViewControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                colorMappingPopUp = NSPopUpButton; 
-                colorPalettePopUp = NSPopUpButton; 
-                downButton = NSButton; 
-                drawer = NSDrawer; 
-                fileSizeMeasureField = NSTextField; 
-                filterDescriptionTextView = NSTextView; 
-                filterNameField = NSTextField; 
-                freeSpaceField = NSTextField; 
-                itemPathField = NSTextField; 
-                itemSizeField = NSTextField; 
-                mainView = DirectoryView; 
-                maskCheckBox = NSButton; 
-                maskDescriptionTextView = NSTextView; 
-                miscUsedSpaceField = NSTextField; 
-                openButton = NSButton; 
-                scanPathTextView = NSTextView; 
-                scanTimeField = NSTextField; 
-                selectedItemExactSizeField = NSTextField; 
-                selectedItemPathTextView = NSTextView; 
-                selectedItemSizeField = NSTextField; 
-                selectedItemTitleField = NSTextField; 
-                showEntireVolumeCheckBox = NSButton; 
-                treeSizeField = NSTextField; 
-                upButton = NSButton; 
-                visibleFolderExactSizeField = NSTextField; 
-                visibleFolderPathTextView = NSTextView; 
-                visibleFolderSizeField = NSTextField; 
-                volumeIconView = NSImageView; 
-                volumeNameTextView = NSTextView; 
-                volumeSizeField = NSTextField; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = DummyView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {abort = id; }; 
-            CLASS = StartupControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                progressIndicator = NSProgressIndicator; 
-                progressPanel = NSPanel; 
-                progressText = NSTextField; 
-            }; 
-            SUPERCLASS = NSObject; 
+    IBClasses =     (
+                {
+            CLASS = DirectoryView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            ACTIONS =             {
+                colorMappingChanged = id;
+                colorPaletteChanged = id;
+                deleteFile = id;
+                downAction = id;
+                editMask = id;
+                maskCheckBoxChanged = id;
+                openFileInFinder = id;
+                showEntireVolumeCheckBoxChanged = id;
+                upAction = id;
+            };
+            CLASS = DirectoryViewControl;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                colorLegendTable = NSTableView;
+                colorMappingPopUp = NSPopUpButton;
+                colorPalettePopUp = NSPopUpButton;
+                deleteButton = NSButton;
+                downButton = NSButton;
+                drawer = NSDrawer;
+                fileSizeMeasureField = NSTextField;
+                filterDescriptionTextView = NSTextView;
+                filterNameField = NSTextField;
+                freeSpaceField = NSTextField;
+                freedSpaceField = NSTextField;
+                itemPathField = NSTextField;
+                itemSizeField = NSTextField;
+                mainView = DirectoryView;
+                maskCheckBox = NSButton;
+                miscUsedSpaceField = NSTextField;
+                openButton = NSButton;
+                scanPathTextView = NSTextView;
+                scanTimeField = NSTextField;
+                selectedItemExactSizeField = NSTextField;
+                selectedItemPathTextView = NSTextView;
+                selectedItemSizeField = NSTextField;
+                selectedItemTitleField = NSTextField;
+                selectedItemTypeDescriptionField = NSTextField;
+                selectedItemTypeIdentifierField = NSTextField;
+                showEntireVolumeCheckBox = NSButton;
+                treeSizeField = NSTextField;
+                upButton = NSButton;
+                visibleFolderExactSizeField = NSTextField;
+                visibleFolderPathTextView = NSTextView;
+                visibleFolderSizeField = NSTextField;
+                volumeIconView = NSImageView;
+                volumeNameField = NSTextField;
+                volumeSizeField = NSTextField;
+            };
+            SUPERCLASS = NSWindowController;
+        },
+                {
+            CLASS = DummyView;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSView;
+        },
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                abort = id;
+            };
+            CLASS = StartupControl;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                progressIndicator = NSProgressIndicator;
+                progressPanel = NSPanel;
+                progressText = NSTextField;
+            };
+            SUPERCLASS = NSObject;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }

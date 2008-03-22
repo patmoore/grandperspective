@@ -1,13 +1,24 @@
 {
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {cancelSaveImage = id; saveImage = id; valueEntered = id; }; 
-            CLASS = SaveImageDialogControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {heightCell = NSFormCell; widthCell = NSFormCell; }; 
-            SUPERCLASS = NSWindowController; 
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                cancelSaveImage = id;
+                saveImage = id;
+                valueEntered = id;
+            };
+            CLASS = SaveImageDialogControl;
+            LANGUAGE = ObjC;
+            OUTLETS =             {
+                heightCell = NSFormCell;
+                widthCell = NSFormCell;
+            };
+            SUPERCLASS = NSWindowController;
         }
-    ); 
-    IBVersion = 1; 
+    );
+    IBVersion = 1;
 }
