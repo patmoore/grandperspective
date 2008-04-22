@@ -4,24 +4,32 @@
 
 From Version 0.97 onwards GrandPerspective is fully internationalized.
 This means that it can be localized to support languages other than
-English. I can manage the translation into Dutch, but for any other
-language, I will need your help.
+English.
 
-So, hereby a call for volunteers. If you want to help out with making
-GrandPerspective available in your mother tongue, or any other 
-languages you speak fluently, check out the GrandPerspective website 
-to see how you could help:
-
-  http://grandperspectiv.sourceforge.net
-
-The following localizations have been provided so far:
+The following localizations are available in the latest (localized)
+release of GrandPerspective:
 
   * Japanese (Version 0.97 and up), by Chris Li
-  * German (Version 0.97 and up), by Helge Baumann
-  * Spanish (Version 0.9.10), by Javier Alfonso
-  * French (Version 0.9.10), by Maxime Hadjinlian
   * Dutch (Version 0.97 and up), by Erwin Bonsma
 
-Thanks,
+Some other localizations have been created for earlier versions of
+the application: 
+
+  * German (Version 0.97 until Version 0.9.10), by Helge Baumann
+  * Spanish (Version 0.9.10), by Javier Alfonso
+  * French (Version 0.9.10), by Maxime Hadjinlian
+
+Unfortunately, these have not been updated for the latest release.
+Hopefully they will be resurrected for future releases. 
+
+You may even be able to help out with making GrandPerspective
+available in your mother tongue, or any other languages you speak 
+fluently. To see how you could help check out the following page:
+
+  http://grandperspectiv.sourceforge.net/localization.html
+
+Thanks to everyone who has been providing localizations already.
 
 Erwin Bonsma
+
+
