@@ -5,10 +5,10 @@
 # it copies the application directly from it. Release text files and the
 # localized resources are taken from the SVN repository.
 
-VERSION="0.9.10"
-VERSION_ID="0_9_10"
-REV=556
-NL_REV=498
+VERSION="0.9.11"
+VERSION_ID="0_9_11"
+REV=667
+NL_REV=667
 
 if [ $# -ne "1" ]
 then
@@ -52,7 +52,7 @@ svn export -q -r $NL_REV $GP_SVN_URL/trunk/code/nl.lproj $RESOURCES_PATH/nl.lpro
 echo "Exporting nl help documentation."
 ./export-help.sh $NL_REV $RESOURCES_PATH nl
 
-for loc in ja de es fr
+for loc in ja
 do
   echo "Exporting" $loc "resources."
   svn export -q -r $REV $GP_SVN_URL/trunk/locs/${loc}.lproj $RESOURCES_PATH/${loc}.lproj
@@ -64,22 +64,22 @@ echo "Updating nl help index."
 echo -n "[Please press return once the indexing is done]" 
 read dummy
 
-echo "Updating fr help index."
-./update-help-index.sh $RESOURCES_PATH/fr.lproj/$HELP_FOLDER European
+#echo "Updating fr help index."
+#./update-help-index.sh $RESOURCES_PATH/fr.lproj/$HELP_FOLDER European
 
-echo -n "[Please press return once the indexing is done]" 
-read dummy
+#echo -n "[Please press return once the indexing is done]" 
+#read dummy
 
-echo "Updating es help index."
-./update-help-index.sh $RESOURCES_PATH/es.lproj/$HELP_FOLDER European
+#echo "Updating es help index."
+#./update-help-index.sh $RESOURCES_PATH/es.lproj/$HELP_FOLDER European
 
-echo -n "[Please press return once the indexing is done]" 
-read dummy
+#echo -n "[Please press return once the indexing is done]" 
+#read dummy
 
 # Remove unneeded nib files.
 find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
 
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $DEST_PATH -volSize 3 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $DEST_PATH -volSize 2 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
 
 rm -rf $TEMP_PUBLISH_DIR
 
