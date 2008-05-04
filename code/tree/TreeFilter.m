@@ -1,5 +1,6 @@
 #import "TreeFilter.h"
 
+#import "PlainFileItem.h"
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "TreeContext.h"
@@ -81,10 +82,12 @@
   
     // Collect all file items that passed the test
     for (i = [fileChildren count]; --i >= 0; ) {
-      FileItem  *oldFileItem = [fileChildren objectAtIndex: i];
-      FileItem  *newFileItem = 
-        [[FileItem alloc] initWithName: [oldFileItem name] parent: newDirItem
-                            size: [oldFileItem itemSize]];
+      PlainFileItem  *oldFileItem = [fileChildren objectAtIndex: i];
+      PlainFileItem  *newFileItem = 
+        [[PlainFileItem alloc] initWithName: [oldFileItem name] 
+                                 parent: newDirItem
+                                 size: [oldFileItem itemSize]
+                                 type: [oldFileItem uniformType]];
       
       [fileChildren replaceObjectAtIndex: i withObject: newFileItem];  
       
