@@ -3,19 +3,9 @@
 #import "DirectoryItem.h"
 
 
-NSString* filesizeUnitString(int order) {
-  switch (order) {
-    case 0: return NSLocalizedString( @"kB", @"File size unit for kilobytes.");
-    case 1: return NSLocalizedString( @"MB", @"File size unit for megabytes.");
-    case 2: return NSLocalizedString( @"GB", @"File size unit for gigabytes.");
-    case 3: return NSLocalizedString( @"TB", @"File size unit for terabytes.");
-    default: return @""; // Should not happen, but cannot can NSAssert here.
-  }
-};
-
-
 @interface FileItem (PrivateMethods)
 
++ (NSString *)filesizeUnitString: (int) order;
 + (NSString *)decimalSeparator;
 
 @end
@@ -147,7 +137,7 @@ NSString* filesizeUnitString(int order) {
     // happen, but raise no fuss if it does anyway.
   }
 
-  [s appendFormat:@" %@", filesizeUnitString(m) ];
+  [s appendFormat:@" %@", [FileItem filesizeUnitString: m] ];
 
   return s;
 }
@@ -165,6 +155,17 @@ NSString* filesizeUnitString(int order) {
 
 
 @implementation FileItem (PrivateMethods)
+
++ (NSString *) filesizeUnitString: (int) order {
+  switch (order) {
+    case 0: return NSLocalizedString( @"kB", @"File size unit for kilobytes.");
+    case 1: return NSLocalizedString( @"MB", @"File size unit for megabytes.");
+    case 2: return NSLocalizedString( @"GB", @"File size unit for gigabytes.");
+    case 3: return NSLocalizedString( @"TB", @"File size unit for terabytes.");
+    default: return @""; // Should not happen, but cannot can NSAssert here.
+  }
+}
+
 
 + (NSString *) decimalSeparator {
   static  NSString  *decimalSeparator = nil;
