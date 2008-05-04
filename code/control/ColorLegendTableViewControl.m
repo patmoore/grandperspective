@@ -166,17 +166,29 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 - (void) updateDescriptionColumnWidth {
   NSTableColumn  *descrColumn = 
     [tableView tableColumnWithIdentifier: ColorDescriptionColumnIdentifier];
-  NSFont  *font = [[descrColumn dataCell] font];
+  NSCell  *dataCell = [descrColumn dataCell];
+  
+  // TODO: Determine if more attributes need to be provided for 
+  // sizeWithAttributes: to always return the right width. So far, it appears
+  // as if the font is all that is needed.
+  NSDictionary  *attribs = 
+    [[NSDictionary alloc] initWithObjectsAndKeys:
+        [dataCell font], NSFontAttributeName, nil];
 
   int  numColors = [colorImages count];
   int  i = 0;
   float  maxWidth = 0;
   while (i < numColors) {
     NSString  *descr = [self descriptionForRow: i];
-    float  width = [font widthOfString: descr];
-    if (width > maxWidth) {
-      maxWidth = width;
+
+    if (descr != nil) {
+      float  width = [descr sizeWithAttributes: attribs].width;
+    
+      if (width > maxWidth) {
+        maxWidth = width;
+      }
     }
+    
     i++;
   }
   
