@@ -8,7 +8,7 @@
  * with it.
  * 
  * TODO: Could reduce memory footprint by using two different implementations
- * of the interface. The type only needs to be stored when it is nil. The
+ * of the interface. The type only needs to be stored when it is not nil. The
  * other implementation can simply return nil in its implementation of 
  * -uniformType.
  */
