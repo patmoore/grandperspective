@@ -14,6 +14,12 @@ NSString* filesizeUnitString(int order) {
 };
 
 
+@interface FileItem (PrivateMethods)
+
++ (NSString *)decimalSeparator;
+
+@end
+
 
 @interface SpecialFileItem : FileItem {
 }
@@ -130,10 +136,9 @@ NSString* filesizeUnitString(int order) {
     
     if (dotRange.location < delPos) {
       // The dot is still visible, so localize it
-      NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-      NSString  *sepString = [userDefaults stringForKey: NSDecimalSeparator];
-
-      [s replaceCharactersInRange: dotRange withString: sepString];
+      
+      [s replaceCharactersInRange: dotRange withString: 
+           [FileItem decimalSeparator]];
     }
   }
   else {
@@ -157,3 +162,21 @@ NSString* filesizeUnitString(int order) {
 
 
 @end // @implementation FileItem
+
+
+@implementation FileItem (PrivateMethods)
+
++ (NSString *) decimalSeparator {
+  static  NSString  *decimalSeparator = nil;
+
+  if (decimalSeparator == nil) {
+    NSNumberFormatter  *numFormat = 
+      [[NSNumberFormatter alloc] init];
+    [numFormat setLocalizesFormat: YES];
+    decimalSeparator = [[numFormat decimalSeparator] retain];
+  }
+
+  return decimalSeparator;
+}
+
+@end // FileItem (PrivateMethods)
