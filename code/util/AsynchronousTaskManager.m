@@ -5,14 +5,16 @@
 
 
 enum {
-  // Indicates that there is a task in progress or ready to be executed (or 
-  // that the manager is being disposed and that the thread needs to
-  // terminate).
-  BACKGROUND_THREAD_AWAKE = 456,
+  // Indicates that there is a task in progress or ready to be executed.
+  BACKGROUND_THREAD_BUSY = 456,
 
   // Indicates that the thread can block or is blocking, waiting for a new
   // task (or waiting for the manager to be disposed).
-  BACKGROUND_THREAD_IDLE
+  BACKGROUND_THREAD_IDLE, 
+  
+  // Indicates that the manager is being disposed off and that the thread
+  // should terminate.
+  BACKGROUND_THREAD_SHUTDOWN
 };
 
 
@@ -67,14 +69,14 @@ enum {
 
   alive = NO;
 
-  if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
-    // Abort task
+  if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
+    // Abort running task
     [executor disable];
   }
   else {
-    // Notify waiting thread
+    // Notify the blocked thread (waiting on the BUSY condition)
     [workLock lock];
-    [workLock unlockWithCondition:BACKGROUND_THREAD_AWAKE];
+    [workLock unlockWithCondition: BACKGROUND_THREAD_BUSY];
   }
   
   [settingsLock unlock];
@@ -87,7 +89,7 @@ enum {
 
 
 - (void) abortTask {
-  if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
+  if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
     // Abort task
     [executor disable];
   }
@@ -110,14 +112,17 @@ enum {
   }
   nextTaskCallbackSelector = selector;
 
-  if ([workLock condition] == BACKGROUND_THREAD_AWAKE) {
+  if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
     // Abort task 
     [executor disable];
   }
-  else {
-    // Notify waiting thread
+  else if ([workLock condition] == BACKGROUND_THREAD_IDLE) {
+    // Notify the blocked thread (waiting on the BUSY condition)
     [workLock lock];
-    [workLock unlockWithCondition:BACKGROUND_THREAD_AWAKE];
+    [workLock unlockWithCondition: BACKGROUND_THREAD_BUSY];
+  }
+  else {
+    NSAssert(NO, @"Unexpected state of workLock condition.");
   }
 
   [settingsLock unlock];
@@ -129,12 +134,11 @@ enum {
 @implementation AsynchronousTaskManager (PrivateMethods)
 
 - (void) taskRunningLoop {
-  BOOL  terminate = NO;
-  
-  while (!terminate) {
+  do {
     NSAutoreleasePool  *pool = [[NSAutoreleasePool alloc] init];
 
-    [workLock lockWhenCondition:BACKGROUND_THREAD_AWAKE];
+    // Wait for a task to be carried out.
+    [workLock lockWhenCondition: BACKGROUND_THREAD_BUSY];
             
     [settingsLock lock];
     if (alive) {
@@ -159,22 +163,27 @@ enum {
       [taskCallback performSelectorOnMainThread: taskCallbackSelector
                       withObject: taskOutput waitUntilDone: NO];
             
-      if (alive && nextTaskInput==nil) {      
-        [workLock unlockWithCondition:BACKGROUND_THREAD_IDLE];
+      if (!alive) {
+        // The manager has been disposed of while BUSY.
+        [workLock unlockWithCondition: BACKGROUND_THREAD_SHUTDOWN];
+      }
+      else if (nextTaskInput == nil) {      
+        [workLock unlockWithCondition: BACKGROUND_THREAD_IDLE];
       }
       else {
-        [workLock unlockWithCondition:BACKGROUND_THREAD_AWAKE];
+        [workLock unlockWithCondition: BACKGROUND_THREAD_BUSY];
       }
     }
     else {
-      terminate = YES;
+      // The manager has been disposed of while IDLE.
+      [workLock unlockWithCondition: BACKGROUND_THREAD_SHUTDOWN];
     }
     [settingsLock unlock];
     
     [pool release];
-  }
+  } while ([workLock condition] != BACKGROUND_THREAD_SHUTDOWN);
 
-  // NSLog(@"Thread terminated.");
+  NSLog(@"Thread terminated.");
 }
 
 @end // @implementation AsynchronousTaskManager (PrivateMethods)
