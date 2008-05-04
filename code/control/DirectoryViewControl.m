@@ -276,9 +276,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         name: VisibleTreeChangedEvent object: itemPathModel];
         
   [userDefaults addObserver: self forKeyPath: FileDeletionTargetsKey
-                  options: nil context: nil];
+                  options: 0 context: nil];
   [userDefaults addObserver: self forKeyPath: ConfirmFileDeletionKey
-                  options: nil context: nil];
+                  options: 0 context: nil];
 
   [nc addObserver:self selector: @selector(fileItemDeleted:)
         name: FileItemDeletedEvent object: treeContext];
