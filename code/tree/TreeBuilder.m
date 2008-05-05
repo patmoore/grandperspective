@@ -38,6 +38,11 @@ static struct {
 
 - (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
            parentPath:(NSString*)parentPath ref:(FSRef*)ref;
+           
+- (BOOL) includeItemForFileRef: (FSRef *)fileRef
+           catalogInfo: (FSCatalogInfo)catalogInfo;
+
+- (NSString *) pathStringForFileRef: (FSRef *)fileRef;
 
 @end // @interface TreeBuilder (PrivateMethods)
 
@@ -88,7 +93,11 @@ static struct {
 - (id) init {
   if (self = [super init]) {
     treeBalancer = [[TreeBalancer alloc] init];
+    hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
+    
+    pathBuffer = NULL;
+    pathBufferLen = 0;
 
     [self setFileSizeMeasure: LogicalFileSize];
   }
@@ -98,7 +107,10 @@ static struct {
 
 - (void) dealloc {
   [treeBalancer release];
+  [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
+  
+  free(pathBuffer);
   
   [super dealloc];
 }
@@ -259,6 +271,9 @@ static struct {
                           (unichar *)&bulkCatalogInfo.namesArray[i].unicode
                           length: bulkCatalogInfo.namesArray[i].length];
 
+          if ([self includeItemForFileRef: &(bulkCatalogInfo.fsRefArray[i])
+                      catalogInfo: bulkCatalogInfo.catalogInfoArray[i]]) { 
+             // TEMP: Faulty indentation, will refactor soon.
           if (bulkCatalogInfo.catalogInfoArray[i].nodeFlags 
                 & kFSNodeIsDirectoryMask) {
             // A directory node.
@@ -296,6 +311,7 @@ static struct {
             [fileChildren addObject:fileChildItem];
             [fileChildItem release];
           }
+          }
           
           [childName release];
         }
@@ -327,5 +343,75 @@ static struct {
   
   return !abort;
 }
+
+
+- (BOOL) includeItemForFileRef: (FSRef *)fileRef
+           catalogInfo: (FSCatalogInfo)catalogInfo {
+           
+  if (catalogInfo.nodeFlags & kFSNodeHardLinkMask) {
+    // The item is hard-linked (i.e. it appears more than once on this volume).
+
+    // Get the path to the item.
+    //
+    // Note: Constructing the path from the FSRef, as opposed to (recursively)
+    // using -stringByAppendingPathComponent. The reason is that the former
+    // converts slashes in individual path components (e.g. files named
+    // mydata-05/05/2008.doc) to colons, which is needed for 
+    // -fileAttributesAtPath:traverseLink: to work). For displaying path names,
+    // the latter works fine, as this is also the way that names are shown in
+    // Finder (and thus more familiar to users).
+    NSString  *path = [self pathStringForFileRef: fileRef]; 
+    
+    NSFileManager  *fileManager = [NSFileManager defaultManager];
+    NSDictionary  *fileAttributes = 
+      [fileManager fileAttributesAtPath: path traverseLink: NO];
+    NSNumber  *fileNumber = 
+      [fileAttributes objectForKey: NSFileSystemFileNumber];
+            
+    if ([hardLinkedFileNumbers containsObject: fileNumber]) {
+      // The item has already been encountered. So ignore it this
+      // time so that it is not counted more than once.
+
+      return NO;
+    }
+    else {
+      [hardLinkedFileNumbers addObject: fileNumber];
+    }
+   
+    return YES;
+  }
+}
+
+
+- (NSString *) pathStringForFileRef: (FSRef *)fileRef {
+  if (pathBuffer == NULL) {
+    // Allocate initial buffer
+
+    pathBufferLen = 128; // Initial size
+    pathBuffer = malloc(sizeof(UInt8) * pathBufferLen);
+    NSAssert(pathBuffer != NULL, @"Malloc failed.");
+  }
+  
+  while (YES) {
+    OSStatus  status = FSRefMakePath(fileRef, pathBuffer, pathBufferLen);
+    
+    if (status == 0) {
+      // All okay.
+      return [NSString stringWithUTF8String: (const char*)pathBuffer];
+    }
+    else if (status == -2110) {
+      // Buffer too short. Replace buffer by larger one.
+      free(pathBuffer);
+      
+      pathBufferLen *= 2;
+      pathBuffer = malloc(sizeof(UInt8) * pathBufferLen);
+      NSAssert(pathBuffer != NULL, @"Malloc failed.");
+    }
+    else {
+      NSAssert1(NO, @"Unknown status code %d", status);
+    }
+  }
+}
+
 
 @end // @implementation TreeBuilder (PrivateMethods)

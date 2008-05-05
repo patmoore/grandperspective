@@ -18,6 +18,15 @@ extern NSString  *PhysicalFileSize;
   
   BOOL  abort;
   TreeBalancer  *treeBalancer;
+  
+  // Contains the file numbers of the hard linked files that have been 
+  // encountered so far. If a file with a same number is encountered once
+  // more, it is ignored. 
+  NSMutableSet  *hardLinkedFileNumbers;
+  
+  // Temporary buffer for constructing path names
+  UInt8  *pathBuffer;
+  int  pathBufferLen;
 }
 
 + (NSArray *) fileSizeMeasureNames;
