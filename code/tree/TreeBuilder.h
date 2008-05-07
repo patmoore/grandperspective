@@ -27,6 +27,12 @@ extern NSString  *PhysicalFileSize;
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;
   int  pathBufferLen;
+  
+  // Temporary buffers for getting bulk catalog data
+  void  *bulkCatalogInfo;
+  FSCatalogInfo  *catalogInfoArray;
+  FSRef  *fsRefArray;
+  HFSUniStr255   *namesArray;
 }
 
 + (NSArray *) fileSizeMeasureNames;

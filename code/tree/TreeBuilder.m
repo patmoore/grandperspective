@@ -26,12 +26,11 @@ NSString  *PhysicalFileSize = @"physical";
                                kFSCatInfoDataSizes | \
                                kFSCatInfoRsrcSizes )
 
-// TODO: Don't make global?
-static struct {
-    FSCatalogInfo  catalogInfoArray[BULK_CATALOG_REQUEST_SIZE];
-	FSRef          fsRefArray[BULK_CATALOG_REQUEST_SIZE];
-	HFSUniStr255   namesArray[BULK_CATALOG_REQUEST_SIZE];
-} bulkCatalogInfo;
+typedef struct  {
+  FSCatalogInfo  catalogInfoArray[BULK_CATALOG_REQUEST_SIZE];
+  FSRef          fsRefArray[BULK_CATALOG_REQUEST_SIZE];
+  HFSUniStr255   namesArray[BULK_CATALOG_REQUEST_SIZE];
+} BulkCatalogInfo;
 
 
 @interface TreeBuilder (PrivateMethods)
@@ -98,7 +97,16 @@ static struct {
     
     pathBuffer = NULL;
     pathBufferLen = 0;
-
+    
+    // Note: allocating three separate arrays using the "BulkCatalogInfo"
+    // struct. This ensures that there placed consecutively in memory, which
+    // should help to speed up access to these arrays (it definitely should not
+    // harm).
+    bulkCatalogInfo = malloc(sizeof(BulkCatalogInfo));
+    catalogInfoArray = ((BulkCatalogInfo *)bulkCatalogInfo)->catalogInfoArray;
+    fsRefArray =       ((BulkCatalogInfo *)bulkCatalogInfo)->fsRefArray;
+    namesArray =       ((BulkCatalogInfo *)bulkCatalogInfo)->namesArray;
+    
     [self setFileSizeMeasure: LogicalFileSize];
   }
   return self;
@@ -111,6 +119,7 @@ static struct {
   [fileSizeMeasure release];
   
   free(pathBuffer);
+  free(bulkCatalogInfo);
   
   [super dealloc];
 }
@@ -256,9 +265,9 @@ static struct {
                                      BULK_CATALOG_REQUEST_SIZE, &actualCount,
                                      NULL,
                                      CATALOG_INFO_BITMAP,
-                                     bulkCatalogInfo.catalogInfoArray,
-                                     bulkCatalogInfo.fsRefArray, NULL,
-                                     bulkCatalogInfo.namesArray );
+                                     catalogInfoArray,
+                                     fsRefArray, NULL,
+                                     namesArray );
       
       if ( actualCount > 16 && localAutoreleasePool == nil) {
         localAutoreleasePool = [[NSAutoreleasePool alloc] init];
@@ -268,21 +277,20 @@ static struct {
         for (i = 0; i < actualCount; i++) {
           NSString *childName = 
             [[NSString alloc] initWithCharacters: 
-                          (unichar *)&bulkCatalogInfo.namesArray[i].unicode
-                          length: bulkCatalogInfo.namesArray[i].length];
+                          (unichar *)&namesArray[i].unicode
+                          length: namesArray[i].length];
 
-          if ([self includeItemForFileRef: &(bulkCatalogInfo.fsRefArray[i])
-                      catalogInfo: bulkCatalogInfo.catalogInfoArray[i]]) { 
+          if ([self includeItemForFileRef: &fsRefArray[i]
+                      catalogInfo: catalogInfoArray[i]]) { 
              // TEMP: Faulty indentation, will refactor soon.
-          if (bulkCatalogInfo.catalogInfoArray[i].nodeFlags 
-                & kFSNodeIsDirectoryMask) {
+          if (catalogInfoArray[i].nodeFlags & kFSNodeIsDirectoryMask) {
             // A directory node.
 
             DirectoryItem  *dirChildItem = 
               [[DirectoryItem alloc] initWithName:childName parent:dirItem];
               
-            FSRefObject  *refObject = [[FSRefObject alloc] initWithFSRef:
-                                          &(bulkCatalogInfo.fsRefArray[i])];
+            FSRefObject  *refObject = 
+              [[FSRefObject alloc] initWithFSRef: &fsRefArray[i]];
 
             [dirChildren addObject:dirChildItem];
             [dirFsRefs addObject:refObject];
@@ -295,10 +303,10 @@ static struct {
             
             ITEM_SIZE  childSize = 
               (useLogicalFileSize ? 
-                (bulkCatalogInfo.catalogInfoArray[i].dataLogicalSize +
-                 bulkCatalogInfo.catalogInfoArray[i].rsrcLogicalSize) :
-                (bulkCatalogInfo.catalogInfoArray[i].dataPhysicalSize +
-                 bulkCatalogInfo.catalogInfoArray[i].rsrcPhysicalSize));
+                (catalogInfoArray[i].dataLogicalSize +
+                 catalogInfoArray[i].rsrcLogicalSize) :
+                (catalogInfoArray[i].dataPhysicalSize +
+                 catalogInfoArray[i].rsrcPhysicalSize));
             
             UniformType  *fileType = 
               [typeInventory uniformTypeForExtension: 
