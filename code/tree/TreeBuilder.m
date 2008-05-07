@@ -28,18 +28,18 @@ NSString  *PhysicalFileSize = @"physical";
 
 typedef struct  {
   FSCatalogInfo  catalogInfoArray[BULK_CATALOG_REQUEST_SIZE];
-  FSRef          fsRefArray[BULK_CATALOG_REQUEST_SIZE];
+  FSRef          fileRefArray[BULK_CATALOG_REQUEST_SIZE];
   HFSUniStr255   namesArray[BULK_CATALOG_REQUEST_SIZE];
 } BulkCatalogInfo;
 
 
 @interface TreeBuilder (PrivateMethods)
 
-- (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
-           parentPath:(NSString*)parentPath ref:(FSRef*)ref;
+- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
+           fileRef: (FSRef *)fileRef parentPath: (NSString *)parentPath;
            
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
-           catalogInfo: (FSCatalogInfo)catalogInfo;
+           catalogInfo: (FSCatalogInfo *)catalogInfo;
 
 - (NSString *) pathStringForFileRef: (FSRef *)fileRef;
 
@@ -51,7 +51,7 @@ typedef struct  {
   FSRef  ref;
 }
 
-- (id) initWithFSRef:(FSRef*)ref;
+- (id) initWithFileRef: (FSRef *)ref;
 
 @end // @interface FSRefObject
 
@@ -60,10 +60,10 @@ typedef struct  {
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use initWithFSRef instead.");
+  NSAssert(NO, @"Use initWithFileRef instead.");
 }
 
-- (id) initWithFSRef:(FSRef*)refVal {
+- (id) initWithFileRef: (FSRef *)refVal {
   if (self = [super init]) {
     ref = *refVal;
   }
@@ -104,7 +104,7 @@ typedef struct  {
     // harm).
     bulkCatalogInfo = malloc(sizeof(BulkCatalogInfo));
     catalogInfoArray = ((BulkCatalogInfo *)bulkCatalogInfo)->catalogInfoArray;
-    fsRefArray =       ((BulkCatalogInfo *)bulkCatalogInfo)->fsRefArray;
+    fileRefArray =     ((BulkCatalogInfo *)bulkCatalogInfo)->fileRefArray;
     namesArray =       ((BulkCatalogInfo *)bulkCatalogInfo)->namesArray;
     
     [self setFileSizeMeasure: LogicalFileSize];
@@ -213,8 +213,8 @@ typedef struct  {
                             volumeSize: volumeSize 
                             freeSpace: freeSpace] autorelease];
     
-  if (! [self buildTreeForDirectory: [scanResult scanTree] 
-                parentPath: volumePath ref: &pathRef]) {
+  if (! [self buildTreeForDirectory: [scanResult scanTree] fileRef: &pathRef
+                parentPath: volumePath]) {
     return nil;
   }
   
@@ -232,8 +232,8 @@ typedef struct  {
 
 @implementation TreeBuilder (PrivateMethods)
 
-- (BOOL) buildTreeForDirectory:(DirectoryItem*)dirItem 
-           parentPath:(NSString*)parentPath ref:(FSRef*)ref {
+- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
+           fileRef: (FSRef *)parentFileRef parentPath: (NSString *)parentPath {
 
   NSMutableArray  *fileChildren = 
     [[NSMutableArray alloc] initWithCapacity:128];
@@ -247,11 +247,11 @@ typedef struct  {
   UniformTypeInventory  *typeInventory = 
     [UniformTypeInventory defaultUniformTypeInventory];
   
-  NSString  *path = [parentPath stringByAppendingPathComponent:[dirItem name]];
+  NSString  *path = [parentPath stringByAppendingPathComponent: [dirItem name]];
   int  i;
 
   FSIterator iterator;
-  OSStatus result = FSOpenIterator(ref, kFSIterateFlat, &iterator);
+  OSStatus result = FSOpenIterator(parentFileRef, kFSIterateFlat, &iterator);
 
   if (result != noErr) {
     NSLog( @"Couldn't create FSIterator for '%@': Error %i", path, result);
@@ -266,7 +266,7 @@ typedef struct  {
                                      NULL,
                                      CATALOG_INFO_BITMAP,
                                      catalogInfoArray,
-                                     fsRefArray, NULL,
+                                     fileRefArray, NULL,
                                      namesArray );
       
       if ( actualCount > 16 && localAutoreleasePool == nil) {
@@ -275,22 +275,24 @@ typedef struct  {
       
       if (result == noErr || result == errFSNoMoreItems) {
         for (i = 0; i < actualCount; i++) {
+          FSCatalogInfo  *catalogInfo = &catalogInfoArray[i];
+          FSRef  *childRef = &fileRefArray[i];
+          HFSUniStr255  *name = &namesArray[i];
+        
           NSString *childName = 
-            [[NSString alloc] initWithCharacters: 
-                          (unichar *)&namesArray[i].unicode
-                          length: namesArray[i].length];
+            [[NSString alloc] initWithCharacters: (unichar *) &(name->unicode)
+                                length: name->length];
 
-          if ([self includeItemForFileRef: &fsRefArray[i]
-                      catalogInfo: catalogInfoArray[i]]) { 
+          if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo]) { 
              // TEMP: Faulty indentation, will refactor soon.
-          if (catalogInfoArray[i].nodeFlags & kFSNodeIsDirectoryMask) {
+          if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
             // A directory node.
 
             DirectoryItem  *dirChildItem = 
               [[DirectoryItem alloc] initWithName:childName parent:dirItem];
               
             FSRefObject  *refObject = 
-              [[FSRefObject alloc] initWithFSRef: &fsRefArray[i]];
+              [[FSRefObject alloc] initWithFileRef: childRef];
 
             [dirChildren addObject:dirChildItem];
             [dirFsRefs addObject:refObject];
@@ -303,10 +305,10 @@ typedef struct  {
             
             ITEM_SIZE  childSize = 
               (useLogicalFileSize ? 
-                (catalogInfoArray[i].dataLogicalSize +
-                 catalogInfoArray[i].rsrcLogicalSize) :
-                (catalogInfoArray[i].dataPhysicalSize +
-                 catalogInfoArray[i].rsrcPhysicalSize));
+                (catalogInfo->dataLogicalSize + 
+                 catalogInfo->rsrcLogicalSize) :
+                (catalogInfo->dataPhysicalSize + 
+                 catalogInfo->rsrcPhysicalSize));
             
             UniformType  *fileType = 
               [typeInventory uniformTypeForExtension: 
@@ -329,15 +331,15 @@ typedef struct  {
   }
 
   for (i = [dirFsRefs count]; --i >= 0 && !abort; ) {
-    DirectoryItem  *dirChildItem = [dirChildren objectAtIndex:i];
-    FSRefObject  *refObject = [dirFsRefs objectAtIndex:i];
+    DirectoryItem  *dirChildItem = [dirChildren objectAtIndex: i];
+    FSRefObject  *refObject = [dirFsRefs objectAtIndex: i];
     
-    [self buildTreeForDirectory:dirChildItem parentPath:path
-            ref: &(refObject->ref)];
+    [self buildTreeForDirectory: dirChildItem fileRef: &(refObject->ref)
+            parentPath: path];
   }
   
-  Item  *fileTree = [treeBalancer createTreeForItems:fileChildren];
-  Item  *dirTree = [treeBalancer createTreeForItems:dirChildren];
+  Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];
+  Item  *dirTree = [treeBalancer createTreeForItems: dirChildren];
   Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
                                        second: dirTree];
 
@@ -354,9 +356,9 @@ typedef struct  {
 
 
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
-           catalogInfo: (FSCatalogInfo)catalogInfo {
+           catalogInfo: (FSCatalogInfo *)catalogInfo {
            
-  if (catalogInfo.nodeFlags & kFSNodeHardLinkMask) {
+  if (catalogInfo->nodeFlags & kFSNodeHardLinkMask) {
     // The item is hard-linked (i.e. it appears more than once on this volume).
 
     // Get the path to the item.

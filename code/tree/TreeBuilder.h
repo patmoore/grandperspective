@@ -31,7 +31,7 @@ extern NSString  *PhysicalFileSize;
   // Temporary buffers for getting bulk catalog data
   void  *bulkCatalogInfo;
   FSCatalogInfo  *catalogInfoArray;
-  FSRef  *fsRefArray;
+  FSRef  *fileRefArray;
   HFSUniStr255   *namesArray;
 }
 
