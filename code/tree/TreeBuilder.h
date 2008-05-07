@@ -2,6 +2,7 @@
 
 
 @class TreeBalancer;
+@class UniformTypeInventory;
 @class FileItem;
 @class DirectoryItem;
 @class TreeContext;
@@ -18,6 +19,7 @@ extern NSString  *PhysicalFileSize;
   
   BOOL  abort;
   TreeBalancer  *treeBalancer;
+  UniformTypeInventory  *typeInventory;
   
   // Contains the file numbers of the hard linked files that have been 
   // encountered so far. If a file with a same number is encountered once

@@ -37,6 +37,8 @@ typedef struct  {
 
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
            fileRef: (FSRef *)fileRef parentPath: (NSString *)parentPath;
+- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
+           iterator: (FSIterator)iterator path: (NSString *)path;
            
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
            catalogInfo: (FSCatalogInfo *)catalogInfo;
@@ -92,6 +94,8 @@ typedef struct  {
 - (id) init {
   if (self = [super init]) {
     treeBalancer = [[TreeBalancer alloc] init];
+    typeInventory = [[UniformTypeInventory defaultUniformTypeInventory] retain];
+  
     hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
     
@@ -115,6 +119,8 @@ typedef struct  {
 
 - (void) dealloc {
   [treeBalancer release];
+  [typeInventory release];
+  
   [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
   
@@ -235,119 +241,131 @@ typedef struct  {
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
            fileRef: (FSRef *)parentFileRef parentPath: (NSString *)parentPath {
 
-  NSMutableArray  *fileChildren = 
-    [[NSMutableArray alloc] initWithCapacity:128];
-  NSMutableArray  *dirChildren = 
-    [[NSMutableArray alloc] initWithCapacity:32];
-  NSMutableArray  *dirFsRefs = 
-    [[NSMutableArray alloc] initWithCapacity:32];
+  FSIterator  iterator;
+  { 
+    OSStatus  result = FSOpenIterator(parentFileRef, kFSIterateFlat, &iterator);
+    if (result != noErr) {
+      NSLog( @"Couldn't create FSIterator for '%@': Error %i", 
+               [parentPath stringByAppendingPathComponent: [dirItem name]], 
+               result);
+    
+      return NO;
+    }
+  }
+  
+  BOOL  result = 
+    [self buildTreeForDirectory: dirItem iterator: iterator 
+            path: [parentPath stringByAppendingPathComponent: [dirItem name]]];
+    
+  FSCloseIterator(iterator);
+    
+  return result;
+}
+  
+
+// TODO: Check if merging with buildTreeForDirectory:fileRef:parentPath does
+// not give a speed-up for scanning entire volume.
+- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
+           iterator: (FSIterator)iterator path: (NSString *)path {
+
+  if (abort) {
+    return NO;
+  }
+
+  NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
+  NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];
+  NSMutableArray  *dirFileRefs = [[NSMutableArray alloc] initWithCapacity: 32];
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
   
-  UniformTypeInventory  *typeInventory = 
-    [UniformTypeInventory defaultUniformTypeInventory];
-  
-  NSString  *path = [parentPath stringByAppendingPathComponent: [dirItem name]];
   int  i;
-
-  FSIterator iterator;
-  OSStatus result = FSOpenIterator(parentFileRef, kFSIterateFlat, &iterator);
-
-  if (result != noErr) {
-    NSLog( @"Couldn't create FSIterator for '%@': Error %i", path, result);
-  }
-  else {
-
-    while ( result == noErr && !abort ) {
-      ItemCount actualCount = 0;
-                
-      result = FSGetCatalogInfoBulk( iterator,
-                                     BULK_CATALOG_REQUEST_SIZE, &actualCount,
-                                     NULL,
-                                     CATALOG_INFO_BITMAP,
-                                     catalogInfoArray,
-                                     fileRefArray, NULL,
-                                     namesArray );
+  
+  while (YES) {
+    // Declared here, to not needlessly put them on the recursive stack.
+    ItemCount  actualCount = 0;
+    OSStatus  result = FSGetCatalogInfoBulk( iterator,
+                                             BULK_CATALOG_REQUEST_SIZE, 
+                                             &actualCount, NULL,
+                                             CATALOG_INFO_BITMAP,
+                                             catalogInfoArray,
+                                             fileRefArray, NULL,
+                                             namesArray );
+                                   
+    if (result != noErr && result != errFSNoMoreItems) {
+      NSLog(@"Failed to get bulk catalog info for %@: %i", path, result);
+      break;
+    }
       
-      if ( actualCount > 16 && localAutoreleasePool == nil) {
-        localAutoreleasePool = [[NSAutoreleasePool alloc] init];
-      }
+    if ( actualCount > 16 && localAutoreleasePool == nil) {
+      localAutoreleasePool = [[NSAutoreleasePool alloc] init];
+    }
       
-      if (result == noErr || result == errFSNoMoreItems) {
-        for (i = 0; i < actualCount; i++) {
-          FSCatalogInfo  *catalogInfo = &catalogInfoArray[i];
-          FSRef  *childRef = &fileRefArray[i];
-          HFSUniStr255  *name = &namesArray[i];
-        
-          NSString *childName = 
-            [[NSString alloc] initWithCharacters: (unichar *) &(name->unicode)
-                                length: name->length];
+    for (i = 0; i < actualCount; i++) {
+      FSCatalogInfo  *catalogInfo = &catalogInfoArray[i];
+      FSRef  *childRef = &fileRefArray[i];
+      HFSUniStr255  *name = &namesArray[i];
 
-          if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo]) { 
-             // TEMP: Faulty indentation, will refactor soon.
-          if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
-            // A directory node.
+      NSString  *childName = 
+        [[NSString alloc] initWithCharacters: (unichar *) &(name->unicode)
+                            length: name->length];
 
-            DirectoryItem  *dirChildItem = 
-              [[DirectoryItem alloc] initWithName:childName parent:dirItem];
-              
-            FSRefObject  *refObject = 
-              [[FSRefObject alloc] initWithFileRef: childRef];
+      if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo]) {
+        // Include this item
+      
+        if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
+          // A directory node.
 
-            [dirChildren addObject:dirChildItem];
-            [dirFsRefs addObject:refObject];
+          DirectoryItem  *dirChildItem = 
+            [[DirectoryItem alloc] initWithName: childName parent: dirItem];
+          [dirs addObject: dirChildItem];
+          [dirChildItem release];
 
-            [dirChildItem release];
-            [refObject release];
-          }
-          else {
-            // A file node.
+          FSRefObject  *refObject = 
+            [[FSRefObject alloc] initWithFileRef: childRef];
+          [dirFileRefs addObject: refObject];
+          [refObject release];
+        }
+        else {
+          // A file node.
             
-            ITEM_SIZE  childSize = 
-              (useLogicalFileSize ? 
-                (catalogInfo->dataLogicalSize + 
-                 catalogInfo->rsrcLogicalSize) :
-                (catalogInfo->dataPhysicalSize + 
-                 catalogInfo->rsrcPhysicalSize));
+          ITEM_SIZE  childSize = 
+            (useLogicalFileSize ? 
+              (catalogInfo->dataLogicalSize  + catalogInfo->rsrcLogicalSize) :
+              (catalogInfo->dataPhysicalSize + catalogInfo->rsrcPhysicalSize));
             
-            UniformType  *fileType = 
-              [typeInventory uniformTypeForExtension: 
-                               [childName pathExtension]];
+          UniformType  *fileType = 
+            [typeInventory uniformTypeForExtension: [childName pathExtension]];
       
-            PlainFileItem  *fileChildItem =
-              [[PlainFileItem alloc] initWithName: childName parent: dirItem 
-                                       size: childSize type: fileType];
-                                  
-            [fileChildren addObject:fileChildItem];
-            [fileChildItem release];
-          }
-          }
-          
-          [childName release];
+          PlainFileItem  *fileChildItem =
+            [[PlainFileItem alloc] initWithName: childName parent: dirItem 
+                                     size: childSize type: fileType];
+          [files addObject: fileChildItem];
+          [fileChildItem release];
         }
       }
+      
+      [childName release];
     }
-    FSCloseIterator(iterator);
+    
+    if (result == errFSNoMoreItems) {
+      break;
+    }
   }
 
-  for (i = [dirFsRefs count]; --i >= 0 && !abort; ) {
-    DirectoryItem  *dirChildItem = [dirChildren objectAtIndex: i];
-    FSRefObject  *refObject = [dirFsRefs objectAtIndex: i];
-    
-    [self buildTreeForDirectory: dirChildItem fileRef: &(refObject->ref)
+  for (i = [dirFileRefs count]; --i >= 0 && !abort; ) {
+    [self buildTreeForDirectory: [dirs objectAtIndex: i]
+            fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
             parentPath: path];
   }
   
-  Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];
-  Item  *dirTree = [treeBalancer createTreeForItems: dirChildren];
-  Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
-                                       second: dirTree];
-
-  [dirItem setDirectoryContents: contentTree];
+  [dirItem setDirectoryContents: 
+    [CompoundItem 
+       compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
+                      second: [treeBalancer createTreeForItems: dirs]]];
   
-  [fileChildren release];
-  [dirChildren release];
-  [dirFsRefs release];
+  [files release];
+  [dirs release];
+  [dirFileRefs release];
 
   [localAutoreleasePool release];
   
