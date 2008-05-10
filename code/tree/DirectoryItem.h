@@ -2,6 +2,11 @@
 
 #import "FileItem.h"
 
+/* Bitmasks used for the flags field of the DirectoryItem
+ */
+#define DIRECTORY_IS_PACKAGE 0x04
+
+
 @interface DirectoryItem : FileItem {
   Item  *contents;
 }
@@ -20,5 +25,7 @@
 - (void) replaceDirectoryContents: (Item *)contents;
 
 - (Item*) getContents;
+
+- (BOOL) isPackage;
 
 @end

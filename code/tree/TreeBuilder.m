@@ -39,9 +39,10 @@ typedef struct  {
            fileRef: (FSRef *)fileRef parentPath: (NSString *)parentPath;
            
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
-           catalogInfo: (FSCatalogInfo *)catalogInfo;
+           catalogInfo: (FSCatalogInfo *)catalogInfo
+           systemPath: (NSString **)systemPath;
 
-- (NSString *) pathStringForFileRef: (FSRef *)fileRef;
+- (NSString *) systemPathStringForFileRef: (FSRef *)fileRef;
 
 @end // @interface TreeBuilder (PrivateMethods)
 
@@ -287,8 +288,13 @@ typedef struct  {
       NSString  *childName = 
         [[NSString alloc] initWithCharacters: (unichar *) &(name->unicode)
                             length: name->length];
+                            
+      // The "system path" path to the child item. It may not be needed, so it
+      // is created lazily.
+       NSString  *systemPath = nil; 
 
-      if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo]) {
+      if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo
+                  systemPath: &systemPath]) {
         // Include this item
         
         UInt8  flags = 0;
@@ -299,6 +305,14 @@ typedef struct  {
       
         if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
           // A directory node.
+          
+          if (systemPath == nil) {
+            // Lazily create the system path to the child item
+            systemPath = [self systemPathStringForFileRef: childRef];
+          }
+          if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: systemPath]) {
+            flags |= DIRECTORY_IS_PACKAGE;
+          }
 
           DirectoryItem  *dirChildItem = 
             [[DirectoryItem alloc] initWithName: childName parent: dirItem
@@ -362,26 +376,27 @@ typedef struct  {
 }
 
 
+/* Returns YES if the item should be included in the tree.
+ *
+ * The system path may optionally be provided (if already known). Also, 
+ * a side effect of this method may be that the system path is set. This, 
+ * however, is optional. It may still be nil.
+ */
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
-           catalogInfo: (FSCatalogInfo *)catalogInfo {
+           catalogInfo: (FSCatalogInfo *)catalogInfo
+           systemPath: (NSString **)systemPath {
            
   if (catalogInfo->nodeFlags & kFSNodeHardLinkMask) {
     // The item is hard-linked (i.e. it appears more than once on this volume).
-
-    // Get the path to the item.
-    //
-    // Note: Constructing the path from the FSRef, as opposed to (recursively)
-    // using -stringByAppendingPathComponent. The reason is that the former
-    // converts slashes in individual path components (e.g. files named
-    // mydata-05/05/2008.doc) to colons, which is needed for 
-    // -fileAttributesAtPath:traverseLink: to work). For displaying path names,
-    // the latter works fine, as this is also the way that names are shown in
-    // Finder (and thus more familiar to users).
-    NSString  *path = [self pathStringForFileRef: fileRef]; 
+    
+    if (*systemPath == nil) {
+      // Lazily create the system path
+      *systemPath = [self systemPathStringForFileRef: fileRef];
+    }
     
     NSFileManager  *fileManager = [NSFileManager defaultManager];
     NSDictionary  *fileAttributes = 
-      [fileManager fileAttributesAtPath: path traverseLink: NO];
+      [fileManager fileAttributesAtPath: *systemPath traverseLink: NO];
     NSNumber  *fileNumber = 
       [fileAttributes objectForKey: NSFileSystemFileNumber];
             
@@ -400,7 +415,17 @@ typedef struct  {
 }
 
 
-- (NSString *) pathStringForFileRef: (FSRef *)fileRef {
+/* Gets the "system path" to the file associated with the given FSRef.
+ *
+ * The system path differs from the "display path" created by recursively using
+ * -stringByAppendingPathComponent. In the latter, for example, slashes can
+ * be used in individual path components (e.g. files can be named 
+ * mydata-05/05/2008.doc), which is also how the files are shown in Finder.
+ * In system paths, however, slashes are converted to colons, which is needed 
+ * to actually get to the files given the path. The method
+ * -fileAttributesAtPath:traverseLink: requires a system path for example.
+ */
+- (NSString *) systemPathStringForFileRef: (FSRef *)fileRef {
   if (pathBuffer == NULL) {
     // Allocate initial buffer
 

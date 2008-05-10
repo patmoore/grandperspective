@@ -35,6 +35,11 @@
 }
 
 
+- (BOOL) isPackage {
+  return (flags & DIRECTORY_IS_PACKAGE) != 0;
+}
+
+
 - (NSString*) description {
   return [NSString stringWithFormat:@"DirectoryItem(%@, %qu, %@)", name, size,
                      [contents description]];
