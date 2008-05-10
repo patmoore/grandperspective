@@ -75,11 +75,11 @@
 }
 
 - (BOOL) isSpecial {
-  return (flags & FILEITEM_SPECIAL) != 0;
+  return (flags & FILE_IS_SPECIAL) != 0;
 }
 
 - (BOOL) isHardLinked {
-  return (flags & FILEITEM_HARDLINKED) != 0;
+  return (flags & FILE_IS_HARDLINKED) != 0;
 }
 
 

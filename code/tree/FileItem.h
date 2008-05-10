@@ -4,8 +4,8 @@
 
 /* Bitmasks used for the flags field of the FileItem
  */
-#define FILEITEM_SPECIAL 0x01
-#define FILEITEM_HARDLINKED 0x02
+#define FILE_IS_SPECIAL 0x01
+#define FILE_IS_HARDLINKED 0x02
 
 
 @class DirectoryItem;

@@ -300,7 +300,7 @@ typedef struct  {
         UInt8  flags = 0;
         
         if (catalogInfo->nodeFlags & kFSNodeHardLinkMask != 0) {
-          flags |= FILEITEM_HARDLINKED;
+          flags |= FILE_IS_HARDLINKED;
         }
       
         if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {

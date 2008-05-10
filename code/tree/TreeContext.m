@@ -212,7 +212,7 @@ static int  nextFilterId = 1;
     [[FileItem alloc] initWithName: FreedSpace
                         parent: [replacedItem parentDirectory] 
                         size: [replacedItem itemSize]
-                        flags: FILEITEM_SPECIAL];
+                        flags: FILE_IS_SPECIAL];
   
   [self obtainWriteLock];
   if ([containingItem isVirtual]) {
@@ -418,7 +418,7 @@ static int  nextFilterId = 1;
   DirectoryItem*  usedSpaceItem =
     [[DirectoryItem alloc] initWithName: UsedSpace 
                              parent: volumeItem
-                             flags: FILEITEM_SPECIAL];
+                             flags: FILE_IS_SPECIAL];
                      
   scanTree = [[DirectoryItem alloc] initWithName: relativeScanPath 
                                       parent: usedSpaceItem];
@@ -441,7 +441,7 @@ static int  nextFilterId = 1;
     [[[FileItem alloc] initWithName: FreeSpace 
                          parent: volumeItem 
                          size: freeSpace
-                         flags: FILEITEM_SPECIAL] autorelease];
+                         flags: FILE_IS_SPECIAL] autorelease];
                  
   ITEM_SIZE  miscUnusedSize = volumeSize;
   if ([scanTree itemSize] <= volumeSize) {
@@ -464,7 +464,7 @@ static int  nextFilterId = 1;
     [[[FileItem alloc] initWithName: MiscUsedSpace 
                          parent: usedSpaceItem
                          size: miscUnusedSize
-                         flags: FILEITEM_SPECIAL] autorelease];
+                         flags: FILE_IS_SPECIAL] autorelease];
 
   [usedSpaceItem setDirectoryContents: 
                    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
