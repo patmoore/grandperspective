@@ -57,6 +57,11 @@
 }
 
 
+- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
+  NSAssert(NO, @"-duplicateFileItem: called on (abstract) FileItem.");
+}
+
+
 - (NSString*) description {
   return [NSString stringWithFormat:@"FileItem(%@, %qu)", name, size];
 }

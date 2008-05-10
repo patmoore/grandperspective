@@ -24,6 +24,15 @@
   [super dealloc];
 }
 
+
+- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
+  return [[[PlainFileItem alloc] initWithName: name 
+                                   parent: newParent
+                                   size: size
+                                   type: type] autorelease];
+}
+
+
 - (UniformType *)uniformType {
   return type;
 }

@@ -17,6 +17,13 @@
 - (id) initWithName:(NSString*)name parent:(DirectoryItem*)parent 
          size:(ITEM_SIZE)size;
 
+/* Creates a duplicate item, for use in a new tree (so with a new parent).
+ *
+ * Note: If the item is a directory, its contents still need to be set, as
+ * these can be different from the original item, e.g. by applying a filter.
+ */
+- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent;
+
 + (FileItem *) specialFileItemWithName:(NSString *)name
                  parent:(DirectoryItem *)parent 
                  size:(ITEM_SIZE) size;

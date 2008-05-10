@@ -27,6 +27,12 @@
 }
 
 
+- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
+  return [[[DirectoryItem alloc] initWithName: name
+                                   parent: newParent] autorelease];
+}
+
+
 - (void) setDirectoryContents:(Item *)contentsVal {
   NSAssert(contents == nil, @"Contents should only be set once.");
   

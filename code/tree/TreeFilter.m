@@ -69,57 +69,49 @@
 
 @implementation TreeFilter (PrivateMethods)
 
-- (void) filterItemTree: (DirectoryItem *)oldDirItem 
-           into: (DirectoryItem *)newDirItem {
-  NSMutableArray  *dirChildren = [[NSMutableArray alloc] initWithCapacity: 64];
-  NSMutableArray  *fileChildren = [[NSMutableArray alloc] initWithCapacity:512]; 
+- (void) filterItemTree: (DirectoryItem *)oldDir 
+           into: (DirectoryItem *)newDir {
+  NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 64];
+  NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
 
-  [self flattenAndFilterSiblings: [oldDirItem getContents] 
-          directoryItems: dirChildren fileItems: fileChildren];
+  [self flattenAndFilterSiblings: [oldDir getContents] 
+          directoryItems: dirs fileItems: files];
 
   if (!abort) { // Break recursion when task has been aborted.
     int  i;
   
     // Collect all file items that passed the test
-    for (i = [fileChildren count]; --i >= 0; ) {
-      PlainFileItem  *oldFileItem = [fileChildren objectAtIndex: i];
-      PlainFileItem  *newFileItem = 
-        [[PlainFileItem alloc] initWithName: [oldFileItem name] 
-                                 parent: newDirItem
-                                 size: [oldFileItem itemSize]
-                                 type: [oldFileItem uniformType]];
+    for (i = [files count]; --i >= 0; ) {
+      PlainFileItem  *oldFile = [files objectAtIndex: i];
+      PlainFileItem  *newFile = 
+        (PlainFileItem *)[oldFile duplicateFileItem: newDir];
       
-      [fileChildren replaceObjectAtIndex: i withObject: newFileItem];  
-      
-      [newFileItem release];
+      [files replaceObjectAtIndex: i withObject: newFile];
     }
   
     // Filter the contents of all directory items
-    for (i = [dirChildren count]; --i >= 0; ) {
-      DirectoryItem  *oldSubDirItem = [dirChildren objectAtIndex: i];
-      DirectoryItem  *newSubDirItem = 
-        [[[DirectoryItem alloc] initWithName: [oldSubDirItem name]
-                                  parent: newDirItem] autorelease];
+    for (i = [dirs count]; --i >= 0; ) {
+      DirectoryItem  *oldSubDir = [dirs objectAtIndex: i];
+      DirectoryItem  *newSubDir = 
+        (DirectoryItem *)[oldSubDir duplicateFileItem: newDir];
       
-      [self filterItemTree: oldSubDirItem into: newSubDirItem];
+      [self filterItemTree: oldSubDir into: newSubDir];
     
       if (! abort) {
         // Check to prevent inserting corrupt tree when filtering was aborted.
         
-        [dirChildren replaceObjectAtIndex: i withObject: newSubDirItem];
+        [dirs replaceObjectAtIndex: i withObject: newSubDir];
       }
     }
   
-    Item  *fileTree = [treeBalancer createTreeForItems: fileChildren];
-    Item  *dirTree = [treeBalancer createTreeForItems: dirChildren];
-    Item  *contentTree = [CompoundItem compoundItemWithFirst: fileTree 
-                                         second: dirTree];
-                                       
-    [newDirItem setDirectoryContents: contentTree];
+    [newDir setDirectoryContents: 
+      [CompoundItem 
+         compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
+                        second: [treeBalancer createTreeForItems: dirs]]];
   }
 
-  [dirChildren release];
-  [fileChildren release];
+  [dirs release];
+  [files release];
 }
 
 
