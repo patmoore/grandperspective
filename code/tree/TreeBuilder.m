@@ -37,8 +37,6 @@ typedef struct  {
 
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
            fileRef: (FSRef *)fileRef parentPath: (NSString *)parentPath;
-- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
-           iterator: (FSIterator)iterator path: (NSString *)path;
            
 - (BOOL) includeItemForFileRef: (FSRef *)fileRef
            catalogInfo: (FSCatalogInfo *)catalogInfo;
@@ -241,37 +239,18 @@ typedef struct  {
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
            fileRef: (FSRef *)parentFileRef parentPath: (NSString *)parentPath {
 
+  NSString  *path = [parentPath stringByAppendingPathComponent: [dirItem name]];
+
   FSIterator  iterator;
   { 
     OSStatus  result = FSOpenIterator(parentFileRef, kFSIterateFlat, &iterator);
     if (result != noErr) {
-      NSLog( @"Couldn't create FSIterator for '%@': Error %i", 
-               [parentPath stringByAppendingPathComponent: [dirItem name]], 
-               result);
+      NSLog( @"Couldn't create FSIterator for '%@': Error %i", path, result);
     
       return NO;
     }
   }
   
-  BOOL  result = 
-    [self buildTreeForDirectory: dirItem iterator: iterator 
-            path: [parentPath stringByAppendingPathComponent: [dirItem name]]];
-    
-  FSCloseIterator(iterator);
-    
-  return result;
-}
-  
-
-// TODO: Check if merging with buildTreeForDirectory:fileRef:parentPath does
-// not give a speed-up for scanning entire volume.
-- (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
-           iterator: (FSIterator)iterator path: (NSString *)path {
-
-  if (abort) {
-    return NO;
-  }
-
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];
   NSMutableArray  *dirFileRefs = [[NSMutableArray alloc] initWithCapacity: 32];
@@ -369,6 +348,8 @@ typedef struct  {
 
   [localAutoreleasePool release];
   
+  FSCloseIterator(iterator);
+    
   return !abort;
 }
 
