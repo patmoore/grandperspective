@@ -394,9 +394,9 @@ typedef struct  {
     else {
       [hardLinkedFileNumbers addObject: fileNumber];
     }
-   
-    return YES;
   }
+
+  return YES;
 }
 
 
