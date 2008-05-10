@@ -318,7 +318,14 @@ static int  nextFilterId = 1;
   [mutex lock];
   if ([lock tryLockWhenCondition: IDLE]) {
     // Was in IDLE state, start writing
-    [lock unlockWithCondition: WRITING];
+    
+    // Note: Not releasing lock, to ensure that no other thread starts reading
+    // or writing.
+    
+    // Note: Although the condition of the lock is still IDLE, that does not
+    // matter as long as the lock is being held. The condition only matters 
+    // when the is (being) unlocked. The TreeContext is now already considered 
+    // to be in WRITING state.
   }
   else {
     // Currently in READING or WRITING state 
@@ -335,7 +342,8 @@ static int  nextFilterId = 1;
     numWaitingWriters--;
     [mutex unlock];
     
-    // Note: not releasing lock, to ensure that only this thread writes.
+    // Note: Not releasing lock, to ensure that no other thread starts reading
+    // or writing.
   }
 }
 
