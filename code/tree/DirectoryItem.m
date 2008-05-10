@@ -1,24 +1,7 @@
 #import "DirectoryItem.h"
 
 
-
-@interface SpecialDirectoryItem : DirectoryItem {
-}
-@end
-
-@implementation SpecialDirectoryItem
-- (BOOL) isSpecial { return YES; }
-@end
-
-
 @implementation DirectoryItem
-
-+ (DirectoryItem *)specialDirectoryItemWithName:(NSString *)nameVal
-                     parent:(DirectoryItem *)parentVal {
-  return [[[SpecialDirectoryItem alloc] initWithName: nameVal 
-                                          parent: parentVal] autorelease];
-}
-
 
 - (void) dealloc {
   [contents release];
@@ -29,7 +12,8 @@
 
 - (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
   return [[[DirectoryItem alloc] initWithName: name
-                                   parent: newParent] autorelease];
+                                   parent: newParent
+                                   flags: flags] autorelease];
 }
 
 

@@ -290,12 +290,19 @@ typedef struct  {
 
       if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo]) {
         // Include this item
+        
+        UInt8  flags = 0;
+        
+        if (catalogInfo->nodeFlags & kFSNodeHardLinkMask != 0) {
+          flags |= FILEITEM_HARDLINKED;
+        }
       
         if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
           // A directory node.
 
           DirectoryItem  *dirChildItem = 
-            [[DirectoryItem alloc] initWithName: childName parent: dirItem];
+            [[DirectoryItem alloc] initWithName: childName parent: dirItem
+                                     flags: flags];
           [dirs addObject: dirChildItem];
           [dirChildItem release];
 
@@ -317,7 +324,8 @@ typedef struct  {
       
           PlainFileItem  *fileChildItem =
             [[PlainFileItem alloc] initWithName: childName parent: dirItem 
-                                     size: childSize type: fileType];
+                                     size: childSize type: fileType 
+                                     flags: flags];
           [files addObject: fileChildItem];
           [fileChildItem release];
         }

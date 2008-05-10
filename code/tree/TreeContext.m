@@ -209,9 +209,10 @@ static int  nextFilterId = 1;
   Item  *containingItem = [itemsInPath objectAtIndex: pathLen - 2];
 
   replacingItem = 
-    [[FileItem specialFileItemWithName: FreedSpace
-                 parent: [replacedItem parentDirectory] 
-                 size: [replacedItem itemSize]] retain];
+    [[FileItem alloc] initWithName: FreedSpace
+                        parent: [replacedItem parentDirectory] 
+                        size: [replacedItem itemSize]
+                        flags: FILEITEM_SPECIAL];
   
   [self obtainWriteLock];
   if ([containingItem isVirtual]) {
@@ -407,8 +408,9 @@ static int  nextFilterId = 1;
     [[DirectoryItem alloc] initWithName: volumePath parent: nil];
          
   DirectoryItem*  usedSpaceItem =
-    [[DirectoryItem specialDirectoryItemWithName: UsedSpace 
-                      parent: volumeItem] retain];
+    [[DirectoryItem alloc] initWithName: UsedSpace 
+                             parent: volumeItem
+                             flags: FILEITEM_SPECIAL];
                      
   scanTree = [[DirectoryItem alloc] initWithName: relativeScanPath 
                                       parent: usedSpaceItem];
@@ -428,8 +430,10 @@ static int  nextFilterId = 1;
   DirectoryItem*  volumeItem = [usedSpaceItem parentDirectory];
 
   FileItem*  freeSpaceItem = 
-    [FileItem specialFileItemWithName: FreeSpace parent: volumeItem 
-                size: freeSpace];
+    [[[FileItem alloc] initWithName: FreeSpace 
+                         parent: volumeItem 
+                         size: freeSpace
+                         flags: FILEITEM_SPECIAL] autorelease];
                  
   ITEM_SIZE  miscUnusedSize = volumeSize;
   if ([scanTree itemSize] <= volumeSize) {
@@ -449,8 +453,10 @@ static int  nextFilterId = 1;
   }
 
   FileItem*  miscUnusedSpaceItem = 
-    [FileItem specialFileItemWithName: MiscUsedSpace parent: usedSpaceItem
-                size: miscUnusedSize];
+    [[[FileItem alloc] initWithName: MiscUsedSpace 
+                         parent: usedSpaceItem
+                         size: miscUnusedSize
+                         flags: FILEITEM_SPECIAL] autorelease];
 
   [usedSpaceItem setDirectoryContents: 
                    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem

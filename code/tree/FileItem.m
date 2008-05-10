@@ -11,38 +11,33 @@
 @end
 
 
-@interface SpecialFileItem : FileItem {
-}
-@end
-
-@implementation SpecialFileItem
-- (BOOL) isSpecial { return YES; }
-@end
-
-
 @implementation FileItem
 
-+ (FileItem *) specialFileItemWithName:(NSString *)nameVal
-                 parent:(DirectoryItem *)parentVal
-                 size:(ITEM_SIZE) sizeVal {
-  return [[[SpecialFileItem alloc] initWithName: nameVal parent: parentVal
-                                     size: sizeVal] autorelease];
-}
-
 // Overrides super's designated initialiser.
-- (id) initWithItemSize:(ITEM_SIZE)sizeVal {
-  return [self initWithName:@"" parent:nil size:sizeVal];
+- (id) initWithItemSize: (ITEM_SIZE) sizeVal {
+  return [self initWithName: @"" parent: nil size: sizeVal];
 }
 
-- (id) initWithName:(NSString*)nameVal parent:(DirectoryItem*)parentVal {
-  return [self initWithName:nameVal parent:parentVal size:0];
+- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal {
+  return [self initWithName: nameVal parent: parentVal size: 0 flags: 0];
 }
 
-- (id) initWithName:(NSString*)nameVal parent:(DirectoryItem*)parentVal
-         size:(ITEM_SIZE)sizeVal {
-  if (self = [super initWithItemSize:sizeVal]) {
+- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal
+         flags: (UInt8) flagsVal {
+  return [self initWithName: nameVal parent: parentVal size: 0 flags: flagsVal];
+}
+
+- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal 
+         size: (ITEM_SIZE) sizeVal {
+  return [self initWithName: nameVal parent: parentVal size: sizeVal flags: 0];
+}
+
+- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal
+         size: (ITEM_SIZE)sizeVal flags: (UInt8) flagsVal {
+  if (self = [super initWithItemSize: sizeVal]) {
     name = [nameVal retain];
     parent = parentVal; // not retaining it, as it is not owned.
+    flags = flagsVal;
   }
   return self;
 }
@@ -80,7 +75,11 @@
 }
 
 - (BOOL) isSpecial {
-  return NO;
+  return (flags & FILEITEM_SPECIAL) != 0;
+}
+
+- (BOOL) isHardLinked {
+  return (flags & FILEITEM_HARDLINKED) != 0;
 }
 
 

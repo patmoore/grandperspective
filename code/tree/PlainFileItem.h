@@ -18,6 +18,8 @@
 
 - (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent 
          size: (ITEM_SIZE) size type: (UniformType *)type;
+- (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent 
+         size: (ITEM_SIZE) size type: (UniformType *)type flags: (UInt8) flags;
 
 - (UniformType *)uniformType;
 
