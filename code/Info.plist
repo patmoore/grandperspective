@@ -58,6 +58,8 @@
             <string>public.presentation</string>
             <string>unknown</string>
         </array>
+        <key>showPackageContents</key>
+        <false/>
     </dict>
     <key>GPDefaultFileItemTests</key>
     <array>

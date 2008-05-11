@@ -42,6 +42,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) updateMask;
 
 - (void) updateFileDeletionSupport;
+- (void) updateDisplayOfPackages;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -279,10 +280,14 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                   options: 0 context: nil];
   [userDefaults addObserver: self forKeyPath: ConfirmFileDeletionKey
                   options: 0 context: nil];
+  [userDefaults addObserver: self forKeyPath: ShowPackageContentsKey
+                  options: 0 context: nil];
 
   [nc addObserver:self selector: @selector(fileItemDeleted:)
         name: FileItemDeletedEvent object: treeContext];
 
+  [self updateDisplayOfPackages];
+  
   [self visibleTreeChanged: nil];
 
   [[self window] makeFirstResponder:mainView];
@@ -305,7 +310,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) observeValueForKeyPath: (NSString *)keyPath ofObject: (id) object 
            change: (NSDictionary *)change context: (void *)context {
   if (object == [NSUserDefaults standardUserDefaults]) {
-    [self updateFileDeletionSupport];
+    if ([keyPath isEqualToString: FileDeletionTargetsKey] ||
+        [keyPath isEqualToString: ConfirmFileDeletionKey]) {
+      [self updateFileDeletionSupport];
+    }
+    else if ([keyPath isEqualToString: ShowPackageContentsKey]) {
+      [self updateDisplayOfPackages];
+    }
   }
 }
 
@@ -456,6 +467,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (BOOL) canDeleteSelectedFile {
+  // TODO: Handle packages as files when contents not shown.
   FileItem  *selectedFile = [itemPathModel selectedFileItem];
 
   return 
@@ -489,6 +501,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (void) deleteSelectedFile {
+  // TODO: Handle packages as files when contents not shown.
   FileItem  *selectedFile = [itemPathModel selectedFileItem];
 
   NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
@@ -715,6 +728,17 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [[userDefaults objectForKey: ConfirmFolderDeletionKey] boolValue];
 
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
+}
+
+- (void) updateDisplayOfPackages {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  
+  [mainView setTreeDrawerSettings: 
+    [[mainView treeDrawerSettings] copyWithShowPackageContents: 
+       [[userDefaults objectForKey: ShowPackageContentsKey] boolValue]]];
+
+  // If the selected item is a package, its info will have changed.
+  [self updateButtonState: nil];
 }
 
 

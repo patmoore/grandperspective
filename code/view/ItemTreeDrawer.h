@@ -14,6 +14,7 @@
 @interface ItemTreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
   NSObject <FileItemMapping>  *colorMapper;
   NSObject <FileItemTest>  *fileItemMask;
+  BOOL  showPackageContents;
   
   FileItemPathStringCache  *fileItemPathStringCache;
   
@@ -35,6 +36,9 @@
 
 - (void) setColorMapper: (NSObject <FileItemMapping> *)colorMapper;
 - (NSObject <FileItemMapping> *) colorMapper;
+
+- (void) setShowPackageContents: (BOOL) showPackageContents;
+- (BOOL) showPackageContents;
 
 // Updates the drawer according to the given settings.
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings;

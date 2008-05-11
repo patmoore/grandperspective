@@ -39,34 +39,32 @@
     return;
   }
     
-  if (! [traverser descendIntoItem: root atRect: rect depth: depth] ) {
-    return;
-  }
-  
-  if ([root isVirtual]) {
-    Item  *sub1 = [((CompoundItem *)root) getFirst];
-    Item  *sub2 = [((CompoundItem *)root) getSecond];
+  if ( [traverser descendIntoItem: root atRect: rect depth: depth] ) {
+    if ([root isVirtual]) {
+      Item  *sub1 = [((CompoundItem *)root) getFirst];
+      Item  *sub2 = [((CompoundItem *)root) getSecond];
     
-    float  ratio = 
-      ([root itemSize]>0) ? ([sub1 itemSize]/(float)[root itemSize]) : 0.50;
-    NSRect  rect1;
-    NSRect  rect2;
+      float  ratio = 
+        ([root itemSize]>0) ? ([sub1 itemSize]/(float)[root itemSize]) : 0.50;
+      NSRect  rect1;
+      NSRect  rect2;
     
-    if (NSWidth(rect) > NSHeight(rect)) {
-      NSDivideRect(rect, &rect1, &rect2, ratio*NSWidth(rect), NSMaxXEdge);
-    }
-    else {
-      NSDivideRect(rect, &rect1, &rect2, ratio*NSHeight(rect), NSMinYEdge); 
-    }
+      if (NSWidth(rect) > NSHeight(rect)) {
+        NSDivideRect(rect, &rect1, &rect2, ratio*NSWidth(rect), NSMaxXEdge);
+      }
+      else {
+        NSDivideRect(rect, &rect1, &rect2, ratio*NSHeight(rect), NSMinYEdge); 
+      }
         
-    [self layoutItemTree:sub1 inRect:rect1 traverser:traverser depth:depth];
-    [self layoutItemTree:sub2 inRect:rect2 traverser:traverser depth:depth];
-  }
-  else if (![((FileItem *)root) isPlainFile]) { 
-    Item*  sub = [((DirectoryItem *)root) getContents];		
+      [self layoutItemTree:sub1 inRect:rect1 traverser:traverser depth:depth];
+      [self layoutItemTree:sub2 inRect:rect2 traverser:traverser depth:depth];
+    }
+    else if (![((FileItem *)root) isPlainFile]) { 
+      Item*  sub = [((DirectoryItem *)root) getContents];		
 
-    if (sub != nil) {
-      [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];
+      if (sub != nil) {
+        [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];
+      }
     }
   }
   

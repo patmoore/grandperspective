@@ -86,10 +86,20 @@
 }
 
 
+- (void) setShowPackageContents: (BOOL) showPackageContentsVal {
+  showPackageContents = showPackageContentsVal;
+}
+
+- (BOOL) showPackageContents {
+  return showPackageContents;
+}
+
+
 - (void) updateSettings: (ItemTreeDrawerSettings *)settings {
   [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
   [self setFileItemMask: [settings fileItemMask]];
+  [self setShowPackageContents: [settings showPackageContents]];
 }
 
 
@@ -147,6 +157,13 @@
       [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
     }
     
+    if (!showPackageContents && ![file isPlainFile]) {
+      // Package contents should not be shownn. If the directory is a package
+      // replace it with a file item.
+      
+      file = [(DirectoryItem *)file itemWhenHidingPackageContents];
+    }
+    
     if ([file isPlainFile]) {
       if ([file isSpecial] && [[file name] isEqualToString: FreeSpace]) {
         [self drawBasicFilledRect: rect intColor: freeSpaceColor];
@@ -173,8 +190,12 @@
           [self drawGradientFilledRect: rect colorIndex: colorIndex];
         }
       }
+      
+      descend = NO;
     }
     else {
+      // It's a directory
+      
       if ([file isSpecial] && [[file name] isEqualToString: UsedSpace]) {
         [self drawBasicFilledRect: rect intColor: usedSpaceColor];
       }

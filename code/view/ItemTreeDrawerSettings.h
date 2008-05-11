@@ -11,6 +11,7 @@
   NSColorList  *colorPalette;
   NSObject <FileItemMapping>  *colorMapper;
   NSObject <FileItemTest>  *fileItemMask;
+  BOOL  showPackageContents;
 }
 
 // Creates default settings.
@@ -18,14 +19,17 @@
 
 - (id) initWithColorMapper: (NSObject <FileItemMapping> *)colorMapper
          colorPalette: (NSColorList *)colorPalette
-         fileItemMask: (NSObject <FileItemTest> *)fileItemMask;
+         fileItemMask: (NSObject <FileItemTest> *)fileItemMask
+         showPackageContents: (BOOL)showPackageContents;
 
 - (id) copyWithColorPalette: (NSColorList *)colorPalette;
 - (id) copyWithColorMapper: (NSObject <FileItemMapping> *)colorMapper;
 - (id) copyWithFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
+- (id) copyWithShowPackageContents: (BOOL) showPackageContents;
 
 - (NSColorList *)colorPalette;
 - (NSObject <FileItemMapping> *)colorMapper;
 - (NSObject <FileItemTest> *)fileItemMask;
+- (BOOL) showPackageContents;
 
 @end

@@ -1,5 +1,8 @@
 #import "DirectoryItem.h"
 
+#import "PlainFileItem.h"
+#import "UniformTypeInventory.h"
+
 
 @implementation DirectoryItem
 
@@ -37,6 +40,24 @@
 
 - (BOOL) isPackage {
   return (flags & DIRECTORY_IS_PACKAGE) != 0;
+}
+
+
+- (FileItem *) itemWhenHidingPackageContents {
+  if ([self isPackage]) {
+    UniformType  *fileType = 
+      [[UniformTypeInventory defaultUniformTypeInventory] 
+         uniformTypeForExtension: [name pathExtension]];
+  
+    return [[[PlainFileItem alloc] initWithName: name
+                                     parent: parent
+                                     size: size
+                                     type: fileType
+                                     flags: flags] autorelease];
+  }
+  else {
+    return self;
+  }
 }
 
 

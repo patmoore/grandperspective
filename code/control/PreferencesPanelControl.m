@@ -15,6 +15,8 @@ NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";
 NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
+NSString  *ShowPackageContentsKey = @"showPackageContents";
+
 
 // Note: Confirmation of folder deletion can currently not be configured using 
 // the preferences panel; it is only controlled by way of the application 
@@ -68,6 +70,9 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
   [fileDeletionConfirmationCheckBox setState: 
      ([userDefaults boolForKey: ConfirmFileDeletionKey]
         ? NSOnState : NSOffState)];
+  [showPackageContentsCheckBox setState: 
+     ([userDefaults boolForKey: ShowPackageContentsKey]
+        ? NSOnState : NSOffState)];
 
   [self updateButtonState];
   
@@ -95,9 +100,14 @@ NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
   if (sender == fileDeletionConfirmationCheckBox) {
-    BOOL  enabled = [fileDeletionConfirmationCheckBox state] == NSOnState;
+    BOOL  enabled = [sender state] == NSOnState;
 
     [userDefaults setBool: enabled forKey: ConfirmFileDeletionKey];
+  }
+  else if (sender == showPackageContentsCheckBox) {
+    BOOL  enabled = [sender state] == NSOnState;
+    
+    [userDefaults setBool: enabled forKey: ShowPackageContentsKey];
   }
   else {
     NSAssert(NO, @"Unexpected sender for -valueChanged.");

@@ -18,17 +18,20 @@
     [self initWithColorMapper: 
                           [[[StatelessFileItemMapping alloc] init] autorelease]
             colorPalette: [ItemTreeDrawerSettings defaultColorPalette]
-            fileItemMask: nil];
+            fileItemMask: nil
+            showPackageContents: YES];
 }
 
 
 - (id) initWithColorMapper: (NSObject <FileItemMapping> *)colorMapperVal
          colorPalette: (NSColorList *)colorPaletteVal
-         fileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal {
+         fileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal
+         showPackageContents: (BOOL) showPackageContentsVal {
   if (self = [super init]) {
     colorMapper = [colorMapperVal retain];
     colorPalette = [colorPaletteVal retain];
     fileItemMask = [fileItemMaskVal retain];
+    showPackageContents = showPackageContentsVal;
   }
   
   return self;
@@ -47,23 +50,33 @@
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
-              fileItemMask: fileItemMask] autorelease];
+              fileItemMask: fileItemMask
+              showPackageContents: showPackageContents] autorelease];
 }
 
 - (id) copyWithColorPalette: (NSColorList *)colorPaletteVal {
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPaletteVal
-              fileItemMask: fileItemMask] autorelease];
+              fileItemMask: fileItemMask
+              showPackageContents: showPackageContents] autorelease];
 }
 
 - (id) copyWithFileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal {
   return [[[ItemTreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
-              fileItemMask: fileItemMaskVal] autorelease];
+              fileItemMask: fileItemMaskVal
+              showPackageContents: showPackageContents] autorelease];
 }
 
+- (id) copyWithShowPackageContents: (BOOL) showPackageContentsVal {
+  return [[[ItemTreeDrawerSettings alloc]
+              initWithColorMapper: colorMapper
+              colorPalette: colorPalette
+              fileItemMask: fileItemMask
+              showPackageContents: showPackageContentsVal] autorelease];
+}
 
 - (NSObject <FileItemMapping> *) colorMapper {
   return colorMapper;
@@ -75,6 +88,10 @@
 
 - (NSObject <FileItemTest> *) fileItemMask {
   return fileItemMask;
+}
+
+- (BOOL) showPackageContents {
+  return showPackageContents;
 }
 
 @end

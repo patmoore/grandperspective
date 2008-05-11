@@ -133,8 +133,17 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 - (FileItem *)selectedItem {
-  return (invisibleSelectedItem != nil) 
-            ? invisibleSelectedItem : [pathModel selectedFileItem];
+  FileItem  *item = 
+              (invisibleSelectedItem != nil) 
+                 ? invisibleSelectedItem : [pathModel selectedFileItem];
+
+  if (![item isPlainFile]) {
+    if (![[self treeDrawerSettings] showPackageContents]) {
+      item = [((DirectoryItem *)item) itemWhenHidingPackageContents];
+    }
+  }
+
+  return item;
   // TODO: Return "nil" when the selected item is the visible tree root and
   // the path is not locked?
 }
@@ -491,11 +500,14 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 - (void) updateSelectedItem: (NSPoint) point {
   FileItem  *oldInvisibleSelectedItem = invisibleSelectedItem;
 
+  BOOL  descendIntoPackages = [[self treeDrawerSettings] showPackageContents];
+
   FileItem  *selectedItem =
     [pathBuilder selectItemAtPoint: point 
                    startingAtTree: [self treeInView]
                    usingLayoutBuilder: layoutBuilder 
                    bounds: [self bounds]
+                   descendIntoPackages: descendIntoPackages
                    updatePath: pathModel];
                    
   if (selectedItem != [pathModel selectedFileItem]) {

@@ -1,16 +1,17 @@
 #import "ItemPathBuilder.h"
 
-#import "FileItem.h"
+#import "DirectoryItem.h"
 #import "ItemPathModel.h"
 #import "TreeLayoutBuilder.h"
 
 
 @implementation ItemPathBuilder
 
-- (FileItem *) selectItemAtPoint: (NSPoint)point 
+- (FileItem *) selectItemAtPoint: (NSPoint) point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
-                 bounds: (NSRect)bounds
+                 bounds: (NSRect) bounds
+                 descendIntoPackages: (BOOL) descendIntoPackagesVal
                  updatePath: (ItemPathModel *)pathModelVal {
   NSAssert(pathModel==nil, @"Path model should be nil.");
   pathModel = pathModelVal;
@@ -26,7 +27,8 @@
   FileItem  *retVal = [self selectItemAtPoint: point 
                               startingAtTree: treeRoot 
                               usingLayoutBuilder: layoutBuilder 
-                              bounds: bounds];
+                              bounds: bounds
+                              descendIntoPackages: descendIntoPackagesVal];
   // If the target point was inside the visible tree, let the path return
   // the selected item. It may not necessarily be the path's end point (i.e.
   // the current value of "retVal"), it can be an intermediate directory.
@@ -42,9 +44,11 @@
 - (FileItem *) selectItemAtPoint: (NSPoint)point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
-                 bounds: (NSRect)bounds {
+                 bounds: (NSRect)bounds
+                 descendIntoPackages: (BOOL) descendIntoPackagesVal {
   NSAssert(foundItem==nil, @"foundItem should be nil.");
   
+  descendIntoPackages = descendIntoPackagesVal;
   targetPoint = point;
 
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
@@ -73,9 +77,16 @@
 
   if (! [item isVirtual]) {
     foundItem = (FileItem *)item;
+
+    if (!descendIntoPackages 
+        && ![((FileItem *)item) isPlainFile] 
+        && [((DirectoryItem *)item) isPackage]) {
+        
+      // Do not descend into package
+      return NO;
+    }
   }
   
-  // track path further
   return YES;
 }
 
