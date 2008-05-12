@@ -101,6 +101,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   [userDefaults removeObserver: self forKeyPath: FileDeletionTargetsKey];
   [userDefaults removeObserver: self forKeyPath: ConfirmFileDeletionKey];
+  [userDefaults removeObserver: self forKeyPath: ShowPackageContentsKey];
   
   [treeContext release];
   [pathModelView release];
