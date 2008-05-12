@@ -9,6 +9,7 @@
 #import "PreferencesPanelControl.h"
 
 #import "ItemPathModel.h"
+#import "ItemPathModelView.h"
 #import "TreeFilter.h"
 #import "TreeContext.h"
 
@@ -235,15 +236,16 @@ NSString* scanActivityFormatString() {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  ItemPathModel  *itemPathModel = [oldControl itemPathModel];
+  ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
 
-  if (itemPathModel != nil) {
-    NSString  *dirName = [[itemPathModel scanTree] stringForFileItemPath];
+  // TODO: Remove indentation
+  if (pathModel != nil) {
+    NSString  *dirName = [[pathModel scanTree] stringForFileItemPath];
     
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
           initWithWindowManager: windowManager
-            targetPath: itemPathModel 
+            targetPath: pathModel
             settings: [oldControl directoryViewControlSettings]];
 
     RescanTaskInput  *input = 
@@ -294,13 +296,14 @@ NSString* scanActivityFormatString() {
   
   int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
   [[editFilterWindowControl window] close];
-    
+
+  // TODO: Remove indentation
   if (status == NSRunStoppedResponse) {
     // get rule from window
     NSObject <FileItemTest>  *filterTest =
       [editFilterWindowControl createFileItemTest];
       
-    ItemPathModel  *oldPathModel = [oldControl itemPathModel];
+    ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
 
     DerivedDirViewWindowCreator  *windowCreator =
       [[DerivedDirViewWindowCreator alloc] 
@@ -378,16 +381,16 @@ NSString* scanActivityFormatString() {
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
   // Share or clone the path model.
-  ItemPathModel  *itemPathModel = [oldControl itemPathModel];
+  ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
 
   if (!sharePathModel) {
-    itemPathModel = [[itemPathModel copy] autorelease];
+    pathModel = [[pathModel copy] autorelease];
   }
 
   DirectoryViewControl  *newControl = 
     [[DirectoryViewControl alloc] 
         initWithTreeContext: [oldControl treeContext]
-          pathModel: itemPathModel
+          pathModel: pathModel
           settings: [oldControl directoryViewControlSettings]];
   // Note: The control should auto-release itself when its window closes
     
@@ -505,7 +508,7 @@ NSString* scanActivityFormatString() {
   ItemPathModel  *path = 
     [[[ItemPathModel alloc] initWithTreeContext: treeContext] autorelease];
 
-  [path suppressSelectedItemChangedNotifications: YES];
+  [path suppressVisibleTreeChangedNotifications: YES];
 
   NSEnumerator  *fileItemEnum = [[targetPath fileItemPath] objectEnumerator];
   FileItem  *targetItem;
@@ -533,7 +536,8 @@ NSString* scanActivityFormatString() {
       }
     }
     if (itemToSelect == nil && targetItem == [targetPath selectedFileItem]) {
-      itemToSelect = [path selectedFileItem];
+      // Found the selected item. It is the path's current end point. 
+      itemToSelect = [path lastFileItem];
     }
     if (!insideVisibleTree && targetItem == [targetPath visibleTree]) {
       // The remainder of this path can remain visible.
@@ -550,20 +554,18 @@ NSString* scanActivityFormatString() {
   }
   
   if (itemToSelect != nil) {
-    // Match the selection to that of the original path. This is needed, 
-    // because the path endpoint is not necessarily the selected item.
-    while ([path selectedFileItem] != itemToSelect) {
-      [path moveSelectionUp];
-    }
+    // Match the selection to that of the original path. 
+    [path selectFileItem: itemToSelect];
   }
   else {
     // Did not manage to match the new path all the way up to the selected
     // item in the original path. The selected item of the new path can 
-    // therefore remain at its endpoint (as that is the closest it can come
-    // to matching the old selection).
+    // therefore be set to the path endpoint (as that is the closest it can 
+    // come to matching the old selection).
+    [path selectFileItem: [path lastFileItem]];
   }
         
-  [path suppressSelectedItemChangedNotifications: NO];
+  [path suppressVisibleTreeChangedNotifications: NO];
 
   return [[[DirectoryViewControl alloc] 
              initWithTreeContext: treeContext pathModel: path 

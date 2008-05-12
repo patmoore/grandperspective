@@ -98,13 +98,13 @@
     
     // Draw the image.
     DirectoryView  *dirView = [dirViewControl directoryView];
-    ItemPathModel  *pathModel = [dirView itemPathModel];
+    ItemPathModelView  *pathModelView = [dirView pathModelView];
     ItemTreeDrawer  *treeDrawer = 
       [[[ItemTreeDrawer alloc] 
            initWithTreeDrawerSettings: [dirView treeDrawerSettings]]
              autorelease];
     NSImage  *image =
-      [treeDrawer drawImageOfVisibleTree: [pathModel visibleTree]
+      [treeDrawer drawImageOfVisibleTree: [pathModelView visibleTree]
                     startingAtTree: [dirView treeInView]
                     usingLayoutBuilder: [dirView layoutBuilder]
                     inRect: bounds];

@@ -4,6 +4,7 @@
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "ItemPathModel.h"
+#import "ItemPathModelView.h"
 
 
 NSString  *FreeSpace = @"free";
@@ -52,6 +53,11 @@ static int  nextFilterId = 1;
 // Note: It can safely be called after the skeleton has been finalised, in 
 // which case it will not do anything.
 - (void) emptyCloset;
+
+/* Returns the item that owns the selected file item, i.e. the one directly
+ * above it in the tree. This can be a virtual item.
+ */
+- (Item *) itemContainingSelectedFileItem: (ItemPathModelView *)pathModelView;
 
 // Signals that an item in the tree has been replaced (by another one, of the
 // same size). The item itself is not part of the notification, but can be 
@@ -192,27 +198,17 @@ static int  nextFilterId = 1;
 }
 
 
-- (void) deleteSelectedFileItem: (ItemPathModel *)path {
+- (void) deleteSelectedFileItem: (ItemPathModelView *)pathModelView {
   NSAssert(replacedItem == nil, @"Replaced item not nil.");
   NSAssert(replacingItem == nil, @"Replacing item not nil.");
   
-  replacedItem = [[path selectedFileItem] retain];
-  
-  // Let path end at selected item (as it simplifies finding the containing
-  // item)
-  [path clearPathBeyondSelection];
-  NSArray  *itemsInPath = [path itemPath];
-  int  pathLen = [itemsInPath count];
-  
-  NSAssert([itemsInPath objectAtIndex: pathLen - 1] == replacedItem,
-             @"Inconsistent path.");
-  Item  *containingItem = [itemsInPath objectAtIndex: pathLen - 2];
-
-  replacingItem = 
-    [[FileItem alloc] initWithName: FreedSpace
-                        parent: [replacedItem parentDirectory] 
-                        size: [replacedItem itemSize]
-                        flags: FILE_IS_SPECIAL];
+  replacedItem = [[pathModelView selectedFileItemInTree] retain];  
+  replacingItem = [[FileItem alloc] initWithName: FreedSpace
+                                      parent: [replacedItem parentDirectory] 
+                                      size: [replacedItem itemSize]
+                                      flags: FILE_IS_SPECIAL];
+                                      
+  Item  *containingItem = [self itemContainingSelectedFileItem: pathModelView];
   
   [self obtainWriteLock];
   if ([containingItem isVirtual]) {
@@ -500,6 +496,23 @@ static int  nextFilterId = 1;
   [usedSpaceItem release];
   [volumeItem release];
 }
+
+
+- (Item *) itemContainingSelectedFileItem: (ItemPathModelView *)pathModelView {
+  FileItem  *selectedItem = [pathModelView selectedFileItemInTree];
+  
+  // Get the items in the path (from the underlying path model). 
+  NSArray  *itemsInPath = [[pathModelView pathModel] itemPath];
+  int  i = [itemsInPath count] - 1;
+  while ([itemsInPath objectAtIndex: i] != selectedItem) {
+    NSAssert(i > 0, @"Item not found.");
+    i--;
+  }
+
+  // Found the item. Return the one just above it in the path.  
+  return [itemsInPath objectAtIndex: i-1];
+}
+
 
 - (void) postFileItemDeleted {
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];

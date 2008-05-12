@@ -10,7 +10,7 @@ extern NSString  *FileItemDeletedEvent;
 @protocol FileItemTest;
 @class FileItem;
 @class DirectoryItem;
-@class ItemPathModel;
+@class ItemPathModelView;
 
 @interface TreeContext : NSObject {
   unsigned long long  volumeSize;
@@ -85,7 +85,7 @@ extern NSString  *FileItemDeletedEvent;
 // Returns a localized string, based on the filter identifier.
 - (NSString*) filterName;
 
-- (void) deleteSelectedFileItem: (ItemPathModel *)path;
+- (void) deleteSelectedFileItem: (ItemPathModelView *)path;
 
 // These method should only be called in response to a TreeItemReplacedEvent.
 // They will return "nil" otherwise.

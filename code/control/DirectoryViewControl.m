@@ -4,6 +4,7 @@
 #import "DirectoryItem.h"
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
+#import "ItemPathModelView.h"
 #import "FileItemMappingScheme.h"
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
@@ -71,13 +72,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithTreeContext: (TreeContext *)treeContextVal
-         pathModel: (ItemPathModel *)itemPathModelVal
+         pathModel: (ItemPathModel *)pathModel
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([itemPathModelVal volumeTree] == [treeContextVal volumeTree], 
+    NSAssert([pathModel volumeTree] == [treeContextVal volumeTree], 
                @"Tree mismatch");
     treeContext = [treeContextVal retain];
-    itemPathModel = [itemPathModelVal retain];
+    pathModelView = [[ItemPathModelView alloc] initWithPathModel: pathModel];
     initialSettings = [settings retain];
 
     scanPathName = [[[treeContext scanTree] stringForFileItemPath] retain];
@@ -102,7 +103,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [userDefaults removeObserver: self forKeyPath: ConfirmFileDeletionKey];
   
   [treeContext release];
-  [itemPathModel release];
+  [pathModelView release];
   [initialSettings release];
   
   [fileItemMask release];
@@ -124,8 +125,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   return fileItemMask;
 }
 
-- (ItemPathModel*) itemPathModel {
-  return itemPathModel;
+- (ItemPathModelView *) pathModelView {
+  return pathModelView;
 }
 
 - (DirectoryView*) directoryView {
@@ -155,7 +156,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) windowDidLoad {
-  [mainView postInitWithPathModel: itemPathModel];
+  [mainView postInitWithPathModelView: pathModelView];
   
   [self updateFileDeletionSupport];
 
@@ -211,9 +212,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   //---------------------------------------------------------------- 
   // Configure the "Info" panel
 
-  FileItem  *volumeTree = [itemPathModel volumeTree];
-  FileItem  *scanTree = [itemPathModel scanTree];
-  FileItem  *visibleTree = [itemPathModel visibleTree];
+  FileItem  *volumeTree = [pathModelView volumeTree];
+  FileItem  *scanTree = [pathModelView scanTree];
+  FileItem  *visibleTree = [pathModelView visibleTree];
 
   NSString  *volumeName = [volumeTree name];
   NSImage  *volumeIcon = 
@@ -266,15 +267,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
-  // Note: For selectedItemChanged events listening to the view instead of the
-  // path, as the selected item returned by the view can change without a
-  // change to the selected item in the path.
   [nc addObserver:self selector: @selector(updateButtonState:)
-        name: SelectedItemChangedEvent object: mainView];
-  [nc addObserver:self selector: @selector(updateButtonState:)
-        name: VisiblePathLockingChangedEvent object: itemPathModel];
+        name: SelectedItemChangedEvent object: pathModelView];
   [nc addObserver:self selector: @selector(visibleTreeChanged:)
-        name: VisibleTreeChangedEvent object: itemPathModel];
+        name: VisibleTreeChangedEvent object: pathModelView];
+  [nc addObserver:self selector: @selector(updateButtonState:)
+        name: VisiblePathLockingChangedEvent object: [pathModelView pathModel]];
         
   [userDefaults addObserver: self forKeyPath: FileDeletionTargetsKey
                   options: 0 context: nil];
@@ -320,27 +318,27 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 }
 
-- (IBAction) upAction:(id)sender {
-  [itemPathModel moveVisibleTreeUp];
+- (IBAction) upAction: (id) sender {
+  [pathModelView moveVisibleTreeUp];
   
   // Automatically lock path as well.
-  [itemPathModel setVisiblePathLocking:YES];
+  [[pathModelView pathModel] setVisiblePathLocking: YES];
 }
 
-- (IBAction) downAction:(id)sender {
-  [itemPathModel moveVisibleTreeDown];
+- (IBAction) downAction: (id) sender {
+  [pathModelView moveVisibleTreeDown];
 }
 
-- (IBAction) openFileInFinder:(id)sender {
+- (IBAction) openFileInFinder: (id) sender {
   NSString  *filePath = 
-    [[itemPathModel selectedFileItem] stringForFileItemPath];
+    [[pathModelView selectedFileItem] stringForFileItemPath];
 
   [[NSWorkspace sharedWorkspace] 
     selectFile: filePath inFileViewerRootedAtPath: invisiblePathName];
 }
 
 - (IBAction) deleteFile: (id) sender {
-  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
   BOOL  isFile = [selectedFile isPlainFile];
 
   if ((  isFile && !confirmFileDeletion) ||
@@ -462,16 +460,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @implementation DirectoryViewControl (PrivateMethods)
 
 - (BOOL) canRevealSelectedFile {
-  return ([itemPathModel isVisiblePathLocked] &&
-          ![[itemPathModel selectedFileItem] isSpecial]);
+  return ([[pathModelView pathModel] isVisiblePathLocked] &&
+          ![[pathModelView selectedFileItem] isSpecial]);
 }
 
 - (BOOL) canDeleteSelectedFile {
-  // TODO: Handle packages as files when contents not shown.
-  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
 
   return 
-    ( [itemPathModel isVisiblePathLocked] 
+    ( [[pathModelView pathModel] isVisiblePathLocked] 
 
       // Special files cannot be deleted, as these are not actual files
       && ! [selectedFile isSpecial] 
@@ -482,8 +479,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
       // Can only delete the entire scan tree when it is an actual folder 
       // within the volume. You cannot delete the root folder.
-      && ! ( (selectedFile == [itemPathModel scanTree])
-             && [[[itemPathModel scanTree] name] isEqualToString: @""])
+      && ! ( (selectedFile == [pathModelView scanTree])
+             && [[[pathModelView scanTree] name] isEqualToString: @""])
     );
 }
 
@@ -501,8 +498,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (void) deleteSelectedFile {
-  // TODO: Handle packages as files when contents not shown.
-  FileItem  *selectedFile = [itemPathModel selectedFileItem];
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
 
   NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
   NSString  *sourceDir = [[selectedFile parentDirectory] stringForFileItemPath];
@@ -515,7 +511,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                    destination: @""
                    files: [NSArray arrayWithObject: [selectedFile name]]
                    tag: &tag]) {
-    [treeContext deleteSelectedFileItem: itemPathModel];
+    [treeContext deleteSelectedFileItem: pathModelView];
   }
   else {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
@@ -568,7 +564,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (void) visibleTreeChanged:(NSNotification*)notification {
-  FileItem  *visibleTree = [itemPathModel visibleTree];
+  FileItem  *visibleTree = [pathModelView visibleTree];
   
   [invisiblePathName release];
   invisiblePathName = [[visibleTree stringForFileItemPath] retain];
@@ -587,9 +583,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) updateButtonState:(NSNotification*)notification {
-  [upButton setEnabled: [itemPathModel canMoveVisibleTreeUp]];
-  [downButton setEnabled: [itemPathModel isVisiblePathLocked] &&
-                          [itemPathModel canMoveVisibleTreeDown]];
+  [upButton setEnabled: [pathModelView canMoveVisibleTreeUp]];
+  [downButton setEnabled: [[pathModelView pathModel] isVisiblePathLocked] &&
+                          [pathModelView canMoveVisibleTreeDown]];
   [openButton setEnabled: [self canRevealSelectedFile] ];
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
   
@@ -597,7 +593,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *selectedItemTitle = 
     NSLocalizedString( @"Selected file:", "Label in Focus panel" );
 
-  FileItem  *selectedItem = [mainView selectedItem];
+  FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem != nil ) {
     ITEM_SIZE  itemSize = [selectedItem itemSize];
@@ -732,10 +728,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (void) updateDisplayOfPackages {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  BOOL  showPackageContents = 
+    [[userDefaults objectForKey: ShowPackageContentsKey] boolValue];
   
   [mainView setTreeDrawerSettings: 
     [[mainView treeDrawerSettings] copyWithShowPackageContents: 
-       [[userDefaults objectForKey: ShowPackageContentsKey] boolValue]]];
+       showPackageContents]];
+  [[mainView pathModelView] setShowPackageContents: showPackageContents];
 
   // If the selected item is a package, its info will have changed.
   [self updateButtonState: nil];

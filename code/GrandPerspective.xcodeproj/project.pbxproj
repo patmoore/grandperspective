@@ -56,6 +56,7 @@
 		AA63516C0972E2CC0024C9D0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		AA6814860A07D6FC00802D88 /* ProgressPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA6814840A07D6FC00802D88 /* ProgressPanel.nib */; };
 		AA6E27A40D7AE95E00D5FBBA /* ColorLegendTableViewControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */; };
+		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
 		AA7C64D60AFE71DC007B8CD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */; };
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
 		AA7DEC1B0D6CD38E0057F5F8 /* PlainFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEC190D6CD38E0057F5F8 /* PlainFileItem.m */; };
@@ -191,6 +192,8 @@
 		AA6E27A10D7AE95E00D5FBBA /* ColorLegendTableViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorLegendTableViewControl.h; path = control/ColorLegendTableViewControl.h; sourceTree = "<group>"; };
 		AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorLegendTableViewControl.m; path = control/ColorLegendTableViewControl.m; sourceTree = "<group>"; };
 		AA6E27D00D7B02BE00D5FBBA /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
+		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
+		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
 		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AA7C64E90AFE734A007B8CD2 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
 		AA7C64F50AFE7568007B8CD2 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/ProgressPanel.nib; sourceTree = "<group>"; };
@@ -435,6 +438,8 @@
 				AA8877E90D0C0E3500F52571 /* TreeContext.m */,
 				AA4030320A5B02F1004EAAF3 /* ItemPathModel.h */,
 				AA4030310A5B02F1004EAAF3 /* ItemPathModel.m */,
+				AA7B90680DD707F000488CAA /* ItemPathModelView.h */,
+				AA7B90690DD707F000488CAA /* ItemPathModelView.m */,
 				AA60131D0A5AFCC500DEBCB8 /* TreeLayoutTraverser.h */,
 				AA60131F0A5AFCC500DEBCB8 /* TreeLayoutBuilder.h */,
 				AA60131E0A5AFCC500DEBCB8 /* TreeLayoutBuilder.m */,
@@ -714,6 +719,7 @@
 				AA8A380C0D7B437300DB872C /* StatefulFileItemMapping.m in Sources */,
 				AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */,
 				AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */,
+				AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

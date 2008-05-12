@@ -17,8 +17,7 @@ extern NSString  *ColorMappingChangedEvent;
 @class FileItem;
 @class ItemTreeDrawerSettings;
 @class ItemPathDrawer;
-@class ItemPathBuilder;
-@class ItemPathModel;
+@class ItemPathModelView;
 @protocol FileItemMappingScheme;
 
 @interface DirectoryView : NSView {
@@ -30,20 +29,13 @@ extern NSString  *ColorMappingChangedEvent;
   TreeLayoutBuilder  *layoutBuilder;
   
   ItemPathDrawer  *pathDrawer;
-  ItemPathBuilder  *pathBuilder;
+  ItemPathModelView  *pathModelView;
   
   /* The current color mapping, which is being observed for any changes to the
    * scheme.
    */
   NSObject <FileItemMappingScheme>  *observedColorMapping;
 
-  ItemPathModel  *pathModel;
-
-  // Maintains the selected item if it is outside the visible tree (in which
-  // case it cannot be maintained by the pathModel). This can happen when the
-  // entire volume is shown.
-  FileItem  *invisibleSelectedItem;
-  
   BOOL  showEntireVolume;
   
   NSImage  *treeImage;
@@ -53,11 +45,10 @@ extern NSString  *ColorMappingChangedEvent;
 
 // Initialises the instance-specific state after the view has been restored
 // from the nib file (which invokes the generic initWithFrame: method).
-- (void) postInitWithPathModel: (ItemPathModel *)pathModelVal;
+- (void) postInitWithPathModelView: (ItemPathModelView *)pathModelView;
 
-- (ItemPathModel *)itemPathModel;
+- (ItemPathModelView *)pathModelView;
 - (FileItem *)treeInView;
-- (FileItem *)selectedItem;
 
 - (ItemTreeDrawerSettings *) treeDrawerSettings;
 - (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;

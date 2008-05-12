@@ -3,6 +3,7 @@
 #import "FileItem.h"
 #import "TreeLayoutBuilder.h"
 #import "ItemPathModel.h"
+#import "ItemPathModelView.h"
 
 
 @implementation ItemPathDrawer
@@ -11,13 +12,13 @@
   highlightPathEndPoint = option;
 }
 
-- (void) drawVisiblePath: (ItemPathModel *)pathModel
+- (void) drawVisiblePath: (ItemPathModelView *)pathModelView
            startingAtTree: (FileItem *)treeRoot
            usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
            bounds: (NSRect)bounds {
 
   NSAssert(drawPath == nil, @"drawPath should be nil.");
-  drawPath = [pathModel itemPathToSelectedFileItem]; 
+  drawPath = [[pathModelView pathModel] itemPath]; 
                // Not retaining it. It is only needed during this method.
 
   // Align the path with the tree, as the path may contain invisible items
@@ -29,9 +30,11 @@
     NSAssert(drawPathIndex < [drawPath count], @"treeRoot not found in path.");
   }
   
-  insideVisibleTree = NO;
+  targetItem = [pathModelView selectedFileItemInTree];
+  
   NSAssert(visibleTree == nil, @"visibleTree should be nil.");
-  visibleTree = [pathModel visibleTree]; 
+  visibleTree = [pathModelView visibleTree]; 
+  insideVisibleTree = NO;
 
   firstBezierPath = nil;
   lastBezierPath = nil;
@@ -46,6 +49,7 @@
 
   drawPath = nil;
   visibleTree = nil;
+  targetItem = nil;
 }
 
 
@@ -80,7 +84,7 @@
     }
   }
 
-  return YES;
+  return (item != targetItem);
 }
 
 - (void) emergedFromItem:(Item*)item {

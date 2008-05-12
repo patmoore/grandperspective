@@ -2,6 +2,7 @@
 
 #import "DirectoryView.h"
 #import "ItemPathModel.h"
+#import "ItemPathModelView.h"
 
 #import "FileItem.h"
 #import "FileItemMapping.h"
@@ -64,6 +65,8 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     
     [tableView setDataSource: self];
     
+    ItemPathModelView  *pathModelView = [dirView pathModelView];
+    
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
     [nc addObserver: self selector: @selector(colorPaletteChanged:)
@@ -71,9 +74,9 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
     [nc addObserver: self selector: @selector(colorMappingChanged:)
           name: ColorMappingChangedEvent object: dirView];
     [nc addObserver:self selector: @selector(selectedItemChanged:)
-          name: SelectedItemChangedEvent object: dirView];
+          name: SelectedItemChangedEvent object: pathModelView];
     [nc addObserver:self selector: @selector(visibleTreeChanged:)
-          name: VisibleTreeChangedEvent object: dirView];
+          name: VisibleTreeChangedEvent object: pathModelView];
   }
   
   return self;
@@ -206,7 +209,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
  * cleared.
  */
 - (void) updateSelectedRow {
-  FileItem  *selectedItem = [dirView selectedItem];
+  FileItem  *selectedItem = [[dirView pathModelView] selectedFileItem];
 
   BOOL  rowSelected = NO;
 

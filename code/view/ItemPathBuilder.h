@@ -16,30 +16,25 @@
   ItemPathModel  *pathModel;
   NSPoint  targetPoint;
   
-  BOOL  descendIntoPackages;  
-  
   FileItem  *visibleTree;
   BOOL  insideVisibleTree;
-  BOOL  wasInsideVisibleTree;
 }
 
 /* Returns the item that is located at the given point (given the tree 
  * drawing settings specified by treeRoot, layoutBuilder and bounds). 
  */
-- (FileItem *) selectItemAtPoint: (NSPoint) point 
+- (FileItem *) itemAtPoint: (NSPoint) point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
-                 bounds: (NSRect) bounds
-                 descendIntoPackages: (BOOL) descendIntoPackages;
+                 bounds: (NSRect) bounds;
 
 /* Returns the item that is located at the given point. Furthermore, if the
- * item is inside the visible tree, the visible path is also updated to point 
- * to the selected item.
+ * item is inside the visible tree, the visible path is also extended to end 
+ * at this item.
  */
-- (FileItem *) selectItemAtPoint: (NSPoint) point 
+- (FileItem *) itemAtPoint: (NSPoint) point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
                  bounds: (NSRect) bounds
-                 descendIntoPackages: (BOOL) descendIntoPackages
                  updatePath: (ItemPathModel *)pathModel;
 @end

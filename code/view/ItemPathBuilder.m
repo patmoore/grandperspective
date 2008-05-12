@@ -7,48 +7,35 @@
 
 @implementation ItemPathBuilder
 
-- (FileItem *) selectItemAtPoint: (NSPoint) point 
+- (FileItem *) itemAtPoint: (NSPoint) point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
                  bounds: (NSRect) bounds
-                 descendIntoPackages: (BOOL) descendIntoPackagesVal
                  updatePath: (ItemPathModel *)pathModelVal {
   NSAssert(pathModel==nil, @"Path model should be nil.");
   pathModel = pathModelVal;
   visibleTree = [pathModel visibleTree];
-  insideVisibleTree = NO;
-  wasInsideVisibleTree = NO;
-  
-  // Don't generate notifications while the path is being built.
-  [pathModel suppressSelectedItemChangedNotifications: YES];
   
   [pathModel clearVisiblePath];
-  
-  FileItem  *retVal = [self selectItemAtPoint: point 
+
+  insideVisibleTree = NO;  
+  FileItem  *retVal = [self itemAtPoint: point 
                               startingAtTree: treeRoot 
                               usingLayoutBuilder: layoutBuilder 
-                              bounds: bounds
-                              descendIntoPackages: descendIntoPackagesVal];
-  // If the target point was inside the visible tree, let the path return
-  // the selected item. It may not necessarily be the path's end point (i.e.
-  // the current value of "retVal"), it can be an intermediate directory.
-  retVal = wasInsideVisibleTree ? [pathModel selectedFileItem] : retVal;
+                              bounds: bounds];
   
-  [pathModel suppressSelectedItemChangedNotifications: NO];
   visibleTree = nil;
   pathModel = nil;
   
   return retVal;
 }
 
-- (FileItem *) selectItemAtPoint: (NSPoint)point 
+- (FileItem *) itemAtPoint: (NSPoint)point 
                  startingAtTree: (FileItem *)treeRoot
                  usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder 
-                 bounds: (NSRect)bounds
-                 descendIntoPackages: (BOOL) descendIntoPackagesVal {
+                 bounds: (NSRect)bounds {
   NSAssert(foundItem==nil, @"foundItem should be nil.");
   
-  descendIntoPackages = descendIntoPackagesVal;
   targetPoint = point;
 
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
@@ -77,14 +64,6 @@
 
   if (! [item isVirtual]) {
     foundItem = (FileItem *)item;
-
-    if (!descendIntoPackages 
-        && ![((FileItem *)item) isPlainFile] 
-        && [((DirectoryItem *)item) isPackage]) {
-        
-      // Do not descend into package
-      return NO;
-    }
   }
   
   return YES;
@@ -93,7 +72,6 @@
 - (void) emergedFromItem:(Item*)item {
   if (item == visibleTree) {
     insideVisibleTree = NO;
-    wasInsideVisibleTree = YES;
   }
 }
 

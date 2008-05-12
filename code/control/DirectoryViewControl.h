@@ -9,6 +9,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class DirectoryItem;
 @class DirectoryView;
 @class ItemPathModel;
+@class ItemPathModelView;
 @class FileItemMappingCollection;
 @class ColorListCollection;
 @class EditFilterWindowControl;
@@ -62,7 +63,7 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *selectedItemTypeIdentifierField;
   IBOutlet NSTextField  *selectedItemTypeDescriptionField;
 
-  ItemPathModel  *itemPathModel;
+  ItemPathModelView  *pathModelView;
   DirectoryViewControlSettings  *initialSettings;
   TreeContext  *treeContext;
 
@@ -105,7 +106,7 @@ extern NSString  *DeleteFilesAndFolders;
 
 - (NSObject <FileItemTest> *) fileItemMask;
 
-- (ItemPathModel*) itemPathModel;
+- (ItemPathModelView *) pathModelView;
 
 - (DirectoryView*) directoryView;
 

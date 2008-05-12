@@ -10,18 +10,18 @@ NSString  *VisibleTreeChangedEvent = @"visibleTreeChanged";
 NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 
-#define STICK_TO_ENDPOINT  0xFFFF
-
-
 @interface ItemPathModel (PrivateMethods)
 
-// Initialiser used to implement copying.
-//
-// Note: To properly allow subclassing, this method should maybe be moved
-// to the public interface. However, this is currently not relevant, as this
-// class is not subclassed.
+/* Initialiser used to implement copying.
+ *
+ * Note: To properly allow subclassing, this method should maybe be moved
+ * to the public interface. However, this is currently not relevant, as this
+ * class is not subclassed.
+ */
 - (id) initByCopying: (ItemPathModel *)source;
 
+/* Registers the model for all events that it wants to be notified about.
+ */
 - (void) observeEvents;
 
 - (void) fileItemDeleted: (NSNotification *)notification;
@@ -32,8 +32,13 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 - (BOOL) buildPathToFileItem: (FileItem *)targetItem;
 
-// "start" and "end" are both inclusive.
-- (NSArray*) buildFileItemPathFromIndex:(int)start toIndex:(int)end;
+/* Extracts the file items from (part of) the path (which also contains 
+ * virtual items).
+ *
+ * Note: "start" and "end" are both inclusive.
+ */
+- (NSArray*) buildFileItemPathFromIndex: (int) start toIndex: (int) end
+               usingArray: (NSMutableArray *)array;
 
 - (BOOL) extendVisiblePathToFileItem: (FileItem *)target 
            similar: (BOOL) similar;
@@ -58,19 +63,18 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
     
     [path addObject: [treeContext volumeTree]];
     lastFileItemIndex = 0;
-    visibleTreeRootIndex = 0;
-    selectedFileItemIndex = 0;
+    visibleTreeIndex = 0;
+    selectedItemIndex = 0;
     
-    preferredSelectionDepth = STICK_TO_ENDPOINT;
-    selectionDepth = 0;
-
     BOOL  ok = [self buildPathToFileItem: [treeContext scanTree]];
     NSAssert(ok, @"Failed to extend path to scan tree.");
     scanTreeIndex = lastFileItemIndex;
-    visibleTreeRootIndex = lastFileItemIndex;
+    visibleTreeIndex = lastFileItemIndex;
+    selectedItemIndex = lastFileItemIndex;
       
     visiblePathLocked = NO;
-    lastNotifiedSelectedFileItemIndex = -1;
+    lastNotifiedSelectedItem = nil;
+    lastNotifiedVisibleTree = nil;
     
     [self observeEvents];
   }
@@ -84,6 +88,9 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   [treeContext release];
   [path release];
   
+  [lastNotifiedSelectedItem release];
+  [lastNotifiedVisibleTree release];
+  
   [super dealloc];
 }
 
@@ -93,7 +100,13 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 
 - (NSArray*) fileItemPath {
-  return [self buildFileItemPathFromIndex: 0 toIndex: lastFileItemIndex];
+  return [self buildFileItemPathFromIndex: 0 toIndex: lastFileItemIndex
+                 usingArray: [NSMutableArray arrayWithCapacity: 8]];
+}
+
+- (NSArray*) fileItemPath: (NSMutableArray *)array {
+  return [self buildFileItemPathFromIndex: 0 toIndex: lastFileItemIndex
+                 usingArray: array];
 }
 
 - (NSArray*) itemPath {
@@ -102,10 +115,6 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   // with invoking ItemPathDrawer -drawVisiblePath:...: many times in short
   // successsion.
   return path;
-}
-
-- (NSArray*) itemPathToSelectedFileItem {
-   return [path subarrayWithRange: NSMakeRange(0, selectedFileItemIndex + 1)];
 }
 
 
@@ -122,31 +131,15 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 }
 
 - (FileItem*) visibleTree {
-  return [path objectAtIndex: visibleTreeRootIndex];
+  return [path objectAtIndex: visibleTreeIndex];
 }
 
 - (FileItem*) selectedFileItem {
-  return [path objectAtIndex: selectedFileItemIndex];
+  return [path objectAtIndex: selectedItemIndex];
 }
 
-
-- (BOOL) selectionSticksToEndPoint {
-  return (preferredSelectionDepth == STICK_TO_ENDPOINT);
-}
-
-- (void) setSelectionSticksToEndPoint: (BOOL)value {  
-  if (value) {
-    preferredSelectionDepth = STICK_TO_ENDPOINT;
-    
-    // Move selection to the path's endpoint
-    while ([self canMoveSelectionDown]) {
-      [self moveSelectionDown];
-    }
-  }
-  else {
-    // Preferred depth is the current one. The selection does not change.
-    preferredSelectionDepth = selectionDepth;
-  }
+- (FileItem *) lastFileItem {
+  return [path objectAtIndex: lastFileItemIndex];
 }
 
 
@@ -164,38 +157,65 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 }
 
 
-- (void) suppressSelectedItemChangedNotifications:(BOOL)option {
+- (void) suppressSelectedItemChangedNotifications: (BOOL)option {
   if (option) {
-    if (lastNotifiedSelectedFileItemIndex != -1) {
+    if (lastNotifiedSelectedItem != nil) {
       return; // Already suppressing notifications.
     }
-    lastNotifiedSelectedFileItemIndex = selectedFileItemIndex;
+    lastNotifiedSelectedItem = [[self selectedFileItem] retain];
   }
   else {
-    if (lastNotifiedSelectedFileItemIndex == -1) {
+    if (lastNotifiedSelectedItem == nil) {
       return; // Already instantaneously generating notifications.
     }
     
-    if (lastNotifiedSelectedFileItemIndex != selectedFileItemIndex) {
+    BOOL  changed = (lastNotifiedSelectedItem != [self selectedFileItem]);
+
+    [lastNotifiedSelectedItem release];
+    lastNotifiedSelectedItem = nil;
+
+    if (changed) {
       [self postSelectedItemChanged];
     }
-    lastNotifiedSelectedFileItemIndex = -1;
   }
 }
+
+- (void) suppressVisibleTreeChangedNotifications: (BOOL)option {
+  if (option) {
+    if (lastNotifiedVisibleTree != nil) {
+      return; // Already suppressing notifications.
+    }
+    lastNotifiedVisibleTree = [[self visibleTree] retain];
+  }
+  else {
+    if (lastNotifiedVisibleTree == nil) {
+      return; // Already instantaneously generating notifications.
+    }
+    
+    BOOL  changed = (lastNotifiedVisibleTree != [self visibleTree]);
+    
+    [lastNotifiedVisibleTree release];
+    lastNotifiedVisibleTree = nil;
+    
+    if (changed) {
+      [self postVisibleTreeChanged];
+    }
+  }
+}
+
 
 
 - (BOOL) clearVisiblePath {
   NSAssert(!visiblePathLocked, @"Cannot clear path when locked.");
 
-  int  num = [path count] - visibleTreeRootIndex - 1;
+  int  num = [path count] - visibleTreeIndex - 1;
 
   if (num > 0) {
-    [path removeObjectsInRange: NSMakeRange(visibleTreeRootIndex + 1, num)];
+    [path removeObjectsInRange: NSMakeRange(visibleTreeIndex + 1, num)];
     
-    lastFileItemIndex = visibleTreeRootIndex;
+    lastFileItemIndex = visibleTreeIndex;
 
-    selectedFileItemIndex = visibleTreeRootIndex;
-    selectionDepth = 0;
+    selectedItemIndex = visibleTreeIndex;
     [self postSelectedItemChanged];
     
     return YES;
@@ -215,27 +235,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
               @"Path parent inconsistency.");
   
     lastFileItemIndex = [path count] - 1;
-    
-    if (selectionDepth < preferredSelectionDepth) {
-      // Automatically move selection down
-      [self moveSelectionDown];
-    }
   }
-}
-
-
-- (BOOL) clearPathBeyondSelection {
-  int  num = [path count] - selectedFileItemIndex - 1;
-
-  if (num > 0) {
-    [path removeObjectsInRange: NSMakeRange(selectedFileItemIndex + 1, num)];
-    
-    lastFileItemIndex = selectedFileItemIndex;
-
-    return YES;
-  }
-
-  return NO;
 }
 
 
@@ -249,22 +249,19 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 
 - (BOOL) canMoveVisibleTreeUp {
-  return (visibleTreeRootIndex > scanTreeIndex);
+  return (visibleTreeIndex > scanTreeIndex);
 }
 
 - (BOOL) canMoveVisibleTreeDown {
-  return (visibleTreeRootIndex < selectedFileItemIndex);
+  return (visibleTreeIndex < lastFileItemIndex);
 }
 
 - (void) moveVisibleTreeUp {
   NSAssert([self canMoveVisibleTreeUp], @"Cannot move up.");
 
   do {
-    visibleTreeRootIndex--;
-  } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
-
-  // Selection has moved one level deeper as a result.
-  selectionDepth++;
+    visibleTreeIndex--;
+  } while ([[path objectAtIndex:visibleTreeIndex] isVirtual]);
   
   [self postVisibleTreeChanged];
 }
@@ -273,59 +270,31 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   NSAssert([self canMoveVisibleTreeDown], @"Cannot move down.");
 
   do {
-    visibleTreeRootIndex++;
-  } while ([[path objectAtIndex:visibleTreeRootIndex] isVirtual]);
+    visibleTreeIndex++;
+  } while ([[path objectAtIndex:visibleTreeIndex] isVirtual]);
   
-  if (selectionDepth==0) {
+  if (selectedItemIndex < visibleTreeIndex) {
     // Ensure that the selected file item is always in the visible path
-    selectedFileItemIndex = visibleTreeRootIndex;
+    selectedItemIndex = visibleTreeIndex;
     [self postSelectedItemChanged];
   }
-  else {
-    // Selection has moved one level higher as a result.
-    selectionDepth--;
-  }
-  NSAssert(selectedFileItemIndex >= visibleTreeRootIndex, 
-             @"Inconsistent selection state.");
 
   [self postVisibleTreeChanged];
 }
 
 
-- (BOOL) canMoveSelectionUp {
-  return (selectedFileItemIndex > visibleTreeRootIndex);
-}
-
-- (BOOL) canMoveSelectionDown {
-  return (selectedFileItemIndex < lastFileItemIndex);
-}
-
-- (void) moveSelectionUp {
-  NSAssert([self canMoveSelectionUp], @"Cannot move up");
-  NSAssert(selectionDepth > 0, @"Invalid selection depth");
+- (void) selectFileItem: (FileItem *)fileItem {
+  int  oldSelectedItemIndex = selectedItemIndex;
+  selectedItemIndex = visibleTreeIndex;
   
-  do {
-    selectedFileItemIndex--;
-  } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
-  selectionDepth--;
-  preferredSelectionDepth = selectionDepth;
-    // Note: If preferred selection depth was sticky, it is not anymore.
-  
-  [self postSelectedItemChanged];
-}
-
-- (void) moveSelectionDown {
-  NSAssert([self canMoveSelectionDown], @"Cannot move down");
-  
-  do {
-    selectedFileItemIndex++;
-  } while ([[path objectAtIndex: selectedFileItemIndex] isVirtual]);
-  selectionDepth++;
-  if (preferredSelectionDepth < selectionDepth) {
-    preferredSelectionDepth = selectionDepth;
+  while ([path objectAtIndex: selectedItemIndex] != fileItem) {
+    selectedItemIndex++;
+    NSAssert(selectedItemIndex <= lastFileItemIndex, @"Item not found.");
   }
   
-  [self postSelectedItemChanged];
+  if (selectedItemIndex != oldSelectedItemIndex) {
+    [self postSelectedItemChanged];
+  }
 }
 
 @end
@@ -333,25 +302,24 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 @implementation ItemPathModel (PrivateMethods)
 
-// Note: this initialisation method does not invoke the designated initialiser
-// of its own class (that does not make much sense for copy-initialisation).
-// So subclasses that have their own member fields will have to extend this 
-// method.
+/* Note: this initialisation method does not invoke the designated initialiser
+ * of its own class (that does not make much sense for copy-initialisation).
+ * So subclasses that have their own member fields will have to extend this 
+ * method.
+ */
 - (id) initByCopying: (ItemPathModel *)source {
   if (self = [super init]) {
     treeContext = [source->treeContext retain];
     path = [[NSMutableArray alloc] initWithArray: source->path];
 
-    visibleTreeRootIndex = source->visibleTreeRootIndex;
+    visibleTreeIndex = source->visibleTreeIndex;
     scanTreeIndex = source->scanTreeIndex;
-    selectedFileItemIndex = source->selectedFileItemIndex;
+    selectedItemIndex = source->selectedItemIndex;
     lastFileItemIndex = source->lastFileItemIndex;
     
     visiblePathLocked = source->visiblePathLocked;
-    lastNotifiedSelectedFileItemIndex = -1;
-    
-    selectionDepth = source->selectionDepth;
-    preferredSelectionDepth = source->preferredSelectionDepth;
+    lastNotifiedSelectedItem = nil;
+    lastNotifiedVisibleTree = nil;
     
     [self observeEvents];
   }
@@ -360,7 +328,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 }
 
 - (void) observeEvents {
- [[NSNotificationCenter defaultCenter] 
+  [[NSNotificationCenter defaultCenter] 
       addObserver: self selector: @selector(fileItemDeleted:)
       name: FileItemDeletedEvent object: treeContext];
 }
@@ -379,18 +347,17 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
         // This needs to be done carefully, as the visible tree and selection
         // may actually be inside the bit that is to be removed.
 
-        while (visibleTreeRootIndex > i) {
-          [self moveVisibleTreeUp];
+        [path removeObjectsInRange: NSMakeRange(i + 1, [path count] - i - 1)];
+        
+        while (visibleTreeIndex > i) {
+          visibleTreeIndex = i;
+          [self postVisibleTreeChanged];
         }
         
-        unsigned  oldValue = preferredSelectionDepth;
-        while (selectedFileItemIndex > i) {
-          [self moveSelectionUp];
+        while (selectedItemIndex > i) {
+          selectedItemIndex = i;
+          [self postSelectedItemChanged];
         }
-        // Do not let a forced move affect the preferred selection depth.
-        preferredSelectionDepth = oldValue;
-
-        [path removeObjectsInRange: NSMakeRange(i + 1, [path count] - i - 1)];
         
         if (lastFileItemIndex > i) {
           lastFileItemIndex = i;
@@ -398,7 +365,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
       }
 
       [path replaceObjectAtIndex: i withObject: replacingItem];
-      if (i == selectedFileItemIndex) {
+      if (i == selectedItemIndex) {
         [self postSelectedItemChanged];
       }
       
@@ -423,15 +390,21 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 
 - (void) postSelectedItemChanged {
-  if (lastNotifiedSelectedFileItemIndex == -1) {
+  if (lastNotifiedSelectedItem != nil) {
     // Currently surpressing notifications
+    return;
   }
-
+  
   [[NSNotificationCenter defaultCenter]
       postNotificationName: SelectedItemChangedEvent object: self];
 }
 
 - (void) postVisibleTreeChanged {
+  if (lastNotifiedVisibleTree != nil) {
+    // Currently surpressing notifications
+    return;
+  }
+
   [[NSNotificationCenter defaultCenter]
       postNotificationName: VisibleTreeChangedEvent object: self];
 }
@@ -475,18 +448,19 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 }
 
 
-- (NSArray*) buildFileItemPathFromIndex: (int)start toIndex: (int)end {
-  NSMutableArray  *fileItemPath = [NSMutableArray arrayWithCapacity:8];
+- (NSArray*) buildFileItemPathFromIndex: (int) start toIndex: (int) end
+               usingArray: (NSMutableArray *)array; {
+  [array removeAllObjects];
 
   unsigned  i = start;
   while (i <= end) {
     if (![[path objectAtIndex:i] isVirtual]) {
-      [fileItemPath addObject: [path objectAtIndex:i]];
+      [array addObject: [path objectAtIndex:i]];
     }
     i++;
   }
   
-  return fileItemPath;
+  return array;
 }
 
 
@@ -512,11 +486,6 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   NSAssert(! [[path lastObject] isVirtual], @"Unexpected virtual endpoint.");
   lastFileItemIndex = [path count] - 1;
 
-  if (selectionDepth < preferredSelectionDepth) {
-    // Automatically move the selection down.
-    [self moveSelectionDown];
-  }
-  
   return YES;
 }
 
