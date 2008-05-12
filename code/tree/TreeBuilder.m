@@ -272,7 +272,9 @@ typedef struct  {
                                              namesArray );
                                    
     if (result != noErr && result != errFSNoMoreItems) {
-      NSLog(@"Failed to get bulk catalog info for %@: %i", path, result);
+      if (result != afpAccessDenied) {
+        NSLog(@"Failed to get bulk catalog info for %@: %i", path, result);
+      }
       break;
     }
       
