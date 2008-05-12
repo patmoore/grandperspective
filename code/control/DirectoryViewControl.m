@@ -340,10 +340,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (IBAction) deleteFile: (id) sender {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
-  BOOL  isFile = [selectedFile isPlainFile];
+  BOOL  isDir = [selectedFile isDirectory];
 
-  if ((  isFile && !confirmFileDeletion) ||
-      ( !isFile && !confirmFolderDeletion) ) {
+  if (( !isDir && !confirmFileDeletion) ||
+      (  isDir && !confirmFolderDeletion) ) {
     // Delete the file/folder immediately, without asking for confirmation.
     [self deleteSelectedFile];
     
@@ -354,18 +354,18 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *mainMsg;
   NSString  *infoMsg;
 
-  if (isFile) {
-    mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 
-                                 @"Alert message" );
-    infoMsg = NSLocalizedString( @"The selected file will be moved to Trash.", 
-                                 @"Alert informative text" );
-  }
-  else {
+  if (isDir) {
     mainMsg = NSLocalizedString( @"Do you want to delete the folder \"%@\"?", 
                                  @"Alert message" );
     infoMsg = NSLocalizedString( 
       @"The selected folder, with all its contents, will be moved to Trash. Beware, any files in the folder that are not shown in the view will also be deleted.", 
       @"Alert informative text" );
+  }
+  else {
+    mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 
+                                 @"Alert message" );
+    infoMsg = NSLocalizedString( @"The selected file will be moved to Trash.", 
+                                 @"Alert informative text" );
   }
 
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -475,8 +475,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       && ! [selectedFile isSpecial] 
 
       // Can this type of item be deleted (according to the preferences)?
-      && ( (canDeleteFiles && [selectedFile isPlainFile])
-           || (canDeleteFolders && ! [selectedFile isPlainFile]) ) 
+      && ( (canDeleteFiles && ![selectedFile isDirectory])
+           || (canDeleteFolders && [selectedFile isDirectory]) ) 
 
       // Can only delete the entire scan tree when it is an actual folder 
       // within the volume. You cannot delete the root folder.
@@ -518,11 +518,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
     NSString  *msgFmt = 
-      ( [selectedFile isPlainFile] ?
-          NSLocalizedString( @"Failed to delete the file \"%@\"", 
-                             @"Alert message") :
-          NSLocalizedString( @"Failed to delete the folder \"%@\"", 
-                             @"Alert message"));
+      ( [selectedFile isDirectory] 
+        ? NSLocalizedString( @"Failed to delete the folder \"%@\"", 
+                             @"Alert message")
+        : NSLocalizedString( @"Failed to delete the file \"%@\"", 
+                             @"Alert message") );
     NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
     NSString  *info =
       NSLocalizedString(@"Possible reasons are that the item does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
@@ -643,7 +643,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         relativeItemPath = (NSString *)attributedPath;
       }
       
-      if (! [selectedItem isPlainFile]) {
+      if ( [selectedItem isDirectory] ) {
         selectedItemTitle = 
            NSLocalizedString( @"Selected folder:", "Label in Focus panel" );
       }
@@ -671,7 +671,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   // Update the file type fields in the Focus panel
   if ( selectedItem != nil && 
        ![selectedItem isSpecial] &&
-       [selectedItem isPlainFile] ) {
+       ![selectedItem isDirectory] ) {
     UniformType  *type = [ ((PlainFileItem *)selectedItem) uniformType];
     
     [selectedItemTypeIdentifierField 

@@ -82,8 +82,8 @@
 }
 
 
-- (BOOL) isPlainFile {
-  return YES;
+- (BOOL) isDirectory {
+  return NO;
 }
 
 - (BOOL) isSpecial {

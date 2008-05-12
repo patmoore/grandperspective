@@ -40,8 +40,9 @@
 
 - (BOOL) isAncestorOfFileItem: (FileItem *)fileItem;
   
-// Returns YES iff the file item is not a directory.
-- (BOOL) isPlainFile;
+/* Returns YES iff the file item is a directory.
+ */
+- (BOOL) isDirectory;
 
 /* Returns YES iff the file item is special. An item is special if it does not 
  * represent an actual file.  E.g. a special file item may represent the free 

@@ -75,7 +75,7 @@
   }
 
   
-  if (! [item isPlainFile]) {
+  if ( [item isDirectory] ) {
     if (addTrailingSlashToDirectoryPaths) {
       pathString = [pathString stringByAppendingString: @"/"];
     }

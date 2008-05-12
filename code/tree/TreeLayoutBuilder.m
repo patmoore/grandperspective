@@ -59,7 +59,7 @@
       [self layoutItemTree:sub1 inRect:rect1 traverser:traverser depth:depth];
       [self layoutItemTree:sub2 inRect:rect2 traverser:traverser depth:depth];
     }
-    else if (![((FileItem *)root) isPlainFile]) { 
+    else if ( [((FileItem *)root) isDirectory] ) { 
       Item*  sub = [((DirectoryItem *)root) getContents];		
 
       if (sub != nil) {

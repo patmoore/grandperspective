@@ -227,7 +227,7 @@ static int  nextFilterId = 1;
   else {
     DirectoryItem  *dirItem = (DirectoryItem *)containingItem;
   
-    NSAssert(! [dirItem isPlainFile], @"Expected a DirectoryItem.");
+    NSAssert([dirItem isDirectory], @"Expected a DirectoryItem.");
     NSAssert([dirItem getContents] == replacedItem, 
                @"Selected item not found.");
     
@@ -534,11 +534,11 @@ static int  nextFilterId = 1;
     return ( [self totalPlainFileSize: [((CompoundItem *)item) getFirst]] +
              [self totalPlainFileSize: [((CompoundItem *)item) getSecond]] );
   }
-  else if ( [((FileItem *)item) isPlainFile] ) {
-    return [((FileItem *)item) isSpecial] ? 0 : [item itemSize];
+  else if ( [((FileItem *)item) isDirectory] ) {
+    return [self totalPlainFileSize: [((DirectoryItem *)item) getContents]];
   }
   else {
-    return [self totalPlainFileSize: [((DirectoryItem *)item) getContents]];
+    return [((FileItem *)item) isSpecial] ? 0 : [item itemSize];
   }
 }
 

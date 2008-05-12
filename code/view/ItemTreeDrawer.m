@@ -147,7 +147,8 @@
 - (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
            depth: (int) depth {
   BOOL  descend = YES; // Default 
-           
+
+  // TODO: Remove nesting.
   if (![item isVirtual]) {
     FileItem*  file = (FileItem*)item;
     
@@ -157,14 +158,29 @@
       [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
     }
     
-    if (!showPackageContents && ![file isPlainFile]) {
+    if (!showPackageContents && [file isDirectory]) {
       // Package contents should not be shownn. If the directory is a package
       // replace it with a file item.
       
       file = [(DirectoryItem *)file itemWhenHidingPackageContents];
     }
     
-    if ([file isPlainFile]) {
+    if ([file isDirectory]) {
+      if ([file isSpecial] && [[file name] isEqualToString: UsedSpace]) {
+        [self drawBasicFilledRect: rect intColor: usedSpaceColor];
+      }
+    
+      if (!insideVisibleTree) {
+        // Do not descend if the DirectoryItem "file" is not an ancestor of the
+        // visible tree.
+        if (![file isAncestorOfFileItem: visibleTree]) {
+          descend = NO;
+        }
+      }
+    }
+    else {
+      // It's a plain file
+      
       if ([file isSpecial] && [[file name] isEqualToString: FreeSpace]) {
         [self drawBasicFilledRect: rect intColor: freeSpaceColor];
       }
@@ -192,21 +208,6 @@
       }
       
       descend = NO;
-    }
-    else {
-      // It's a directory
-      
-      if ([file isSpecial] && [[file name] isEqualToString: UsedSpace]) {
-        [self drawBasicFilledRect: rect intColor: usedSpaceColor];
-      }
-    
-      if (!insideVisibleTree) {
-        // Do not descend if the DirectoryItem "file" is not an ancestor of the
-        // visible tree.
-        if (![file isAncestorOfFileItem: visibleTree]) {
-          descend = NO;
-        }
-      }
     }
   }
 

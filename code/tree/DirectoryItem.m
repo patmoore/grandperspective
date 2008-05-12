@@ -67,8 +67,8 @@
 }
 
 
-- (BOOL) isPlainFile {
-  return NO;
+- (BOOL) isDirectory {
+  return YES;
 }
 
 - (Item*) getContents {

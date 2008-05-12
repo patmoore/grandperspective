@@ -163,9 +163,9 @@
 - (FileItem *) selectedFileItem {
   FileItem  *selectedItem = [self selectedFileItemInTree];
   
-  return ((showPackageContents || [selectedItem isPlainFile]) 
-          ? selectedItem
-          : [((DirectoryItem *)selectedItem) itemWhenHidingPackageContents]); 
+  return ( (!showPackageContents && [selectedItem isDirectory]) 
+           ? [((DirectoryItem *)selectedItem) itemWhenHidingPackageContents]
+           : selectedItem ); 
 }
 
 - (FileItem *) selectedFileItemInTree {
@@ -322,7 +322,7 @@
     }
 
     if ( !showPackageContents &&
-         ![fileItem isPlainFile] &&
+         [fileItem isDirectory] &&
          [((DirectoryItem *)fileItem) isPackage] ) {
       // Got to a package whose contents should remain hidden
       break;

@@ -470,7 +470,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
   
   Item  *pathEndPoint = [path lastObject];
   if ([pathEndPoint isVirtual] || 
-      [((FileItem *)pathEndPoint) isPlainFile]) {
+      ! [((FileItem *)pathEndPoint) isDirectory]) {
     // Can only extend from a DirectoryItem
     return NO;
   }
@@ -513,7 +513,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
     if (target == fileItem ||
           (similar &&
              ([[fileItem name] isEqualToString: [target name]] &&
-              [fileItem isPlainFile] == [target isPlainFile] &&
+              [fileItem isDirectory] == [target isDirectory] &&
               [fileItem isSpecial] == [target isSpecial]))) {
       return YES;
     }
