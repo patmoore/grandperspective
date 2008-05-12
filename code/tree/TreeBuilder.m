@@ -301,7 +301,7 @@ typedef struct  {
         
         UInt8  flags = 0;
         
-        if (catalogInfo->nodeFlags & kFSNodeHardLinkMask != 0) {
+        if (catalogInfo->nodeFlags & kFSNodeHardLinkMask) {
           flags |= FILE_IS_HARDLINKED;
         }
       
