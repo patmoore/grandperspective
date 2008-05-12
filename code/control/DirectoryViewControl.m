@@ -359,6 +359,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
   NSString  *mainMsg;
   NSString  *infoMsg;
+  NSString  *hardLinkMsg;
 
   if (isDir) {
     mainMsg = NSLocalizedString( @"Do you want to delete the folder \"%@\"?", 
@@ -366,18 +367,31 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     infoMsg = NSLocalizedString( 
       @"The selected folder, with all its contents, will be moved to Trash. Beware, any files in the folder that are not shown in the view will also be deleted.", 
       @"Alert informative text" );
+    hardLinkMsg = NSLocalizedString( 
+      @"Note: The folder is hard-linked. It will take up space until all links to it are deleted.",
+      @"Alert additional informative text" );
   }
   else if (isPackage) {
     mainMsg = NSLocalizedString( @"Do you want to delete the package \"%@\"?", 
                                  @"Alert message" );
     infoMsg = NSLocalizedString( @"The selected package will be moved to Trash.", 
                                  @"Alert informative text" );
+    hardLinkMsg = NSLocalizedString( 
+      @"Note: The package is hard-linked. It will take up space until all links to it are deleted.",
+      @"Alert additional informative text" );
   }
   else {
     mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 
                                  @"Alert message" );
     infoMsg = NSLocalizedString( @"The selected file will be moved to Trash.", 
                                  @"Alert informative text" );
+    hardLinkMsg = NSLocalizedString( 
+      @"Note: The file is hard-linked. It will take up space until all links to it are deleted.",
+      @"Alert additional informative text" );
+  }
+  
+  if ( [selectedFile isHardLinked] ) {
+    infoMsg = [NSString stringWithFormat: @"%@\n\n%@", infoMsg, hardLinkMsg];
   }
 
   NSBundle  *mainBundle = [NSBundle mainBundle];
