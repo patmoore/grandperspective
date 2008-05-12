@@ -196,39 +196,39 @@ NSString* scanActivityFormatString() {
   [openPanel setCanChooseDirectories: YES];
   [openPanel setAllowsMultipleSelection: NO];
   
-  [openPanel setTitle: 
-     NSLocalizedString(@"Scan folder", @"Title of open panel") ];
-  [openPanel setPrompt: 
-     NSLocalizedString(@"Scan", @"Prompt in open panel") ];
+  [openPanel setTitle: NSLocalizedString(@"Scan folder", 
+                                         @"Title of open panel") ];
+  [openPanel setPrompt: NSLocalizedString(@"Scan", @"Prompt in open panel") ];
 
-  if ([openPanel runModalForTypes:nil] == NSOKButton) {
-    NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
+  if ([openPanel runModalForTypes:nil] != NSOKButton) {
+    return; // Abort
+  }  
 
-    NSString  *fileSizeMeasure =
-      [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
+  NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
 
-    FreshDirViewWindowCreator  *windowCreator =
-      [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
-    ScanTaskInput  *input = 
-      [[ScanTaskInput alloc] initWithDirectoryName: dirName
-                               fileSizeMeasure: fileSizeMeasure ];
+  NSString  *fileSizeMeasure =
+    [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
 
-    [rescanTaskManager abortTask];
-    // The TreeBuilder implementation is such that only one scan can happen
-    // at any one time. Therefore, we have to make sure that no rescan task
-    // is currently being carried out. Note: any ongoing scan task will be
-    // aborted implicitely by the scanTaskManager.
+  FreshDirViewWindowCreator  *windowCreator =
+    [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
+  ScanTaskInput  *input = 
+    [[ScanTaskInput alloc] initWithDirectoryName: dirName
+                             fileSizeMeasure: fileSizeMeasure ];
+
+  [rescanTaskManager abortTask];
+  // The TreeBuilder implementation is (was?) such that only one scan can 
+  // happen at any one time. Therefore, we have to make sure that no rescan task
+  // is currently being carried out. Note: any ongoing scan task will be
+  // aborted implicitely by the scanTaskManager.
     
-    NSString  *format = scanActivityFormatString();
-    [scanTaskManager asynchronouslyRunTaskWithInput: input
-                       description: 
-                         [NSString stringWithFormat: format, dirName]
-                       callback: windowCreator
-                       selector: @selector(createWindowForTree:)];
+  NSString  *format = scanActivityFormatString();
+  [scanTaskManager asynchronouslyRunTaskWithInput: input
+                     description: [NSString stringWithFormat: format, dirName]
+                     callback: windowCreator
+                     selector: @selector(createWindowForTree:)];
                        
-    [input release];
-    [windowCreator release];
-  }
+  [input release];
+  [windowCreator release];
 }
 
 
@@ -238,35 +238,35 @@ NSString* scanActivityFormatString() {
 
   ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
 
-  // TODO: Remove indentation
-  if (pathModel != nil) {
-    NSString  *dirName = [[pathModel scanTree] stringForFileItemPath];
-    
-    DerivedDirViewWindowCreator  *windowCreator =
-      [[DerivedDirViewWindowCreator alloc] 
-          initWithWindowManager: windowManager
-            targetPath: pathModel
-            settings: [oldControl directoryViewControlSettings]];
-
-    RescanTaskInput  *input = 
-      [[RescanTaskInput alloc] initWithOldContext: [oldControl treeContext]];
-    
-    [scanTaskManager abortTask];
-    // The TreeBuilder implementation is such that only one scan can happen
-    // at any one time. Therefore, we have to make sure that no scan task
-    // is currently being carried out. Note: any ongoing rescan task will be 
-    // aborted implicitely by the rescanTaskManager.
-    
-    NSString  *format = scanActivityFormatString();
-    [rescanTaskManager asynchronouslyRunTaskWithInput: input
-                         description: 
-                           [NSString stringWithFormat: format, dirName]
-                         callback: windowCreator
-                         selector: @selector(createWindowForTree:)];
-
-    [input release];                       
-    [windowCreator release];
+  if (pathModel == nil) {
+    return;
   }
+  
+  NSString  *dirName = [[pathModel scanTree] stringForFileItemPath];
+    
+  DerivedDirViewWindowCreator  *windowCreator =
+    [[DerivedDirViewWindowCreator alloc] 
+        initWithWindowManager: windowManager
+          targetPath: pathModel
+          settings: [oldControl directoryViewControlSettings]];
+
+  RescanTaskInput  *input = 
+    [[RescanTaskInput alloc] initWithOldContext: [oldControl treeContext]];
+    
+  [scanTaskManager abortTask];
+  // The TreeBuilder implementation is (was?) such that only one scan can 
+  // happen at any one time. Therefore, we have to make sure that no scan task
+  // is currently being carried out. Note: any ongoing rescan task will be 
+  // aborted implicitely by the rescanTaskManager.
+    
+  NSString  *format = scanActivityFormatString();
+  [rescanTaskManager asynchronouslyRunTaskWithInput: input
+                       description: [NSString stringWithFormat: format, dirName]
+                       callback: windowCreator
+                       selector: @selector(createWindowForTree:)];
+
+  [input release];                       
+  [windowCreator release];
 }
 
 
@@ -297,40 +297,39 @@ NSString* scanActivityFormatString() {
   int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
   [[editFilterWindowControl window] close];
 
-  // TODO: Remove indentation
-  if (status == NSRunStoppedResponse) {
-    // get rule from window
-    NSObject <FileItemTest>  *filterTest =
-      [editFilterWindowControl createFileItemTest];
+  if (status ==  NSRunAbortedResponse) {
+    return; // Abort
+  }
+  NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
+  
+  // Get rule from window
+  NSObject <FileItemTest>  *filterTest =
+    [editFilterWindowControl createFileItemTest];
       
-    ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
+  ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
 
-    DerivedDirViewWindowCreator  *windowCreator =
-      [[DerivedDirViewWindowCreator alloc] 
-          initWithWindowManager: windowManager
-            targetPath: oldPathModel
-            settings: [oldControl directoryViewControlSettings]];
+  DerivedDirViewWindowCreator  *windowCreator =
+    [[DerivedDirViewWindowCreator alloc] 
+        initWithWindowManager: windowManager
+          targetPath: oldPathModel
+          settings: [oldControl directoryViewControlSettings]];
     
-    FilterTaskInput  *input = 
-      [[FilterTaskInput alloc] initWithOldContext: [oldControl treeContext]
-                                 filterTest: filterTest];
+  FilterTaskInput  *input = 
+    [[FilterTaskInput alloc] initWithOldContext: [oldControl treeContext]
+                               filterTest: filterTest];
 
-    NSString  *format = NSLocalizedString( 
-                          @"Filtering %@", 
-                          @"Message in progress panel while filtering" );
-    NSString  *pathName = [[oldPathModel scanTree] stringForFileItemPath];
-    [filterTaskManager asynchronouslyRunTaskWithInput: input
-                         description: 
+  NSString  *format = NSLocalizedString( 
+                        @"Filtering %@", 
+                        @"Message in progress panel while filtering" );
+  NSString  *pathName = [[oldPathModel scanTree] stringForFileItemPath];
+  [filterTaskManager asynchronouslyRunTaskWithInput: input
+                       description: 
                            [NSString stringWithFormat: format, pathName]
-                         callback: windowCreator
-                         selector: @selector(createWindowForTree:)];
+                       callback: windowCreator
+                       selector: @selector(createWindowForTree:)];
 
-    [input release];
-    [windowCreator release];
-  }
-  else {
-    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }
+  [input release];
+  [windowCreator release];
 }
 
 
