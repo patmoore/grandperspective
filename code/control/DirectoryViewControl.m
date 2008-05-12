@@ -655,7 +655,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         relativeItemPath = (NSString *)attributedPath;
       }
       
-      if ( [selectedItem isDirectory] ) {
+      if ( [selectedItem isPackage] ) {
+        selectedItemTitle = 
+           NSLocalizedString( @"Selected package:", "Label in Focus panel" );
+      }
+      else if ( [selectedItem isDirectory] ) {
         selectedItemTitle = 
            NSLocalizedString( @"Selected folder:", "Label in Focus panel" );
       }
@@ -668,6 +672,14 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
        [FileItem exactStringForFileItemSize: itemSize]];
     [selectedItemSizeField setStringValue: 
        [NSString stringWithFormat: @"(%@)", itemSizeString]];
+       
+    // Use the color of the selected item's size fields to show if the file is
+    // hard-linked.
+    NSColor  *sizeFieldColor = ([selectedItem isHardLinked] 
+                                ? [NSColor darkGrayColor]
+                                : [visibleFolderExactSizeField textColor]);
+    [selectedItemExactSizeField setTextColor: sizeFieldColor];
+    [selectedItemSizeField setTextColor: sizeFieldColor];
   }
   else {
     // There's no selected item
