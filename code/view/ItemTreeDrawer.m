@@ -201,17 +201,9 @@
       }
     
       if (!insideVisibleTree) {
-        // Check if the DirectoryItem "file" is an ancestor of the visible
-        // tree. If not, there's no need to descend.
-        FileItem  *ancestor = visibleTree;
-        BOOL  isAncestor = NO;
-        while (ancestor = [ancestor parentDirectory]) {
-          if (file == ancestor) {
-            isAncestor = YES;
-            break;
-          }
-        }
-        if (!isAncestor) {
+        // Do not descend if the DirectoryItem "file" is not an ancestor of the
+        // visible tree.
+        if (![file isAncestorOfFileItem: visibleTree]) {
           descend = NO;
         }
       }

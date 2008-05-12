@@ -70,6 +70,18 @@
   return parent;
 }
 
+- (BOOL) isAncestorOfFileItem: (FileItem *)fileItem {
+  do {
+    if (fileItem == self) {
+      return YES;
+    }
+    fileItem = [fileItem parentDirectory];
+  } while (fileItem != nil);
+  
+  return NO;
+}
+
+
 - (BOOL) isPlainFile {
   return YES;
 }

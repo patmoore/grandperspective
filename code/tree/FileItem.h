@@ -37,6 +37,8 @@
 - (NSString *) name;
 
 - (DirectoryItem *) parentDirectory;
+
+- (BOOL) isAncestorOfFileItem: (FileItem *)fileItem;
   
 // Returns YES iff the file item is not a directory.
 - (BOOL) isPlainFile;
