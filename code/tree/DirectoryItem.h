@@ -2,10 +2,6 @@
 
 #import "FileItem.h"
 
-/* Bitmasks used for the flags field of the DirectoryItem
- */
-#define DIRECTORY_IS_PACKAGE 0x04
-
 
 @interface DirectoryItem : FileItem {
   Item  *contents;
@@ -25,8 +21,6 @@
 - (void) replaceDirectoryContents: (Item *)contents;
 
 - (Item*) getContents;
-
-- (BOOL) isPackage;
 
 /* Returns the item that represents the receiver when package contents should
  * not be shown (i.e. when the directory should be represented by a file).

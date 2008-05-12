@@ -341,9 +341,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (IBAction) deleteFile: (id) sender {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
   BOOL  isDir = [selectedFile isDirectory];
+  BOOL  isPackage = [selectedFile isPackage];
 
-  if (( !isDir && !confirmFileDeletion) ||
-      (  isDir && !confirmFolderDeletion) ) {
+  // Packages whose contents are hidden (i.e. who are not represented as
+  // directories) are treated schizophrenically for deletion: For deciding if
+  // a confirmation message needs to be shown, they are treated as directories.
+  // However, for determining if they can be deleted they are treated as files.
+
+  if ( ( !(isDir || isPackage) && !confirmFileDeletion) ||
+       (  (isDir || isPackage) && !confirmFolderDeletion) ) {
     // Delete the file/folder immediately, without asking for confirmation.
     [self deleteSelectedFile];
     
@@ -360,6 +366,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     infoMsg = NSLocalizedString( 
       @"The selected folder, with all its contents, will be moved to Trash. Beware, any files in the folder that are not shown in the view will also be deleted.", 
       @"Alert informative text" );
+  }
+  else if (isPackage) {
+    mainMsg = NSLocalizedString( @"Do you want to delete the package \"%@\"?", 
+                                 @"Alert message" );
+    infoMsg = NSLocalizedString( @"The selected package will be moved to Trash.", 
+                                 @"Alert informative text" );
   }
   else {
     mainMsg = NSLocalizedString( @"Do you want to delete the file \"%@\"?", 

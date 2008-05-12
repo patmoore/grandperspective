@@ -6,6 +6,7 @@
  */
 #define FILE_IS_SPECIAL 0x01
 #define FILE_IS_HARDLINKED 0x02
+#define FILE_IS_PACKAGE 0x04
 
 
 @class DirectoryItem;
@@ -53,6 +54,16 @@
 /* Returns YES iff the file item is hardlinked.
  */
 - (BOOL) isHardLinked;
+
+/* Return YES iff the file item is a package.
+ *
+ * Note: Although packages are always directories in the underlying file 
+ * system, they may be represented by file items that are plain files 
+ * (namely when package contents are hidden). This is the reason that this
+ * method is introduced by the FileItem class.
+ */
+- (BOOL) isPackage;
+
 
 - (NSString*) stringForFileItemPath;
 

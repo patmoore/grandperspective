@@ -94,6 +94,10 @@
   return (flags & FILE_IS_HARDLINKED) != 0;
 }
 
+- (BOOL) isPackage {
+  return (flags & FILE_IS_PACKAGE) != 0;
+}
+
 
 - (NSString*) stringForFileItemPath {
   // Special items do not contribute to the path.

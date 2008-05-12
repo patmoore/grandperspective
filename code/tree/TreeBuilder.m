@@ -313,7 +313,7 @@ typedef struct  {
             systemPath = [self systemPathStringForFileRef: childRef];
           }
           if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: systemPath]) {
-            flags |= DIRECTORY_IS_PACKAGE;
+            flags |= FILE_IS_PACKAGE;
           }
 
           DirectoryItem  *dirChildItem = 

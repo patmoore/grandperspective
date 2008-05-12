@@ -38,11 +38,6 @@
 }
 
 
-- (BOOL) isPackage {
-  return (flags & DIRECTORY_IS_PACKAGE) != 0;
-}
-
-
 - (FileItem *) itemWhenHidingPackageContents {
   if ([self isPackage]) {
     UniformType  *fileType = 
