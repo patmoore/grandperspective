@@ -37,6 +37,7 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTableView  *colorLegendTable;
   IBOutlet NSButton  *maskCheckBox;
   IBOutlet NSButton  *showEntireVolumeCheckBox;
+  IBOutlet NSButton  *showPackageContentsCheckBox;
 
   // "Info" drawer panel
   IBOutlet NSImageView  *volumeIconView;
@@ -98,6 +99,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (IBAction) colorMappingChanged: (id) sender;
 - (IBAction) colorPaletteChanged: (id) sender;
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender;
+- (IBAction) showPackageContentsCheckBoxChanged: (id) sender;
 
 - (id) initWithTreeContext: (TreeContext *)treeContext;
 - (id) initWithTreeContext: (TreeContext *)treeContext

@@ -10,13 +10,15 @@
   NSObject <FileItemTest>  *mask;
   BOOL  maskEnabled;
   BOOL  showEntireVolume;
+  BOOL  showPackageContents;
 }
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKey 
          colorPaletteKey: (NSString *)colorPaletteKey
          mask: (NSObject <FileItemTest> *)mask
          maskEnabled: (BOOL) maskEnabled
-         showEntireVolume: (BOOL) showEntireVolume;
+         showEntireVolume: (BOOL) showEntireVolume
+         showPackageContents: (BOOL) showPackageContents;
 
 - (NSString*) colorMappingKey;
 - (void) setColorMappingKey: (NSString *)key;
@@ -32,5 +34,8 @@
 
 - (BOOL) showEntireVolume;
 - (void) setShowEntireVolume: (BOOL)flag;
+
+- (BOOL) showPackageContents;
+- (void) setShowPackageContents: (BOOL)flag;
 
 @end

@@ -38,7 +38,7 @@
 				<string>NSPopUpButton</string>
 				<key>fileSizeMeasurePopUp</key>
 				<string>NSPopUpButton</string>
-				<key>showPackageContentsCheckBox</key>
+				<key>showPackageContentsByDefaultCheckBox</key>
 				<string>NSButton</string>
 			</dict>
 			<key>SUPERCLASS</key>

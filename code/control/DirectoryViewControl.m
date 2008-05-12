@@ -43,7 +43,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) updateMask;
 
 - (void) updateFileDeletionSupport;
-- (void) updateDisplayOfPackages;
 
 - (void) maskWindowApplyAction:(NSNotification*)notification;
 - (void) maskWindowCancelAction:(NSNotification*)notification;
@@ -101,7 +100,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   [userDefaults removeObserver: self forKeyPath: FileDeletionTargetsKey];
   [userDefaults removeObserver: self forKeyPath: ConfirmFileDeletionKey];
-  [userDefaults removeObserver: self forKeyPath: ShowPackageContentsKey];
   
   [treeContext release];
   [pathModelView release];
@@ -142,13 +140,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *colorPaletteKey = 
     [tagMaker nameForTag: [[colorPalettePopUp selectedItem] tag]];
 
-  return [[[DirectoryViewControlSettings alloc]
-              initWithColorMappingKey: colorMappingKey
-              colorPaletteKey: colorPaletteKey
-              mask: fileItemMask
-              maskEnabled: [maskCheckBox state]==NSOnState
-              showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState]
-                autorelease];
+  return 
+    [[[DirectoryViewControlSettings alloc]
+         initWithColorMappingKey: colorMappingKey
+           colorPaletteKey: colorPaletteKey
+           mask: fileItemMask
+           maskEnabled: [maskCheckBox state]==NSOnState
+           showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState
+           showPackageContents: [showPackageContentsCheckBox state]==NSOnState]
+         autorelease];
 }
 
 - (TreeContext*) treeContext {
@@ -171,24 +171,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   
   [colorMappingPopUp removeAllItems];  
-  NSString  *selectedMappingName = 
-    ( [initialSettings colorMappingKey] != nil ?
-         [initialSettings colorMappingKey] :
-         [userDefaults stringForKey: DefaultColorMappingKey] );
   [tagMaker addLocalisedNamesToPopUp: colorMappingPopUp
               names: [colorMappings allKeys]
-              select: selectedMappingName 
+              select: [initialSettings colorMappingKey]
               table: @"Names"];
   [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
-  NSString  *selectedPaletteName =
-    ( [initialSettings colorPaletteKey] != nil ?
-         [initialSettings colorPaletteKey] :
-         [userDefaults stringForKey: DefaultColorPaletteKey] );
   [tagMaker addLocalisedNamesToPopUp: colorPalettePopUp
               names: [colorPalettes allKeys]
-              select: selectedPaletteName  
+              select: [initialSettings colorPaletteKey]  
               table: @"Names"];
   [self colorPaletteChanged: nil];
   
@@ -204,8 +196,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [self maskChanged];
   
   [showEntireVolumeCheckBox setState: 
-     ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ];
-  [self showEntireVolumeCheckBoxChanged: nil];
+     ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ];  
+  [showPackageContentsCheckBox setState: 
+     ( [initialSettings showPackageContents] ? NSOnState : NSOffState ) ];
   
   [initialSettings release];
   initialSettings = nil;
@@ -266,6 +259,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
   invisiblePathName = [[visibleTree stringForFileItemPath] retain];
 
+  [self showEntireVolumeCheckBoxChanged: nil];
+  [self showPackageContentsCheckBoxChanged: nil];
+
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
   [nc addObserver:self selector: @selector(updateButtonState:)
@@ -279,14 +275,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                   options: 0 context: nil];
   [userDefaults addObserver: self forKeyPath: ConfirmFileDeletionKey
                   options: 0 context: nil];
-  [userDefaults addObserver: self forKeyPath: ShowPackageContentsKey
-                  options: 0 context: nil];
 
   [nc addObserver:self selector: @selector(fileItemDeleted:)
         name: FileItemDeletedEvent object: treeContext];
 
-  [self updateDisplayOfPackages];
-  
   [self visibleTreeChanged: nil];
 
   [[self window] makeFirstResponder:mainView];
@@ -312,9 +304,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     if ([keyPath isEqualToString: FileDeletionTargetsKey] ||
         [keyPath isEqualToString: ConfirmFileDeletionKey]) {
       [self updateFileDeletionSupport];
-    }
-    else if ([keyPath isEqualToString: ShowPackageContentsKey]) {
-      [self updateDisplayOfPackages];
     }
   }
 }
@@ -464,8 +453,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender {
-  [mainView setShowEntireVolume: 
-    [showEntireVolumeCheckBox state]==NSOnState ? YES : NO];
+  [mainView setShowEntireVolume: [showEntireVolumeCheckBox state]==NSOnState];
+}
+
+- (IBAction) showPackageContentsCheckBoxChanged: (id) sender {
+  BOOL  showPackageContents = [showPackageContentsCheckBox state]==NSOnState;
+  
+  [mainView setTreeDrawerSettings: 
+    [[mainView treeDrawerSettings] copyWithShowPackageContents: 
+       showPackageContents]];
+  [[mainView pathModelView] setShowPackageContents: showPackageContents];
+
+  // If the selected item is a package, its info will have changed.
+  [self updateButtonState: nil];
 }
 
 
@@ -763,20 +763,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [[userDefaults objectForKey: ConfirmFolderDeletionKey] boolValue];
 
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
-}
-
-- (void) updateDisplayOfPackages {
-  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-  BOOL  showPackageContents = 
-    [[userDefaults objectForKey: ShowPackageContentsKey] boolValue];
-  
-  [mainView setTreeDrawerSettings: 
-    [[mainView treeDrawerSettings] copyWithShowPackageContents: 
-       showPackageContents]];
-  [[mainView pathModelView] setShowPackageContents: showPackageContents];
-
-  // If the selected item is a package, its info will have changed.
-  [self updateButtonState: nil];
 }
 
 

@@ -7,7 +7,7 @@ extern NSString  *ConfirmFolderDeletionKey;
 extern NSString  *FileSizeMeasureKey;
 extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
-extern NSString  *ShowPackageContentsKey;
+extern NSString  *ShowPackageContentsByDefaultKey;
 
 
 @class EditUniformTypeRankingWindowControl;
@@ -22,7 +22,7 @@ extern NSString  *ShowPackageContentsKey;
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
   
-  IBOutlet NSButton  *showPackageContentsCheckBox;
+  IBOutlet NSButton  *showPackageContentsByDefaultCheckBox;
   
   EditUniformTypeRankingWindowControl  *uniformTypeWindowControl;
 }
