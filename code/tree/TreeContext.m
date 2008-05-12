@@ -203,10 +203,12 @@ static int  nextFilterId = 1;
   NSAssert(replacingItem == nil, @"Replacing item not nil.");
   
   replacedItem = [[pathModelView selectedFileItemInTree] retain];  
-  replacingItem = [[FileItem alloc] initWithName: FreedSpace
-                                      parent: [replacedItem parentDirectory] 
-                                      size: [replacedItem itemSize]
-                                      flags: FILE_IS_SPECIAL];
+  replacingItem =
+    [[FileItem alloc] initWithName: ( [replacedItem isHardLinked] 
+                                      ? MiscUsedSpace : FreedSpace )
+                        parent: [replacedItem parentDirectory] 
+                        size: [replacedItem itemSize]
+                        flags: FILE_IS_SPECIAL];
                                       
   Item  *containingItem = [self itemContainingSelectedFileItem: pathModelView];
   
@@ -235,7 +237,16 @@ static int  nextFilterId = 1;
   }  
   [self releaseWriteLock];
   
-  freedSpace += [self totalPlainFileSize: replacedItem];
+  if (! [replacedItem isHardLinked]) {
+    freedSpace += [self totalPlainFileSize: replacedItem];
+  }
+  else {
+    // void. Do not increase the freed space. The item was hard-linked, which
+    // means that at the time of scanning, there were multiple references to
+    // the item. The free space will only increase when all references are
+    // deleted. As only one is included in the tree, this cannot be done  
+    // using only this tree.
+  }
 
   [self postFileItemDeleted];
 }
