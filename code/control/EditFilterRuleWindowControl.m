@@ -33,23 +33,49 @@
 @interface StringBasedTestControls : NSObject {
   NSButton  *enabledCheckBox;
   NSPopUpButton  *matchPopUpButton;
-  NSTextView  *targetsTextView;
+  NSTableView  *targetsView;
   NSButton  *caseInsensitiveCheckBox;
+  NSButton  *addTargetButton;
+  NSButton  *removeTargetButton;
+  
+  NSMutableArray  *matchTargets;
+  BOOL  enabled;
+  
+  /* Tracks if an edit of a match is in progress. If so, the list of matches
+   * should not be manipulated, or the table ends up in an inconsistent state.
+   */
+  BOOL  editInProgress;
 }
  
-- (id) initWithEnabledCheckBox: (NSButton *)checkBox 
+- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBox 
          matchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsTextView: (NSTextView *)textView
-         caseInsensitiveCheckBox: (NSButton *)caseCheckBox;
+         targetsView: (NSTableView *)targetsView
+         caseInsensitiveCheckBox: (NSButton *)caseCheckBox
+         addTargetButton: (NSButton *)addTargetButton
+         removeTargetButton: (NSButton *)removeTargetButton;
 
 - (void) resetState;
 
 - (void) setEnabled: (BOOL)enabled;
 
+- (BOOL) hasTargets;
+- (void) addTarget;
+- (void) removeTarget;
+
 - (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test;
 - (MultiMatchStringTest*) stringTestBasedOnState;
 
 @end // @interface StringBasedTestControls
+
+
+@interface StringBasedTestControls (PrivateMethods)
+
+- (void) updateEnabledState;
+
+- (void) didBeginEditing: (NSNotification *)notification;
+- (void) didEndEditing: (NSNotification *)notification;
+
+@end // @interface StringBasedTestControls (PrivateMethods)
 
 
 @implementation EditFilterRuleWindowControl
@@ -88,15 +114,19 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   nameTestControls = [[StringBasedTestControls alloc]
                          initWithEnabledCheckBox: nameCheckBox
                          matchModePopUpButton: nameMatchPopUpButton
-                         targetsTextView: nameTargetsView
-                         caseInsensitiveCheckBox: nameCaseInsensitiveCheckBox];
+                         targetsView: nameTargetsView
+                         caseInsensitiveCheckBox: nameCaseInsensitiveCheckBox
+                         addTargetButton: addNameTargetButton
+                         removeTargetButton: removeNameTargetButton];
   pathTestControls = [[StringBasedTestControls alloc]
                          initWithEnabledCheckBox: pathCheckBox
                          matchModePopUpButton: pathMatchPopUpButton
-                         targetsTextView: pathTargetsView
-                         caseInsensitiveCheckBox: pathCaseInsensitiveCheckBox];
+                         targetsView: pathTargetsView
+                         caseInsensitiveCheckBox: pathCaseInsensitiveCheckBox
+                         addTargetButton: addPathTargetButton
+                         removeTargetButton: removePathTargetButton];
 
-  [self updateEnabledState:nil];
+  [self updateEnabledState: nil];
 }
 
 
@@ -189,13 +219,30 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (IBAction) cancelAction:(id)sender {
-  [[NSNotificationCenter defaultCenter] 
-      postNotificationName: CancelPerformedEvent object: self];
+  if ([[self window] makeFirstResponder: [self window]]) {
+    // Only respond to the cancel action when the window can obtain first
+    // responder status. If this fails, it means that a field editor is being
+    // used that does not want to give up its first responder status because
+    // its delegate tells it not to (because its text value is still invalid).
+    //
+    // The field editor can be made to give up its first responder status
+    // by "brute force" using endEditingFor:. However, this then requires
+    // extra work to ensure the state is consistent, and does not seem worth
+    // the effort.
+  
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName: CancelPerformedEvent object: self];
+  }
 }
 
 - (IBAction) okAction:(id)sender {
-  [[NSNotificationCenter defaultCenter] 
-      postNotificationName: OkPerformedEvent object: self];
+  if ([[self window] makeFirstResponder: [self window]]) {
+    // Only respond to the action when the window can obtain first responder
+    // status (see cancelAction:).
+  
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName: OkPerformedEvent object: self];
+  }
 }
 
 
@@ -209,6 +256,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   }
   
   [sender setIntValue: value];
+}
+
+
+- (IBAction) targetPopUpChanged:(id)sender {
+  [self updateEnabledState:sender];
 }
 
 
@@ -228,6 +280,18 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   }
 }
 
+- (IBAction) hardLinkCheckBoxChanged:(id)sender {
+  // TODO
+}
+
+- (IBAction) packageCheckBoxChanged:(id)sender {
+  // TODO
+}
+
+- (IBAction) typeCheckBoxChanged:(id)sender {
+  // TODO
+}
+
 - (IBAction) lowerBoundCheckBoxChanged:(id)sender {
   [self updateEnabledState:sender];
   
@@ -242,6 +306,27 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   if ([sender state]==NSOnState) {
     [[self window] makeFirstResponder:sizeUpperBoundField];
   }
+}
+
+
+- (IBAction) addNameTarget: (id) sender {
+  [nameTestControls addTarget];
+  [self updateEnabledState: nil];
+}
+
+- (IBAction) removeNameTarget: (id) sender {
+  [nameTestControls removeTarget];
+  [self updateEnabledState: nil];
+}
+
+- (IBAction) addPathTarget: (id) sender {
+  [pathTestControls addTarget];
+  [self updateEnabledState: nil];
+}
+
+- (IBAction) removePathTarget: (id) sender {
+  [pathTestControls removeTarget];
+  [self updateEnabledState: nil];
 }
 
 
@@ -262,8 +347,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [sizeUpperBoundUnits setEnabled:upperBoundTestUsed];
 
   [doneButton setEnabled:
-     (nameTestUsed || pathTestUsed || lowerBoundTestUsed || upperBoundTestUsed) 
-     && [[ruleNameField stringValue] length] > 0];
+     [[ruleNameField stringValue] length] > 0
+     && ( ( nameTestUsed && [nameTestControls hasTargets] )
+          || ( pathTestUsed && [pathTestControls hasTargets] )
+          || lowerBoundTestUsed 
+          || upperBoundTestUsed ) ];
 }
 
 @end
@@ -288,6 +376,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   [self updateEnabledState:nil];
 }
+
+
 
 
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest>*)test {
@@ -417,25 +507,49 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 @implementation StringBasedTestControls
 
-- (id) initWithEnabledCheckBox:(NSButton*)checkBox 
-         matchModePopUpButton:(NSPopUpButton*)popUpButton
-         targetsTextView:(NSTextView*)textView
-         caseInsensitiveCheckBox: (NSButton *)caseCheckBox; {
+- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBoxVal
+         matchModePopUpButton: (NSPopUpButton *)popUpButton
+         targetsView: (NSTableView *)targetsTableViewVal
+         caseInsensitiveCheckBox: (NSButton *)caseCheckBox
+         addTargetButton: (NSButton *)addButton
+         removeTargetButton: (NSButton *)removeButton; {
   if (self = [super init]) {
-    enabledCheckBox = [checkBox retain];
+    enabledCheckBox = [enabledCheckBoxVal retain];
     matchPopUpButton = [popUpButton retain];
-    targetsTextView = [textView retain];
+    targetsView = [targetsTableViewVal retain];
     caseInsensitiveCheckBox = [caseCheckBox retain];
+    addTargetButton = [addButton retain];
+    removeTargetButton = [removeButton retain];
+    
+    matchTargets = [[NSMutableArray alloc] initWithCapacity: 4];
+    
+    [targetsView setDataSource: self];
+    [targetsView setDelegate: self];
+    
+    editInProgress = NO;
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+
+    [nc addObserver: self selector: @selector(didBeginEditing:)
+          name: NSControlTextDidBeginEditingNotification object: targetsView];
+    [nc addObserver: self selector: @selector(didEndEditing:)
+        name: NSControlTextDidEndEditingNotification object: targetsView];
   }
   
   return self;
 }
 
 - (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+
   [enabledCheckBox release];
   [matchPopUpButton release];
-  [targetsTextView release];
+  [targetsView release];
   [caseInsensitiveCheckBox release];
+  [addTargetButton retain];
+  [removeTargetButton retain];
+  
+  [matchTargets release];
 
   [super dealloc];
 }
@@ -444,15 +558,54 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (void) resetState {
   [enabledCheckBox setState: NSOffState];
   [matchPopUpButton selectItemAtIndex: 3]; // Suffix
-  [targetsTextView setString: @""];
   [caseInsensitiveCheckBox setState: NSOffState];
+  
+  [matchTargets removeAllObjects];
+  [targetsView reloadData];
 }
 
 
-- (void) setEnabled: (BOOL)enabled {
-  [matchPopUpButton setEnabled: enabled];
-  [targetsTextView setEditable: enabled];
-  [caseInsensitiveCheckBox setEnabled: enabled];
+- (void) setEnabled: (BOOL)enabledVal {
+  enabled = enabledVal;
+  
+  [self updateEnabledState];
+}
+
+
+- (BOOL) hasTargets {
+  return [matchTargets count] > 0;
+}
+
+
+- (void) addTarget {
+  NSAssert(!editInProgress, @"Cannot edit target while edit in progress.");
+
+  int  newRow =  [matchTargets count];
+  
+  [matchTargets addObject: 
+     NSLocalizedString( @"New match", 
+                        @"Initial match value in EditFilterRuleWindow" ) ];
+  [targetsView reloadData];
+  [targetsView selectRow: newRow byExtendingSelection: NO];
+  
+  editInProgress = YES;
+  [self updateEnabledState];
+  
+  [targetsView editColumn: 0 row: newRow withEvent: nil select: YES];
+}
+
+- (void) removeTarget {
+  NSAssert(!editInProgress, @"Cannot remove target while edit in progress.");
+
+  int  selectedRow = [targetsView selectedRow];
+  [matchTargets removeObjectAtIndex: selectedRow];
+
+  if (selectedRow == [matchTargets count] && selectedRow > 0) {
+    [targetsView selectRow: selectedRow - 1 byExtendingSelection: NO];
+  }
+
+  [targetsView reloadData];
+  
 }
 
 
@@ -478,16 +631,9 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   }
   [matchPopUpButton selectItemAtIndex: index];
   
-  // Fill text view.
-  NSMutableString  *targetText = [NSMutableString stringWithCapacity:128];
-  NSEnumerator  *matchTargets = [[test matchTargets] objectEnumerator];
-  NSString*  matchTarget = nil;
-  while (matchTarget = [matchTargets nextObject]) {
-    [targetText appendString:matchTarget];
-    [targetText appendString:@"\n"];
-  }
-  
-  [targetsTextView setString: targetText];
+  [matchTargets removeAllObjects];
+  [matchTargets addObjectsFromArray: [test matchTargets]];
+  [targetsView reloadData];
   
   [caseInsensitiveCheckBox setState:
      ([test isCaseSensitive] ? NSOffState : NSOnState)];
@@ -495,54 +641,101 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (MultiMatchStringTest*) stringTestBasedOnState {
-  if ([enabledCheckBox state]==NSOnState) {
-    NSArray  *rawTargets = 
-      [[targetsTextView string] componentsSeparatedByString:@"\n"];
-      
-    NSMutableArray  *targets = 
-      [NSMutableArray arrayWithCapacity:[rawTargets count]];
-
-    // Ignore empty lines
-    NSEnumerator  *rawTargetsEnum = [rawTargets objectEnumerator];
-    NSString  *target = nil;
-    while (target = [rawTargetsEnum nextObject]) {
-      if ([target length] > 0) {
-        if ([rawTargets count]==1) {
-          // Need to copy string, as componentsSeparatedByString: returns the
-          // (mutable) string directly if there is only one component.
-          [targets addObject:[NSString stringWithString:target]];
-        }
-        else {
-          [targets addObject:target];
-        }
-      }
-    }
-    
-    if ([targets count] > 0) {
-      MultiMatchStringTest  *stringTest = nil;
-      switch ([matchPopUpButton indexOfSelectedItem]) {
-        case 0: stringTest = [StringEqualityTest alloc]; break;
-        case 1: stringTest = [StringContainmentTest alloc]; break;
-        case 2: stringTest = [StringPrefixTest alloc]; break;
-        case 3: stringTest = [StringSuffixTest alloc]; break;
-        default: NSAssert(NO, @"Unexpected matching index.");
-      }
-      
-      BOOL  caseSensitive = ([caseInsensitiveCheckBox state] == NSOffState);
-      stringTest = [[stringTest initWithMatchTargets: targets
-                                  caseSensitive: caseSensitive] autorelease];
-      
-      return stringTest;
-    }
-    else {
-      // No match targets specified.
-      return nil;
-    }
-  }
-  else {
+  if ([enabledCheckBox state]!=NSOnState) {
     // Test not used.
+    return nil; 
+  }
+  
+  if ([matchTargets count] == 0) {
+    // No match targets specified.
     return nil;
   }
+  
+  MultiMatchStringTest  *stringTest = nil;
+  switch ([matchPopUpButton indexOfSelectedItem]) {
+    case 0: stringTest = [StringEqualityTest alloc]; break;
+    case 1: stringTest = [StringContainmentTest alloc]; break;
+    case 2: stringTest = [StringPrefixTest alloc]; break;
+    case 3: stringTest = [StringSuffixTest alloc]; break;
+    default: NSAssert(NO, @"Unexpected matching index.");
+  }
+      
+  BOOL  caseSensitive = ([caseInsensitiveCheckBox state] == NSOffState);
+  stringTest = [[stringTest initWithMatchTargets: matchTargets
+                              caseSensitive: caseSensitive] autorelease];
+      
+  return stringTest;
 }
 
+
+//----------------------------------------------------------------------------
+// Delegate methods for NSTable
+
+- (void) tableViewSelectionDidChange: (NSNotification *)notification {
+  [self updateEnabledState];
+}
+
+- (BOOL) control: (NSControl *)control textShouldEndEditing: (NSText *)editor {
+  return [[editor string] length] > 0;
+}
+
+
+//----------------------------------------------------------------------------
+// NSTableSource
+
+- (int) numberOfRowsInTableView: (NSTableView *)tableView {
+  return [matchTargets count];
+}
+
+- (id) tableView: (NSTableView *)tableView 
+         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
+  return [matchTargets objectAtIndex: row];
+}
+
+- (void) tableView: (NSTableView *)tableView setObjectValue: (id) object 
+           forTableColumn: (NSTableColumn *)column row: (int) row {
+  [matchTargets replaceObjectAtIndex: row withObject: object];
+}
+
+- (BOOL) tableView: (NSTableView *)tableView 
+           shouldEditTableColumn: (NSTableColumn *)column row: (int) row {
+  // Switch to "edit in progress" mode immediately. If not done here, the
+  // notification is only sent when the first change is made to the text.
+  // However, we like to disable the Remove button as soon as the field editor
+  // is active. Otherwise, removal will first remove the cell, then stop the
+  // field editor, which overwrites the old value over what has become a
+  // different target alltogether.
+  [self didBeginEditing: nil];
+
+  return YES;
+}
+
+
 @end // implementation StringBasedTestControls
+
+
+@implementation StringBasedTestControls (PrivateMethods)
+
+- (void) updateEnabledState {
+  [matchPopUpButton setEnabled: enabled];
+  [targetsView setEnabled: enabled];
+  [caseInsensitiveCheckBox setEnabled: enabled];
+  [addTargetButton setEnabled: enabled && !editInProgress];
+  [removeTargetButton setEnabled: (enabled && !editInProgress 
+                                   && [targetsView numberOfSelectedRows] > 0 )];
+}
+
+
+- (void) didBeginEditing: (NSNotification *)notification {
+  editInProgress = YES;
+  
+  [self updateEnabledState];
+}
+
+- (void) didEndEditing: (NSNotification *)notification {
+  editInProgress = NO;
+
+  [self updateEnabledState];
+}
+
+@end // @implementation StringBasedTestControls (PrivateMethods)

@@ -6,16 +6,32 @@
 @interface EditFilterRuleWindowControl : NSWindowController {
 
   IBOutlet NSTextField  *ruleNameField;
+  IBOutlet NSPopUpButton  *ruleTargetPopUp;
   
   IBOutlet NSButton  *nameCheckBox;
   IBOutlet NSPopUpButton  *nameMatchPopUpButton;
-  IBOutlet NSTextView  *nameTargetsView;
+  IBOutlet NSTableView  *nameTargetsView;
   IBOutlet NSButton  *nameCaseInsensitiveCheckBox;
+  IBOutlet NSButton  *addNameTargetButton;
+  IBOutlet NSButton  *removeNameTargetButton;
   
   IBOutlet NSButton  *pathCheckBox;
   IBOutlet NSPopUpButton  *pathMatchPopUpButton;
-  IBOutlet NSTextView  *pathTargetsView;
+  IBOutlet NSTableView  *pathTargetsView;
   IBOutlet NSButton  *pathCaseInsensitiveCheckBox;
+  IBOutlet NSButton  *addPathTargetButton;
+  IBOutlet NSButton  *removePathTargetButton;
+  
+  IBOutlet NSButton  *hardLinkCheckBox;
+  IBOutlet NSPopUpButton  *hardLinkStatusPopUp;
+
+  IBOutlet NSButton  *packageCheckBox;
+  IBOutlet NSPopUpButton  *packageStatusPopUp;
+
+  IBOutlet NSButton  *typeCheckBox;
+  IBOutlet NSTableView  *typeTargetsView;
+  IBOutlet NSButton  *addTypeTargetButton;
+  IBOutlet NSButton  *removeTypeTargetButton;
   
   IBOutlet NSButton  *sizeLowerBoundCheckBox;
   IBOutlet NSTextField  *sizeLowerBoundField;
@@ -25,6 +41,7 @@
   IBOutlet NSTextField  *sizeUpperBoundField;
   IBOutlet NSPopUpButton  *sizeUpperBoundUnits;
 
+  IBOutlet NSButton  *cancelButton;
   IBOutlet NSButton  *doneButton;
   
   NSString  *ruleName;
@@ -37,10 +54,20 @@
 
 - (IBAction) valueEntered:(id)sender;
 
+- (IBAction) targetPopUpChanged:(id)sender;
+
 - (IBAction) nameCheckBoxChanged:(id)sender;
 - (IBAction) pathCheckBoxChanged:(id)sender;
+- (IBAction) hardLinkCheckBoxChanged:(id)sender;
+- (IBAction) packageCheckBoxChanged:(id)sender;
+- (IBAction) typeCheckBoxChanged:(id)sender;
 - (IBAction) lowerBoundCheckBoxChanged:(id)sender;
 - (IBAction) upperBoundCheckBoxChanged:(id)sender;
+
+- (IBAction) addNameTarget: (id) sender;
+- (IBAction) removeNameTarget: (id) sender;
+- (IBAction) addPathTarget: (id) sender;
+- (IBAction) removePathTarget: (id) sender;
 
 - (IBAction) updateEnabledState:(id)sender;
 
