@@ -5,10 +5,12 @@
 #import "StringSuffixTest.h"
 #import "StringEqualityTest.h"
 #import "StringContainmentTest.h"
+
 #import "FileItemTest.h"
 #import "ItemNameTest.h"
 #import "ItemPathTest.h"
 #import "ItemSizeTest.h"
+#import "ItemFlagsTest.h"
 #import "CompoundAndItemTest.h"
 #import "CompoundOrItemTest.h"
 #import "NotItemTest.h"
@@ -127,6 +129,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   }
   else if ([classString isEqualToString: @"ItemPathTest"]) {
     return [ItemPathTest objectFromDictionary: dict];
+  }
+  else if ([classString isEqualToString: @"ItemFlagsTest"]) {
+    return [ItemFlagsTest objectFromDictionary: dict];
   }
 
   

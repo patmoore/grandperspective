@@ -86,6 +86,11 @@
   return NO;
 }
 
+
+- (UInt8) fileItemFlags {
+  return flags;
+}
+
 - (BOOL) isSpecial {
   return (flags & FILE_IS_SPECIAL) != 0;
 }

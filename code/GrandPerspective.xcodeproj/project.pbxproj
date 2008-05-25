@@ -70,6 +70,7 @@
 		AA8A380C0D7B437300DB872C /* StatefulFileItemMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38010D7B437300DB872C /* StatefulFileItemMapping.m */; };
 		AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38030D7B437300DB872C /* StatelessFileItemMapping.m */; };
 		AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */; };
+		AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */; };
 		AA8FEB2B0B6CC2D90049FF42 /* Names.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA8FEB290B6CC2D80049FF42 /* Names.strings */; };
 		AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
@@ -223,6 +224,8 @@
 		AA8A38030D7B437300DB872C /* StatelessFileItemMapping.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = StatelessFileItemMapping.m; sourceTree = "<group>"; };
 		AA8A38040D7B437300DB872C /* UniformTypeMappingScheme.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = UniformTypeMappingScheme.h; sourceTree = "<group>"; };
 		AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = UniformTypeMappingScheme.m; sourceTree = "<group>"; };
+		AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemFlagsTest.h; path = filter/ItemFlagsTest.h; sourceTree = "<group>"; };
+		AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemFlagsTest.m; path = filter/ItemFlagsTest.m; sourceTree = "<group>"; };
 		AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTaskInput.h; path = task/ScanTaskInput.h; sourceTree = "<group>"; };
 		AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanTaskInput.m; path = task/ScanTaskInput.m; sourceTree = "<group>"; };
 		AA8FEB2A0B6CC2D80049FF42 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Names.strings; sourceTree = "<group>"; };
@@ -417,6 +420,8 @@
 				AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */,
 				AA33F9E10A41CBEA00F3D4DB /* NotItemTest.h */,
 				AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */,
+				AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */,
+				AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */,
 			);
 			name = filter;
 			sourceTree = "<group>";
@@ -720,6 +725,7 @@
 				AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */,
 				AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */,
 				AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */,
+				AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

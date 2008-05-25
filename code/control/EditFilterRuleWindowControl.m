@@ -1,10 +1,13 @@
 #import "EditFilterRuleWindowControl.h"
 
+#import "FileItem.h"
+
 #import "FileItemTest.h"
 #import "CompoundAndItemTest.h"
 #import "ItemNameTest.h"
 #import "ItemPathTest.h"
 #import "ItemSizeTest.h"
+#import "ItemFlagsTest.h"
 
 #import "MultiMatchStringTest.h"
 #import "StringEqualityTest.h"
@@ -19,13 +22,15 @@
 
 - (void) resetState;
 - (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test;
-- (void) updateStateBasedOnItemNameTest:(ItemNameTest*)test;
-- (void) updateStateBasedOnItemPathTest:(ItemPathTest*)test;
-- (void) updateStateBasedOnItemSizeTest:(ItemSizeTest*)test;
+- (void) updateStateBasedOnItemNameTest: (ItemNameTest *)test;
+- (void) updateStateBasedOnItemPathTest: (ItemPathTest *)test;
+- (void) updateStateBasedOnItemSizeTest: (ItemSizeTest *)test;
+- (void) updateStateBasedOnItemFlagsTest: (ItemFlagsTest *)test;
 
-- (ItemNameTest*) itemNameTestBasedOnState;
-- (ItemPathTest*) itemPathTestBasedOnState;
-- (ItemSizeTest*) itemSizeTestBasedOnState;
+- (ItemNameTest *) itemNameTestBasedOnState;
+- (ItemPathTest *) itemPathTestBasedOnState;
+- (ItemSizeTest *) itemSizeTestBasedOnState;
+- (ItemFlagsTest *) itemFlagsTestBasedOnState;
 
 @end // @interface EditFilterRuleWindowControl (PrivateMethods)
 
@@ -194,6 +199,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     [subTests addObject:subTest];
   }
   
+  subTest = [self itemFlagsTestBasedOnState];
+  if (subTest != nil) {
+    [subTests addObject:subTest];
+  }
+  
   NSObject <FileItemTest>  *test;
   if ([subTests count] == 0) {
     test = nil;
@@ -280,12 +290,12 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   }
 }
 
-- (IBAction) hardLinkCheckBoxChanged:(id)sender {
-  // TODO
+- (IBAction) hardLinkCheckBoxChanged: (id)sender {
+  [self updateEnabledState: sender];
 }
 
-- (IBAction) packageCheckBoxChanged:(id)sender {
-  // TODO
+- (IBAction) packageCheckBoxChanged: (id)sender {
+  [self updateEnabledState: sender];
 }
 
 - (IBAction) typeCheckBoxChanged:(id)sender {
@@ -337,21 +347,28 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
   BOOL  lowerBoundTestUsed = [sizeLowerBoundCheckBox state]==NSOnState;
   BOOL  upperBoundTestUsed = [sizeUpperBoundCheckBox state]==NSOnState;
-
+  BOOL  hardLinkTestUsed = [hardLinkCheckBox state]==NSOnState;
+  BOOL  packageTestUsed = [packageCheckBox state]==NSOnState;
+  
   [nameTestControls setEnabled: nameTestUsed];
   [pathTestControls setEnabled: pathTestUsed];
   
-  [sizeLowerBoundField setEnabled:lowerBoundTestUsed];
-  [sizeLowerBoundUnits setEnabled:lowerBoundTestUsed];
-  [sizeUpperBoundField setEnabled:upperBoundTestUsed];
-  [sizeUpperBoundUnits setEnabled:upperBoundTestUsed];
+  [sizeLowerBoundField setEnabled: lowerBoundTestUsed];
+  [sizeLowerBoundUnits setEnabled: lowerBoundTestUsed];
+  [sizeUpperBoundField setEnabled: upperBoundTestUsed];
+  [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
+
+  [hardLinkStatusPopUp setEnabled: hardLinkTestUsed];
+  [packageStatusPopUp setEnabled: packageTestUsed];
 
   [doneButton setEnabled:
      [[ruleNameField stringValue] length] > 0
      && ( ( nameTestUsed && [nameTestControls hasTargets] )
           || ( pathTestUsed && [pathTestControls hasTargets] )
           || lowerBoundTestUsed 
-          || upperBoundTestUsed ) ];
+          || upperBoundTestUsed 
+          || hardLinkTestUsed
+          || packageTestUsed) ];
 }
 
 @end
@@ -360,36 +377,44 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 @implementation EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState {
-  [ruleNameField setStringValue:@""];
+  [ruleNameField setStringValue: @""];
   [ruleNameField setEnabled: YES];
 
   [nameTestControls resetState];
   [pathTestControls resetState];
 
-  [sizeLowerBoundCheckBox setState:NSOffState];
-  [sizeLowerBoundField setIntValue:0];
-  [sizeLowerBoundUnits selectItemAtIndex:0]; // bytes
+  [sizeLowerBoundCheckBox setState: NSOffState];
+  [sizeLowerBoundField setIntValue: 0];
+  [sizeLowerBoundUnits selectItemAtIndex: 0]; // bytes
   
-  [sizeUpperBoundCheckBox setState:NSOffState];
-  [sizeUpperBoundField setIntValue:0];
-  [sizeUpperBoundUnits selectItemAtIndex:0]; // bytes
+  [sizeUpperBoundCheckBox setState: NSOffState];
+  [sizeUpperBoundField setIntValue: 0];
+  [sizeUpperBoundUnits selectItemAtIndex: 0]; // bytes
   
-  [self updateEnabledState:nil];
+  [hardLinkCheckBox setState: NSOffState];
+  [hardLinkStatusPopUp selectItemAtIndex: 0]; // "is"
+
+  [packageCheckBox setState: NSOffState];
+  [packageStatusPopUp selectItemAtIndex: 0]; // "is"
+  
+  [self updateEnabledState: nil];
 }
 
 
+- (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test {
+  if ([test isKindOfClass: [ItemNameTest class]]) {
+    [self updateStateBasedOnItemNameTest: (ItemNameTest *)test];
+  }
+  else if ([test isKindOfClass: [ItemPathTest class]]) {
+    [self updateStateBasedOnItemPathTest: (ItemPathTest *)test];
+  }
+  else if ([test isKindOfClass: [ItemSizeTest class]]) {
+    [self updateStateBasedOnItemSizeTest: (ItemSizeTest *)test];
+  }
+  else if ([test isKindOfClass: [ItemFlagsTest class]]) {
+    [self updateStateBasedOnItemFlagsTest: (ItemFlagsTest *)test];
+  }
 
-
-- (void) updateStateBasedOnTest:(NSObject <FileItemTest>*)test {
-  if ([test isKindOfClass:[ItemNameTest class]]) {
-    [self updateStateBasedOnItemNameTest: (ItemNameTest*)test];
-  }
-  else if ([test isKindOfClass:[ItemPathTest class]]) {
-    [self updateStateBasedOnItemPathTest: (ItemPathTest*)test];
-  }
-  else if ([test isKindOfClass:[ItemSizeTest class]]) {
-    [self updateStateBasedOnItemSizeTest: (ItemSizeTest*)test];
-  }
   else {
     NSAssert(NO, @"Unexpected test.");
   }
@@ -410,7 +435,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 
-- (void) updateStateBasedOnItemSizeTest:(ItemSizeTest*)test {
+- (void) updateStateBasedOnItemSizeTest: (ItemSizeTest *)test {
   if ([test hasLowerBound]) {
     ITEM_SIZE  bound = [test lowerBound];
     int  i = 0;
@@ -441,6 +466,23 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     [sizeUpperBoundCheckBox setState:NSOnState];
     [sizeUpperBoundField setIntValue:bound];
     [sizeUpperBoundUnits selectItemAtIndex:i];
+  }
+}
+
+
+- (void) updateStateBasedOnItemFlagsTest: (ItemFlagsTest *)test {
+  if ([test flagsMask] & FILE_IS_HARDLINKED) {
+    [hardLinkCheckBox setState: NSOnState];
+    
+    [hardLinkStatusPopUp selectItemAtIndex: 
+       ([test desiredResult] & FILE_IS_HARDLINKED) ? 0 : 1];
+  }
+  
+  if ([test flagsMask] & FILE_IS_PACKAGE) {
+    [packageCheckBox setState: NSOnState];
+    
+    [packageStatusPopUp selectItemAtIndex: 
+       ([test desiredResult] & FILE_IS_PACKAGE) ? 0 : 1];
   }
 }
 
@@ -499,6 +541,34 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     else {
       return nil;
     }
+  }
+}
+
+
+- (ItemFlagsTest *) itemFlagsTestBasedOnState {
+  UInt8  flagsMask = 0;
+  UInt8  desiredResult = 0;
+  
+  if ([hardLinkCheckBox state] == NSOnState) {
+    flagsMask |= FILE_IS_HARDLINKED;
+    if ([hardLinkStatusPopUp indexOfSelectedItem] == 0) { // "is"
+      desiredResult |= FILE_IS_HARDLINKED;
+    }
+  }
+  
+  if ([packageCheckBox state] == NSOnState) {
+    flagsMask |= FILE_IS_PACKAGE;
+    if ([packageStatusPopUp indexOfSelectedItem] == 0) { // "is"
+      desiredResult |= FILE_IS_PACKAGE;
+    }
+  }
+  
+  if (flagsMask) {
+    return [[[ItemFlagsTest alloc] initWithFlagsMask: flagsMask  
+                                     desiredResult: desiredResult] autorelease];
+  }
+  else {
+    return nil;
   }
 }
 
