@@ -52,11 +52,11 @@
   [dict setObject: @"ItemSizeTest" forKey: @"class"];
   
   if ([self hasLowerBound]) {
-    [dict setObject: [NSNumber numberWithLongLong: lowerBound]
+    [dict setObject: [NSNumber numberWithUnsignedLongLong: lowerBound]
             forKey: @"lowerBound"];
   }
   if ([self hasUpperBound]) {
-    [dict setObject: [NSNumber numberWithLongLong: upperBound]
+    [dict setObject: [NSNumber numberWithUnsignedLongLong: upperBound]
             forKey: @"upperBound"];
   }
 }
