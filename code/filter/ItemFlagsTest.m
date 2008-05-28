@@ -4,6 +4,11 @@
 
 @implementation ItemFlagsTest
 
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithFlagsMask:desiredResult: instead.");
+}
+
 - (id) initWithFlagsMask: (UInt8) mask desiredResult: (UInt8) result {
   if (self = [super init]) {
     flagsMask = mask;
