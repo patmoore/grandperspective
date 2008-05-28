@@ -10,6 +10,7 @@
 #import "ItemNameTest.h"
 #import "ItemPathTest.h"
 #import "ItemSizeTest.h"
+#import "ItemTypeTest.h"
 #import "ItemFlagsTest.h"
 #import "CompoundAndItemTest.h"
 #import "CompoundOrItemTest.h"
@@ -129,6 +130,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   }
   else if ([classString isEqualToString: @"ItemPathTest"]) {
     return [ItemPathTest objectFromDictionary: dict];
+  }
+  else if ([classString isEqualToString: @"ItemTypeTest"]) {
+    return [ItemTypeTest objectFromDictionary: dict];
   }
   else if ([classString isEqualToString: @"ItemFlagsTest"]) {
     return [ItemFlagsTest objectFromDictionary: dict];
