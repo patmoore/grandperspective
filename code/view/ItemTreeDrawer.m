@@ -9,28 +9,33 @@
 #import "TreeContext.h"
 
 
-@implementation ItemTreeDrawer
+@interface ItemTreeDrawer (PrivateMethods)
 
-- (id) init {
-  ItemTreeDrawerSettings  *defaultSettings = 
-    [[[ItemTreeDrawerSettings alloc] init] autorelease];
-    
-  return [self initWithTreeDrawerSettings: defaultSettings];
-}
+- (BOOL) isFileItemMasked: (FileItem *)file;
+
+@end
+
+
+@implementation ItemTreeDrawer
 
 // Overrides designated initialiser
 - (id) initWithColorPalette: (NSColorList *)colorPaletteVal {
+  NSAssert(NO, @"Use initWithScanTree: instead.");
+}
+
+- (id) initWithScanTree: (DirectoryItem *)scanTreeVal {
   ItemTreeDrawerSettings  *defaultSettings = 
     [[[ItemTreeDrawerSettings alloc] init] autorelease];
     
-  ItemTreeDrawerSettings  *settings =
-    [defaultSettings copyWithColorPalette: colorPaletteVal];
-    
-  return [self initWithTreeDrawerSettings: settings];
+  return [self initWithScanTree: scanTreeVal 
+                 treeDrawerSettings: defaultSettings];
 }
 
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (id) initWithScanTree: (DirectoryItem *)scanTreeVal 
+         treeDrawerSettings: (ItemTreeDrawerSettings *)settings {
   if (self = [super initWithColorPalette: [settings colorPalette]]) {
+    scanTree = [scanTreeVal retain];
+  
     // Make sure values are nil before calling updateSettings. 
     colorMapper = nil;
     fileItemMask = nil;
@@ -52,6 +57,9 @@
 - (void) dealloc {
   [colorMapper release];
   [fileItemMask release];
+
+  [scanTree release];
+  [visibleTree release];
   
   [fileItemPathStringCache release];
   
@@ -113,12 +121,13 @@
   
   insideVisibleTree = NO;
   NSAssert(visibleTree == nil, @"visibleTree should be nil.");
-  visibleTree = visibleTreeVal; 
-                     // Not retaining it. It is only needed during this method.
+  visibleTree = [visibleTreeVal retain]; 
 
   // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
   // useful/occur?
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
+
+  [visibleTree release];
   visibleTree = nil;
    
   [fileItemPathStringCache clearCache];
@@ -150,12 +159,21 @@
     return YES;
   }
   
-  FileItem*  file = (FileItem*)item;
+  FileItem  *file = (FileItem*)item;
     
   if ( file == visibleTree ) {
     insideVisibleTree = YES;
       
     [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
+    
+    // Check if any ancestors are masked
+    FileItem  *ancestor = file;
+    while (ancestor != scanTree) {
+      ancestor = [ancestor parentDirectory];
+      if ([self isFileItemMasked: ancestor]) {
+        return NO;
+      }
+    }
   }
     
   if (!showPackageContents && [file isDirectory]) {
@@ -165,12 +183,7 @@
     file = [(DirectoryItem *)file itemWhenHidingPackageContents];
   }
     
-  if ( fileItemMask != nil 
-       && ! [file isSpecial]
-       && ( depth > 0 || ! [file isDirectory] ) // Don't test outermost folder
-       && ( [fileItemMask testFileItem: file context: fileItemPathStringCache]
-            == TEST_FAILED ) ) {
-    // Item is masked
+  if ( [self isFileItemMasked: file] ) {
     return NO;
   }
     
@@ -228,3 +241,17 @@
 }
 
 @end // @implementation ItemTreeDrawer
+
+
+@implementation ItemTreeDrawer (PrivateMethods)
+
+- (BOOL) isFileItemMasked: (FileItem *)file {
+  return ( fileItemMask != nil 
+           && ! [file isSpecial]
+           && file != scanTree
+           && ( [fileItemMask testFileItem: file 
+                                context: fileItemPathStringCache]
+                == TEST_FAILED ) );
+}
+
+@end // @implementation ItemTreeDrawer (PrivateMethods)

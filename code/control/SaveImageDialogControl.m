@@ -101,8 +101,9 @@
     ItemPathModelView  *pathModelView = [dirView pathModelView];
     ItemTreeDrawer  *treeDrawer = 
       [[[ItemTreeDrawer alloc] 
-           initWithTreeDrawerSettings: [dirView treeDrawerSettings]]
-             autorelease];
+           initWithScanTree: [pathModelView scanTree]
+             treeDrawerSettings: [dirView treeDrawerSettings]]
+               autorelease];
     NSImage  *image =
       [treeDrawer drawImageOfVisibleTree: [pathModelView visibleTree]
                     startingAtTree: [dirView treeInView]

@@ -22,14 +22,17 @@
   UInt32  usedSpaceColor;
   UInt32  visibleTreeBackgroundColor;
 
+  DirectoryItem  *scanTree;
+  
   FileItem  *visibleTree;
   BOOL  insideVisibleTree;
 
   BOOL  abort;
 }
 
-- (id) init;
-- (id) initWithTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (id) initWithScanTree: (DirectoryItem *)scanTree;
+- (id) initWithScanTree: (DirectoryItem *)scanTree 
+         treeDrawerSettings: (ItemTreeDrawerSettings *)settings;
 
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;

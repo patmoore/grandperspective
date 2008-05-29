@@ -25,7 +25,9 @@
   if (self = [super init]) {
     treeContext = [treeContextVal retain];
   
-    treeDrawer = [[ItemTreeDrawer alloc] initWithTreeDrawerSettings: settings];
+    treeDrawer = 
+      [[ItemTreeDrawer alloc] initWithScanTree: [treeContext scanTree]
+                                treeDrawerSettings: settings];
     treeDrawerSettings = [settings retain];
     
     settingsLock = [[NSLock alloc] init];
