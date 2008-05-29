@@ -71,6 +71,8 @@
 		AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38030D7B437300DB872C /* StatelessFileItemMapping.m */; };
 		AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */; };
 		AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */; };
+		AA8AB64A0DEDDB47003D1B7D /* ItemTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */; };
+		AA8AB6520DEDE04E003D1B7D /* TestDescriptions.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */; };
 		AA8FEB2B0B6CC2D90049FF42 /* Names.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA8FEB290B6CC2D80049FF42 /* Names.strings */; };
 		AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
@@ -92,6 +94,7 @@
 		AAD8DFB30B077ED20060DADA /* PreferencesPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD8DFB20B077ED20060DADA /* PreferencesPanelControl.m */; };
 		AAD8DFC70B077FCF0060DADA /* PreferencesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */; };
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
+		AADDDC500DEE94E9008153C7 /* SelectiveItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
@@ -226,6 +229,10 @@
 		AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = UniformTypeMappingScheme.m; sourceTree = "<group>"; };
 		AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemFlagsTest.h; path = filter/ItemFlagsTest.h; sourceTree = "<group>"; };
 		AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemFlagsTest.m; path = filter/ItemFlagsTest.m; sourceTree = "<group>"; };
+		AA8AB6480DEDDB47003D1B7D /* ItemTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemTypeTest.h; path = filter/ItemTypeTest.h; sourceTree = "<group>"; };
+		AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemTypeTest.m; path = filter/ItemTypeTest.m; sourceTree = "<group>"; };
+		AA8AB64B0DEDDF62003D1B7D /* TestDescriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestDescriptions.h; path = filter/TestDescriptions.h; sourceTree = "<group>"; };
+		AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestDescriptions.m; path = filter/TestDescriptions.m; sourceTree = "<group>"; };
 		AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTaskInput.h; path = task/ScanTaskInput.h; sourceTree = "<group>"; };
 		AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanTaskInput.m; path = task/ScanTaskInput.m; sourceTree = "<group>"; };
 		AA8FEB2A0B6CC2D80049FF42 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Names.strings; sourceTree = "<group>"; };
@@ -266,6 +273,8 @@
 		AAD8DFBF0B077F900060DADA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencesPanel.nib; sourceTree = "<group>"; };
 		AADD34920B8B902000AC2C97 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Tests.strings; sourceTree = "<group>"; };
 		AADD349A0B8B905900AC2C97 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Tests.strings; sourceTree = "<group>"; };
+		AADDDC4E0DEE94E9008153C7 /* SelectiveItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectiveItemTest.h; path = filter/SelectiveItemTest.h; sourceTree = "<group>"; };
+		AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectiveItemTest.m; path = filter/SelectiveItemTest.m; sourceTree = "<group>"; };
 		AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = UniformTypeInventory.m; path = util/UniformTypeInventory.m; sourceTree = "<group>"; };
 		AAE87FD90CE10B9B00A99883 /* UniformTypeInventory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UniformTypeInventory.h; path = util/UniformTypeInventory.h; sourceTree = "<group>"; };
 		AAEF5E240AFE79FA00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
@@ -388,6 +397,8 @@
 		AA2184AE0A26F9C6000E1C8C /* filter */ = {
 			isa = PBXGroup;
 			children = (
+				AA8AB64B0DEDDF62003D1B7D /* TestDescriptions.h */,
+				AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */,
 				AAB471C80A3AE6680096C5B6 /* FileItemTestRepository.h */,
 				AAB471C90A3AE6680096C5B6 /* FileItemTestRepository.m */,
 				AA2184F80A277E81000E1C8C /* StringTest.h */,
@@ -422,6 +433,10 @@
 				AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */,
 				AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */,
 				AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */,
+				AA8AB6480DEDDB47003D1B7D /* ItemTypeTest.h */,
+				AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */,
+				AADDDC4E0DEE94E9008153C7 /* SelectiveItemTest.h */,
+				AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */,
 			);
 			name = filter;
 			sourceTree = "<group>";
@@ -726,6 +741,9 @@
 				AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */,
 				AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */,
 				AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */,
+				AA8AB64A0DEDDB47003D1B7D /* ItemTypeTest.m in Sources */,
+				AA8AB6520DEDE04E003D1B7D /* TestDescriptions.m in Sources */,
+				AADDDC500DEE94E9008153C7 /* SelectiveItemTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

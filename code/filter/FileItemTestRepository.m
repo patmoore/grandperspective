@@ -12,6 +12,7 @@
 #import "ItemSizeTest.h"
 #import "ItemTypeTest.h"
 #import "ItemFlagsTest.h"
+#import "SelectiveItemTest.h"
 #import "CompoundAndItemTest.h"
 #import "CompoundOrItemTest.h"
 #import "NotItemTest.h"
@@ -136,6 +137,9 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   }
   else if ([classString isEqualToString: @"ItemFlagsTest"]) {
     return [ItemFlagsTest objectFromDictionary: dict];
+  }
+  else if ([classString isEqualToString: @"SelectiveItemTest"]) {
+    return [SelectiveItemTest objectFromDictionary: dict];
   }
 
   
