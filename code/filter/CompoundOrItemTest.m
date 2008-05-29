@@ -13,14 +13,23 @@
 - (BOOL) testFileItem: (FileItem *)item context: (id)context {
   int  max = [subTests count];
   int  i = 0;
+  BOOL  applicable = NO;
+  
   while (i < max) {
-    if ([[subTests objectAtIndex: i++] testFileItem: item context: context]) {
+    TestResult  result = 
+      [[subTests objectAtIndex: i++] testFileItem: item context: context];
+      
+    if (result == TEST_PASSED) {
       // Short-circuit evaluation.
-      return YES;
+      return TEST_PASSED;
+    }
+    if (result == TEST_FAILED) {
+      // Test cannot return "TEST_NOT_APPLICABLE" anymore
+      applicable = YES;
     }
   }
 
-  return NO;
+  return ( applicable ? TEST_FAILED : TEST_NOT_APPLICABLE );
 }
 
 

@@ -52,9 +52,15 @@
   return subTest;
 }
 
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
-  return ! [subTest testFileItem: item context: context];
+
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+  TestResult  result = [subTest testFileItem: item context: context];
+  
+  return ( (result == TEST_NOT_APPLICABLE) 
+           ? TEST_NOT_APPLICABLE
+           : ( (result == TEST_FAILED) ? TEST_PASSED : TEST_FAILED ) );
 }
+
 
 - (NSString*) description {
   NSString  *fmt =

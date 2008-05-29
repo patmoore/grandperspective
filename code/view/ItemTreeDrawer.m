@@ -165,9 +165,11 @@
     file = [(DirectoryItem *)file itemWhenHidingPackageContents];
   }
     
-  if (! [file isSpecial] 
-      && fileItemMask != nil 
-      && [fileItemMask testFileItem: file context: fileItemPathStringCache]) {
+  if ( fileItemMask != nil 
+       && ! [file isSpecial]
+       && ( depth > 0 || ! [file isDirectory] ) // Don't test outermost folder
+       && ( [fileItemMask testFileItem: file context: fileItemPathStringCache]
+            == TEST_FAILED ) ) {
     // Item is masked
     return NO;
   }

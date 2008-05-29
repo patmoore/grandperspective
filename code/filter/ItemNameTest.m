@@ -13,8 +13,8 @@
 }
 
 
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
-  return [stringTest testString: [item name]];
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+  return ([stringTest testString: [item name]] ? TEST_PASSED : TEST_FAILED);
 }
 
 - (NSString*) description {

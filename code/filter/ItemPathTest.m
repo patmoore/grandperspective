@@ -13,16 +13,18 @@
 }
 
 
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
-  return [stringTest testString: 
-            [context pathStringForFileItem: [item parentDirectory]]];
-  // Note: For performance reasons, it does not get the string for the item's 
-  // path from the item itself, but uses the context instead. The context, it 
-  // is assumed, supports the pathStringForFileItem: method as provided by the 
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+  NSString  *path = [context pathStringForFileItem: [item parentDirectory]];
+  // Note: For performance reasons, the path string is not obtained from the 
+  // item itself, but from the context instead. The context, it is assumed, 
+  // supports the pathStringForFileItem: method as provided by the 
   // FileItemPathStringCache class. This way, path items do not constantly need
   // to be rebuilt from scratch, nor do they need to be maintained longer than 
   // needed.
+  
+  return ([stringTest testString: path] ? TEST_PASSED : TEST_FAILED);
 }
+
 
 - (NSString*) description {
   NSString  *subject = 

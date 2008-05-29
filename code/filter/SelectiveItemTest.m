@@ -64,23 +64,24 @@
 }
 
 
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
   if ([item isDirectory] == onlyFiles) {
-    // Test should not be applied to this type of item. So always succeed
-    return YES;
+    // Test should not be applied to this type of item.
+    return TEST_NOT_APPLICABLE;
   }
   
-  return [subTest testFileItem: item context: context];
+  return ( [subTest testFileItem: item context: context] 
+           ? TEST_PASSED : TEST_FAILED );
 }
 
 
 - (NSString *) description {
   NSString  *format = ( onlyFiles 
                         ? NSLocalizedStringFromTable( 
-                            @"item is a folder or (%@)", @"Tests",
+                            @"(files: %@)", @"Tests",
                             @"Selective test with 1: sub test" )
                         : NSLocalizedStringFromTable( 
-                            @"item is a file or (%@)", @"Tests",
+                            @"(folders: %@)", @"Tests",
                             @"Selective test with 1: sub test" ) );
   
   return [NSString stringWithFormat: format, [subTest description]];

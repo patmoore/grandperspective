@@ -135,7 +135,7 @@
   tmpFileItems = nil;
 }
 
-- (void) flattenAndFilterSiblings: (Item *)item  {
+- (void) flattenAndFilterSiblings: (Item *)item {
   if (abort) {
     return;
   }
@@ -145,18 +145,22 @@
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
   else if ([((FileItem *)item) isDirectory]) {
-    [tmpDirItems addObject: item];
+    if ([itemTest testFileItem: ((FileItem*)item)
+                    context: fileItemPathStringCache] != TEST_FAILED) {
+      // Directory item passed the test (or test did not apply), so include it
+      [tmpDirItems addObject: item];
+    }
   }
   else {
-    // It's plain file
+    // It's a plain file
     
     // TODO: Check if all special items should still be always excluded.
     if (! [((FileItem *)item) isSpecial] // Exclude all special items (inside
                                          // the volume tree, these all 
                                          // represent freed space).
         && [itemTest testFileItem: ((FileItem*)item)
-                       context: fileItemPathStringCache] ) {
-      // File item passed the test, so include it 
+                       context: fileItemPathStringCache] != TEST_FAILED) {
+      // File item passed the test (or test did not apply), so include it 
       [tmpFileItems addObject: item];
     }
   }

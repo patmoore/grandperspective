@@ -58,8 +58,9 @@
 }
 
 
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
-  return ([item fileItemFlags] & flagsMask) == desiredResult;
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+  return ( (([item fileItemFlags] & flagsMask) == desiredResult)
+           ? TEST_PASSED : TEST_FAILED );
 }
 
 

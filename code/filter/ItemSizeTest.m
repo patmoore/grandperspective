@@ -79,9 +79,9 @@
 }
 
                                     
-- (BOOL) testFileItem: (FileItem *)item context: (id)context {
-  return ([item itemSize] >= lowerBound && 
-          [item itemSize] <= upperBound);
+- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+  return ( ([item itemSize] >= lowerBound && 
+            [item itemSize] <= upperBound) ? TEST_PASSED : TEST_FAILED );
 }
 
 - (NSString*) description {
