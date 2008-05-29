@@ -146,77 +146,78 @@
 
 - (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
            depth: (int) depth {
-  BOOL  descend = YES; // Default 
-
-  // TODO: Remove nesting.
-  if (![item isVirtual]) {
-    FileItem*  file = (FileItem*)item;
+  if ( [item isVirtual] ) {
+    return YES;
+  }
+  
+  FileItem*  file = (FileItem*)item;
     
-    if (file==visibleTree) {
-      insideVisibleTree = YES;
+  if ( file == visibleTree ) {
+    insideVisibleTree = YES;
       
-      [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
+    [self drawBasicFilledRect: rect intColor: visibleTreeBackgroundColor];
+  }
+    
+  if (!showPackageContents && [file isDirectory]) {
+    // Package contents should not be shownn. If the directory is a package
+    // replace it with a file item.
+      
+    file = [(DirectoryItem *)file itemWhenHidingPackageContents];
+  }
+    
+  if (! [file isSpecial] 
+      && fileItemMask != nil 
+      && [fileItemMask testFileItem: file context: fileItemPathStringCache]) {
+    // Item is masked
+    return NO;
+  }
+    
+  if ( [file isDirectory] ) {
+    if ( [file isSpecial] && [[file name] isEqualToString: UsedSpace] ) {
+      [self drawBasicFilledRect: rect intColor: usedSpaceColor];
     }
     
-    if (!showPackageContents && [file isDirectory]) {
-      // Package contents should not be shownn. If the directory is a package
-      // replace it with a file item.
-      
-      file = [(DirectoryItem *)file itemWhenHidingPackageContents];
-    }
-    
-    if ([file isDirectory]) {
-      if ([file isSpecial] && [[file name] isEqualToString: UsedSpace]) {
-        [self drawBasicFilledRect: rect intColor: usedSpaceColor];
+    if ( !insideVisibleTree ) {
+      // Do not descend if the DirectoryItem "file" is not an ancestor of the
+      // visible tree.
+      if (![file isAncestorOfFileItem: visibleTree]) {
+        return NO;
       }
+    }
     
-      if (!insideVisibleTree) {
-        // Do not descend if the DirectoryItem "file" is not an ancestor of the
-        // visible tree.
-        if (![file isAncestorOfFileItem: visibleTree]) {
-          descend = NO;
-        }
+    // Descend unless drawing has been aborted
+    return !abort;
+  }
+
+  // It's a plain file
+  if ( [file isSpecial] && [[file name] isEqualToString: FreeSpace] ) {
+    [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+  }
+  else if ( insideVisibleTree ) {
+    if ( [file isSpecial] ) {
+      if ( [[file name] isEqualToString: FreedSpace] ) {
+        [self drawBasicFilledRect: rect intColor: freeSpaceColor];
       }
     }
     else {
-      // It's a plain file
-      
-      if ([file isSpecial] && [[file name] isEqualToString: FreeSpace]) {
-        [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+      int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
+                                       atDepth: depth];
+      if ( [colorMapper canProvideLegend] ) {
+        NSAssert(colorIndex >= 0, @"Negative hash value.");
+        colorIndex = MIN(colorIndex, numGradientColors - 1);
       }
-      else if (insideVisibleTree) {
-        if ([file isSpecial]) {
-          if ([[file name] isEqualToString: FreedSpace]) {
-            [self drawBasicFilledRect: rect intColor: freeSpaceColor];
-          }
-        }
-        else if ( fileItemMask==nil 
-                  || [fileItemMask testFileItem: file 
-                                     context: fileItemPathStringCache] ) {
-          int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
-                                           atDepth: depth];
-          if ([colorMapper canProvideLegend]) {
-            NSAssert(colorIndex >= 0, @"Negative hash value.");
-            colorIndex = MIN(colorIndex, numGradientColors - 1);
-          }
-          else {
-            colorIndex = abs(colorIndex) % numGradientColors;
-          }
+      else {
+        colorIndex = abs(colorIndex) % numGradientColors;
+      }
 
-          [self drawGradientFilledRect: rect colorIndex: colorIndex];
-        }
-      }
-      
-      descend = NO;
+      [self drawGradientFilledRect: rect colorIndex: colorIndex];
     }
   }
 
-  if (abort) {
-    descend = NO;
-  }
-  
-  return descend;
+  // Cannot descend from a file, so return NO to save having to check this.
+  return NO;
 }
+
 
 - (void) emergedFromItem: (Item *)item {
   if (item == visibleTree) {
