@@ -357,23 +357,34 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (IBAction) updateEnabledState:(id)sender {
   // Note: "sender" is ignored. Always updating all.
   
+  BOOL  targetsOnlyFiles = [ruleTargetPopUp indexOfSelectedItem]==0;
+  
   BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
   BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
-  BOOL  lowerBoundTestUsed = [sizeLowerBoundCheckBox state]==NSOnState;
-  BOOL  upperBoundTestUsed = [sizeUpperBoundCheckBox state]==NSOnState;
   BOOL  hardLinkTestUsed = [hardLinkCheckBox state]==NSOnState;
   BOOL  packageTestUsed = [packageCheckBox state]==NSOnState;
+  BOOL  typeTestUsed = ( [typeCheckBox state]==NSOnState && targetsOnlyFiles );
+  BOOL  lowerBoundTestUsed = ( [sizeLowerBoundCheckBox state]==NSOnState
+                               && targetsOnlyFiles );
+  BOOL  upperBoundTestUsed = ( [sizeUpperBoundCheckBox state]==NSOnState
+                               && targetsOnlyFiles );
   
   [nameTestControls setEnabled: nameTestUsed];
   [pathTestControls setEnabled: pathTestUsed];
-  
-  [sizeLowerBoundField setEnabled: lowerBoundTestUsed];
-  [sizeLowerBoundUnits setEnabled: lowerBoundTestUsed];
-  [sizeUpperBoundField setEnabled: upperBoundTestUsed];
-  [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
 
   [hardLinkStatusPopUp setEnabled: hardLinkTestUsed];
   [packageStatusPopUp setEnabled: packageTestUsed];
+  
+  [typeCheckBox setEnabled: targetsOnlyFiles];
+  // TODO: [typeTestControls setEnabled: typeTestUsed];
+  
+  [sizeLowerBoundCheckBox setEnabled: targetsOnlyFiles];
+  [sizeLowerBoundField setEnabled: lowerBoundTestUsed];
+  [sizeLowerBoundUnits setEnabled: lowerBoundTestUsed];
+
+  [sizeUpperBoundCheckBox setEnabled: targetsOnlyFiles];
+  [sizeUpperBoundField setEnabled: upperBoundTestUsed];
+  [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
 
   [doneButton setEnabled:
      [[ruleNameField stringValue] length] > 0
