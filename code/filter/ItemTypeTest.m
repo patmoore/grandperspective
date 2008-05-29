@@ -127,7 +127,7 @@
   NSString  *matchesDescr = descriptionForMatches( matches );
   NSString  *format =  
     NSLocalizedStringFromTable( 
-           @"type conforms to`%@", @"Tests",
+           @"type conforms to %@", @"Tests",
            @"Filetype test with 1: match targets" );
   
   return [NSString stringWithFormat: format, matchesDescr];
