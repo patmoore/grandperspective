@@ -6,6 +6,8 @@
 #import "TreeBalancer.h"
 #import "TreeContext.h"
 #import "UniformTypeInventory.h"
+#import "FileItemTest.h"
+#import "FileItemPathStringCache.h"
 
 
 NSString  *LogicalFileSize = @"logical";
@@ -92,8 +94,13 @@ typedef struct  {
 
 - (id) init {
   if (self = [super init]) {
+    filterTest = nil;
+  
     treeBalancer = [[TreeBalancer alloc] init];
     typeInventory = [[UniformTypeInventory defaultUniformTypeInventory] retain];
+  
+    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
+    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
   
     hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
@@ -117,11 +124,15 @@ typedef struct  {
 
 
 - (void) dealloc {
+  [filterTest release];
+
   [treeBalancer release];
   [typeInventory release];
   
   [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
+  
+  [fileItemPathStringCache release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -145,7 +156,22 @@ typedef struct  {
     NSAssert(NO, @"Invalid file size measure.");
   }
   
-  fileSizeMeasure = [measure retain];
+  if (measure != fileSizeMeasure) {
+    [fileSizeMeasure release];
+    fileSizeMeasure = [measure retain];
+  }
+}
+
+
+- (NSObject <FileItemTest> *) filterTest {
+  return filterTest;
+}
+
+- (void) setFilterTest: (NSObject <FileItemTest> *)test {
+  if (test != filterTest) {
+    [filterTest release];
+    filterTest = [test retain];
+  }
 }
 
 
@@ -215,6 +241,7 @@ typedef struct  {
     [[[TreeContext alloc] initWithVolumePath: volumePath
                             scanPath: relativePath
                             fileSizeMeasure: fileSizeMeasure
+                            filterTest: filterTest
                             volumeSize: volumeSize 
                             freeSpace: freeSpace] autorelease];
     
@@ -319,13 +346,19 @@ typedef struct  {
           DirectoryItem  *dirChildItem = 
             [[DirectoryItem alloc] initWithName: childName parent: dirItem
                                      flags: flags];
-          [dirs addObject: dirChildItem];
-          [dirChildItem release];
 
-          FSRefObject  *refObject = 
-            [[FSRefObject alloc] initWithFileRef: childRef];
-          [dirFileRefs addObject: refObject];
-          [refObject release];
+          if (filterTest == nil || 
+              [filterTest testFileItem: dirChildItem
+                            context: fileItemPathStringCache] != TEST_FAILED) {
+            [dirs addObject: dirChildItem];
+
+            FSRefObject  *refObject = 
+              [[FSRefObject alloc] initWithFileRef: childRef];
+            [dirFileRefs addObject: refObject];
+            [refObject release];
+          }
+          
+          [dirChildItem release];
         }
         else {
           // A file node.
@@ -342,7 +375,13 @@ typedef struct  {
             [[PlainFileItem alloc] initWithName: childName parent: dirItem 
                                      size: childSize type: fileType 
                                      flags: flags];
-          [files addObject: fileChildItem];
+                                     
+          if (filterTest == nil || 
+              [filterTest testFileItem: fileChildItem
+                            context: fileItemPathStringCache] != TEST_FAILED) {
+            [files addObject: fileChildItem];
+          }
+          
           [fileChildItem release];
         }
       }

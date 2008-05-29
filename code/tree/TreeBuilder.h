@@ -6,6 +6,8 @@
 @class FileItem;
 @class DirectoryItem;
 @class TreeContext;
+@class FileItemPathStringCache;
+@protocol FileItemTest;
 
 
 extern NSString  *LogicalFileSize;
@@ -17,6 +19,8 @@ extern NSString  *PhysicalFileSize;
   NSString  *fileSizeMeasure;
   BOOL  useLogicalFileSize;
   
+  NSObject <FileItemTest>  *filterTest;
+  
   BOOL  abort;
   TreeBalancer  *treeBalancer;
   UniformTypeInventory  *typeInventory;
@@ -25,6 +29,9 @@ extern NSString  *PhysicalFileSize;
   // encountered so far. If a file with a same number is encountered once
   // more, it is ignored. 
   NSMutableSet  *hardLinkedFileNumbers;
+  
+  // Cache used by filterTest
+  FileItemPathStringCache  *fileItemPathStringCache;
   
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;
@@ -45,6 +52,9 @@ extern NSString  *PhysicalFileSize;
 
 - (NSString *) fileSizeMeasure;
 - (void) setFileSizeMeasure: (NSString *)measure;
+
+- (NSObject <FileItemTest> *) filterTest;
+- (void) setFilterTest: (NSObject <FileItemTest> *)test;
 
 - (TreeContext *) buildTreeForPath: (NSString *)path;
 

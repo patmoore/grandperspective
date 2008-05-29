@@ -33,6 +33,7 @@
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
   treeBuilder = [[TreeBuilder alloc] init];
   [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
+  [treeBuilder setFilterTest: [myInput filterTest]];
   
   NSDate  *startTime = [NSDate date];
   

@@ -85,6 +85,7 @@ static int  nextFilterId = 1;
 - (id) initWithVolumePath: (NSString *)volumePath
          scanPath: (NSString *)relativeScanPath
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
+         filterTest: (NSObject <FileItemTest> *)filterVal
          volumeSize: (unsigned long long) volumeSizeVal 
          freeSpace: (unsigned long long) freeSpaceVal {
   return [self initWithVolumePath: volumePath
@@ -93,8 +94,8 @@ static int  nextFilterId = 1;
                  volumeSize: volumeSizeVal 
                  freeSpace: freeSpaceVal 
                  scanTime: [NSDate date]
-                 filter: nil 
-                 filterId: 0];
+                 filter: filterVal 
+                 filterId: (filterVal != nil ? nextFilterId++ : 0)];
 }
 
 

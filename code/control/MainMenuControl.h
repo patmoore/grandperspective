@@ -9,21 +9,21 @@
   WindowManager  *windowManager;
   
   VisibleAsynchronousTaskManager  *scanTaskManager;
-  VisibleAsynchronousTaskManager  *rescanTaskManager;
   VisibleAsynchronousTaskManager  *filterTaskManager;
   
   EditFilterWindowControl  *editFilterWindowControl;
   PreferencesPanelControl  *preferencesPanelControl;
 }
 
-- (IBAction) openDirectoryView:(id)sender;
-- (IBAction) rescanDirectoryView:(id)sender;
-- (IBAction) filterDirectoryView:(id)sender;
-- (IBAction) duplicateDirectoryView:(id)sender;
-- (IBAction) twinDirectoryView:(id)sender;
+- (IBAction) scanDirectoryView: (id) sender;
+- (IBAction) scanFilteredDirectoryView: (id) sender;
+- (IBAction) rescanDirectoryView: (id) sender;
+- (IBAction) filterDirectoryView: (id) sender;
+- (IBAction) duplicateDirectoryView: (id) sender;
+- (IBAction) twinDirectoryView: (id) sender;
 
-- (IBAction) saveDirectoryViewImage:(id)sender;
+- (IBAction) saveDirectoryViewImage: (id) sender;
 
-- (IBAction) editPreferences:(id)sender;
+- (IBAction) editPreferences: (id) sender;
 
 @end

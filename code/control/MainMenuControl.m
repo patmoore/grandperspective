@@ -19,8 +19,6 @@
 #import "AsynchronousTaskManager.h"
 #import "ScanTaskInput.h"
 #import "ScanTaskExecutor.h"
-#import "RescanTaskInput.h"
-#import "RescanTaskExecutor.h"
 #import "FilterTaskInput.h"
 #import "FilterTaskExecutor.h"
 
@@ -66,7 +64,10 @@ NSString* scanActivityFormatString() {
 - (void) editFilterWindowCancelAction:(NSNotification*)notification;
 - (void) editFilterWindowOkAction:(NSNotification*)notification;
 
+- (void) scanFolderUsingFilter: (BOOL) useFilter;
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
+
+- (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
 
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control;
 
@@ -120,18 +121,8 @@ NSString* scanActivityFormatString() {
       [[VisibleAsynchronousTaskManager alloc] 
          initWithTaskManager: actualScanTaskManager 
            panelTitle: NSLocalizedString ( @"Scanning in progress",
-                                           @"Title of progress panel." )];
-    
-    AsynchronousTaskManager  *actualRescanTaskManager = 
-      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
-          [[[RescanTaskExecutor alloc] init] autorelease]] autorelease];
+                                           @"Title of progress panel." )];    
 
-    rescanTaskManager =
-      [[VisibleAsynchronousTaskManager alloc] 
-         initWithTaskManager: actualRescanTaskManager 
-           panelTitle: NSLocalizedString ( @"Rescanning in progress",
-                                           @"Title of progress panel." ) ];
-                   
     AsynchronousTaskManager  *actualFilterTaskManager = 
       [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
           [[[FilterTaskExecutor alloc] init] autorelease]] autorelease];
@@ -150,8 +141,7 @@ NSString* scanActivityFormatString() {
   
   [scanTaskManager dispose];
   [scanTaskManager release];
-  [rescanTaskManager dispose];
-  [rescanTaskManager release];
+
   [filterTaskManager dispose];
   [filterTaskManager release];
   
@@ -162,7 +152,7 @@ NSString* scanActivityFormatString() {
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
-  [self openDirectoryView:self];
+  [self scanDirectoryView: self];
 }
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
@@ -190,45 +180,12 @@ NSString* scanActivityFormatString() {
 }
 
 
-- (IBAction) openDirectoryView:(id)sender {
-  NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
-  [openPanel setCanChooseFiles: NO];
-  [openPanel setCanChooseDirectories: YES];
-  [openPanel setAllowsMultipleSelection: NO];
-  
-  [openPanel setTitle: NSLocalizedString(@"Scan folder", 
-                                         @"Title of open panel") ];
-  [openPanel setPrompt: NSLocalizedString(@"Scan", @"Prompt in open panel") ];
+- (IBAction) scanDirectoryView: (id) sender {
+  [self scanFolderUsingFilter: NO];
+}
 
-  if ([openPanel runModalForTypes:nil] != NSOKButton) {
-    return; // Abort
-  }  
-
-  NSString  *dirName = [[openPanel filenames] objectAtIndex:0];
-
-  NSString  *fileSizeMeasure =
-    [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
-
-  FreshDirViewWindowCreator  *windowCreator =
-    [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
-  ScanTaskInput  *input = 
-    [[ScanTaskInput alloc] initWithDirectoryName: dirName
-                             fileSizeMeasure: fileSizeMeasure ];
-
-  [rescanTaskManager abortTask];
-  // The TreeBuilder implementation is (was?) such that only one scan can 
-  // happen at any one time. Therefore, we have to make sure that no rescan task
-  // is currently being carried out. Note: any ongoing scan task will be
-  // aborted implicitely by the scanTaskManager.
-    
-  NSString  *format = scanActivityFormatString();
-  [scanTaskManager asynchronouslyRunTaskWithInput: input
-                     description: [NSString stringWithFormat: format, dirName]
-                     callback: windowCreator
-                     selector: @selector(createWindowForTree:)];
-                       
-  [input release];
-  [windowCreator release];
+- (IBAction) scanFilteredDirectoryView: (id) sender {
+  [self scanFolderUsingFilter: YES];
 }
 
 
@@ -250,20 +207,18 @@ NSString* scanActivityFormatString() {
           targetPath: pathModel
           settings: [oldControl directoryViewControlSettings]];
 
-  RescanTaskInput  *input = 
-    [[RescanTaskInput alloc] initWithOldContext: [oldControl treeContext]];
-    
-  [scanTaskManager abortTask];
-  // The TreeBuilder implementation is (was?) such that only one scan can 
-  // happen at any one time. Therefore, we have to make sure that no scan task
-  // is currently being carried out. Note: any ongoing rescan task will be 
-  // aborted implicitely by the rescanTaskManager.
+  TreeContext  *oldContext = [oldControl treeContext];
+  ScanTaskInput  *input = 
+    [[ScanTaskInput alloc] 
+        initWithDirectoryName: [[oldContext scanTree] stringForFileItemPath]
+          fileSizeMeasure: [oldContext fileSizeMeasure]
+          filterTest: [oldContext fileItemFilter]];
     
   NSString  *format = scanActivityFormatString();
-  [rescanTaskManager asynchronouslyRunTaskWithInput: input
-                       description: [NSString stringWithFormat: format, dirName]
-                       callback: windowCreator
-                       selector: @selector(createWindowForTree:)];
+  [scanTaskManager asynchronouslyRunTaskWithInput: input
+                     description: [NSString stringWithFormat: format, dirName]
+                     callback: windowCreator
+                     selector: @selector(createWindowForTree:)];
 
   [input release];                       
   [windowCreator release];
@@ -274,37 +229,12 @@ NSString* scanActivityFormatString() {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  if (editFilterWindowControl == nil) {
-    // Lazily create it
-    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
-    
-    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
-          name: CancelPerformedEvent object: editFilterWindowControl];
-    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
-          name: ClosePerformedEvent object: editFilterWindowControl];
-          // Closing a window can be considered the same as cancelling.
-    [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
-          name: OkPerformedEvent object: editFilterWindowControl];
-
-    [[editFilterWindowControl window] setTitle: 
-        NSLocalizedString( @"Apply filter", @"Window title" ) ];
-
-    [editFilterWindowControl removeApplyButton];
-  }  
-  [editFilterWindowControl representFileItemTest: [oldControl fileItemMask]];
-  
-  int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
-  [[editFilterWindowControl window] close];
-
-  if (status ==  NSRunAbortedResponse) {
-    return; // Abort
-  }
-  NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
-  
-  // Get rule from window
   NSObject <FileItemTest>  *filterTest =
-    [editFilterWindowControl createFileItemTest];
+    [self getFilter: [oldControl fileItemMask]];
+    
+  if (filterTest == nil) {
+    return;
+  }
       
   ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
 
@@ -375,6 +305,45 @@ NSString* scanActivityFormatString() {
 }
 
 
+- (void) scanFolderUsingFilter: (BOOL) useFilter {
+  NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
+  [openPanel setCanChooseFiles: NO];
+  [openPanel setCanChooseDirectories: YES];
+  [openPanel setAllowsMultipleSelection: NO];
+  
+  [openPanel setTitle: NSLocalizedString(@"Scan folder", 
+                                         @"Title of open panel") ];
+  [openPanel setPrompt: NSLocalizedString(@"Scan", @"Prompt in open panel") ];
+
+  if ([openPanel runModalForTypes:nil] != NSOKButton) {
+    return; // Abort
+  }  
+
+  NSString  *dirName = [[openPanel filenames] objectAtIndex: 0];
+  
+  NSObject <FileItemTest>  *filter = useFilter ? [self getFilter: nil] : nil;
+
+  NSString  *fileSizeMeasure =
+    [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
+
+  FreshDirViewWindowCreator  *windowCreator =
+    [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
+  ScanTaskInput  *input = 
+    [[ScanTaskInput alloc] initWithDirectoryName: dirName
+                             fileSizeMeasure: fileSizeMeasure 
+                             filterTest: filter];
+    
+  NSString  *format = scanActivityFormatString();
+  [scanTaskManager asynchronouslyRunTaskWithInput: input
+                     description: [NSString stringWithFormat: format, dirName]
+                     callback: windowCreator
+                     selector: @selector(createWindowForTree:)];
+                       
+  [input release];
+  [windowCreator release];  
+}
+
+
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
@@ -396,6 +365,40 @@ NSString* scanActivityFormatString() {
   // Force loading (and showing) of the window.
   [windowManager addWindow:[newControl window] 
                    usingTitle:[[oldControl window] title]];
+}
+
+
+- (NSObject <FileItemTest> *)getFilter: (NSObject <FileItemTest> *)initialTest {
+  if (editFilterWindowControl == nil) {
+    // Lazily create it
+    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
+    
+    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
+          name: CancelPerformedEvent object: editFilterWindowControl];
+    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
+          name: ClosePerformedEvent object: editFilterWindowControl];
+          // Closing a window can be considered the same as cancelling.
+    [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
+          name: OkPerformedEvent object: editFilterWindowControl];
+
+    [[editFilterWindowControl window] setTitle: 
+        NSLocalizedString( @"Apply filter", @"Window title" ) ];
+
+    [editFilterWindowControl removeApplyButton];
+  }  
+  [editFilterWindowControl representFileItemTest: initialTest];
+  
+  int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
+  [[editFilterWindowControl window] close];
+
+  if (status ==  NSRunAbortedResponse) {
+    return nil; // Aborted
+  }
+  NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
+  
+  // Get rule from window
+  return [editFilterWindowControl createFileItemTest];
 }
 
 

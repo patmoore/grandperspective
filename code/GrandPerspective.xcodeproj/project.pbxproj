@@ -87,8 +87,6 @@
 		AAC26BC30A8CAF4800F2DA33 /* DrawTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB50A8CAF4800F2DA33 /* DrawTaskInput.m */; };
 		AAC26BC50A8CAF4800F2DA33 /* FilterTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB70A8CAF4800F2DA33 /* FilterTaskExecutor.m */; };
 		AAC26BC70A8CAF4800F2DA33 /* FilterTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB90A8CAF4800F2DA33 /* FilterTaskInput.m */; };
-		AAC26BC90A8CAF4800F2DA33 /* RescanTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BBB0A8CAF4800F2DA33 /* RescanTaskExecutor.m */; };
-		AAC26BCB0A8CAF4800F2DA33 /* RescanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BBD0A8CAF4800F2DA33 /* RescanTaskInput.m */; };
 		AAC26BCD0A8CAF4800F2DA33 /* ScanTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BBF0A8CAF4800F2DA33 /* ScanTaskExecutor.m */; };
 		AAC9B6490B7FA94A002B3ECE /* GrandPerspectiveHelp in Resources */ = {isa = PBXBuildFile; fileRef = AAC9B6340B7FA94A002B3ECE /* GrandPerspectiveHelp */; };
 		AAD8DFB30B077ED20060DADA /* PreferencesPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD8DFB20B077ED20060DADA /* PreferencesPanelControl.m */; };
@@ -259,10 +257,6 @@
 		AAC26BB70A8CAF4800F2DA33 /* FilterTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = FilterTaskExecutor.m; path = task/FilterTaskExecutor.m; sourceTree = "<group>"; };
 		AAC26BB80A8CAF4800F2DA33 /* FilterTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = FilterTaskInput.h; path = task/FilterTaskInput.h; sourceTree = "<group>"; };
 		AAC26BB90A8CAF4800F2DA33 /* FilterTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = FilterTaskInput.m; path = task/FilterTaskInput.m; sourceTree = "<group>"; };
-		AAC26BBA0A8CAF4800F2DA33 /* RescanTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RescanTaskExecutor.h; path = task/RescanTaskExecutor.h; sourceTree = "<group>"; };
-		AAC26BBB0A8CAF4800F2DA33 /* RescanTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RescanTaskExecutor.m; path = task/RescanTaskExecutor.m; sourceTree = "<group>"; };
-		AAC26BBC0A8CAF4800F2DA33 /* RescanTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = RescanTaskInput.h; path = task/RescanTaskInput.h; sourceTree = "<group>"; };
-		AAC26BBD0A8CAF4800F2DA33 /* RescanTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = RescanTaskInput.m; path = task/RescanTaskInput.m; sourceTree = "<group>"; };
 		AAC26BBE0A8CAF4800F2DA33 /* ScanTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ScanTaskExecutor.h; path = task/ScanTaskExecutor.h; sourceTree = "<group>"; };
 		AAC26BBF0A8CAF4800F2DA33 /* ScanTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ScanTaskExecutor.m; path = task/ScanTaskExecutor.m; sourceTree = "<group>"; };
 		AAC9B6350B7FA94A002B3ECE /* English */ = {isa = PBXFileReference; lastKnownFileType = folder; name = English; path = English.lproj/GrandPerspectiveHelp; sourceTree = "<group>"; };
@@ -585,10 +579,6 @@
 				AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */,
 				AAC26BBE0A8CAF4800F2DA33 /* ScanTaskExecutor.h */,
 				AAC26BBF0A8CAF4800F2DA33 /* ScanTaskExecutor.m */,
-				AAC26BBC0A8CAF4800F2DA33 /* RescanTaskInput.h */,
-				AAC26BBD0A8CAF4800F2DA33 /* RescanTaskInput.m */,
-				AAC26BBA0A8CAF4800F2DA33 /* RescanTaskExecutor.h */,
-				AAC26BBB0A8CAF4800F2DA33 /* RescanTaskExecutor.m */,
 			);
 			name = task;
 			sourceTree = "<group>";
@@ -712,8 +702,6 @@
 				AAC26BC30A8CAF4800F2DA33 /* DrawTaskInput.m in Sources */,
 				AAC26BC50A8CAF4800F2DA33 /* FilterTaskExecutor.m in Sources */,
 				AAC26BC70A8CAF4800F2DA33 /* FilterTaskInput.m in Sources */,
-				AAC26BC90A8CAF4800F2DA33 /* RescanTaskExecutor.m in Sources */,
-				AAC26BCB0A8CAF4800F2DA33 /* RescanTaskInput.m in Sources */,
 				AAC26BCD0A8CAF4800F2DA33 /* ScanTaskExecutor.m in Sources */,
 				AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */,
 				AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */,
