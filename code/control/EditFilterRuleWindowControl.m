@@ -8,6 +8,7 @@
 #import "ItemPathTest.h"
 #import "ItemSizeTest.h"
 #import "ItemFlagsTest.h"
+#import "SelectiveItemTest.h"
 
 #import "MultiMatchStringTest.h"
 #import "StringEqualityTest.h"
@@ -21,16 +22,20 @@
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState;
-- (void) updateStateBasedOnTest:(NSObject <FileItemTest> *)test;
+- (void) updateStateBasedOnTest: (NSObject <FileItemTest> *)test;
 - (void) updateStateBasedOnItemNameTest: (ItemNameTest *)test;
 - (void) updateStateBasedOnItemPathTest: (ItemPathTest *)test;
 - (void) updateStateBasedOnItemSizeTest: (ItemSizeTest *)test;
 - (void) updateStateBasedOnItemFlagsTest: (ItemFlagsTest *)test;
+- (NSObject <FileItemTest> *) updateStateBasedOnSelectiveItemTest: 
+                                (SelectiveItemTest *)test;
 
 - (ItemNameTest *) itemNameTestBasedOnState;
 - (ItemPathTest *) itemPathTestBasedOnState;
 - (ItemSizeTest *) itemSizeTestBasedOnState;
 - (ItemFlagsTest *) itemFlagsTestBasedOnState;
+- (NSObject <FileItemTest> *) selectiveItemTestBasedOnState:
+     (NSObject <FileItemTest> *) subTest;
 
 @end // @interface EditFilterRuleWindowControl (PrivateMethods)
 
@@ -162,6 +167,14 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   [ruleNameField setStringValue: ruleName];
   
+  if ([test isKindOfClass: [SelectiveItemTest class]]) {
+    // It is a selective test. Update state and continue with its subtest
+    
+    test = [self updateStateBasedOnSelectiveItemTest: 
+                   (SelectiveItemTest *)test];
+  }
+
+  
   if ([test isKindOfClass:[CompoundAndItemTest class]]) {
     // It is a compound test. Iterate over all subtests.
     NSEnumerator  *subTests = 
@@ -179,7 +192,6 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [self updateEnabledState:nil];
 }
 
-// Creates the test object that represents the current window state.
 - (NSObject <FileItemTest> *) createFileItemTest {
   NSMutableArray  *subTests = [NSMutableArray arrayWithCapacity:3];
   NSObject <FileItemTest>  *subTest;
@@ -215,6 +227,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     test = [[[CompoundAndItemTest alloc] initWithSubItemTests:subTests]
                 autorelease];
   }
+  
+  test = [self selectiveItemTestBasedOnState: test];
   
   [test setName: [self fileItemTestName]];
   
@@ -379,6 +393,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (void) resetState {
   [ruleNameField setStringValue: @""];
   [ruleNameField setEnabled: YES];
+  
+  [ruleTargetPopUp selectItemAtIndex: 2]; // Files and folders
 
   [nameTestControls resetState];
   [pathTestControls resetState];
@@ -487,6 +503,14 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 
+- (NSObject <FileItemTest> *) updateStateBasedOnSelectiveItemTest: 
+                                (SelectiveItemTest *)test {
+  [ruleTargetPopUp selectItemAtIndex: [test applyToFilesOnly] ? 0 : 1];
+  
+  return [test subItemTest];
+}
+
+
 - (ItemNameTest*) itemNameTestBasedOnState {
   MultiMatchStringTest  *stringTest = [nameTestControls stringTestBasedOnState];
 
@@ -570,6 +594,22 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   else {
     return nil;
   }
+}
+
+
+- (NSObject <FileItemTest> *) selectiveItemTestBasedOnState:
+     (NSObject <FileItemTest> *) subTest {
+  int  index = [ruleTargetPopUp indexOfSelectedItem];
+  
+  if (index == 2) { // Files and folders
+    return subTest;
+  }
+  else {
+    BOOL  onlyFiles = (index == 0);
+  
+    return [[[SelectiveItemTest alloc] initWithSubItemTest: subTest 
+                                         onlyFiles: onlyFiles] autorelease];
+  } 
 }
 
 @end

@@ -76,10 +76,12 @@
 
 - (NSString*) fileItemTestName;
 
-// Configures the window to represent the given test.
+/* Configures the window to represent the given test.
+ */
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test;
 
-// Creates the test object that represents the current window state.
+/* Creates the test object that represents the current window state.
+ */
 - (NSObject <FileItemTest> *) createFileItemTest;
 
 /* Sets the name of the rule as it is shown in the window. This may be
