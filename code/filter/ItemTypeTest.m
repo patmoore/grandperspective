@@ -6,6 +6,13 @@
 #import "UniformTypeInventory.h"
 
 
+@interface ItemTypeTest (PrivateMethods)
+
+- (NSArray *) matchesAsStrings;
+
+@end
+
+
 @implementation ItemTypeTest
 
 // Overrides designated initialiser
@@ -78,17 +85,8 @@
   
   UniformTypeInventory  *typeInventory = 
     [UniformTypeInventory defaultUniformTypeInventory];
-  unsigned  numMatches = [matches count];
 
-  NSMutableArray  *utis = [NSMutableArray arrayWithCapacity: numMatches];
-  unsigned  i = 0;
-  while (i < numMatches) {
-    [utis addObject: 
-       [((UniformType *)[matches objectAtIndex: i]) uniformTypeIdentifier]];
-  }
-
-  [dict setObject: utis forKey: @"matches"];
-  
+  [dict setObject: [self matchesAsStrings] forKey: @"matches"];  
   [dict setObject: [NSNumber numberWithBool: strict] forKey: @"strict"];
 }
 
@@ -124,11 +122,14 @@
 
 
 - (NSString *) description {
-  NSString  *matchesDescr = descriptionForMatches( matches );
-  NSString  *format =  
-    NSLocalizedStringFromTable( 
-           @"type conforms to %@", @"Tests",
-           @"Filetype test with 1: match targets" );
+  NSString  *matchesDescr = descriptionForMatches( [self matchesAsStrings] );
+  NSString  *format = ( strict 
+                        ? NSLocalizedStringFromTable( 
+                            @"type equals %@", @"Tests",
+                            @"Filetype test with 1: match targets" )
+                        : NSLocalizedStringFromTable( 
+                            @"type conforms to %@", @"Tests",
+                            @"Filetype test with 1: match targets" ) );
   
   return [NSString stringWithFormat: format, matchesDescr];
 }
@@ -143,3 +144,23 @@
 }
 
 @end
+
+
+@implementation ItemTypeTest (PrivateMethods)
+
+- (NSArray *) matchesAsStrings {
+  unsigned  numMatches = [matches count];
+  NSMutableArray  *utis = [NSMutableArray arrayWithCapacity: numMatches];
+
+  unsigned  i = 0;
+  while (i < numMatches) {
+    [utis addObject: 
+       [((UniformType *)[matches objectAtIndex: i]) uniformTypeIdentifier]];
+    i++;
+  }
+  
+  return utis;
+}
+
+@end // @implementation ItemTypeTest (PrivateMethods)
+
