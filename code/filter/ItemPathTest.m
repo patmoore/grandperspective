@@ -14,7 +14,7 @@
 
 
 - (TestResult) testFileItem: (FileItem *)item context: (id)context {
-  NSString  *path = [context pathStringForFileItem: [item parentDirectory]];
+  NSString  *path = [context pathStringForFileItem: item];
   // Note: For performance reasons, the path string is not obtained from the 
   // item itself, but from the context instead. The context, it is assumed, 
   // supports the pathStringForFileItem: method as provided by the 
