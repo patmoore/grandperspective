@@ -72,6 +72,11 @@ NSString  *UnknownTypeUTI = @"unknown";
 }
 
 
+- (unsigned) count {
+  return [typeForUTI count];
+}
+
+
 - (UniformType *)unknownUniformType; {
   return unknownType;
 }

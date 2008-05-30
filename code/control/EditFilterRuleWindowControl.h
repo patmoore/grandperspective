@@ -2,6 +2,7 @@
 
 @protocol FileItemTest;
 @class StringBasedTestControls;
+@class TypeMatchControls;
 
 @interface EditFilterRuleWindowControl : NSWindowController {
 
@@ -29,6 +30,7 @@
   IBOutlet NSPopUpButton  *packageStatusPopUp;
 
   IBOutlet NSButton  *typeCheckBox;
+  IBOutlet NSPopUpButton  *typeMatchPopUpButton;
   IBOutlet NSTableView  *typeTargetsView;
   IBOutlet NSButton  *addTypeTargetButton;
   IBOutlet NSButton  *removeTypeTargetButton;
@@ -46,6 +48,7 @@
   
   NSString  *ruleName;
   
+  TypeMatchControls  *typeTestControls;
   StringBasedTestControls  *nameTestControls;
   StringBasedTestControls  *pathTestControls;
 }
@@ -66,8 +69,12 @@
 
 - (IBAction) addNameTarget: (id) sender;
 - (IBAction) removeNameTarget: (id) sender;
+
 - (IBAction) addPathTarget: (id) sender;
 - (IBAction) removePathTarget: (id) sender;
+
+- (IBAction) addTypeTarget: (id) sender;
+- (IBAction) removeTypeTarget: (id) sender;
 
 - (IBAction) updateEnabledState:(id)sender;
 

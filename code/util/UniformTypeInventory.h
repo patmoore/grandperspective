@@ -42,6 +42,8 @@ extern NSString  *UniformTypeKey;
 
 + (UniformTypeInventory *)defaultUniformTypeInventory;
 
+- (unsigned) count;
+
 - (NSSet *)childrenOfUniformType: (UniformType *)type;
 
 /* Returns the type associated with the given file extension. If there is no
