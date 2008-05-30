@@ -218,27 +218,31 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 - (NSObject <FileItemTest> *) createFileItemTest {
-  NSMutableArray  *subTests = [NSMutableArray arrayWithCapacity:3];
+  NSMutableArray  *subTests = [NSMutableArray arrayWithCapacity: 4];
   NSObject <FileItemTest>  *subTest;
   
   subTest = [self itemNameTestBasedOnState];
   if (subTest != nil) {
-    [subTests addObject:subTest];
+    [subTests addObject: subTest];
   }
   
   subTest = [self itemPathTestBasedOnState];
   if (subTest != nil) {
-    [subTests addObject:subTest];
+    [subTests addObject: subTest];
   }
 
-  subTest = [self itemSizeTestBasedOnState];
-  if (subTest != nil) {
-    [subTests addObject:subTest];
-  }
-  
   subTest = [self itemFlagsTestBasedOnState];
   if (subTest != nil) {
-    [subTests addObject:subTest];
+    [subTests addObject: subTest];
+  }
+  
+  if ( [ruleTargetPopUp indexOfSelectedItem] == POPUP_FILES ) {
+    // Add any file-only tests
+    
+    subTest = [self itemSizeTestBasedOnState];
+    if (subTest != nil) {
+      [subTests addObject: subTest];
+    }
   }
   
   NSObject <FileItemTest>  *test;
@@ -382,7 +386,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (IBAction) updateEnabledState:(id)sender {
   // Note: "sender" is ignored. Always updating all.
   
-  BOOL  targetsOnlyFiles = [ruleTargetPopUp indexOfSelectedItem]==0;
+  BOOL  targetsOnlyFiles = 
+          [ruleTargetPopUp indexOfSelectedItem] == POPUP_FILES;
   
   BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
   BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
