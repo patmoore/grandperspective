@@ -248,7 +248,6 @@
 - (BOOL) isFileItemMasked: (FileItem *)file {
   return ( fileItemMask != nil 
            && ! [file isSpecial]
-           && file != scanTree
            && ( [fileItemMask testFileItem: file 
                                 context: fileItemPathStringCache]
                 == TEST_FAILED ) );
