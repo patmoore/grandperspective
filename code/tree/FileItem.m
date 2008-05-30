@@ -104,14 +104,21 @@
 }
 
 
-- (NSString*) stringForFileItemPath {
+- (NSString *) pathComponent {
   // Special items do not contribute to the path.
-  NSString*  comp = [self isSpecial] ? @"" : name;
+  return [self isSpecial] ? nil : name;
+}
+
+- (NSString *) stringForFileItemPath {
+  NSString  *comp = [self pathComponent];
   
-  return (parent != nil) ? [[parent stringForFileItemPath] 
-                               stringByAppendingPathComponent: comp] : comp;
-  // Note: The above assumes that appending an empty path component does 
-  // nothing.
+  if (comp != nil) {
+    return (parent != nil) ? [[parent stringForFileItemPath] 
+                                 stringByAppendingPathComponent: comp] : comp;
+  }
+  else {
+    return (parent != nil) ? [parent stringForFileItemPath] : @"";
+  }
 }
 
 

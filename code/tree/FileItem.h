@@ -71,12 +71,24 @@
 - (BOOL) isPackage;
 
 
-- (NSString*) stringForFileItemPath;
+/* Returns the path component that the item contributes to the path. The path
+ * component is nil if the item is special (see -isSpecial).
+ */
+- (NSString *) pathComponent;
 
-// Returns a short string, approximating the given size. E.g. "1.23 MB"
-+ (NSString*) stringForFileItemSize: (ITEM_SIZE)size;
+/* Returns the path to the file item. It is the path as shown to the user. The
+ * system representation of the path can be different. This is for example the
+ * case when a path component contain slash characters.
+ */
+- (NSString *) stringForFileItemPath;
 
-// Returns a string, specifying the file size exactly. E.g. "12345678 bytes"
-+ (NSString*) exactStringForFileItemSize: (ITEM_SIZE)size;
+
+/* Returns a short string, approximating the given size. E.g. "1.23 MB"
+ */
++ (NSString *) stringForFileItemSize: (ITEM_SIZE)size;
+
+/* Returns a string, specifying the file size exactly. E.g. "12345678 bytes"
+ */
++ (NSString *) exactStringForFileItemSize: (ITEM_SIZE)size;
 
 @end
