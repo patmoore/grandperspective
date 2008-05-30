@@ -19,6 +19,28 @@
 #import "EditFilterWindowControl.h"
 
 
+// ruleTargetPopUp choices
+#define POPUP_FILES              0
+#define POPUP_FOLDERS            1
+#define POPUP_FILES_AND_FOLDERS  2
+
+// nameMatchPopUp and pathMatchPopUp choices
+#define POPUP_STRING_IS           0
+#define POPUP_STRING_CONTAINS     1
+#define POPUP_STRING_STARTS_WITH  2
+#define POPUP_STRING_ENDS_WITH    3
+
+// hardLinkStatusPopUp and packageStatusPopUp
+#define POPUP_FLAG_IS      0
+#define POPUP_FLAG_IS_NOT  1
+
+// sizeLowerBoundsUnits and sizeUpperBoundsUnits choices
+#define POPUP_BYTES  0
+#define POPUP_KB     1
+#define POPUP_MB     2
+#define POPUP_GB     3
+
+
 @interface EditFilterRuleWindowControl (PrivateMethods) 
 
 - (void) resetState;
@@ -172,6 +194,9 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     
     test = [self updateStateBasedOnSelectiveItemTest: 
                    (SelectiveItemTest *)test];
+  }
+  else {
+    [ruleTargetPopUp selectItemAtIndex: POPUP_FILES_AND_FOLDERS];
   }
 
   
@@ -405,24 +430,24 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [ruleNameField setStringValue: @""];
   [ruleNameField setEnabled: YES];
   
-  [ruleTargetPopUp selectItemAtIndex: 2]; // Files and folders
+  [ruleTargetPopUp selectItemAtIndex: POPUP_FILES];
 
   [nameTestControls resetState];
   [pathTestControls resetState];
 
   [sizeLowerBoundCheckBox setState: NSOffState];
   [sizeLowerBoundField setIntValue: 0];
-  [sizeLowerBoundUnits selectItemAtIndex: 0]; // bytes
+  [sizeLowerBoundUnits selectItemAtIndex: POPUP_BYTES];
   
   [sizeUpperBoundCheckBox setState: NSOffState];
   [sizeUpperBoundField setIntValue: 0];
-  [sizeUpperBoundUnits selectItemAtIndex: 0]; // bytes
+  [sizeUpperBoundUnits selectItemAtIndex: POPUP_BYTES];
   
   [hardLinkCheckBox setState: NSOffState];
-  [hardLinkStatusPopUp selectItemAtIndex: 0]; // "is"
+  [hardLinkStatusPopUp selectItemAtIndex: POPUP_FLAG_IS];
 
   [packageCheckBox setState: NSOffState];
-  [packageStatusPopUp selectItemAtIndex: 0]; // "is"
+  [packageStatusPopUp selectItemAtIndex: POPUP_FLAG_IS];
   
   [self updateEnabledState: nil];
 }
@@ -465,10 +490,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 - (void) updateStateBasedOnItemSizeTest: (ItemSizeTest *)test {
   if ([test hasLowerBound]) {
     ITEM_SIZE  bound = [test lowerBound];
-    int  i = 0;
+    int  i = POPUP_BYTES;
     
     if (bound > 0) {
-      while (i < 3 && (bound % 1024)==0) {
+      while (i < POPUP_GB && (bound % 1024)==0) {
         i++;
         bound /= 1024;
       }
@@ -481,10 +506,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
   if ([test hasUpperBound]) {
     ITEM_SIZE  bound = [test upperBound];
-    int  i = 0;
+    int  i = POPUP_BYTES;
           
     if (bound > 0) {
-      while (i < 3 && (bound % 1024)==0) {
+      while (i < POPUP_GB && (bound % 1024)==0) {
         i++;
         bound /= 1024;
       }
@@ -502,21 +527,27 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     [hardLinkCheckBox setState: NSOnState];
     
     [hardLinkStatusPopUp selectItemAtIndex: 
-       ([test desiredResult] & FILE_IS_HARDLINKED) ? 0 : 1];
+       ( ([test desiredResult] & FILE_IS_HARDLINKED) 
+         ? POPUP_FLAG_IS 
+         : POPUP_FLAG_IS_NOT ) ];
   }
   
   if ([test flagsMask] & FILE_IS_PACKAGE) {
     [packageCheckBox setState: NSOnState];
     
     [packageStatusPopUp selectItemAtIndex: 
-       ([test desiredResult] & FILE_IS_PACKAGE) ? 0 : 1];
+       ( ([test desiredResult] & FILE_IS_PACKAGE) 
+         ? POPUP_FLAG_IS 
+         : POPUP_FLAG_IS_NOT ) ];
   }
 }
 
 
 - (NSObject <FileItemTest> *) updateStateBasedOnSelectiveItemTest: 
                                 (SelectiveItemTest *)test {
-  [ruleTargetPopUp selectItemAtIndex: [test applyToFilesOnly] ? 0 : 1];
+  [ruleTargetPopUp selectItemAtIndex: ( [test applyToFilesOnly] 
+                                        ? POPUP_FILES 
+                                        : POPUP_FOLDERS ) ];
   
   return [test subItemTest];
 }
@@ -586,14 +617,14 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   if ([hardLinkCheckBox state] == NSOnState) {
     flagsMask |= FILE_IS_HARDLINKED;
-    if ([hardLinkStatusPopUp indexOfSelectedItem] == 0) { // "is"
+    if ([hardLinkStatusPopUp indexOfSelectedItem] == POPUP_FLAG_IS) {
       desiredResult |= FILE_IS_HARDLINKED;
     }
   }
   
   if ([packageCheckBox state] == NSOnState) {
     flagsMask |= FILE_IS_PACKAGE;
-    if ([packageStatusPopUp indexOfSelectedItem] == 0) { // "is"
+    if ([packageStatusPopUp indexOfSelectedItem] == POPUP_FLAG_IS) {
       desiredResult |= FILE_IS_PACKAGE;
     }
   }
@@ -612,11 +643,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
      (NSObject <FileItemTest> *) subTest {
   int  index = [ruleTargetPopUp indexOfSelectedItem];
   
-  if (index == 2) { // Files and folders
+  if (index == POPUP_FILES_AND_FOLDERS) { 
     return subTest;
   }
   else {
-    BOOL  onlyFiles = (index == 0);
+    BOOL  onlyFiles = (index == POPUP_FILES);
   
     return [[[SelectiveItemTest alloc] initWithSubItemTest: subTest 
                                          onlyFiles: onlyFiles] autorelease];
@@ -678,7 +709,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 - (void) resetState {
   [enabledCheckBox setState: NSOffState];
-  [matchPopUpButton selectItemAtIndex: 3]; // Suffix
+  [matchPopUpButton selectItemAtIndex: POPUP_STRING_IS];
   [caseInsensitiveCheckBox setState: NSOffState];
   
   [matchTargets removeAllObjects];
@@ -736,16 +767,16 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   int  index = -1;
     
   if ([test isKindOfClass:[StringEqualityTest class]]) {
-    index = 0;
+    index = POPUP_STRING_IS;
   }
   else if ([test isKindOfClass:[StringContainmentTest class]]) {
-    index = 1;
+    index = POPUP_STRING_CONTAINS;
   }
   else if ([test isKindOfClass:[StringPrefixTest class]]) {
-    index = 2;
+    index = POPUP_STRING_STARTS_WITH;
   }
   else if ([test isKindOfClass:[StringSuffixTest class]]) {
-    index = 3;
+    index = POPUP_STRING_ENDS_WITH;
   }
   else {
     NSAssert(NO, @"Unknown string test.");
@@ -774,10 +805,18 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   MultiMatchStringTest  *stringTest = nil;
   switch ([matchPopUpButton indexOfSelectedItem]) {
-    case 0: stringTest = [StringEqualityTest alloc]; break;
-    case 1: stringTest = [StringContainmentTest alloc]; break;
-    case 2: stringTest = [StringPrefixTest alloc]; break;
-    case 3: stringTest = [StringSuffixTest alloc]; break;
+    case POPUP_STRING_IS: 
+      stringTest = [StringEqualityTest alloc]; 
+      break;
+    case POPUP_STRING_CONTAINS: 
+      stringTest = [StringContainmentTest alloc]; 
+      break;
+    case POPUP_STRING_STARTS_WITH: 
+      stringTest = [StringPrefixTest alloc]; 
+      break;
+    case POPUP_STRING_ENDS_WITH: 
+      stringTest = [StringSuffixTest alloc]; 
+      break;
     default: NSAssert(NO, @"Unexpected matching index.");
   }
       
