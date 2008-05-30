@@ -9,6 +9,7 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
+#import "FileItemTest.h"
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
 #import "ColorLegendTableViewControl.h"
@@ -222,11 +223,18 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [scanPathTextView setDrawsBackground: NO];
   [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
-  [filterNameField setStringValue: [treeContext filterName]];
-  [filterDescriptionTextView setString: 
-                               ([treeContext fileItemFilter] != nil 
-                                ? [[treeContext fileItemFilter] description]
-                                : @"") ];
+  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
+  if (filter != nil) {
+    [filterNameField setStringValue: [filter name]];
+    [filterDescriptionTextView setString: [filter description]];
+  }
+  else {
+    [filterNameField setStringValue: 
+       NSLocalizedString( @"None", 
+                          @"The filter name when there is no filter." ) ];
+    [filterDescriptionTextView setString: @""];
+  }
+
   
   [scanTimeField setStringValue: 
     [[treeContext scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"

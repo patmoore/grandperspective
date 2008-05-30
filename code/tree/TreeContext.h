@@ -24,7 +24,7 @@ extern NSString  *FileItemDeletedEvent;
   NSString  *fileSizeMeasure;
   
   NSObject <FileItemTest>  *filter;
-  int  filterId;
+//  int  filterId;
   
   FileItem  *replacedItem;
   FileItem  *replacingItem;
@@ -84,11 +84,6 @@ extern NSString  *FileItemDeletedEvent;
 
 - (NSObject <FileItemTest>*) fileItemFilter;
 
-// A unique identifier for the filter. Returns "0" iff there is no filter.
-- (int) filterIdentifier;
-
-// Returns a localized string, based on the filter identifier.
-- (NSString*) filterName;
 
 - (void) deleteSelectedFileItem: (ItemPathModelView *)path;
 

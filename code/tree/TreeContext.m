@@ -21,9 +21,6 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 #define WRITING   102
 
 
-static int  nextFilterId = 1;
-
-
 @interface TreeContext (PrivateMethods)
 
 - (id) initWithVolumePath: (NSString *)volumePath
@@ -32,8 +29,7 @@ static int  nextFilterId = 1;
          volumeSize: (unsigned long long) volumeSize
          freeSpace: (unsigned long long) freeSpace
          scanTime: (NSDate *)scanTime
-         filter: (NSObject <FileItemTest> *)filter
-         filterId: (int) filterId;
+         filter: (NSObject <FileItemTest> *)filter;
 
 // First helper method for creating a new volume tree structure. Once the
 // tree skeleton has been created, the contents of the scan tree should be
@@ -94,8 +90,7 @@ static int  nextFilterId = 1;
                  volumeSize: volumeSizeVal 
                  freeSpace: freeSpaceVal 
                  scanTime: [NSDate date]
-                 filter: filterVal 
-                 filterId: (filterVal != nil ? nextFilterId++ : 0)];
+                 filter: filterVal];
 }
 
 
@@ -139,8 +134,7 @@ static int  nextFilterId = 1;
                                  volumeSize: volumeSize
                                  freeSpace: freeSpace
                                  scanTime: scanTime
-                                 filter: totalFilter
-                                 filterId: nextFilterId++] autorelease];
+                                 filter: totalFilter] autorelease];
 }
 
 
@@ -179,23 +173,6 @@ static int  nextFilterId = 1;
 
 - (NSObject <FileItemTest>*) fileItemFilter {
   return filter;
-}
-
-- (int) filterIdentifier {
-  return filterId;
-}
-
-- (NSString*) filterName {
-  if (filterId == 0) {
-    // There is no filter
-    return NSLocalizedString( @"None", 
-                              @"The filter name when there is no filter." );
-  }
-  else {
-    NSString  *format = NSLocalizedString( @"Filter%d", 
-                                           @"Filter naming template." );
-    return [NSString stringWithFormat: format, filterId];
-  }
 }
 
 
@@ -382,8 +359,7 @@ static int  nextFilterId = 1;
          volumeSize: (unsigned long long) volumeSizeVal 
          freeSpace: (unsigned long long) freeSpaceVal
          scanTime: (NSDate *)scanTimeVal
-         filter: (NSObject <FileItemTest> *)filterVal
-         filterId: (int) filterIdVal {
+         filter: (NSObject <FileItemTest> *)filterVal {
   if (self = [super init]) {
     [self createTreeSkeletonWithVolumePath: volumePath 
             scanPath: relativeScanPath];
@@ -396,7 +372,6 @@ static int  nextFilterId = 1;
     scanTime = [scanTimeVal retain];
 
     filter = [filterVal retain];
-    filterId = filterIdVal;
 
     // Listen to self
     [[NSNotificationCenter defaultCenter] 

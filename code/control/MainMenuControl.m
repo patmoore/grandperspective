@@ -22,10 +22,15 @@
 #import "FilterTaskInput.h"
 #import "FilterTaskExecutor.h"
 
+#import "FileItemTest.h"
 #import "FileItemTestRepository.h"
 
 #import "UniformTypeRanking.h"
 #import "UniformTypeInventory.h"
+
+
+static int  nextFilterId = 1;
+
 
 NSString* scanActivityFormatString() {
   return NSLocalizedString( @"Scanning %@", 
@@ -410,14 +415,16 @@ NSString* scanActivityFormatString() {
   NSString  *scanTimeString = 
     [[treeContext scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
                               timeZone: nil locale: nil];
-  if ([treeContext filterIdentifier] == 0) {
+  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
+
+  if (filter == nil) {
     return [NSString stringWithFormat: @"%@ - %@", 
                                          scanPath, scanTimeString];
   }
   else {
     return [NSString stringWithFormat: @"%@ - %@ - %@", 
                                          scanPath, scanTimeString,
-                                         [treeContext filterName] ];
+                                         [filter name] ];
   }
 }
 
@@ -449,6 +456,15 @@ NSString* scanActivityFormatString() {
   if (treeContext == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
+  }
+  
+  // If there is a filter, ensure it has a name
+  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];    
+  if (filter != nil && [filter name] == nil) {
+    NSString  *format = NSLocalizedString( @"Filter%d", 
+                                           @"Filter naming template." );
+    
+    [filter setName: [NSString stringWithFormat: format, nextFilterId++]];
   }
 
   // Note: The control should auto-release itself when its window closes  
