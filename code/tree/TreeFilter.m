@@ -4,9 +4,8 @@
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "TreeContext.h"
+#import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
-#import "FileItemTest.h"
-#import "FileItemPathStringCache.h"
 
 @interface TreeFilter (PrivateMethods)
 
@@ -24,18 +23,11 @@
 
 @implementation TreeFilter
 
-- (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal
-         packagesAsFiles: (BOOL) packagesAsFilesVal {
+- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuideVal {
   if (self = [super init]) {
-    itemTest = [itemTestVal retain];
-    packagesAsFiles = packagesAsFilesVal;
-    
+    treeGuide = [treeGuideVal retain];    
     treeBalancer = [[TreeBalancer alloc] init];
     
-    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
-    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
-
-    filterDisabledCount = 0;
     abort = NO;
 
     tmpDirItems = nil;
@@ -46,15 +38,15 @@
 }
 
 - (void) dealloc {
-  [itemTest release];
+  [treeGuide release];
   [treeBalancer release];
-  [fileItemPathStringCache release];
   
   [super dealloc];
 }
 
 - (TreeContext *)filterTree: (TreeContext *)oldTree {
-  TreeContext  *filterResult = [oldTree contextAfterFiltering: itemTest];
+  TreeContext  *filterResult = 
+    [oldTree contextAfterFiltering: [treeGuide fileItemTest]];
   
   [self filterItemTree: [oldTree scanTree] into: [filterResult scanTree]];
           
@@ -77,9 +69,7 @@
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 64];
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
   
-  if (packagesAsFiles && [newDir isPackage]) {
-    filterDisabledCount++;
-  }
+  [treeGuide descendIntoFileItem: newDir];
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
           directoryItems: dirs fileItems: files];
@@ -117,10 +107,7 @@
                         second: [treeBalancer createTreeForItems: dirs]]];
   }
   
-  if (packagesAsFiles && [newDir isPackage]) {
-    NSAssert( filterDisabledCount > 0, @"Count should be positive." );
-    filterDisabledCount--;
-  }
+  [treeGuide emergedFromFileItem: newDir];
 
   [dirs release];
   [files release];
@@ -156,36 +143,16 @@
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getFirst]];
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
-  else if ([((FileItem *)item) isDirectory]) {
-    FileItem  *filterSubject =
-                 ( packagesAsFiles 
-                   ? [((DirectoryItem *)item) itemWhenHidingPackageContents]
-                   : (FileItem *)item );
-  
-    if ( filterDisabledCount > 0 
-         || [itemTest testFileItem: filterSubject
-                        context: fileItemPathStringCache] != TEST_FAILED ) {
-      // Directory item passed the test (or test did not apply), so include it
-      [tmpDirItems addObject: item];
-    }
-  }
   else {
-    // It's a plain file
+    FileItem  *fileItem = (FileItem *)item;
     
-    if ( [((FileItem *)item) isSpecial] ) {
-      // Exclude all special items (inside  the volume tree, these all 
-      // represent freed space).
-      //
-      // TO DO: Check if special items should still always be excluded.
-
-      return; 
-    }
-    
-    if ( filterDisabledCount > 0
-         || [itemTest testFileItem: ((FileItem *)item)
-                        context: fileItemPathStringCache] != TEST_FAILED ) {
-      // File item passed the test (or test did not apply), so include it 
-      [tmpFileItems addObject: item];
+    if ( [treeGuide shouldDescendIntoFileItem: fileItem] ) {
+      if ( [fileItem isDirectory] ) {
+        [tmpDirItems addObject: fileItem];
+      }
+      else {
+        [tmpFileItems addObject: fileItem];
+      }
     }
   }
 }
