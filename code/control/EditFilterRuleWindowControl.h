@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @protocol FileItemTest;
-@class StringBasedTestControls;
+@class StringMatchControls;
 @class TypeMatchControls;
 
 @interface EditFilterRuleWindowControl : NSWindowController {
@@ -49,8 +49,8 @@
   NSString  *ruleName;
   
   TypeMatchControls  *typeTestControls;
-  StringBasedTestControls  *nameTestControls;
-  StringBasedTestControls  *pathTestControls;
+  StringMatchControls  *nameTestControls;
+  StringMatchControls  *pathTestControls;
 }
 
 + (id) defaultInstance;

@@ -76,7 +76,6 @@
 
 
 @interface MultiMatchControls : NSObject {
-  NSButton  *enabledCheckBox;
   NSPopUpButton  *matchPopUpButton;
   NSTableView  *targetsView;
   NSButton  *addTargetButton;
@@ -86,8 +85,7 @@
   BOOL  enabled;
 }
 
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBox 
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsView
          addTargetButton: (NSButton *)addTargetButton
          removeTargetButton: (NSButton *)removeTargetButton;
@@ -110,7 +108,7 @@
 @end
 
 
-@interface StringBasedTestControls : MultiMatchControls {
+@interface StringMatchControls : MultiMatchControls {
   NSButton  *caseInsensitiveCheckBox;
   
   /* Tracks if an edit of a match is in progress. If so, the list of matches
@@ -119,25 +117,24 @@
   BOOL  editInProgress;
 }
  
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBox 
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsView
          caseInsensitiveCheckBox: (NSButton *)caseCheckBox
          addTargetButton: (NSButton *)addTargetButton
          removeTargetButton: (NSButton *)removeTargetButton;
 
-- (void) updateStateBasedOnStringTest:(MultiMatchStringTest*) test;
-- (MultiMatchStringTest*) stringTestBasedOnState;
+- (void) updateStateBasedOnStringTest: (MultiMatchStringTest *)test;
+- (MultiMatchStringTest *) stringTestBasedOnState;
 
-@end // @interface StringBasedTestControls
+@end // @interface StringMatchControls
 
 
-@interface StringBasedTestControls (PrivateMethods)
+@interface StringMatchControls (PrivateMethods)
 
 - (void) didBeginEditing: (NSNotification *)notification;
 - (void) didEndEditing: (NSNotification *)notification;
 
-@end // @interface StringBasedTestControls (PrivateMethods)
+@end // @interface StringMatchControls (PrivateMethods)
 
 
 @interface TypeMatchControls : MultiMatchControls {
@@ -190,23 +187,20 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (void) windowDidLoad {
-  nameTestControls = [[StringBasedTestControls alloc]
-                         initWithEnabledCheckBox: nameCheckBox
-                         matchModePopUpButton: nameMatchPopUpButton
+  nameTestControls = [[StringMatchControls alloc]
+                         initWithMatchModePopUpButton: nameMatchPopUpButton
                          targetsView: nameTargetsView
                          caseInsensitiveCheckBox: nameCaseInsensitiveCheckBox
                          addTargetButton: addNameTargetButton
                          removeTargetButton: removeNameTargetButton];
-  pathTestControls = [[StringBasedTestControls alloc]
-                         initWithEnabledCheckBox: pathCheckBox
-                         matchModePopUpButton: pathMatchPopUpButton
+  pathTestControls = [[StringMatchControls alloc]
+                         initWithMatchModePopUpButton: pathMatchPopUpButton
                          targetsView: pathTargetsView
                          caseInsensitiveCheckBox: pathCaseInsensitiveCheckBox
                          addTargetButton: addPathTargetButton
                          removeTargetButton: removePathTargetButton];
   typeTestControls = [[TypeMatchControls alloc]
-                         initWithEnabledCheckBox: typeCheckBox
-                         matchModePopUpButton: typeMatchPopUpButton
+                         initWithMatchModePopUpButton: typeMatchPopUpButton
                          targetsView: typeTargetsView
                          addTargetButton: addTypeTargetButton
                          removeTargetButton: removeTypeTargetButton];
@@ -506,8 +500,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   [ruleTargetPopUp selectItemAtIndex: POPUP_FILES];
 
+  [nameCheckBox setState: NSOffState];
   [nameTestControls resetState];
+  
+  [pathCheckBox setState: NSOffState];
   [pathTestControls resetState];
+
+  [typeCheckBox setState: NSOffState];
   [typeTestControls resetState];
 
   [sizeLowerBoundCheckBox setState: NSOffState];
@@ -555,6 +554,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
   [nameTestControls updateStateBasedOnStringTest: stringTest];
+  [nameCheckBox setState: NSOnState];
 }
 
 
@@ -562,11 +562,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
   [pathTestControls updateStateBasedOnStringTest: stringTest];
+  [pathCheckBox setState: NSOnState];
 }
 
 
 - (void) updateStateBasedOnItemTypeTest: (ItemTypeTest *)test {
   [typeTestControls updateStateBasedOnItemTypeTest: test];
+  [typeCheckBox setState: NSOnState];
 }
 
 
@@ -637,31 +639,34 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (ItemNameTest*) itemNameTestBasedOnState {
-  MultiMatchStringTest  *stringTest = [nameTestControls stringTestBasedOnState];
-
-  if (stringTest != nil) {
-    return [[[ItemNameTest alloc] initWithStringTest:stringTest] autorelease];
-  }
-  else {
+  if ([nameCheckBox state] != NSOnState) {
     return nil;
   }
+  
+  MultiMatchStringTest  *stringTest = [nameTestControls stringTestBasedOnState];
+  return ( (stringTest != nil )
+           ? [[[ItemNameTest alloc] initWithStringTest: stringTest] autorelease]
+           : nil );
 }
 
 
 - (ItemPathTest*) itemPathTestBasedOnState {
-  MultiMatchStringTest  *stringTest = [pathTestControls stringTestBasedOnState];
-  
-  if (stringTest != nil) {
-    return [[[ItemPathTest alloc] initWithStringTest:stringTest] autorelease];
-  }
-  else {
+  if ([pathCheckBox state] != NSOnState) {
     return nil;
   }
+  
+  MultiMatchStringTest  *stringTest = [pathTestControls stringTestBasedOnState];
+  
+  return ( (stringTest != nil)
+           ? [[[ItemPathTest alloc] initWithStringTest: stringTest] autorelease]
+           : nil );
 }
 
 
 - (ItemTypeTest *) itemTypeTestBasedOnState {
-  return [typeTestControls itemTypeTestBasedOnState];
+  return ( ([typeCheckBox state] == NSOnState)
+           ? [typeTestControls itemTypeTestBasedOnState] 
+           : nil );
 }
 
 
@@ -747,13 +752,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 @implementation MultiMatchControls
 
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBoxVal
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsTableViewVal
          addTargetButton: (NSButton *)addButton
          removeTargetButton: (NSButton *)removeButton {
   if (self = [super init]) {
-    enabledCheckBox = [enabledCheckBoxVal retain];
     matchPopUpButton = [popUpButton retain];
     targetsView = [targetsTableViewVal retain];
     addTargetButton = [addButton retain];
@@ -770,7 +773,6 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (void) dealloc {
-  [enabledCheckBox release];
   [matchPopUpButton release];
   [targetsView release];
   [addTargetButton release];
@@ -783,7 +785,6 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (void) resetState {
-  [enabledCheckBox setState: NSOffState];
   [matchPopUpButton selectItemAtIndex: 0];
   
   [matchTargets removeAllObjects];
@@ -848,31 +849,28 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [targetsView setEnabled: enabled];
   [addTargetButton setEnabled: enabled];
   [removeTargetButton setEnabled: (enabled 
-                                   && [targetsView numberOfSelectedRows] > 0 )];
+                                   && [targetsView numberOfSelectedRows] > 0)];
 }
 
 @end // @implementation MultiMatchControls (PrivateMethods)
 
 
-@implementation StringBasedTestControls
+@implementation StringMatchControls
 
 // Overrides designated initialiser
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBoxVal
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsTableViewVal
          addTargetButton: (NSButton *)addButton
          removeTargetButton: (NSButton *)removeButton {
   NSAssert(NO, @"Use other initialiser.");
 }
 
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBoxVal
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsTableViewVal
          caseInsensitiveCheckBox: (NSButton *)caseCheckBox
          addTargetButton: (NSButton *)addButton
          removeTargetButton: (NSButton *)removeButton {
-  if (self = [super initWithEnabledCheckBox: enabledCheckBoxVal
-                      matchModePopUpButton: popUpButton
+  if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton
                       removeTargetButton: removeButton]) {
@@ -934,8 +932,6 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (void) updateStateBasedOnStringTest: (MultiMatchStringTest *)test {
-  [enabledCheckBox setState: NSOnState];
-
   int  index = -1;
     
   if ([test isKindOfClass:[StringEqualityTest class]]) {
@@ -965,13 +961,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (MultiMatchStringTest*) stringTestBasedOnState {
-  if ([enabledCheckBox state]!=NSOnState) {
-    // Test not used.
-    return nil; 
-  }
-  
-  if ([matchTargets count] == 0) {
-    // No match targets specified.
+  if (! [self hasTargets]) {
     return nil;
   }
   
@@ -1030,10 +1020,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 
-@end // implementation StringBasedTestControls
+@end // implementation StringMatchControls
 
 
-@implementation StringBasedTestControls (PrivateMethods)
+@implementation StringMatchControls (PrivateMethods)
 
 - (void) updateEnabledState {
   [super updateEnabledState];
@@ -1059,18 +1049,16 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [self updateEnabledState];
 }
 
-@end // @implementation StringBasedTestControls (PrivateMethods)
+@end // @implementation StringMatchControls (PrivateMethods)
 
 
 @implementation TypeMatchControls
 
-- (id) initWithEnabledCheckBox: (NSButton *)enabledCheckBoxVal
-         matchModePopUpButton: (NSPopUpButton *)popUpButton
+- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
          targetsView: (NSTableView *)targetsTableViewVal
          addTargetButton: (NSButton *)addButton
          removeTargetButton: (NSButton *)removeButton {
-  if (self = [super initWithEnabledCheckBox: enabledCheckBoxVal
-                      matchModePopUpButton: popUpButton
+  if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton
                       removeTargetButton: removeButton]) {
@@ -1131,8 +1119,6 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (void) updateStateBasedOnItemTypeTest: (ItemTypeTest *)test {
-  [enabledCheckBox setState: NSOnState];
-
   [matchPopUpButton selectItemAtIndex: ( [test isStrict] 
                                          ? POPUP_TYPE_EQUALS
                                          : POPUP_TYPE_CONFORMS_TO )];
@@ -1143,13 +1129,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 - (ItemTypeTest *) itemTypeTestBasedOnState {
-  if ([enabledCheckBox state] != NSOnState) {
-    // Test not used.
-    return nil; 
-  }
-  
-  if ([matchTargets count] == 0) {
-    // No match targets specified.
+  if (! [self hasTargets]) {
     return nil;
   }
   
