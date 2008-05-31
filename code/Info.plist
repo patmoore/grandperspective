@@ -46,17 +46,29 @@
         <string>logical</string>
         <key>uniformTypesRanking</key>
         <array>
-            <string>public.image</string>
+            <string>unknown</string>
             <string>public.movie</string>
             <string>public.audio</string>
-            <string>public.text</string>
-            <string>public.source-code</string>
-            <string>public.html</string>
+            <string>public.image</string>
             <string>public.archive</string>
+            <string>com.apple.application</string>
+            <string>com.apple.bundle</string>
+            <string>com.apple.plugin</string>
+            <string>com.apple.systempreference.prefpane</string>
+            <string>com.apple.installer-package</string>
+            <string>com.apple.package</string>
             <string>public.executable</string>
-            <string>public.package</string>
-            <string>public.presentation</string>
-            <string>unknown</string>
+            <string>public.font</string>
+            <string>public.log</string>
+            <string>public.source-code</string>
+            <string>public.text</string>
+            <string>com.adobe.pdf</string>
+            <string>com.adobe.postscript</string>
+            <string>com.apple.iwork.keynote.key</string>
+            <string>public.contact</string>
+            <string>public.calendar-event</string>
+            <string>public.message</string>
+            <string>com.apple.property-list</string>
         </array>
         <key>showPackageContentsByDefault</key>
         <false/>
