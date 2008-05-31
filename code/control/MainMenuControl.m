@@ -242,16 +242,20 @@ NSString* scanActivityFormatString() {
   }
       
   ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
+  DirectoryViewControlSettings  *oldSettings = 
+    [oldControl directoryViewControlSettings];
 
   DerivedDirViewWindowCreator  *windowCreator =
     [[DerivedDirViewWindowCreator alloc] 
         initWithWindowManager: windowManager
           targetPath: oldPathModel
-          settings: [oldControl directoryViewControlSettings]];
-    
+          settings: oldSettings];
+
   FilterTaskInput  *input = 
-    [[FilterTaskInput alloc] initWithOldContext: [oldControl treeContext]
-                               filterTest: filterTest];
+    [[FilterTaskInput alloc] 
+        initWithOldContext: [oldControl treeContext]
+          filterTest: filterTest
+          packagesAsFiles: ! [oldSettings showPackageContents]];
 
   NSString  *format = NSLocalizedString( 
                         @"Filtering %@", 

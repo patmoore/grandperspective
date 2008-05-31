@@ -31,7 +31,8 @@
   FilterTaskInput  *filterInput = input;
 
   treeFilter = 
-    [[TreeFilter alloc] initWithFileItemTest: [filterInput filterTest]];
+    [[TreeFilter alloc] initWithFileItemTest: [filterInput filterTest]
+                          packagesAsFiles: [filterInput packagesAsFiles]];
   TreeContext  *filteredTree = 
     [treeFilter filterTree: [filterInput oldContext]];
   

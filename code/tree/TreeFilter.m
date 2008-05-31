@@ -24,15 +24,18 @@
 
 @implementation TreeFilter
 
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTestVal {
+- (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal
+         packagesAsFiles: (BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     itemTest = [itemTestVal retain];
+    packagesAsFiles = packagesAsFilesVal;
     
     treeBalancer = [[TreeBalancer alloc] init];
     
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
 
+    filterDisabledCount = 0;
     abort = NO;
 
     tmpDirItems = nil;
@@ -73,6 +76,10 @@
            into: (DirectoryItem *)newDir {
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 64];
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
+  
+  if (packagesAsFiles && [newDir isPackage]) {
+    filterDisabledCount++;
+  }
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
           directoryItems: dirs fileItems: files];
@@ -108,6 +115,11 @@
       [CompoundItem 
          compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
                         second: [treeBalancer createTreeForItems: dirs]]];
+  }
+  
+  if (packagesAsFiles && [newDir isPackage]) {
+    NSAssert( filterDisabledCount > 0, @"Count should be positive." );
+    filterDisabledCount--;
   }
 
   [dirs release];
@@ -145,8 +157,14 @@
     [self flattenAndFilterSiblings: [((CompoundItem*)item) getSecond]];
   }
   else if ([((FileItem *)item) isDirectory]) {
-    if ([itemTest testFileItem: ((FileItem*)item)
-                    context: fileItemPathStringCache] != TEST_FAILED) {
+    FileItem  *filterSubject =
+                 ( packagesAsFiles 
+                   ? [((DirectoryItem *)item) itemWhenHidingPackageContents]
+                   : (FileItem *)item );
+  
+    if ( filterDisabledCount > 0 
+         || [itemTest testFileItem: filterSubject
+                        context: fileItemPathStringCache] != TEST_FAILED ) {
       // Directory item passed the test (or test did not apply), so include it
       [tmpDirItems addObject: item];
     }
@@ -154,12 +172,18 @@
   else {
     // It's a plain file
     
-    // TODO: Check if all special items should still be always excluded.
-    if (! [((FileItem *)item) isSpecial] // Exclude all special items (inside
-                                         // the volume tree, these all 
-                                         // represent freed space).
-        && [itemTest testFileItem: ((FileItem*)item)
-                       context: fileItemPathStringCache] != TEST_FAILED) {
+    if ( [((FileItem *)item) isSpecial] ) {
+      // Exclude all special items (inside  the volume tree, these all 
+      // represent freed space).
+      //
+      // TO DO: Check if special items should still always be excluded.
+
+      return; 
+    }
+    
+    if ( filterDisabledCount > 0
+         || [itemTest testFileItem: ((FileItem *)item)
+                        context: fileItemPathStringCache] != TEST_FAILED ) {
       // File item passed the test (or test did not apply), so include it 
       [tmpFileItems addObject: item];
     }

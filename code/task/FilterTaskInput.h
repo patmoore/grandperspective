@@ -5,12 +5,22 @@
 
 
 @interface FilterTaskInput : NSObject {
+
+  BOOL  packagesAsFiles;
+
   TreeContext  *oldContext;
   NSObject <FileItemTest>  *filterTest;
 }
 
 - (id) initWithOldContext: (TreeContext *)context 
          filterTest: (NSObject <FileItemTest> *)test;
+
+- (id) initWithOldContext: (TreeContext *)context 
+         filterTest: (NSObject <FileItemTest> *)test
+         packagesAsFiles: (BOOL) packagesAsFiles;
+
+
+- (BOOL) packagesAsFiles;
 
 - (TreeContext *) oldContext;
 
