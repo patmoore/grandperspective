@@ -3,11 +3,10 @@
 #import "CompoundItem.h"
 #import "DirectoryItem.h"
 #import "PlainFileItem.h"
+#import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
 #import "TreeContext.h"
 #import "UniformTypeInventory.h"
-#import "FileItemTest.h"
-#import "FileItemPathStringCache.h"
 
 
 NSString  *LogicalFileSize = @"logical";
@@ -93,15 +92,16 @@ typedef struct  {
 
 
 - (id) init {
+  return [self initWithFilteredTreeGuide: nil];
+}
+
+
+- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuideVal {
   if (self = [super init]) {
-    filterTest = nil;
-  
+    treeGuide = [treeGuideVal retain];
     treeBalancer = [[TreeBalancer alloc] init];
     typeInventory = [[UniformTypeInventory defaultUniformTypeInventory] retain];
-  
-    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
-    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
-  
+    
     hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
     
@@ -124,15 +124,12 @@ typedef struct  {
 
 
 - (void) dealloc {
-  [filterTest release];
-
+  [treeGuide release];
   [treeBalancer release];
   [typeInventory release];
   
   [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
-  
-  [fileItemPathStringCache release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -159,18 +156,6 @@ typedef struct  {
   if (measure != fileSizeMeasure) {
     [fileSizeMeasure release];
     fileSizeMeasure = [measure retain];
-  }
-}
-
-
-- (NSObject <FileItemTest> *) filterTest {
-  return filterTest;
-}
-
-- (void) setFilterTest: (NSObject <FileItemTest> *)test {
-  if (test != filterTest) {
-    [filterTest release];
-    filterTest = [test retain];
   }
 }
 
@@ -241,7 +226,7 @@ typedef struct  {
     [[[TreeContext alloc] initWithVolumePath: volumePath
                             scanPath: relativePath
                             fileSizeMeasure: fileSizeMeasure
-                            filterTest: filterTest
+                            filterTest: [treeGuide fileItemTest]
                             volumeSize: volumeSize 
                             freeSpace: freeSpace] autorelease];
     
@@ -266,7 +251,6 @@ typedef struct  {
 
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
            fileRef: (FSRef *)parentFileRef parentPath: (NSString *)parentPath {
-
   NSString  *path = [parentPath stringByAppendingPathComponent: [dirItem name]];
 
   FSIterator  iterator;
@@ -279,6 +263,8 @@ typedef struct  {
     }
   }
   
+  [treeGuide descendIntoFileItem: dirItem];
+
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];
   NSMutableArray  *dirFileRefs = [[NSMutableArray alloc] initWithCapacity: 32];
@@ -347,9 +333,8 @@ typedef struct  {
             [[DirectoryItem alloc] initWithName: childName parent: dirItem
                                      flags: flags];
 
-          if (filterTest == nil || 
-              [filterTest testFileItem: dirChildItem
-                            context: fileItemPathStringCache] != TEST_FAILED) {
+          if ( treeGuide == nil || 
+               [treeGuide shouldDescendIntoFileItem: dirChildItem] ) {
             [dirs addObject: dirChildItem];
 
             FSRefObject  *refObject = 
@@ -375,10 +360,9 @@ typedef struct  {
             [[PlainFileItem alloc] initWithName: childName parent: dirItem 
                                      size: childSize type: fileType 
                                      flags: flags];
-                                     
-          if (filterTest == nil || 
-              [filterTest testFileItem: fileChildItem
-                            context: fileItemPathStringCache] != TEST_FAILED) {
+
+          if ( treeGuide == nil || 
+               [treeGuide shouldDescendIntoFileItem: fileChildItem] ) {
             [files addObject: fileChildItem];
           }
           
@@ -411,8 +395,10 @@ typedef struct  {
 
   [localAutoreleasePool release];
   
-  FSCloseIterator(iterator);
+  [treeGuide emergedFromFileItem: dirItem];
     
+  FSCloseIterator(iterator);
+  
   return !abort;
 }
 
@@ -495,6 +481,5 @@ typedef struct  {
     }
   }
 }
-
 
 @end // @implementation TreeBuilder (PrivateMethods)

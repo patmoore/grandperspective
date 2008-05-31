@@ -1,13 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class FilteredTreeGuide;
 @class TreeBalancer;
 @class UniformTypeInventory;
 @class FileItem;
 @class DirectoryItem;
 @class TreeContext;
-@class FileItemPathStringCache;
-@protocol FileItemTest;
 
 
 extern NSString  *LogicalFileSize;
@@ -19,9 +18,8 @@ extern NSString  *PhysicalFileSize;
   NSString  *fileSizeMeasure;
   BOOL  useLogicalFileSize;
   
-  NSObject <FileItemTest>  *filterTest;
-  
   BOOL  abort;
+  FilteredTreeGuide  *treeGuide;
   TreeBalancer  *treeBalancer;
   UniformTypeInventory  *typeInventory;
   
@@ -29,9 +27,6 @@ extern NSString  *PhysicalFileSize;
   // encountered so far. If a file with a same number is encountered once
   // more, it is ignored. 
   NSMutableSet  *hardLinkedFileNumbers;
-  
-  // Cache used by filterTest
-  FileItemPathStringCache  *fileItemPathStringCache;
   
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;
@@ -47,14 +42,12 @@ extern NSString  *PhysicalFileSize;
 + (NSArray *) fileSizeMeasureNames;
 
 - (id) init;
+- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuide;
 
 - (void) abort;
 
 - (NSString *) fileSizeMeasure;
 - (void) setFileSizeMeasure: (NSString *)measure;
-
-- (NSObject <FileItemTest> *) filterTest;
-- (void) setFilterTest: (NSObject <FileItemTest> *)test;
 
 - (TreeContext *) buildTreeForPath: (NSString *)path;
 

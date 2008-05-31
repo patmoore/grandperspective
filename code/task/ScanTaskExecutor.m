@@ -4,6 +4,7 @@
 #import "DirectoryItem.h"
 #import "TreeContext.h"
 #import "ScanTaskInput.h"
+#import "FilteredTreeGuide.h"
 
 
 @implementation ScanTaskExecutor
@@ -27,13 +28,18 @@
     return nil;
   }
   
+  NSAssert( treeBuilder==nil, @"treeBuilder already set.");
+
   ScanTaskInput  *myInput = input;
+  FilteredTreeGuide  *treeGuide = 
+    [[[FilteredTreeGuide alloc] 
+         initWithFileItemTest: [myInput filterTest]
+           packagesAsFiles: [myInput packagesAsFiles]] autorelease];
+
   NSString  *path = [myInput directoryName];
   
-  NSAssert( treeBuilder==nil, @"treeBuilder already set.");
-  treeBuilder = [[TreeBuilder alloc] init];
+  treeBuilder = [[TreeBuilder alloc] initWithFilteredTreeGuide: treeGuide];
   [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
-  [treeBuilder setFilterTest: [myInput filterTest]];
   
   NSDate  *startTime = [NSDate date];
   
