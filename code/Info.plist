@@ -64,106 +64,168 @@
     <key>GPDefaultFileItemTests</key>
     <array>
 		<dict>
+			<key>class</key>
+			<string>ItemFlagsTest</string>
+			<key>desiredResult</key>
+			<integer>2</integer>
+			<key>flagsMask</key>
+			<integer>2</integer>
+			<key>name</key>
+			<string>Hard-linked items</string>
+		</dict>
+		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Tiny files</string>
-			<key>class</key>
-			<string>ItemSizeTest</string>
-			<key>upperBound</key>
-			<integer>1024</integer>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
+			<dict>
+				<key>class</key>
+				<string>ItemSizeTest</string>
+				<key>upperBound</key>
+				<integer>1024</integer>
+			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Small files</string>
-			<key>class</key>
-			<string>ItemSizeTest</string>
-			<key>lowerBound</key>
-			<integer>1024</integer>
-			<key>upperBound</key>
-			<integer>10240</integer>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
+			<dict>
+				<key>class</key>
+				<string>ItemSizeTest</string>
+				<key>lowerBound</key>
+				<integer>1024</integer>
+				<key>upperBound</key>
+				<integer>10240</integer>
+			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Medium files</string>
-			<key>class</key>
-			<string>ItemSizeTest</string>
-			<key>lowerBound</key>
-			<integer>10240</integer>
-			<key>upperBound</key>
-			<integer>1048576</integer>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
+			<dict>
+				<key>class</key>
+				<string>ItemSizeTest</string>
+				<key>lowerBound</key>
+				<integer>10240</integer>
+				<key>upperBound</key>
+				<integer>1048576</integer>
+			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Large files</string>
-			<key>class</key>
-			<string>ItemSizeTest</string>
-			<key>lowerBound</key>
-			<integer>1048576</integer>
-			<key>upperBound</key>
-			<integer>104857600</integer>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
+			<dict>
+				<key>class</key>
+				<string>ItemSizeTest</string>
+				<key>lowerBound</key>
+				<integer>1048576</integer>
+				<key>upperBound</key>
+				<integer>104857600</integer>
+			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Huge files</string>
-			<key>class</key>
-			<string>ItemSizeTest</string>
-			<key>lowerBound</key>
-			<integer>104857600</integer>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
+			<dict>
+				<key>class</key>
+				<string>ItemSizeTest</string>
+				<key>lowerBound</key>
+				<integer>104857600</integer>
+			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Images</string>
-			<key>class</key>
-			<string>ItemNameTest</string>
-			<key>stringTest</key>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
 			<dict>
 				<key>class</key>
-				<string>StringSuffixTest</string>
-				<key>caseSensitive</key>
-				<true/>
+				<string>ItemTypeTest</string>
 				<key>matches</key>
 				<array>
-					<string>.jpg</string>
-					<string>.jpeg</string>
-					<string>.png</string>
-					<string>.gif</string>
+					<string>public.image</string>
 				</array>
+				<key>strict</key>
+				<false/>
 			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
-			<string>Music</string>
-			<key>class</key>
-			<string>ItemNameTest</string>
-			<key>stringTest</key>
+			<string>Audio</string>
+			<key>onlyFiles</key>
+			<true/>
+			<key>subTest</key>
 			<dict>
 				<key>class</key>
-				<string>StringSuffixTest</string>
-				<key>caseSensitive</key>
-				<true/>
+				<string>ItemTypeTest</string>
 				<key>matches</key>
 				<array>
-					<string>.mp3</string>
-					<string>.wav</string>
+					<string>public.audio</string>
 				</array>
+				<key>strict</key>
+				<false/>
 			</dict>
 		</dict>
 		<dict>
+			<key>class</key>
+			<string>SelectiveItemTest</string>
 			<key>name</key>
 			<string>Version control</string>
-			<key>class</key>
-			<string>ItemPathTest</string>
-			<key>stringTest</key>
+			<key>onlyFiles</key>
+			<false/>
+			<key>subTest</key>
 			<dict>
 				<key>class</key>
-				<string>StringContainmentTest</string>
-				<key>caseSensitive</key>
-				<true/>
-				<key>matches</key>
-				<array>
-					<string>/CVS/</string>
-					<string>/.svn/</string>
-				</array>
+				<string>ItemNameTest</string>
+				<key>stringTest</key>
+				<dict>
+					<key>caseSensitive</key>
+					<false/>
+					<key>class</key>
+					<string>StringEqualityTest</string>
+					<key>matches</key>
+					<array>
+						<string>CVS</string>
+						<string>.svn</string>
+					</array>
+				</dict>
 			</dict>
+		</dict>
+        <dict>
+			<key>class</key>
+			<string>ItemFlagsTest</string>
+			<key>desiredResult</key>
+			<integer>4</integer>
+			<key>flagsMask</key>
+			<integer>4</integer>
+			<key>name</key>
+			<string>Packages</string>
 		</dict>
 	</array>
 </dict>
