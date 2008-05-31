@@ -371,18 +371,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 - (IBAction) nameCheckBoxChanged:(id)sender {
   [self updateEnabledState:sender];
-  
-  if ([sender state]==NSOnState) {
-    [[self window] makeFirstResponder:nameTargetsView];
-  }
 }
 
 - (IBAction) pathCheckBoxChanged:(id)sender {
   [self updateEnabledState:sender];
-  
-  if ([sender state]==NSOnState) {
-    [[self window] makeFirstResponder:pathTargetsView];
-  }
 }
 
 - (IBAction) hardLinkCheckBoxChanged: (id)sender {
