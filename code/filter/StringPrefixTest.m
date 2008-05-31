@@ -26,9 +26,14 @@
 }
 
 - (NSString*) descriptionFormat {
-  return NSLocalizedStringFromTable(
-           @"%@ starts with %@", @"Tests",
-           @"String test with 1: subject, and 2: match targets" );
+  return 
+    ( caseSensitive
+      ? NSLocalizedStringFromTable( 
+          @"%@ starTs with %@", @"Tests",
+          @"Case-sensitive string test with 1: subject, and 2: match targets" )
+      : NSLocalizedStringFromTable( 
+          @"%@ starts with %@", @"Tests",
+          @"String test with 1: subject, and 2: match targets" ) );
 }
 
 

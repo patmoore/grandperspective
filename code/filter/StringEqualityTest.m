@@ -20,9 +20,14 @@
 }
 
 - (NSString*) descriptionFormat {
-  return NSLocalizedStringFromTable( 
-           @"%@ equals %@", @"Tests",
-           @"String test with 1: subject, and 2: match targets" );
+  return 
+    ( caseSensitive
+      ? NSLocalizedStringFromTable( 
+          @"%@ eQuals %@", @"Tests",
+          @"Case-sensitive string test with 1: subject, and 2: match targets" )
+      : NSLocalizedStringFromTable( 
+          @"%@ equals %@", @"Tests",
+          @"String test with 1: subject, and 2: match targets" ) );
 }
 
 
