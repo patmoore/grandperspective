@@ -5,9 +5,7 @@
 
 
 @interface FilterTaskInput : NSObject {
-
   BOOL  packagesAsFiles;
-
   TreeContext  *oldContext;
   NSObject <FileItemTest>  *filterTest;
 }
@@ -20,10 +18,8 @@
          packagesAsFiles: (BOOL) packagesAsFiles;
 
 
-- (BOOL) packagesAsFiles;
-
 - (TreeContext *) oldContext;
-
 - (NSObject <FileItemTest> *) filterTest;
+- (BOOL) packagesAsFiles;
 
 @end

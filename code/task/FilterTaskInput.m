@@ -42,16 +42,16 @@
 }
 
 
-- (BOOL) packagesAsFiles {
-  return packagesAsFiles;
-}
-
 - (TreeContext *) oldContext {
   return oldContext;
 }
 
 - (NSObject <FileItemTest> *) filterTest {
   return filterTest;
+}
+
+- (BOOL) packagesAsFiles {
+  return packagesAsFiles;
 }
 
 @end
