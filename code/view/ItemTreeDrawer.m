@@ -169,7 +169,13 @@
         [self drawBasicFilledRect: rect intColor: usedSpaceColor];
       }
       
-      return [file isAncestorOfFileItem: visibleTree];
+      if ( [file isAncestorOfFileItem: visibleTree] ) {
+        [treeGuide descendIntoDirectory: (DirectoryItem *)file];
+        return YES;
+      }
+      else {
+        return NO;
+      }
     }
     else {
       if ( [file isSpecial] && [[file name] isEqualToString: FreeSpace] ) {
@@ -189,12 +195,12 @@
   if ( [file isDirectory] ) {
     // Descend unless drawing has been aborted
     
-    if (abort) {
-      return NO;
-    }
-    else {
+    if ( !abort ) {
       [treeGuide descendIntoDirectory: (DirectoryItem *)file];
       return YES;
+    }
+    else {
+      return NO;
     }
   }
 
@@ -218,7 +224,17 @@
     [self drawGradientFilledRect: rect colorIndex: colorIndex];
   }
 
-  // Cannot descend from a file, so return NO to save having to check this.
+  if (item == visibleTree) {
+    // Note: emergedFromItem: will not be invoked, so unset the flag here.
+    insideVisibleTree = NO;
+  }
+
+  // Do not descend into the item. 
+  //
+  // Note: This is not just an optimisation but needs to be done. Even though 
+  // the item is seen as a file by the ItemTreeDrawer, it may actually be a 
+  // package whose contents are hidden. The TreeLayoutBuilder should not 
+  // descend into the directoy in this case.
   return NO;
 }
 
