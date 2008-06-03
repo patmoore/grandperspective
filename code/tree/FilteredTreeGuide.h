@@ -54,6 +54,12 @@
    */
   BOOL  packagesAsFiles;
   
+  /* Set to YES iff "itemTest" includes an ItemSizeTest. If this is the case,
+   * and packages are to be treated as files, the contents of the directory
+   * need to be set before the test can be applied.
+   */
+  BOOL  testUsesSize;
+  
   /* Tracks the number of packages that have been recursively descended into
    * (and not yet emerged from). It is used to determine if the filter should 
    * be temporarily disabled when packages are treated as files.

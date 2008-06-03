@@ -2,7 +2,18 @@
 
 #import "DirectoryItem.h"
 #import "FileItemTest.h"
+#import "BasicFileItemTestVisitor.h"
 #import "FileItemPathStringCache.h"
+
+
+@interface SizeTestFinder : BasicFileItemTestVisitor {
+  BOOL  testUsesSize;
+}
+
+- (BOOL) testUsesSize;
+
+@end
+
 
 @implementation FilteredTreeGuide
 
@@ -14,7 +25,10 @@
 - (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal
          packagesAsFiles: (BOOL) packagesAsFilesVal {
   if (self = [super init]) {
-    itemTest = [itemTestVal retain];
+    itemTest = nil;
+    testUsesSize = NO;
+    [self setFileItemTest: itemTestVal];
+
     packagesAsFiles = packagesAsFilesVal;
     
     packageCount = 0;
@@ -51,6 +65,20 @@
   if (itemTest != test) {
     [itemTest release];
     itemTest = [test retain];
+    
+    // Check if the test includes an ItemSizeTest
+    if (itemTest != nil) {
+      SizeTestFinder  *sizeTestFinder = 
+        [[[SizeTestFinder alloc] init] autorelease];
+      
+      [test acceptFileItemTestVisitor: sizeTestFinder];
+      testUsesSize = [sizeTestFinder testUsesSize];
+    }
+    else {
+      testUsesSize = NO;
+    }
+  
+    NSLog(@"testUsesSize %d", testUsesSize);
   }
 }
 
@@ -94,19 +122,27 @@
 
 
 - (BOOL) shouldDescendIntoDirectory: (DirectoryItem *)item {
+  FileItem  *proxyItem = item; // Default
+  
   if ( packagesAsFiles ) {
-    // Packages are treated as files. This means that the item should be 
-    // constructed first before applying the test (as it may include an 
-    // ItemSizeTest).
-    return YES;
+    if ( testUsesSize) {
+      // The test considers the file's size. This means that the item should be
+      // constructed first before applying the test.
+      return YES;
+    }
+    else {
+      // Even though the directory has not yet been constructed, the test can 
+      // be applied to its plain file proxy.
+      proxyItem = [((DirectoryItem *)item) itemWhenHidingPackageContents];
+    }
   }
-  else {
-    // Even though the directory item has not yet been fully created, the test
-    // can be applied already. So only descend (and construct the contents) 
-    // when it passed the test (and will be included in the tree).
-    return ( [itemTest testFileItem: item
-                         context: fileItemPathStringCache] != TEST_FAILED );
-  }
+
+  // Even though the directory item has not yet been fully created, the test
+  // can be applied already. So only descend (and construct the contents) 
+  // when it passed the test (and will be included in the tree).
+  return ( itemTest == nil 
+           || [itemTest testFileItem: proxyItem
+                          context: fileItemPathStringCache] != TEST_FAILED );
 }
 
 
@@ -123,4 +159,28 @@
   }
 }
 
-@end
+@end // @implementation FilteredTreeGuide
+
+
+@implementation SizeTestFinder
+
+- (id) init {
+  if (self = [super init]) {
+    testUsesSize = NO;
+  }
+  
+  return self;
+}
+
+
+- (BOOL) testUsesSize {
+  return testUsesSize;
+}
+
+
+- (void) visitItemSizeTest: (ItemSizeTest *)test {
+  testUsesSize = YES;
+}
+
+@end // @implementation SizeTestFinder
+
