@@ -144,10 +144,6 @@
   
   FileItem  *file = (FileItem *)item;
   
-  if ( [file isDirectory] ) {
-    [treeGuide descendIntoDirectory: (DirectoryItem *)file];
-  }
-    
   if ( file == visibleTree ) {
     insideVisibleTree = YES;
       
@@ -192,7 +188,14 @@
     
   if ( [file isDirectory] ) {
     // Descend unless drawing has been aborted
-    return !abort;
+    
+    if (abort) {
+      return NO;
+    }
+    else {
+      [treeGuide descendIntoDirectory: (DirectoryItem *)file];
+      return YES;
+    }
   }
 
   // It's a plain file

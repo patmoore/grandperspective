@@ -66,9 +66,9 @@
         [self layoutItemTree:sub inRect:rect traverser:traverser depth:depth+1];
       }
     }
-  }
   
-  [traverser emergedFromItem: root];
+    [traverser emergedFromItem: root];
+  }
 }
 
 @end // @implementation TreeLayoutBuilder (PrivateMethods)

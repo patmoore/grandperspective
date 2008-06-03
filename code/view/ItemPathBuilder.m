@@ -46,7 +46,8 @@
 }
 
 
-- (BOOL) descendIntoItem:(Item*)item atRect:(NSRect)rect depth:(int)depth {
+- (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
+           depth: (int) depth {
   if (!NSPointInRect(targetPoint, rect)) {
     return NO;
   }
