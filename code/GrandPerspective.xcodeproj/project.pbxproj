@@ -14,15 +14,6 @@
 		AA1115C40A84CA320023C5CD /* DirectoryViewControlSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */; };
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
-		AA2185010A277F20000E1C8C /* MultiMatchStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2184FF0A277F20000E1C8C /* MultiMatchStringTest.m */; };
-		AA2185580A278236000E1C8C /* StringEqualityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2185560A278236000E1C8C /* StringEqualityTest.m */; };
-		AA2185620A2782BC000E1C8C /* StringPrefixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2185600A2782BC000E1C8C /* StringPrefixTest.m */; };
-		AA2185660A278325000E1C8C /* StringSuffixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2185640A278325000E1C8C /* StringSuffixTest.m */; };
-		AA21856A0A2783B6000E1C8C /* StringContainmentTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2185680A2783B6000E1C8C /* StringContainmentTest.m */; };
-		AA2185CA0A278892000E1C8C /* AbstractFileItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2185C80A278892000E1C8C /* AbstractFileItemTest.m */; };
-		AA21EC6A0A5695BC00A9FD87 /* ItemStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA21EC680A5695BC00A9FD87 /* ItemStringTest.m */; };
-		AA21EC970A56978A00A9FD87 /* ItemPathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA21EC950A56978A00A9FD87 /* ItemPathTest.m */; };
-		AA33F9E40A41CBEA00F3D4DB /* NotItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
 		AA3B38E40D17EEF60070E889 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DC0D17EEF60070E889 /* FileItem.m */; };
@@ -70,21 +61,32 @@
 		AA8A380C0D7B437300DB872C /* StatefulFileItemMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38010D7B437300DB872C /* StatefulFileItemMapping.m */; };
 		AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38030D7B437300DB872C /* StatelessFileItemMapping.m */; };
 		AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */; };
-		AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */; };
-		AA8AB64A0DEDDB47003D1B7D /* ItemTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */; };
-		AA8AB6520DEDE04E003D1B7D /* TestDescriptions.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */; };
 		AA8FEB2B0B6CC2D90049FF42 /* Names.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA8FEB290B6CC2D80049FF42 /* Names.strings */; };
 		AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */; };
 		AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */; };
-		AA9880960DF5653E00A6EA33 /* BasicFileItemTestVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */; };
+		AA98818F0DF57B2F00A6EA33 /* AbstractFileItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */; };
+		AA9881900DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */; };
+		AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881680DF57B2F00A6EA33 /* CompoundAndItemTest.m */; };
+		AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816A0DF57B2F00A6EA33 /* CompoundItemTest.m */; };
+		AA9881930DF57B2F00A6EA33 /* CompoundOrItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816C0DF57B2F00A6EA33 /* CompoundOrItemTest.m */; };
+		AA9881940DF57B2F00A6EA33 /* FileItemTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */; };
+		AA9881950DF57B2F00A6EA33 /* ItemFlagsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881720DF57B2F00A6EA33 /* ItemFlagsTest.m */; };
+		AA9881960DF57B2F00A6EA33 /* ItemNameTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881740DF57B2F00A6EA33 /* ItemNameTest.m */; };
+		AA9881970DF57B2F00A6EA33 /* ItemPathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881760DF57B2F00A6EA33 /* ItemPathTest.m */; };
+		AA9881980DF57B2F00A6EA33 /* ItemSizeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881780DF57B2F00A6EA33 /* ItemSizeTest.m */; };
+		AA9881990DF57B2F00A6EA33 /* ItemStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98817A0DF57B2F00A6EA33 /* ItemStringTest.m */; };
+		AA98819A0DF57B2F00A6EA33 /* ItemTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98817C0DF57B2F00A6EA33 /* ItemTypeTest.m */; };
+		AA98819B0DF57B2F00A6EA33 /* MultiMatchStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98817E0DF57B2F00A6EA33 /* MultiMatchStringTest.m */; };
+		AA98819C0DF57B2F00A6EA33 /* NotItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881800DF57B2F00A6EA33 /* NotItemTest.m */; };
+		AA98819D0DF57B2F00A6EA33 /* SelectiveItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881820DF57B2F00A6EA33 /* SelectiveItemTest.m */; };
+		AA98819E0DF57B2F00A6EA33 /* StringContainmentTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881840DF57B2F00A6EA33 /* StringContainmentTest.m */; };
+		AA98819F0DF57B2F00A6EA33 /* StringEqualityTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881860DF57B2F00A6EA33 /* StringEqualityTest.m */; };
+		AA9881A00DF57B2F00A6EA33 /* StringPrefixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881880DF57B2F00A6EA33 /* StringPrefixTest.m */; };
+		AA9881A10DF57B2F00A6EA33 /* StringSuffixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98818A0DF57B2F00A6EA33 /* StringSuffixTest.m */; };
+		AA9881A20DF57B2F00A6EA33 /* StringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98818C0DF57B2F00A6EA33 /* StringTest.m */; };
+		AA9881A30DF57B2F00A6EA33 /* TestDescriptions.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98818E0DF57B2F00A6EA33 /* TestDescriptions.m */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
 		AAB35D850A330BE8006535FF /* EditFilterRuleWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D840A330BE8006535FF /* EditFilterRuleWindow.nib */; };
-		AAB35DF80A332EA3006535FF /* ItemNameTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35DF60A332EA3006535FF /* ItemNameTest.m */; };
-		AAB35E310A33329A006535FF /* ItemSizeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35E2F0A33329A006535FF /* ItemSizeTest.m */; };
-		AAB35E830A334EF3006535FF /* CompoundItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35E810A334EF3006535FF /* CompoundItemTest.m */; };
-		AAB35E9F0A335159006535FF /* CompoundAndItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35E9D0A335159006535FF /* CompoundAndItemTest.m */; };
-		AAB35EA50A3353E6006535FF /* CompoundOrItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */; };
-		AAB471CB0A3AE6680096C5B6 /* FileItemTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB471C90A3AE6680096C5B6 /* FileItemTestRepository.m */; };
 		AAC26BC10A8CAF4800F2DA33 /* DrawTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB30A8CAF4800F2DA33 /* DrawTaskExecutor.m */; };
 		AAC26BC30A8CAF4800F2DA33 /* DrawTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB50A8CAF4800F2DA33 /* DrawTaskInput.m */; };
 		AAC26BC50A8CAF4800F2DA33 /* FilterTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB70A8CAF4800F2DA33 /* FilterTaskExecutor.m */; };
@@ -94,7 +96,6 @@
 		AAD8DFB30B077ED20060DADA /* PreferencesPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAD8DFB20B077ED20060DADA /* PreferencesPanelControl.m */; };
 		AAD8DFC70B077FCF0060DADA /* PreferencesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */; };
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
-		AADDDC500DEE94E9008153C7 /* SelectiveItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
@@ -115,27 +116,7 @@
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
 		AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotifyingPanel.m; path = util/NotifyingPanel.m; sourceTree = "<group>"; };
 		AA21849D0A25FDDB000E1C8C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
-		AA2184F10A277D73000E1C8C /* FileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTest.h; path = filter/FileItemTest.h; sourceTree = "<group>"; };
-		AA2184F80A277E81000E1C8C /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = filter/StringTest.h; sourceTree = "<group>"; };
-		AA2184FE0A277F20000E1C8C /* MultiMatchStringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MultiMatchStringTest.h; path = filter/MultiMatchStringTest.h; sourceTree = "<group>"; };
-		AA2184FF0A277F20000E1C8C /* MultiMatchStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MultiMatchStringTest.m; path = filter/MultiMatchStringTest.m; sourceTree = "<group>"; };
-		AA2185550A278236000E1C8C /* StringEqualityTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringEqualityTest.h; path = filter/StringEqualityTest.h; sourceTree = "<group>"; };
-		AA2185560A278236000E1C8C /* StringEqualityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringEqualityTest.m; path = filter/StringEqualityTest.m; sourceTree = "<group>"; };
-		AA21855F0A2782BC000E1C8C /* StringPrefixTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringPrefixTest.h; path = filter/StringPrefixTest.h; sourceTree = "<group>"; };
-		AA2185600A2782BC000E1C8C /* StringPrefixTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringPrefixTest.m; path = filter/StringPrefixTest.m; sourceTree = "<group>"; };
-		AA2185630A278325000E1C8C /* StringSuffixTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringSuffixTest.h; path = filter/StringSuffixTest.h; sourceTree = "<group>"; };
-		AA2185640A278325000E1C8C /* StringSuffixTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringSuffixTest.m; path = filter/StringSuffixTest.m; sourceTree = "<group>"; };
-		AA2185670A2783B6000E1C8C /* StringContainmentTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringContainmentTest.h; path = filter/StringContainmentTest.h; sourceTree = "<group>"; };
-		AA2185680A2783B6000E1C8C /* StringContainmentTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringContainmentTest.m; path = filter/StringContainmentTest.m; sourceTree = "<group>"; };
-		AA2185C70A278892000E1C8C /* AbstractFileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractFileItemTest.h; path = filter/AbstractFileItemTest.h; sourceTree = "<group>"; };
-		AA2185C80A278892000E1C8C /* AbstractFileItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractFileItemTest.m; path = filter/AbstractFileItemTest.m; sourceTree = "<group>"; };
-		AA21EC670A5695BC00A9FD87 /* ItemStringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemStringTest.h; path = filter/ItemStringTest.h; sourceTree = "<group>"; };
-		AA21EC680A5695BC00A9FD87 /* ItemStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemStringTest.m; path = filter/ItemStringTest.m; sourceTree = "<group>"; };
-		AA21EC940A56978A00A9FD87 /* ItemPathTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathTest.h; path = filter/ItemPathTest.h; sourceTree = "<group>"; };
-		AA21EC950A56978A00A9FD87 /* ItemPathTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathTest.m; path = filter/ItemPathTest.m; sourceTree = "<group>"; };
 		AA311D380B88B48900BD4132 /* nl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = nl; path = nl.lproj/GrandPerspectiveHelp; sourceTree = "<group>"; };
-		AA33F9E10A41CBEA00F3D4DB /* NotItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotItemTest.h; path = filter/NotItemTest.h; sourceTree = "<group>"; };
-		AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotItemTest.m; path = filter/NotItemTest.m; sourceTree = "<group>"; };
 		AA3B38D70D17EEF60070E889 /* CompoundItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CompoundItem.h; path = tree/CompoundItem.h; sourceTree = "<group>"; };
 		AA3B38D80D17EEF60070E889 /* CompoundItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CompoundItem.m; path = tree/CompoundItem.m; sourceTree = "<group>"; };
 		AA3B38D90D17EEF60070E889 /* DirectoryItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryItem.h; path = tree/DirectoryItem.h; sourceTree = "<group>"; };
@@ -227,12 +208,6 @@
 		AA8A38030D7B437300DB872C /* StatelessFileItemMapping.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = StatelessFileItemMapping.m; sourceTree = "<group>"; };
 		AA8A38040D7B437300DB872C /* UniformTypeMappingScheme.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = UniformTypeMappingScheme.h; sourceTree = "<group>"; };
 		AA8A38050D7B437300DB872C /* UniformTypeMappingScheme.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = UniformTypeMappingScheme.m; sourceTree = "<group>"; };
-		AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemFlagsTest.h; path = filter/ItemFlagsTest.h; sourceTree = "<group>"; };
-		AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemFlagsTest.m; path = filter/ItemFlagsTest.m; sourceTree = "<group>"; };
-		AA8AB6480DEDDB47003D1B7D /* ItemTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemTypeTest.h; path = filter/ItemTypeTest.h; sourceTree = "<group>"; };
-		AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemTypeTest.m; path = filter/ItemTypeTest.m; sourceTree = "<group>"; };
-		AA8AB64B0DEDDF62003D1B7D /* TestDescriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestDescriptions.h; path = filter/TestDescriptions.h; sourceTree = "<group>"; };
-		AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestDescriptions.m; path = filter/TestDescriptions.m; sourceTree = "<group>"; };
 		AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanTaskInput.h; path = task/ScanTaskInput.h; sourceTree = "<group>"; };
 		AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanTaskInput.m; path = task/ScanTaskInput.m; sourceTree = "<group>"; };
 		AA8FEB2A0B6CC2D80049FF42 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Names.strings; sourceTree = "<group>"; };
@@ -240,22 +215,51 @@
 		AA8FEB700B6CD4670049FF42 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/PreferencesPanel.nib; sourceTree = "<group>"; };
 		AA987F5F0DF16D0300A6EA33 /* FilteredTreeGuide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilteredTreeGuide.h; path = tree/FilteredTreeGuide.h; sourceTree = "<group>"; };
 		AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilteredTreeGuide.m; path = tree/FilteredTreeGuide.m; sourceTree = "<group>"; };
-		AA9880910DF5636E00A6EA33 /* FileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestVisitor.h; path = filter/FileItemTestVisitor.h; sourceTree = "<group>"; };
-		AA9880940DF5653E00A6EA33 /* BasicFileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicFileItemTestVisitor.h; path = filter/BasicFileItemTestVisitor.h; sourceTree = "<group>"; };
-		AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicFileItemTestVisitor.m; path = filter/BasicFileItemTestVisitor.m; sourceTree = "<group>"; };
+		AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractFileItemTest.h; path = test/AbstractFileItemTest.h; sourceTree = "<group>"; };
+		AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractFileItemTest.m; path = test/AbstractFileItemTest.m; sourceTree = "<group>"; };
+		AA9881650DF57B2F00A6EA33 /* BasicFileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicFileItemTestVisitor.h; path = test/BasicFileItemTestVisitor.h; sourceTree = "<group>"; };
+		AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicFileItemTestVisitor.m; path = test/BasicFileItemTestVisitor.m; sourceTree = "<group>"; };
+		AA9881670DF57B2F00A6EA33 /* CompoundAndItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundAndItemTest.h; path = test/CompoundAndItemTest.h; sourceTree = "<group>"; };
+		AA9881680DF57B2F00A6EA33 /* CompoundAndItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundAndItemTest.m; path = test/CompoundAndItemTest.m; sourceTree = "<group>"; };
+		AA9881690DF57B2F00A6EA33 /* CompoundItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundItemTest.h; path = test/CompoundItemTest.h; sourceTree = "<group>"; };
+		AA98816A0DF57B2F00A6EA33 /* CompoundItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundItemTest.m; path = test/CompoundItemTest.m; sourceTree = "<group>"; };
+		AA98816B0DF57B2F00A6EA33 /* CompoundOrItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundOrItemTest.h; path = test/CompoundOrItemTest.h; sourceTree = "<group>"; };
+		AA98816C0DF57B2F00A6EA33 /* CompoundOrItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundOrItemTest.m; path = test/CompoundOrItemTest.m; sourceTree = "<group>"; };
+		AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTest.h; path = test/FileItemTest.h; sourceTree = "<group>"; };
+		AA98816E0DF57B2F00A6EA33 /* FileItemTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestRepository.h; path = test/FileItemTestRepository.h; sourceTree = "<group>"; };
+		AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTestRepository.m; path = test/FileItemTestRepository.m; sourceTree = "<group>"; };
+		AA9881700DF57B2F00A6EA33 /* FileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestVisitor.h; path = test/FileItemTestVisitor.h; sourceTree = "<group>"; };
+		AA9881710DF57B2F00A6EA33 /* ItemFlagsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemFlagsTest.h; path = test/ItemFlagsTest.h; sourceTree = "<group>"; };
+		AA9881720DF57B2F00A6EA33 /* ItemFlagsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemFlagsTest.m; path = test/ItemFlagsTest.m; sourceTree = "<group>"; };
+		AA9881730DF57B2F00A6EA33 /* ItemNameTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemNameTest.h; path = test/ItemNameTest.h; sourceTree = "<group>"; };
+		AA9881740DF57B2F00A6EA33 /* ItemNameTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemNameTest.m; path = test/ItemNameTest.m; sourceTree = "<group>"; };
+		AA9881750DF57B2F00A6EA33 /* ItemPathTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathTest.h; path = test/ItemPathTest.h; sourceTree = "<group>"; };
+		AA9881760DF57B2F00A6EA33 /* ItemPathTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathTest.m; path = test/ItemPathTest.m; sourceTree = "<group>"; };
+		AA9881770DF57B2F00A6EA33 /* ItemSizeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTest.h; path = test/ItemSizeTest.h; sourceTree = "<group>"; };
+		AA9881780DF57B2F00A6EA33 /* ItemSizeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTest.m; path = test/ItemSizeTest.m; sourceTree = "<group>"; };
+		AA9881790DF57B2F00A6EA33 /* ItemStringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemStringTest.h; path = test/ItemStringTest.h; sourceTree = "<group>"; };
+		AA98817A0DF57B2F00A6EA33 /* ItemStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemStringTest.m; path = test/ItemStringTest.m; sourceTree = "<group>"; };
+		AA98817B0DF57B2F00A6EA33 /* ItemTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemTypeTest.h; path = test/ItemTypeTest.h; sourceTree = "<group>"; };
+		AA98817C0DF57B2F00A6EA33 /* ItemTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemTypeTest.m; path = test/ItemTypeTest.m; sourceTree = "<group>"; };
+		AA98817D0DF57B2F00A6EA33 /* MultiMatchStringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MultiMatchStringTest.h; path = test/MultiMatchStringTest.h; sourceTree = "<group>"; };
+		AA98817E0DF57B2F00A6EA33 /* MultiMatchStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MultiMatchStringTest.m; path = test/MultiMatchStringTest.m; sourceTree = "<group>"; };
+		AA98817F0DF57B2F00A6EA33 /* NotItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotItemTest.h; path = test/NotItemTest.h; sourceTree = "<group>"; };
+		AA9881800DF57B2F00A6EA33 /* NotItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotItemTest.m; path = test/NotItemTest.m; sourceTree = "<group>"; };
+		AA9881810DF57B2F00A6EA33 /* SelectiveItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectiveItemTest.h; path = test/SelectiveItemTest.h; sourceTree = "<group>"; };
+		AA9881820DF57B2F00A6EA33 /* SelectiveItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectiveItemTest.m; path = test/SelectiveItemTest.m; sourceTree = "<group>"; };
+		AA9881830DF57B2F00A6EA33 /* StringContainmentTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringContainmentTest.h; path = test/StringContainmentTest.h; sourceTree = "<group>"; };
+		AA9881840DF57B2F00A6EA33 /* StringContainmentTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringContainmentTest.m; path = test/StringContainmentTest.m; sourceTree = "<group>"; };
+		AA9881850DF57B2F00A6EA33 /* StringEqualityTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringEqualityTest.h; path = test/StringEqualityTest.h; sourceTree = "<group>"; };
+		AA9881860DF57B2F00A6EA33 /* StringEqualityTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringEqualityTest.m; path = test/StringEqualityTest.m; sourceTree = "<group>"; };
+		AA9881870DF57B2F00A6EA33 /* StringPrefixTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringPrefixTest.h; path = test/StringPrefixTest.h; sourceTree = "<group>"; };
+		AA9881880DF57B2F00A6EA33 /* StringPrefixTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringPrefixTest.m; path = test/StringPrefixTest.m; sourceTree = "<group>"; };
+		AA9881890DF57B2F00A6EA33 /* StringSuffixTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringSuffixTest.h; path = test/StringSuffixTest.h; sourceTree = "<group>"; };
+		AA98818A0DF57B2F00A6EA33 /* StringSuffixTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringSuffixTest.m; path = test/StringSuffixTest.m; sourceTree = "<group>"; };
+		AA98818B0DF57B2F00A6EA33 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = test/StringTest.h; sourceTree = "<group>"; };
+		AA98818C0DF57B2F00A6EA33 /* StringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringTest.m; path = test/StringTest.m; sourceTree = "<group>"; };
+		AA98818D0DF57B2F00A6EA33 /* TestDescriptions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestDescriptions.h; path = test/TestDescriptions.h; sourceTree = "<group>"; };
+		AA98818E0DF57B2F00A6EA33 /* TestDescriptions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestDescriptions.m; path = test/TestDescriptions.m; sourceTree = "<group>"; };
 		AAB35D7D0A330BB3006535FF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };
-		AAB35DF50A332EA3006535FF /* ItemNameTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemNameTest.h; path = filter/ItemNameTest.h; sourceTree = "<group>"; };
-		AAB35DF60A332EA3006535FF /* ItemNameTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemNameTest.m; path = filter/ItemNameTest.m; sourceTree = "<group>"; };
-		AAB35E2E0A33329A006535FF /* ItemSizeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTest.h; path = filter/ItemSizeTest.h; sourceTree = "<group>"; };
-		AAB35E2F0A33329A006535FF /* ItemSizeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTest.m; path = filter/ItemSizeTest.m; sourceTree = "<group>"; };
-		AAB35E800A334EF3006535FF /* CompoundItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundItemTest.h; path = filter/CompoundItemTest.h; sourceTree = "<group>"; };
-		AAB35E810A334EF3006535FF /* CompoundItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundItemTest.m; path = filter/CompoundItemTest.m; sourceTree = "<group>"; };
-		AAB35E9C0A335159006535FF /* CompoundAndItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundAndItemTest.h; path = filter/CompoundAndItemTest.h; sourceTree = "<group>"; };
-		AAB35E9D0A335159006535FF /* CompoundAndItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundAndItemTest.m; path = filter/CompoundAndItemTest.m; sourceTree = "<group>"; };
-		AAB35EA20A3353E6006535FF /* CompoundOrItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundOrItemTest.h; path = filter/CompoundOrItemTest.h; sourceTree = "<group>"; };
-		AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundOrItemTest.m; path = filter/CompoundOrItemTest.m; sourceTree = "<group>"; };
-		AAB471C80A3AE6680096C5B6 /* FileItemTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestRepository.h; path = filter/FileItemTestRepository.h; sourceTree = "<group>"; };
-		AAB471C90A3AE6680096C5B6 /* FileItemTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTestRepository.m; path = filter/FileItemTestRepository.m; sourceTree = "<group>"; };
 		AAC26BB20A8CAF4800F2DA33 /* DrawTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DrawTaskExecutor.h; path = task/DrawTaskExecutor.h; sourceTree = "<group>"; };
 		AAC26BB30A8CAF4800F2DA33 /* DrawTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DrawTaskExecutor.m; path = task/DrawTaskExecutor.m; sourceTree = "<group>"; };
 		AAC26BB40A8CAF4800F2DA33 /* DrawTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DrawTaskInput.h; path = task/DrawTaskInput.h; sourceTree = "<group>"; };
@@ -274,8 +278,6 @@
 		AAD8DFBF0B077F900060DADA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/PreferencesPanel.nib; sourceTree = "<group>"; };
 		AADD34920B8B902000AC2C97 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Tests.strings; sourceTree = "<group>"; };
 		AADD349A0B8B905900AC2C97 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Tests.strings; sourceTree = "<group>"; };
-		AADDDC4E0DEE94E9008153C7 /* SelectiveItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectiveItemTest.h; path = filter/SelectiveItemTest.h; sourceTree = "<group>"; };
-		AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectiveItemTest.m; path = filter/SelectiveItemTest.m; sourceTree = "<group>"; };
 		AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = UniformTypeInventory.m; path = util/UniformTypeInventory.m; sourceTree = "<group>"; };
 		AAE87FD90CE10B9B00A99883 /* UniformTypeInventory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UniformTypeInventory.h; path = util/UniformTypeInventory.h; sourceTree = "<group>"; };
 		AAEF5E240AFE79FA00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
@@ -311,7 +313,7 @@
 				AA6012020A5AEE6200DEBCB8 /* view */,
 				AA6012010A5AEE0D00DEBCB8 /* tree */,
 				AAB4719F0A3AE2460096C5B6 /* control */,
-				AA2184AE0A26F9C6000E1C8C /* filter */,
+				AA2184AE0A26F9C6000E1C8C /* test */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -395,54 +397,55 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		AA2184AE0A26F9C6000E1C8C /* filter */ = {
+		AA2184AE0A26F9C6000E1C8C /* test */ = {
 			isa = PBXGroup;
 			children = (
-				AA8AB64B0DEDDF62003D1B7D /* TestDescriptions.h */,
-				AA8AB6510DEDE04E003D1B7D /* TestDescriptions.m */,
-				AAB471C80A3AE6680096C5B6 /* FileItemTestRepository.h */,
-				AAB471C90A3AE6680096C5B6 /* FileItemTestRepository.m */,
-				AA2184F80A277E81000E1C8C /* StringTest.h */,
-				AA2184FE0A277F20000E1C8C /* MultiMatchStringTest.h */,
-				AA2184FF0A277F20000E1C8C /* MultiMatchStringTest.m */,
-				AA2185670A2783B6000E1C8C /* StringContainmentTest.h */,
-				AA2185680A2783B6000E1C8C /* StringContainmentTest.m */,
-				AA2185630A278325000E1C8C /* StringSuffixTest.h */,
-				AA2185640A278325000E1C8C /* StringSuffixTest.m */,
-				AA21855F0A2782BC000E1C8C /* StringPrefixTest.h */,
-				AA2185600A2782BC000E1C8C /* StringPrefixTest.m */,
-				AA2185550A278236000E1C8C /* StringEqualityTest.h */,
-				AA2185560A278236000E1C8C /* StringEqualityTest.m */,
-				AA2184F10A277D73000E1C8C /* FileItemTest.h */,
-				AA2185C70A278892000E1C8C /* AbstractFileItemTest.h */,
-				AA2185C80A278892000E1C8C /* AbstractFileItemTest.m */,
-				AA9880910DF5636E00A6EA33 /* FileItemTestVisitor.h */,
-				AA9880940DF5653E00A6EA33 /* BasicFileItemTestVisitor.h */,
-				AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */,
-				AA21EC670A5695BC00A9FD87 /* ItemStringTest.h */,
-				AA21EC680A5695BC00A9FD87 /* ItemStringTest.m */,
-				AAB35DF50A332EA3006535FF /* ItemNameTest.h */,
-				AAB35DF60A332EA3006535FF /* ItemNameTest.m */,
-				AA21EC940A56978A00A9FD87 /* ItemPathTest.h */,
-				AA21EC950A56978A00A9FD87 /* ItemPathTest.m */,
-				AAB35E2E0A33329A006535FF /* ItemSizeTest.h */,
-				AAB35E2F0A33329A006535FF /* ItemSizeTest.m */,
-				AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */,
-				AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */,
-				AA8AB6480DEDDB47003D1B7D /* ItemTypeTest.h */,
-				AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */,
-				AADDDC4E0DEE94E9008153C7 /* SelectiveItemTest.h */,
-				AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */,
-				AA33F9E10A41CBEA00F3D4DB /* NotItemTest.h */,
-				AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */,
-				AAB35E800A334EF3006535FF /* CompoundItemTest.h */,
-				AAB35E810A334EF3006535FF /* CompoundItemTest.m */,
-				AAB35E9C0A335159006535FF /* CompoundAndItemTest.h */,
-				AAB35E9D0A335159006535FF /* CompoundAndItemTest.m */,
-				AAB35EA20A3353E6006535FF /* CompoundOrItemTest.h */,
-				AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */,
+				AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */,
+				AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */,
+				AA9881650DF57B2F00A6EA33 /* BasicFileItemTestVisitor.h */,
+				AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */,
+				AA9881670DF57B2F00A6EA33 /* CompoundAndItemTest.h */,
+				AA9881680DF57B2F00A6EA33 /* CompoundAndItemTest.m */,
+				AA9881690DF57B2F00A6EA33 /* CompoundItemTest.h */,
+				AA98816A0DF57B2F00A6EA33 /* CompoundItemTest.m */,
+				AA98816B0DF57B2F00A6EA33 /* CompoundOrItemTest.h */,
+				AA98816C0DF57B2F00A6EA33 /* CompoundOrItemTest.m */,
+				AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */,
+				AA98816E0DF57B2F00A6EA33 /* FileItemTestRepository.h */,
+				AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */,
+				AA9881700DF57B2F00A6EA33 /* FileItemTestVisitor.h */,
+				AA9881710DF57B2F00A6EA33 /* ItemFlagsTest.h */,
+				AA9881720DF57B2F00A6EA33 /* ItemFlagsTest.m */,
+				AA9881730DF57B2F00A6EA33 /* ItemNameTest.h */,
+				AA9881740DF57B2F00A6EA33 /* ItemNameTest.m */,
+				AA9881750DF57B2F00A6EA33 /* ItemPathTest.h */,
+				AA9881760DF57B2F00A6EA33 /* ItemPathTest.m */,
+				AA9881770DF57B2F00A6EA33 /* ItemSizeTest.h */,
+				AA9881780DF57B2F00A6EA33 /* ItemSizeTest.m */,
+				AA9881790DF57B2F00A6EA33 /* ItemStringTest.h */,
+				AA98817A0DF57B2F00A6EA33 /* ItemStringTest.m */,
+				AA98817B0DF57B2F00A6EA33 /* ItemTypeTest.h */,
+				AA98817C0DF57B2F00A6EA33 /* ItemTypeTest.m */,
+				AA98817D0DF57B2F00A6EA33 /* MultiMatchStringTest.h */,
+				AA98817E0DF57B2F00A6EA33 /* MultiMatchStringTest.m */,
+				AA98817F0DF57B2F00A6EA33 /* NotItemTest.h */,
+				AA9881800DF57B2F00A6EA33 /* NotItemTest.m */,
+				AA9881810DF57B2F00A6EA33 /* SelectiveItemTest.h */,
+				AA9881820DF57B2F00A6EA33 /* SelectiveItemTest.m */,
+				AA9881830DF57B2F00A6EA33 /* StringContainmentTest.h */,
+				AA9881840DF57B2F00A6EA33 /* StringContainmentTest.m */,
+				AA9881850DF57B2F00A6EA33 /* StringEqualityTest.h */,
+				AA9881860DF57B2F00A6EA33 /* StringEqualityTest.m */,
+				AA9881870DF57B2F00A6EA33 /* StringPrefixTest.h */,
+				AA9881880DF57B2F00A6EA33 /* StringPrefixTest.m */,
+				AA9881890DF57B2F00A6EA33 /* StringSuffixTest.h */,
+				AA98818A0DF57B2F00A6EA33 /* StringSuffixTest.m */,
+				AA98818B0DF57B2F00A6EA33 /* StringTest.h */,
+				AA98818C0DF57B2F00A6EA33 /* StringTest.m */,
+				AA98818D0DF57B2F00A6EA33 /* TestDescriptions.h */,
+				AA98818E0DF57B2F00A6EA33 /* TestDescriptions.m */,
 			);
-			name = filter;
+			name = test;
 			sourceTree = "<group>";
 		};
 		AA6012010A5AEE0D00DEBCB8 /* tree */ = {
@@ -674,22 +677,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
-				AA2185010A277F20000E1C8C /* MultiMatchStringTest.m in Sources */,
-				AA2185580A278236000E1C8C /* StringEqualityTest.m in Sources */,
-				AA2185620A2782BC000E1C8C /* StringPrefixTest.m in Sources */,
-				AA2185660A278325000E1C8C /* StringSuffixTest.m in Sources */,
-				AA21856A0A2783B6000E1C8C /* StringContainmentTest.m in Sources */,
-				AA2185CA0A278892000E1C8C /* AbstractFileItemTest.m in Sources */,
-				AAB35DF80A332EA3006535FF /* ItemNameTest.m in Sources */,
-				AAB35E310A33329A006535FF /* ItemSizeTest.m in Sources */,
-				AAB35E830A334EF3006535FF /* CompoundItemTest.m in Sources */,
-				AAB35E9F0A335159006535FF /* CompoundAndItemTest.m in Sources */,
-				AAB35EA50A3353E6006535FF /* CompoundOrItemTest.m in Sources */,
 				AA61786F0A38B8D500B8AB16 /* NotifyingDictionary.m in Sources */,
-				AAB471CB0A3AE6680096C5B6 /* FileItemTestRepository.m in Sources */,
-				AA33F9E40A41CBEA00F3D4DB /* NotItemTest.m in Sources */,
-				AA21EC6A0A5695BC00A9FD87 /* ItemStringTest.m in Sources */,
-				AA21EC970A56978A00A9FD87 /* ItemPathTest.m in Sources */,
 				AA6012570A5AF55400DEBCB8 /* AsynchronousTaskManager.m in Sources */,
 				AA6012690A5AF5A600DEBCB8 /* PeekingEnumerator.m in Sources */,
 				AA6012EC0A5AFB7F00DEBCB8 /* DirectoryView.m in Sources */,
@@ -740,12 +728,28 @@
 				AA8A380E0D7B437300DB872C /* StatelessFileItemMapping.m in Sources */,
 				AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */,
 				AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */,
-				AA8AB5F70DE9E6C2003D1B7D /* ItemFlagsTest.m in Sources */,
-				AA8AB64A0DEDDB47003D1B7D /* ItemTypeTest.m in Sources */,
-				AA8AB6520DEDE04E003D1B7D /* TestDescriptions.m in Sources */,
-				AADDDC500DEE94E9008153C7 /* SelectiveItemTest.m in Sources */,
 				AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */,
-				AA9880960DF5653E00A6EA33 /* BasicFileItemTestVisitor.m in Sources */,
+				AA98818F0DF57B2F00A6EA33 /* AbstractFileItemTest.m in Sources */,
+				AA9881900DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m in Sources */,
+				AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */,
+				AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */,
+				AA9881930DF57B2F00A6EA33 /* CompoundOrItemTest.m in Sources */,
+				AA9881940DF57B2F00A6EA33 /* FileItemTestRepository.m in Sources */,
+				AA9881950DF57B2F00A6EA33 /* ItemFlagsTest.m in Sources */,
+				AA9881960DF57B2F00A6EA33 /* ItemNameTest.m in Sources */,
+				AA9881970DF57B2F00A6EA33 /* ItemPathTest.m in Sources */,
+				AA9881980DF57B2F00A6EA33 /* ItemSizeTest.m in Sources */,
+				AA9881990DF57B2F00A6EA33 /* ItemStringTest.m in Sources */,
+				AA98819A0DF57B2F00A6EA33 /* ItemTypeTest.m in Sources */,
+				AA98819B0DF57B2F00A6EA33 /* MultiMatchStringTest.m in Sources */,
+				AA98819C0DF57B2F00A6EA33 /* NotItemTest.m in Sources */,
+				AA98819D0DF57B2F00A6EA33 /* SelectiveItemTest.m in Sources */,
+				AA98819E0DF57B2F00A6EA33 /* StringContainmentTest.m in Sources */,
+				AA98819F0DF57B2F00A6EA33 /* StringEqualityTest.m in Sources */,
+				AA9881A00DF57B2F00A6EA33 /* StringPrefixTest.m in Sources */,
+				AA9881A10DF57B2F00A6EA33 /* StringSuffixTest.m in Sources */,
+				AA9881A20DF57B2F00A6EA33 /* StringTest.m in Sources */,
+				AA9881A30DF57B2F00A6EA33 /* TestDescriptions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
