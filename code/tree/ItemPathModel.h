@@ -96,7 +96,8 @@ extern NSString  *VisiblePathLockingChangedEvent;
 - (FileItem *) lastFileItem;
 
 /* Selects the given file item. It should be an item that is already on the
- * visible part of the path.
+ * path. If it is not yet on the visible part of the path, the visible tree 
+ * will be moved up so that the selected item will be on the visible path.
  */
 - (void) selectFileItem: (FileItem *)fileItem;
 

@@ -285,11 +285,25 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 - (void) selectFileItem: (FileItem *)fileItem {
   int  oldSelectedItemIndex = selectedItemIndex;
-  selectedItemIndex = visibleTreeIndex;
+  selectedItemIndex = lastFileItemIndex;
   
-  while ([path objectAtIndex: selectedItemIndex] != fileItem) {
-    selectedItemIndex++;
-    NSAssert(selectedItemIndex <= lastFileItemIndex, @"Item not found.");
+  while ( [path objectAtIndex: selectedItemIndex] != fileItem ) {
+    selectedItemIndex--;
+    
+    NSAssert(selectedItemIndex >= 0, @"Item not found.");
+  }
+  
+  if (selectedItemIndex < visibleTreeIndex ) {
+    // The item was not inside the visible part of the path, so also update
+    // update the visible tree. 
+    // 
+    // This can happen when a view has a different, higher visible tree than 
+    // the model (because it is not showing the contents of packages). When
+    // the view then selects an item inside its own visible tree, this is
+    // not necessarily inside the model's visible tree.
+
+    visibleTreeIndex = selectedItemIndex;
+    [self postVisibleTreeChanged];
   }
   
   if (selectedItemIndex != oldSelectedItemIndex) {

@@ -109,6 +109,7 @@
   // Don't generate notifications while the path is being built.
   [pathModel suppressSelectedItemChangedNotifications: YES];
   
+  // Get the item at the given point (updating the path as far as possible)
   FileItem  *itemAtPoint =
     [pathBuilder itemAtPoint: point 
                    startingAtTree: treeRoot
