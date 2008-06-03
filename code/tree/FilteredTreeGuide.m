@@ -6,13 +6,18 @@
 
 @implementation FilteredTreeGuide
 
+// Overrides designated initialiser
+- (id) init {
+  return [self initWithFileItemTest: nil packagesAsFiles: YES];
+}
+
 - (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal
          packagesAsFiles: (BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     itemTest = [itemTestVal retain];
     packagesAsFiles = packagesAsFilesVal;
     
-    filterDisabledCount = 0;
+    packageCount = 0;
     
     fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
     [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
@@ -33,17 +38,29 @@
   return packagesAsFiles;
 }
 
+- (void) setPackagesAsFiles: (BOOL) flag {
+  packagesAsFiles = flag;
+}
+
+
 - (NSObject <FileItemTest>*) fileItemTest {
   return itemTest;
 }
 
+- (void) setFileItemTest: (NSObject <FileItemTest> *) test {
+  if (itemTest != test) {
+    [itemTest release];
+    itemTest = [test retain];
+  }
+}
 
-- (BOOL) shouldDescendIntoFileItem: (FileItem *)item {
-  FileItem  *filterSubject = item; // Default
+
+- (FileItem *) includeFileItem: (FileItem *)item {
+  FileItem  *proxyItem = item; // Default
 
   if ( [item isDirectory] ) {
     if ( packagesAsFiles ) {
-      filterSubject = [((DirectoryItem *)item) itemWhenHidingPackageContents];
+      proxyItem = [((DirectoryItem *)item) itemWhenHidingPackageContents];
     }
   }
   else {
@@ -55,34 +72,54 @@
       //
       // TO DO: Check if special items should still always be excluded.
 
-      return NO; 
+      return nil; 
     }
   }
-    
-  return ( filterDisabledCount > 0
-           || [itemTest testFileItem: filterSubject
-                          context: fileItemPathStringCache] != TEST_FAILED );
-}
 
+  if ( packagesAsFiles && packageCount > 0 ) {
+    // Currently inside opaque package (implying that a tree is being 
+    // constructed). Include all items.
+    return proxyItem;
+  }
 
-- (FileItem *) descendIntoFileItem: (FileItem *)item {   
-  if ( [item isDirectory] ) {
-    if (packagesAsFiles && [ ((DirectoryItem *)item) isPackage]) {
-      filterDisabledCount++;
-      
-      return [((DirectoryItem *)item) itemWhenHidingPackageContents];
-    }
+  if ( itemTest == nil 
+       || [itemTest testFileItem: proxyItem
+                      context: fileItemPathStringCache] != TEST_FAILED ) {
+    // The item passed the test.
+    return proxyItem;
   }
   
-  return item;
+  return nil;
 }
 
-- (void) emergedFromFileItem: (FileItem *)item {
-  if ( [item isDirectory] ) {
-    if (packagesAsFiles && [ ((DirectoryItem *)item) isPackage]) {
-      NSAssert( filterDisabledCount > 0, @"Count should be positive." );
-      filterDisabledCount--;
-    }
+
+- (BOOL) shouldDescendIntoDirectory: (DirectoryItem *)item {
+  if ( packagesAsFiles ) {
+    // Packages are treated as files. This means that the item should be 
+    // constructed first before applying the test (as it may include an 
+    // ItemSizeTest).
+    return YES;
+  }
+  else {
+    // Even though the directory item has not yet been fully created, the test
+    // can be applied already. So only descend (and construct the contents) 
+    // when it passed the test (and will be included in the tree).
+    return ( [itemTest testFileItem: item
+                         context: fileItemPathStringCache] != TEST_FAILED );
+  }
+}
+
+
+- (void) descendIntoDirectory: (DirectoryItem *)item {   
+  if ( [item isPackage] ) {
+    packageCount++;
+  }
+}
+
+- (void) emergedFromDirectory: (DirectoryItem *)item {
+  if ( [item isPackage] ) {
+    NSAssert(packageCount > 0, @"Count should be positive." );
+    packageCount--;
   }
 }
 

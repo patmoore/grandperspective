@@ -3,17 +3,9 @@
 #import "DirectoryItem.h"
 #import "FileItemMapping.h"
 #import "TreeLayoutBuilder.h"
-#import "FileItemPathStringCache.h"
+#import "FilteredTreeGuide.h"
 #import "ItemTreeDrawerSettings.h"
-#import "FileItemTest.h"
 #import "TreeContext.h"
-
-
-@interface ItemTreeDrawer (PrivateMethods)
-
-- (BOOL) isFileItemMasked: (FileItem *)file;
-
-@end
 
 
 @implementation ItemTreeDrawer
@@ -36,14 +28,11 @@
   if (self = [super initWithColorPalette: [settings colorPalette]]) {
     scanTree = [scanTreeVal retain];
   
-    // Make sure values are nil before calling updateSettings. 
+    // Make sure values are set before calling updateSettings. 
     colorMapper = nil;
-    fileItemMask = nil;
+    treeGuide = [[FilteredTreeGuide alloc] init];
     
     [self updateSettings: settings];
-    
-    fileItemPathStringCache = [[FileItemPathStringCache alloc] init];
-    [fileItemPathStringCache setAddTrailingSlashToDirectoryPaths: YES];
     
     freeSpaceColor = [self intValueForColor: [NSColor blackColor]];
     usedSpaceColor = [self intValueForColor: [NSColor darkGrayColor]];
@@ -56,17 +45,16 @@
 
 - (void) dealloc {
   [colorMapper release];
-  [fileItemMask release];
+  [treeGuide release];
 
   [scanTree release];
-  [visibleTree release];
-  
-  [fileItemPathStringCache release];
-  
-  NSAssert(visibleTree==nil, @"visibleTree should be nil.");
 
+  NSAssert(visibleTree==nil, @"visibleTree should be nil.");
+  [visibleTree release]; // For sake of completeness. Can be omitted.
+  
   [super dealloc];
 }
+
 
 - (void) setColorMapper: (NSObject <FileItemMapping> *)colorMapperVal {
   NSAssert(colorMapperVal != nil, @"Cannot set an invalid color mapper.");
@@ -82,24 +70,21 @@
 }
 
 
-- (void) setFileItemMask:(NSObject <FileItemTest> *)fileItemMaskVal {
-  if (fileItemMaskVal != fileItemMask) {
-    [fileItemMask release];
-    fileItemMask = [fileItemMaskVal retain];
-  }
+- (void) setFileItemMask:(NSObject <FileItemTest> *)maskTest {
+  [treeGuide setFileItemTest: maskTest];
 }
 
 - (NSObject <FileItemTest> *) fileItemMask {
-  return fileItemMask;
+  return [treeGuide fileItemTest];
 }
 
 
-- (void) setShowPackageContents: (BOOL) showPackageContentsVal {
-  showPackageContents = showPackageContentsVal;
+- (void) setShowPackageContents: (BOOL) showPackageContents {
+  [treeGuide setPackagesAsFiles: !showPackageContents];
 }
 
 - (BOOL) showPackageContents {
-  return showPackageContents;
+  return ! [treeGuide packagesAsFiles];
 }
 
 
@@ -129,8 +114,6 @@
 
   [visibleTree release];
   visibleTree = nil;
-   
-  [fileItemPathStringCache clearCache];
 
   if (!abort) {
     // NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
@@ -159,7 +142,11 @@
     return YES;
   }
   
-  FileItem  *file = (FileItem*)item;
+  FileItem  *file = (FileItem *)item;
+  
+  if ( [file isDirectory] ) {
+    [treeGuide descendIntoDirectory: (DirectoryItem *)file];
+  }
     
   if ( file == visibleTree ) {
     insideVisibleTree = YES;
@@ -170,87 +157,78 @@
     FileItem  *ancestor = file;
     while (ancestor != scanTree) {
       ancestor = [ancestor parentDirectory];
-      if ([self isFileItemMasked: ancestor]) {
+      if (! [treeGuide includeFileItem: ancestor]) {
         return NO;
       }
     }
   }
     
-  if (!showPackageContents && [file isDirectory]) {
-    // Package contents should not be shownn. If the directory is a package
-    // replace it with a file item.
+  if ( !insideVisibleTree ) {
+    // Not yet inside the visible tree (implying that the entire volume is 
+    // shown). Ensure that the special "volume" items are drawn, and only
+    // descend towards the visible tree. 
+  
+    if ( [file isDirectory] ) {
+      if ( [file isSpecial] && [[file name] isEqualToString: UsedSpace] ) {
+        [self drawBasicFilledRect: rect intColor: usedSpaceColor];
+      }
       
-    file = [(DirectoryItem *)file itemWhenHidingPackageContents];
+      return [file isAncestorOfFileItem: visibleTree];
+    }
+    else {
+      if ( [file isSpecial] && [[file name] isEqualToString: FreeSpace] ) {
+        [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+      }
+      
+      return NO;
+    }
   }
-    
-  if ( [self isFileItemMasked: file] ) {
+  
+  // Inside the visible tree. Check if the item is masked
+  file = [treeGuide includeFileItem: file];
+  if (file == nil) {
     return NO;
   }
     
   if ( [file isDirectory] ) {
-    if ( [file isSpecial] && [[file name] isEqualToString: UsedSpace] ) {
-      [self drawBasicFilledRect: rect intColor: usedSpaceColor];
-    }
-    
-    if ( !insideVisibleTree ) {
-      // Do not descend if the DirectoryItem "file" is not an ancestor of the
-      // visible tree.
-      if (![file isAncestorOfFileItem: visibleTree]) {
-        return NO;
-      }
-    }
-    
     // Descend unless drawing has been aborted
     return !abort;
   }
 
   // It's a plain file
-  if ( [file isSpecial] && [[file name] isEqualToString: FreeSpace] ) {
-    [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+  if ( [file isSpecial] ) {
+    if ( [[file name] isEqualToString: FreedSpace] ) {
+      [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+    }
   }
-  else if ( insideVisibleTree ) {
-    if ( [file isSpecial] ) {
-      if ( [[file name] isEqualToString: FreedSpace] ) {
-        [self drawBasicFilledRect: rect intColor: freeSpaceColor];
-      }
+  else {
+    int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
+                                     atDepth: depth];
+    if ( [colorMapper canProvideLegend] ) {
+      NSAssert(colorIndex >= 0, @"Negative hash value.");
+      colorIndex = MIN(colorIndex, numGradientColors - 1);
     }
     else {
-      int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
-                                       atDepth: depth];
-      if ( [colorMapper canProvideLegend] ) {
-        NSAssert(colorIndex >= 0, @"Negative hash value.");
-        colorIndex = MIN(colorIndex, numGradientColors - 1);
-      }
-      else {
-        colorIndex = abs(colorIndex) % numGradientColors;
-      }
-
-      [self drawGradientFilledRect: rect colorIndex: colorIndex];
+      colorIndex = abs(colorIndex) % numGradientColors;
     }
+
+    [self drawGradientFilledRect: rect colorIndex: colorIndex];
   }
 
   // Cannot descend from a file, so return NO to save having to check this.
   return NO;
 }
 
-
 - (void) emergedFromItem: (Item *)item {
-  if (item == visibleTree) {
-    insideVisibleTree = NO;
+  if ( ! [item isVirtual] ) {
+    if (item == visibleTree) {
+      insideVisibleTree = NO;
+    }
+  
+    if ( [((FileItem *)item) isDirectory] ) {
+      [treeGuide emergedFromDirectory: (DirectoryItem *)item];
+    }
   }
 }
 
 @end // @implementation ItemTreeDrawer
-
-
-@implementation ItemTreeDrawer (PrivateMethods)
-
-- (BOOL) isFileItemMasked: (FileItem *)file {
-  return ( fileItemMask != nil 
-           && ! [file isSpecial]
-           && ( [fileItemMask testFileItem: file 
-                                context: fileItemPathStringCache]
-                == TEST_FAILED ) );
-}
-
-@end // @implementation ItemTreeDrawer (PrivateMethods)

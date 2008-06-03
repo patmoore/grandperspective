@@ -6,17 +6,14 @@
 @class FileItem;
 @class DirectoryItem;
 @class TreeLayoutBuilder;
-@class FileItemPathStringCache;
 @class ItemTreeDrawerSettings;
+@class FilteredTreeGuide;
 @protocol FileItemMapping;
 @protocol FileItemTest;
 
 @interface ItemTreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
   NSObject <FileItemMapping>  *colorMapper;
-  NSObject <FileItemTest>  *fileItemMask;
-  BOOL  showPackageContents;
-  
-  FileItemPathStringCache  *fileItemPathStringCache;
+  FilteredTreeGuide  *treeGuide;
   
   UInt32  freeSpaceColor;
   UInt32  usedSpaceColor;

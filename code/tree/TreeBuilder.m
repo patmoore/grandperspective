@@ -263,7 +263,7 @@ typedef struct  {
     }
   }
   
-  [treeGuide descendIntoFileItem: dirItem];
+  [treeGuide descendIntoDirectory: dirItem];
 
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];
@@ -333,15 +333,13 @@ typedef struct  {
             [[DirectoryItem alloc] initWithName: childName parent: dirItem
                                      flags: flags];
 
-          if ( treeGuide == nil || 
-               [treeGuide shouldDescendIntoFileItem: dirChildItem] ) {
-            [dirs addObject: dirChildItem];
+          // Collect all directories (the filter test is applied later).
+          [dirs addObject: dirChildItem];
 
-            FSRefObject  *refObject = 
-              [[FSRefObject alloc] initWithFileRef: childRef];
-            [dirFileRefs addObject: refObject];
-            [refObject release];
-          }
+          FSRefObject  *refObject = 
+            [[FSRefObject alloc] initWithFileRef: childRef];
+          [dirFileRefs addObject: refObject];
+          [refObject release];
           
           [dirChildItem release];
         }
@@ -361,8 +359,8 @@ typedef struct  {
                                      size: childSize type: fileType 
                                      flags: flags];
 
-          if ( treeGuide == nil || 
-               [treeGuide shouldDescendIntoFileItem: fileChildItem] ) {
+          // Only add file items that pass the filter test.
+          if ( [treeGuide includeFileItem: fileChildItem] ) {
             [files addObject: fileChildItem];
           }
           
@@ -379,9 +377,17 @@ typedef struct  {
   }
 
   for (i = [dirFileRefs count]; --i >= 0 && !abort; ) {
-    [self buildTreeForDirectory: [dirs objectAtIndex: i]
-            fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
-            parentPath: path];
+    DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
+
+    if ( [treeGuide shouldDescendIntoDirectory: dirChildItem] ) {
+      [self buildTreeForDirectory: dirChildItem
+              fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
+              parentPath: path];
+    }
+    if ( ! [treeGuide includeFileItem: dirChildItem] ) {
+      // The directory did not pass the test. So exclude it.
+      [dirs removeObjectAtIndex: i];
+    }
   }
   
   [dirItem setDirectoryContents: 
@@ -395,7 +401,7 @@ typedef struct  {
 
   [localAutoreleasePool release];
   
-  [treeGuide emergedFromFileItem: dirItem];
+  [treeGuide emergedFromDirectory: dirItem];
     
   FSCloseIterator(iterator);
   

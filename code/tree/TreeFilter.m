@@ -69,7 +69,7 @@
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 64];
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
   
-  [treeGuide descendIntoFileItem: newDir];
+  [treeGuide descendIntoDirectory: newDir];
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
           directoryItems: dirs fileItems: files];
@@ -107,7 +107,7 @@
                         second: [treeBalancer createTreeForItems: dirs]]];
   }
   
-  [treeGuide emergedFromFileItem: newDir];
+  [treeGuide emergedFromDirectory: newDir];
 
   [dirs release];
   [files release];
@@ -146,7 +146,7 @@
   else {
     FileItem  *fileItem = (FileItem *)item;
     
-    if ( [treeGuide shouldDescendIntoFileItem: fileItem] ) {
+    if ( [treeGuide includeFileItem: fileItem] ) {
       if ( [fileItem isDirectory] ) {
         [tmpDirItems addObject: fileItem];
       }
