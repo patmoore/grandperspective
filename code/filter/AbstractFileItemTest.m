@@ -44,6 +44,12 @@
   return dict;
 }
 
+
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  NSAssert(NO, @"Abstract method.");
+}
+
+
 - (void) setName:(NSString*)nameVal {
   if (nameVal != name) {
     [name release];

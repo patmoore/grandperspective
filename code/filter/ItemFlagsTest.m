@@ -1,5 +1,7 @@
 #import "ItemFlagsTest.h"
+
 #import "FileItem.h"
+#import "FileItemTestVisitor.h"
 
 
 @implementation ItemFlagsTest
@@ -61,6 +63,10 @@
 - (TestResult) testFileItem: (FileItem *)item context: (id)context {
   return ( (([item fileItemFlags] & flagsMask) == desiredResult)
            ? TEST_PASSED : TEST_FAILED );
+}
+
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitItemFlagsTest: self];
 }
 
 

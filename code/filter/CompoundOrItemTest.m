@@ -1,5 +1,7 @@
 #import "CompoundOrItemTest.h"
 
+#import "FileItemTestVisitor.h"
+
 
 @implementation CompoundOrItemTest
 
@@ -32,14 +34,18 @@
   return ( applicable ? TEST_FAILED : TEST_NOT_APPLICABLE );
 }
 
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitCompoundOrItemTest: self];
+}
 
-- (NSString*) bootstrapDescriptionTemplate {
+
+- (NSString *) bootstrapDescriptionTemplate {
   return NSLocalizedStringFromTable( 
            @"(%@) or (%@)" , @"Tests", 
            @"OR-test with 1: sub test, and 2: another sub test" );
 }
 
-- (NSString*) repeatingDescriptionTemplate {
+- (NSString *) repeatingDescriptionTemplate {
   return NSLocalizedStringFromTable( 
            @"(%@) or %@" , @"Tests", 
            @"OR-test with 1: sub test, and 2: two or more other sub tests" );

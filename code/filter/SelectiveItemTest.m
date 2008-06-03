@@ -1,5 +1,6 @@
 #import "SelectiveItemTest.h"
 
+#import "FileItemTestVisitor.h"
 #import "FileItemTestRepository.h"
 
 
@@ -72,6 +73,10 @@
   
   return ( [subTest testFileItem: item context: context] 
            ? TEST_PASSED : TEST_FAILED );
+}
+
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitSelectiveItemTest: self];
 }
 
 

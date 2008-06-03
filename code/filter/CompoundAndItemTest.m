@@ -1,5 +1,7 @@
 #import "CompoundAndItemTest.h"
 
+#import "FileItemTestVisitor.h"
+
 
 @implementation CompoundAndItemTest
 
@@ -32,14 +34,18 @@
   return ( applicable ? TEST_PASSED : TEST_NOT_APPLICABLE );
 }
 
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitCompoundAndItemTest: self];
+}
 
-- (NSString*) bootstrapDescriptionTemplate {
+
+- (NSString *) bootstrapDescriptionTemplate {
   return NSLocalizedStringFromTable( 
            @"(%@) and (%@)" , @"Tests", 
            @"AND-test with 1: sub test, and 2: another sub test" );
 }
 
-- (NSString*) repeatingDescriptionTemplate {
+- (NSString *) repeatingDescriptionTemplate {
   return NSLocalizedStringFromTable( 
            @"(%@) and %@" , @"Tests", 
            @"AND-test with 1: sub test, and 2: two or more other sub tests" );

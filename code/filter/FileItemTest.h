@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class FileItem;
+@protocol FileItemTestVisitor;
 
 
 #define TestResult  SInt8
@@ -29,7 +30,11 @@
 - (NSString *) name;
 - (void) setName: (NSString *)name;
 
-// Used for storing object to preferences.
+/* Returns a dictionary that represents the test. It can be used for storing 
+ * object to preferences.
+ */
 - (NSDictionary *) dictionaryForObject;
+
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor;
 
 @end

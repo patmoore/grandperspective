@@ -76,6 +76,7 @@
 		AA8FEB2B0B6CC2D90049FF42 /* Names.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA8FEB290B6CC2D80049FF42 /* Names.strings */; };
 		AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */; };
 		AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */; };
+		AA9880960DF5653E00A6EA33 /* BasicFileItemTestVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
 		AAB35D850A330BE8006535FF /* EditFilterRuleWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D840A330BE8006535FF /* EditFilterRuleWindow.nib */; };
 		AAB35DF80A332EA3006535FF /* ItemNameTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB35DF60A332EA3006535FF /* ItemNameTest.m */; };
@@ -239,6 +240,9 @@
 		AA8FEB700B6CD4670049FF42 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/PreferencesPanel.nib; sourceTree = "<group>"; };
 		AA987F5F0DF16D0300A6EA33 /* FilteredTreeGuide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilteredTreeGuide.h; path = tree/FilteredTreeGuide.h; sourceTree = "<group>"; };
 		AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilteredTreeGuide.m; path = tree/FilteredTreeGuide.m; sourceTree = "<group>"; };
+		AA9880910DF5636E00A6EA33 /* FileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestVisitor.h; path = filter/FileItemTestVisitor.h; sourceTree = "<group>"; };
+		AA9880940DF5653E00A6EA33 /* BasicFileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicFileItemTestVisitor.h; path = filter/BasicFileItemTestVisitor.h; sourceTree = "<group>"; };
+		AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicFileItemTestVisitor.m; path = filter/BasicFileItemTestVisitor.m; sourceTree = "<group>"; };
 		AAB35D7D0A330BB3006535FF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };
 		AAB35DF50A332EA3006535FF /* ItemNameTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemNameTest.h; path = filter/ItemNameTest.h; sourceTree = "<group>"; };
 		AAB35DF60A332EA3006535FF /* ItemNameTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemNameTest.m; path = filter/ItemNameTest.m; sourceTree = "<group>"; };
@@ -412,6 +416,9 @@
 				AA2184F10A277D73000E1C8C /* FileItemTest.h */,
 				AA2185C70A278892000E1C8C /* AbstractFileItemTest.h */,
 				AA2185C80A278892000E1C8C /* AbstractFileItemTest.m */,
+				AA9880910DF5636E00A6EA33 /* FileItemTestVisitor.h */,
+				AA9880940DF5653E00A6EA33 /* BasicFileItemTestVisitor.h */,
+				AA9880950DF5653E00A6EA33 /* BasicFileItemTestVisitor.m */,
 				AA21EC670A5695BC00A9FD87 /* ItemStringTest.h */,
 				AA21EC680A5695BC00A9FD87 /* ItemStringTest.m */,
 				AAB35DF50A332EA3006535FF /* ItemNameTest.h */,
@@ -420,20 +427,20 @@
 				AA21EC950A56978A00A9FD87 /* ItemPathTest.m */,
 				AAB35E2E0A33329A006535FF /* ItemSizeTest.h */,
 				AAB35E2F0A33329A006535FF /* ItemSizeTest.m */,
-				AAB35E800A334EF3006535FF /* CompoundItemTest.h */,
-				AAB35E810A334EF3006535FF /* CompoundItemTest.m */,
-				AAB35E9C0A335159006535FF /* CompoundAndItemTest.h */,
-				AAB35E9D0A335159006535FF /* CompoundAndItemTest.m */,
-				AAB35EA20A3353E6006535FF /* CompoundOrItemTest.h */,
-				AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */,
-				AA33F9E10A41CBEA00F3D4DB /* NotItemTest.h */,
-				AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */,
 				AA8AB5F50DE9E6C2003D1B7D /* ItemFlagsTest.h */,
 				AA8AB5F60DE9E6C2003D1B7D /* ItemFlagsTest.m */,
 				AA8AB6480DEDDB47003D1B7D /* ItemTypeTest.h */,
 				AA8AB6490DEDDB47003D1B7D /* ItemTypeTest.m */,
 				AADDDC4E0DEE94E9008153C7 /* SelectiveItemTest.h */,
 				AADDDC4F0DEE94E9008153C7 /* SelectiveItemTest.m */,
+				AA33F9E10A41CBEA00F3D4DB /* NotItemTest.h */,
+				AA33F9E20A41CBEA00F3D4DB /* NotItemTest.m */,
+				AAB35E800A334EF3006535FF /* CompoundItemTest.h */,
+				AAB35E810A334EF3006535FF /* CompoundItemTest.m */,
+				AAB35E9C0A335159006535FF /* CompoundAndItemTest.h */,
+				AAB35E9D0A335159006535FF /* CompoundAndItemTest.m */,
+				AAB35EA20A3353E6006535FF /* CompoundOrItemTest.h */,
+				AAB35EA30A3353E6006535FF /* CompoundOrItemTest.m */,
 			);
 			name = filter;
 			sourceTree = "<group>";
@@ -738,6 +745,7 @@
 				AA8AB6520DEDE04E003D1B7D /* TestDescriptions.m in Sources */,
 				AADDDC500DEE94E9008153C7 /* SelectiveItemTest.m in Sources */,
 				AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */,
+				AA9880960DF5653E00A6EA33 /* BasicFileItemTestVisitor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -1,5 +1,6 @@
 #import "NotItemTest.h"
 
+#import "FileItemTestVisitor.h"
 #import "FileItemTestRepository.h"
 
 
@@ -61,8 +62,12 @@
            : ( (result == TEST_FAILED) ? TEST_PASSED : TEST_FAILED ) );
 }
 
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitNotItemTest: self];
+}
 
-- (NSString*) description {
+
+- (NSString *) description {
   NSString  *fmt =
     NSLocalizedStringFromTable( @"not (%@)" , @"Tests", 
                                 @"NOT-test with 1: sub test" );

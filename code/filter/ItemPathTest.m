@@ -2,6 +2,7 @@
 
 #import "DirectoryItem.h"
 #import "StringTest.h"
+#import "FileItemTestVisitor.h"
 #import "FileItemPathStringCache.h"
 
 @implementation ItemPathTest
@@ -25,8 +26,12 @@
   return ([stringTest testString: path] ? TEST_PASSED : TEST_FAILED);
 }
 
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitItemPathTest: self];
+}
 
-- (NSString*) description {
+
+- (NSString *) description {
   NSString  *subject = 
     NSLocalizedStringFromTable( @"path" , @"Tests", 
                                 @"A pathname as the subject of a string test" );

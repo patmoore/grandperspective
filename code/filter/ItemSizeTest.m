@@ -1,6 +1,7 @@
 #import "ItemSizeTest.h"
 
 #import "FileItem.h"
+#import "FileItemTestVisitor.h"
 
 
 @implementation ItemSizeTest
@@ -84,7 +85,12 @@
             [item itemSize] <= upperBound) ? TEST_PASSED : TEST_FAILED );
 }
 
-- (NSString*) description {
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitItemSizeTest: self];
+}
+
+
+- (NSString *) description {
   if ([self hasLowerBound]) {
     if ([self hasUpperBound]) {
       NSString  *fmt = 

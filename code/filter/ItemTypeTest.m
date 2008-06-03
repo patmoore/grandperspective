@@ -2,6 +2,7 @@
 
 #import "TestDescriptions.h"
 #import "PlainFileItem.h"
+#import "FileItemTestVisitor.h"
 #import "UniformType.h"
 #import "UniformTypeInventory.h"
 
@@ -118,6 +119,10 @@
   }
   
   return TEST_FAILED;
+}
+
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitItemTypeTest: self];
 }
 
 

@@ -2,6 +2,7 @@
 
 #import "FileItem.h"
 #import "StringTest.h"
+#import "FileItemTestVisitor.h"
 
 
 @implementation ItemNameTest 
@@ -17,7 +18,12 @@
   return ([stringTest testString: [item name]] ? TEST_PASSED : TEST_FAILED);
 }
 
-- (NSString*) description {
+- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+  [visitor visitItemNameTest: self];
+}
+
+
+- (NSString *) description {
   NSString  *subject = 
     NSLocalizedStringFromTable( @"name" , @"Tests", 
                                 @"A filename as the subject of a string test" );
