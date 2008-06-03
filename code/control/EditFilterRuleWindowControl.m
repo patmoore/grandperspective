@@ -324,6 +324,10 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (IBAction) cancelAction:(id)sender {
+  // Note: The window's Cancel key should have the Escape key as equivalent to
+  // ensure that this method also gets invoked when the Escape key is pressed.
+  // Otherwise, the Escape key will immediately close the window.
+
   if ([[self window] makeFirstResponder: [self window]]) {
     // Only respond to the cancel action when the window can obtain first
     // responder status. If this fails, it means that a field editor is being
