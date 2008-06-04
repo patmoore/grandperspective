@@ -2,17 +2,8 @@
 
 #import "DirectoryItem.h"
 #import "FileItemTest.h"
-#import "BasicFileItemTestVisitor.h"
 #import "FileItemPathStringCache.h"
-
-
-@interface SizeTestFinder : BasicFileItemTestVisitor {
-  BOOL  testUsesSize;
-}
-
-- (BOOL) testUsesSize;
-
-@end
+#import "ItemSizeTestFinder.h"
 
 
 @implementation FilteredTreeGuide
@@ -68,11 +59,11 @@
     
     // Check if the test includes an ItemSizeTest
     if (itemTest != nil) {
-      SizeTestFinder  *sizeTestFinder = 
-        [[[SizeTestFinder alloc] init] autorelease];
+      ItemSizeTestFinder  *sizeTestFinder = 
+        [[[ItemSizeTestFinder alloc] init] autorelease];
       
       [test acceptFileItemTestVisitor: sizeTestFinder];
-      testUsesSize = [sizeTestFinder testUsesSize];
+      testUsesSize = [sizeTestFinder itemSizeTestFound];
     }
     else {
       testUsesSize = NO;
@@ -160,27 +151,4 @@
 }
 
 @end // @implementation FilteredTreeGuide
-
-
-@implementation SizeTestFinder
-
-- (id) init {
-  if (self = [super init]) {
-    testUsesSize = NO;
-  }
-  
-  return self;
-}
-
-
-- (BOOL) testUsesSize {
-  return testUsesSize;
-}
-
-
-- (void) visitItemSizeTest: (ItemSizeTest *)test {
-  testUsesSize = YES;
-}
-
-@end // @implementation SizeTestFinder
 
