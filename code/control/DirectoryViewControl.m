@@ -327,13 +327,67 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [pathModelView moveVisibleTreeDown];
 }
 
-- (IBAction) openFileInFinder: (id) sender {
-  NSString  *filePath = 
-    [[pathModelView selectedFileItem] stringForFileItemPath];
 
-  [[NSWorkspace sharedWorkspace] 
-    selectFile: filePath inFileViewerRootedAtPath: invisiblePathName];
+- (IBAction) openFileInFinder: (id) sender {
+  FileItem  *fileToOpen = [pathModelView selectedFileItem];
+  DirectoryItem  *package = nil;
+  
+  // Work-around for bug/limitation of NSWorkSpace. It apparently cannot 
+  // select files that are inside a package, unless the package is the root
+  // path. So check if the selected file is inside a package. If so, use it
+  // as a root path.
+  DirectoryItem  *ancestor = [fileToOpen parentDirectory];
+  while (ancestor != nil) {
+    if ( [ancestor isPackage] ) {
+      if (package != nil) {
+        // The package in which the selected item resides is inside a package
+        // itself. Open this inner package instead (as opening the selected
+        // file will not succeed).
+        fileToOpen = package;
+      }
+      package = ancestor;
+    }
+    ancestor = [ancestor parentDirectory];
+  }
+  
+  NSString  *filePath = [fileToOpen stringForFileItemPath];
+  NSString  *rootPath = 
+    (package != nil) ? [package stringForFileItemPath] : invisiblePathName;
+
+  NSLog( @"package = %@, filePath = %@, rootPath = %@", 
+         [package name], filePath, rootPath);
+
+  if ( [[NSWorkspace sharedWorkspace] 
+           selectFile: filePath 
+           inFileViewerRootedAtPath: rootPath] ) {
+    // All went okay
+    return;
+  }
+  
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  NSString  *msgFmt = 
+    ( [fileToOpen isPackage]
+      ? NSLocalizedString(@"Failed to reveal the package \"%@\"", 
+                          @"Alert message")
+      : ( [fileToOpen isDirectory] 
+          ? NSLocalizedString(@"Failed to reveal the folder \"%@\"", 
+                              @"Alert message")
+          : NSLocalizedString(@"Failed to reveal the file \"%@\"", 
+                              @"Alert message") ) );
+  NSString  *msg = [NSString stringWithFormat: msgFmt, [fileToOpen name]];
+  NSString  *info =
+    NSLocalizedString(@"A possible reason is that it does not exist anymore.", 
+                      @"Alert message (Note: the item can refer to a file or a folder)"); 
+         
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert setMessageText: msg];
+  [alert setInformativeText: info];
+
+  // TODO: Use a sheet instead?
+  [alert runModal];
 }
+
 
 - (IBAction) deleteFile: (id) sender {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
@@ -559,8 +613,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                              @"Alert message") );
     NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
     NSString  *info =
-      NSLocalizedString(@"Possible reasons are that the item does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
-                        @"Alert message (Note: the item can refer to a file or a folder)"); 
+      NSLocalizedString(@"Possible reasons are that it does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
+                        @"Alert message"); 
          
     [alert addButtonWithTitle: OK_BUTTON_TITLE];
     [alert setMessageText: msg];
