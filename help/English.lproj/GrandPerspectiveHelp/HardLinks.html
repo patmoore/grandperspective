@@ -1,0 +1,47 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Hard links</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Describes what hard links are and how they are handled.">
+<meta name="keywords" content="hard link, link, hard, Time Machine">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Hard links</h1>
+</div>
+
+<p>
+Unix-based Operating Systems, including Mac OS X, support the concept of hard links.
+Hard links can be used to place a file at multiple locations (i.e. folders) of the same file system.
+Each of these hard links refers to the same data on the file system, only taking up space once.
+So when you modify a hard-linked file, all hard-linked "copies" of that file are modified as well.
+</p>
+
+<p>
+Hard links are used extensively by Time Machine.
+Each back-up appears to store the entire drive, yet the amount of disk space needed for the back-up is limited to the files that have changed since the last back-up.
+All files and folders that have not changed, are represented by hard links to these items in older back-ups.
+</p>
+
+<p>
+So, hard links need to be handled specially, in order not to over-estimate the amount of disk space that is used.
+GrandPerspective therefore handles hard links as follows.
+When a hard-linked file or folder is first encountered during <a href="CreatingViews.html">scanning</a>, it is included.
+Subsequently, if the same file or folder is encountered once more (in a different folder) it is ignored.
+So, inside a single <a href="Views.html">view window</a>, a hard-linked item appears at most once, thus correctly reflecting the size that is actually taken up on disk.
+However, where a hard-linked item appears in the view is fairly arbitrary.
+It can be in any of the folders where it appears, depending on which is scanned first.
+</p>
+
+<p>
+When you delete a hard-linked file or folder, it is removed from the given folder.
+However, the amount of freed space will not increase, as the item will take up space on disk until all its hard links are removed.
+</p>
+
+</body>
+</html>

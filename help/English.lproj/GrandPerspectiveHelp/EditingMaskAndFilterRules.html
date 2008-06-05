@@ -4,7 +4,7 @@
 <title>Editing mask and filter rules</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
 <meta name="description" content="Explains how to edit mask and filter rules.">
-<meta name="keywords" content="mask, filter, edit, rules">
+<meta name="keywords" content="mask, filter, edit, rule, rules, test, tests, name, path, file type, size, package, hard link">
 </head>
 <body>
 
@@ -16,17 +16,53 @@
 </div>
 
 <p>
-GrandPerspective comes with a few default rules for <a href="MasksAndFilters.html">masks and filters</a>.
-When you <a href="EditingMasksAndFilters.html">edit a mask or filter</a>, you can add your own rules using the <b>New</b> button from the "Edit Mask" or "Edit Filter" window.
-You can modify any rule, using the <b>Edit</b> button.
-Rules that you create or modify are maintained in the rule repository, which is automatically stored in your preferences.
-That way they are available next time you run GrandPerspective.
+When you <a href="EditingMasksAndFilters.html">edit a mask or filter</a>, you can create new rules or modify existing ones.
+You can do so from the "Edit filter rule window".
+For rules you create from scratch, you can specify a name to help you easily distinguish the various rules
+(for application-provided rules the name is fixed and cannot be changed).
 </p>
 
 <p>
-You can remove rules that you created, using the <b>Remove</b> button.
-You can also use this button to undo changes you have made to the default application-provided rules. 
-The rule will then be replaced by the original rule with this name.
+You can chooseif the rule should apply only to files, only to folders, or to files and folders.
+When a rule (also) applies to folders, the number of tests you can add to the rule are reduced, as some tests can only be applied to files.
+</p>
+
+<p>
+A rule should consist of one or more tests, which you enable by the checkboxes at the left and can then subsequently configure.
+When you select multiple tests, all should hold for a file or folder to match the rule.
+You can choose from the following tests, which should each be fairly self-explanatory:
+
+<ul>
+<li><b>Name</b>: 
+Tests if the name of a file or folder matches any of the targets. 
+I.e. it only needs to match one target for the test to succeed.
+</li>
+
+<li><b>Path</b>: 
+Tests if the path of a file or folder matches any of the targets. 
+The paths are absolute, starting at the root of the file system, and include the item's name.
+This is for example also how paths are shown in the view's <a href="ViewFocusPanel.html">Focus panel</a>.
+</li>
+
+<li><b>Type</b>: 
+Tests if the type of a file equals or conforms to any of the targets.
+</li>
+
+<li><b>Hard-linked</b>:
+Tests if the file or folder is stored as a <a href="HardLinks.html">hard link</a> on the file system.
+</li>
+
+<li><b>Package</b>:
+Tests if the file or folder is a package.
+(Depending on whether or not package contents are shown, a package is treated as a file or a folder.)
+</li>
+
+<li><b>Size</b>:
+Tests if the size of a file is above or below a given limit.
+</li>
+
+</ul>
+
 </p>
 
 </body>
