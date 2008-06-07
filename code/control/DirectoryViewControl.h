@@ -16,6 +16,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class ColorLegendTableViewControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
+@class ItemInFocusControls;
 @protocol FileItemTest;
 
 @interface DirectoryViewControl : NSWindowController {
@@ -54,15 +55,20 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *freedSpaceField;
   
   // "Focus" drawer panel
+  IBOutlet NSTextField  *visibleFolderTitleField;
   IBOutlet NSTextView  *visibleFolderPathTextView;
   IBOutlet NSTextField  *visibleFolderExactSizeField;
   IBOutlet NSTextField  *visibleFolderSizeField;
+
+  IBOutlet NSTextField  *selectedItemTitleField;
   IBOutlet NSTextView  *selectedItemPathTextView;
   IBOutlet NSTextField  *selectedItemExactSizeField;
   IBOutlet NSTextField  *selectedItemSizeField;
-  IBOutlet NSTextField  *selectedItemTitleField;
+
   IBOutlet NSTextField  *selectedItemTypeIdentifierField;
   IBOutlet NSTextField  *selectedItemTypeDescriptionField;
+  ItemInFocusControls  *visibleFolderFocusControls;
+  ItemInFocusControls  *selectedItemFocusControls;
 
   ItemPathModelView  *pathModelView;
   DirectoryViewControlSettings  *initialSettings;

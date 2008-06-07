@@ -53,6 +53,59 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @end
 
 
+/* Manages a group of related controls in the Focus panel.
+ */
+@interface ItemInFocusControls : NSObject {
+  NSTextView  *pathTextView;
+  NSTextField  *titleField;
+  NSTextField  *exactSizeField;
+  NSTextField  *sizeField;
+}
+
+- (id) initWithPathTextView: (NSTextView *)textView 
+         titleField: (NSTextField *)titleField
+         exactSizeField: (NSTextField *)exactSizeField
+         sizeField: (NSTextField *)sizeField;
+
+
+/* Clears the controls.
+ */
+- (void) clear;
+
+/* Show the details of the given item.
+ */
+- (void) showFileItem: (FileItem *)item;
+
+/* Show the details of the given item. The provided "pathString" and 
+ * "sizeString" provided will be used (if -showFileItem: is invoked instead, 
+ * these will be constructed before invoking this method). Invoking this method
+ * directly is useful in cases where these have been constructed already (to 
+ * avoid having to do so twice).
+ */
+- (void) showFileItem: (FileItem *)item itemPath: (NSString *)pathString
+           sizeString: (NSString *)sizeString;
+
+/* Abstract method. Override to return title for the given item.
+ */
+- (NSString *) titleForFileItem: (FileItem *)item;
+
+@end
+
+
+/* Manages the "Item in view" controls in the Focus panel.
+ */
+@interface  FolderInViewFocusControls : ItemInFocusControls {
+}
+@end
+
+
+/* Manages the "Selected item" controls in the Focus panel.
+ */
+@interface  SelectedItemFocusControls : ItemInFocusControls {
+}
+@end
+
+
 @implementation DirectoryViewControl
 
 - (id) initWithTreeContext: (TreeContext *)treeContextVal {
@@ -101,6 +154,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   [userDefaults removeObserver: self forKeyPath: FileDeletionTargetsKey];
   [userDefaults removeObserver: self forKeyPath: ConfirmFileDeletionKey];
+  
+  [visibleFolderFocusControls release];
+  [selectedItemFocusControls release];
   
   [treeContext release];
   [pathModelView release];
@@ -258,6 +314,24 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                             [FileItem stringForFileItemSize: freeSpace]];
   [freedSpaceField setStringValue: 
                    [FileItem stringForFileItemSize: [treeContext freedSpace]]];
+                   
+  //---------------------------------------------------------------- 
+  // Configure the "Focus" panel
+  
+  visibleFolderFocusControls = 
+    [[FolderInViewFocusControls alloc]
+        initWithPathTextView: visibleFolderPathTextView 
+          titleField: visibleFolderTitleField
+          exactSizeField: visibleFolderExactSizeField
+          sizeField: visibleFolderSizeField];
+
+  selectedItemFocusControls = 
+    [[SelectedItemFocusControls alloc]
+        initWithPathTextView: selectedItemPathTextView 
+          titleField: selectedItemTitleField
+          exactSizeField: selectedItemExactSizeField
+          sizeField: selectedItemSizeField];
+
 
   //---------------------------------------------------------------- 
   // Miscellaneous initialisation
@@ -658,16 +732,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [invisiblePathName release];
   invisiblePathName = [[visibleTree stringForFileItemPath] retain];
 
-  [visibleFolderPathTextView setString: invisiblePathName];
+  [visibleFolderFocusControls showFileItem: visibleTree];
 
-  ITEM_SIZE  itemSize = [visibleTree itemSize];
-  [visibleFolderExactSizeField setStringValue:
-     [FileItem exactStringForFileItemSize: itemSize]];
-  [visibleFolderSizeField setStringValue:
-     [NSString stringWithFormat: @"(%@)", 
-                 [FileItem stringForFileItemSize: itemSize]]];
-
-  [self updateButtonState:notification];
+  [self updateButtonState: notification];
 }
 
 
@@ -678,10 +745,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [openButton setEnabled: [self canRevealSelectedFile] ];
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
   
-  // Set to default (it may be changed)
-  NSString  *selectedItemTitle = 
-    NSLocalizedString( @"Selected file:", "Label in Focus panel" );
-
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem != nil ) {
@@ -698,8 +761,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
                                  value: nil table: @"Names"];
       itemPath = relativeItemPath;
-      selectedItemTitle = 
-        NSLocalizedString( @"Selected area:", "Label in Focus panel" );
     }
     else {
       itemPath = [selectedItem stringForFileItemPath];
@@ -730,43 +791,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
         relativeItemPath = (NSString *)attributedPath;
       }
-      
-      if ( [selectedItem isPackage] ) {
-        selectedItemTitle = 
-           NSLocalizedString( @"Selected package:", "Label in Focus panel" );
-      }
-      else if ( [selectedItem isDirectory] ) {
-        selectedItemTitle = 
-           NSLocalizedString( @"Selected folder:", "Label in Focus panel" );
-      }
     }
 
     [itemPathField setStringValue: relativeItemPath];
-
-    [selectedItemPathTextView setString: itemPath];
-    [selectedItemExactSizeField setStringValue: 
-       [FileItem exactStringForFileItemSize: itemSize]];
-    [selectedItemSizeField setStringValue: 
-       [NSString stringWithFormat: @"(%@)", itemSizeString]];
-       
-    // Use the color of the selected item's size fields to show if the file is
-    // hard-linked.
-    NSColor  *sizeFieldColor = ([selectedItem isHardLinked] 
-                                ? [NSColor darkGrayColor]
-                                : [visibleFolderExactSizeField textColor]);
-    [selectedItemExactSizeField setTextColor: sizeFieldColor];
-    [selectedItemSizeField setTextColor: sizeFieldColor];
+    [selectedItemFocusControls 
+       showFileItem: selectedItem itemPath: itemPath 
+       sizeString: itemSizeString];
   }
   else {
     // There's no selected item
     [itemSizeField setStringValue: @""];
     [itemPathField setStringValue: @""];
-    [selectedItemPathTextView setString: @""];
-    [selectedItemExactSizeField setStringValue: @""];
-    [selectedItemSizeField setStringValue: @""];
+    [selectedItemFocusControls clear];
   }
-  
-  [selectedItemTitleField setStringValue: selectedItemTitle];
   
   // Update the file type fields in the Focus panel
   if ( selectedItem != nil && 
@@ -859,3 +896,116 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)
+
+
+@implementation ItemInFocusControls
+
+- (id) initWithPathTextView: (NSTextView *)pathTextViewVal
+         titleField: (NSTextField *)titleFieldVal
+         exactSizeField: (NSTextField *)exactSizeFieldVal
+         sizeField: (NSTextField *)sizeFieldVal {
+  if (self = [super init]) {
+    pathTextView = [pathTextViewVal retain];
+    titleField = [titleFieldVal retain];
+    exactSizeField = [exactSizeFieldVal retain];
+    sizeField = [sizeFieldVal retain];
+  }
+
+  return self;
+}
+
+- (void) dealloc {
+  [titleField release];
+  [pathTextView release];
+  [exactSizeField release];
+  [sizeField release];
+  
+  [super dealloc];
+}
+
+
+- (void) clear {
+  [titleField setStringValue: [self titleForFileItem: nil]];
+  [pathTextView setString: @""];
+  [exactSizeField setStringValue: @""];
+  [sizeField setStringValue: @""];
+}
+
+
+- (void) showFileItem: (FileItem *)item {
+  NSString  *sizeString = [FileItem stringForFileItemSize: [item itemSize]];
+  NSString  *itemPath = 
+    ( [item isSpecial] 
+      ? [[NSBundle mainBundle] localizedStringForKey: [item name] 
+                                 value: nil table: @"Names"]
+      : [item stringForFileItemPath] );
+    
+  [self showFileItem: item itemPath: itemPath sizeString: sizeString];
+}
+
+
+- (void) showFileItem: (FileItem *)item itemPath: (NSString *)pathString
+           sizeString: (NSString *)sizeString {
+  [titleField setStringValue: [self titleForFileItem: item]];
+  
+  [pathTextView setString: pathString];
+  [exactSizeField setStringValue: 
+     [FileItem exactStringForFileItemSize: [item itemSize]]];
+  [sizeField setStringValue: [NSString stringWithFormat: @"(%@)", sizeString]];
+       
+  // Use the color of the size fields to show if the item is hard-linked.
+  NSColor  *sizeFieldColor = ([item isHardLinked] 
+                              ? [NSColor darkGrayColor]
+                              : [titleField textColor]);
+  [exactSizeField setTextColor: sizeFieldColor];
+  [sizeField setTextColor: sizeFieldColor];
+}
+
+
+- (NSString *) titleForFileItem: (FileItem *)item {
+  NSAssert(NO, @"Abstract method");
+}
+
+@end // @implementation ItemInFocusControls
+
+
+@implementation FolderInViewFocusControls
+
+- (NSString *) titleForFileItem: (FileItem *)item {
+  if ( [item isSpecial] ) {
+    return NSLocalizedString( @"Area in view:", "Label in Focus panel" );
+  }
+  else if ( [item isPackage] ) {
+    return NSLocalizedString( @"Package in view:", "Label in Focus panel" );
+  }
+  else if ( [item isDirectory] ) {
+    return NSLocalizedString( @"Folder in view:", "Label in Focus panel" );
+  }
+  else { // Default, also used when item == nil
+    return NSLocalizedString( @"File in view:", "Label in Focus panel" );
+  }
+}
+
+@end // @implementation FolderInViewFocusControls
+
+
+@implementation SelectedItemFocusControls
+
+- (NSString *) titleForFileItem: (FileItem *)item {
+  if ( [item isSpecial] ) {
+    return NSLocalizedString( @"Selected area:", "Label in Focus panel" );
+  }
+  else if ( [item isPackage] ) {
+    return NSLocalizedString( @"Selected package:", "Label in Focus panel" );
+  }
+  else if ( [item isDirectory] ) {
+    return NSLocalizedString( @"Selected folder:", "Label in Focus panel" );
+  }
+  else { // Default, also used when item == nil
+    return NSLocalizedString( @"Selected file:", "Label in Focus panel" );
+  }
+}
+
+@end // @implementation SelectedItemFocusControls
+
+

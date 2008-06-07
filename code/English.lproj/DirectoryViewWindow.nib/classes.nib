@@ -114,6 +114,8 @@
 				<string>NSTextView</string>
 				<key>visibleFolderSizeField</key>
 				<string>NSTextField</string>
+				<key>visibleFolderTitleField</key>
+				<string>NSTextField</string>
 				<key>volumeIconView</key>
 				<string>NSImageView</string>
 				<key>volumeNameField</key>
