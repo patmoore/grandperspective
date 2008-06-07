@@ -1,0 +1,102 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Solving problems</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="How to analyse Time Machine back-ups.">
+<meta name="keywords" content="Time Machine, back-up, back up, analyse, how, to, howto">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>How to analyse Time Machine back-ups</h1>
+</div>
+
+<p>
+GrandPerspective can be used to analyse back-ups made by Time Machine.
+This can help you to optimise your Time Machine back-up scheme, for example, by identifying files and folders that should not be backed up.
+</p>
+
+<p>
+First of all, it is important to understand how Time Machine back-ups are stored.
+Time Machine makes extensive use of <a href="HardLinks.html">hard links</a>.
+Each back-up appears to store the entire drive, yet the amount of disk space needed for the back-up is limited to the files that have changed since the last back-up.
+All files and folders that have not changed, are represented by hard links to these items in the preceding back-up.
+</p>
+
+<p>
+Below are some ways in which you can use GrandPerspective to analyse your Time Machine back-up.
+They are simply meant to give you an idea of what you can do.
+You are of course free to experiment with other approaches.
+</p>
+
+<h2>Scanning all back-ups</h2>
+
+<p>
+Execute <b>Scan folder</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
+This may take a while.
+When scanning is complete, a <a href="Views.html">view</a> is shown showing all back-ups.
+In the <a href="ViewDisplayPanel.html">Display panel</a>, select coloring by "Top folder".
+All files belonging to the same back-up now have the same color.
+</p>
+
+<p>
+You will probably see that one back-up is much larger than the rest.
+This is the back-up folder that was scanned first (it is not neccessarily the earliest back-up).
+All files in this folder had not yet been encountered during scanning, and have therefore been included.
+When scanning the other back-up folders, most hard-linked files will have been encountered already in the first folder that was scanned, and so are now exluded.
+</p>
+
+<p>
+The folder that was scanned first is actually the least interesting.
+It simply shows the contents of your hard-drive at the time of the scan (minus the files that you have chosen to exclude from your Time Machine back-ups).
+So let's exclude it from the view.
+Start by editing the view's <a href="MasksAndFilters.html">mask</a>.
+You need to <a href="EditingMaskAndFilterRules.html">create a new rule</a>.
+Name the rule "Main back-up", apply it to "files and folders", and let it include the Path test, matching paths that start with "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
+The parts in italics will be different in your case. 
+You can get the path string you need from the <a href="ViewFocusPanel.html">Focus panel</a>.
+First in the view select any file from the main back-up folder, 
+go one step "Down", copy the path from the "Folder in view" text box, and go "Up" again in the view.
+</p>
+
+<p>
+After having created the "Main back-up" rule, set the mask as follows: "Do not show: Main back-up".
+You should see that the main back-up is now masked. 
+If this is not the case, you did not specify the mask correctly.
+Edit it again until it works.
+</p>
+
+<p>
+When the mask works correctly, you should filter the view.
+Use the <b>Filter...</b> command. 
+It should by default be configured the same as the mask, so simply click "OK".
+A new view window is created, only showing the other back-ups.
+This new view gives a much better idea of the size required by each incremental back-up.
+<a href="NavigatingViews.html">Navigate and explore</a> this view to get a better idea of what is backed up.
+If you spot files that should not be backed up, update your Time Machine preferences.
+</p>
+
+
+<h2>Check which files have been backed up during the latest back-up</h2>
+
+<p>
+Initiate a <b>Filtered scan</b>.
+As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
+Apply the following filter: "Do not show: hard-linked items".
+The result is a view showing the files that are new in the latest back-up.
+The view excludes all files that appeared in the earlier back-ups.
+</p>
+
+<p>
+Note: You can apply the same filter to other back-up folders.
+However, you should then interpret the data in the view differently.
+In this case, the files that are shown do not appear in earlier back-ups, <em>nor in later back-ups</em>. 
+<p>
+
+</body>
+</html>
+

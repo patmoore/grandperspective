@@ -23,12 +23,6 @@ So when you modify a hard-linked file, all hard-linked "copies" of that file are
 </p>
 
 <p>
-Hard links are used extensively by Time Machine.
-Each back-up appears to store the entire drive, yet the amount of disk space needed for the back-up is limited to the files that have changed since the last back-up.
-All files and folders that have not changed, are represented by hard links to these items in older back-ups.
-</p>
-
-<p>
 So, hard links need to be handled specially, in order not to over-estimate the amount of disk space that is used.
 GrandPerspective therefore handles hard links as follows.
 When a hard-linked file or folder is first encountered during <a href="CreatingViews.html">scanning</a>, it is included.
@@ -42,6 +36,16 @@ It can be in any of the folders where it appears, depending on which is scanned 
 When you delete a hard-linked file or folder, it is removed from the given folder.
 However, the amount of freed space will not increase, as the item will take up space on disk until all its hard links are removed.
 </p>
+
+
+<h2>See also</h2>
+
+<p>
+<ul>
+<li><a href="HowToAnalyseTimeMachineBackups.html">How to analyse Time Machine back-ups</a> - Time Machine makes extensive use of hard links.</li>
+</ul>
+</p>
+
 
 </body>
 </html>
