@@ -3,6 +3,49 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.9.12, 08-06-2008
+----------------------------------------------------------------------
+
+New functionality:
+- Hard-linked files and folders are recognized and handled
+  appropriately:
+  - GrandPerspective can now analyse your Time Machine back-ups.
+- Mask and filter rules can now optionally be applied to folders.
+- Added Filtered Scan command, which lets you apply a filter while
+  scanning.
+- Optionally showing package contents.
+- Added several new tests for mask and filter rules (on file type,
+  package status, and hard link status)
+
+Minor improvements:
+- Improved application-default ranking of uniform types.
+- Added new application-provided tests (Packages and Hard-linked 
+  items) and updated existing ones.
+- Improved GUI of "Edit Filter Rule" window.
+- Made progress panel resizable.
+
+Bug fixes:
+- Files inside a package can now be revealed (unless the package is
+  itself in a package).
+- Filtering produced corrupt trees (PlainFileItems were replaced by
+  FileItems), which could trigger various exceptions. This has been
+  fixed.
+- Fixed synchronisation in TreeContext.
+- AsynchronousTaskManager now unlocks its locks before releasing them.
+
+Code clean-up:
+- Introduced ItemPathModelView for managing view-specific selection
+  path state.
+- Introduced FilteredTreeGuide for applying masks and filters.
+- FileItems are now duplicated using factory methods.
+- Refactored TreeBuilder.
+- Removed several warnings when compiling using XCode 3.0.
+- Renamed "filter" folder to "test".
+- Renamed various classes, methods and member variables.
+- Removed some unnecessary nesting.
+
+
+----------------------------------------------------------------------
   Version 0.9.11 (localized), 22-04-2008
 ----------------------------------------------------------------------
 
