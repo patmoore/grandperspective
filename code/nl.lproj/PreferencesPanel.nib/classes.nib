@@ -1,19 +1,51 @@
-{
-    IBClasses = (
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {editUniformTypeRanking = id; popUpValueChanged = id; valueChanged = id; }; 
-            CLASS = PreferencesPanelControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                defaultColorMappingPopUp = NSPopUpButton; 
-                defaultColorPalettePopUp = NSPopUpButton; 
-                fileDeletionConfirmationCheckBox = NSButton; 
-                fileDeletionPopUp = NSPopUpButton; 
-                fileSizeMeasurePopUp = NSPopUpButton; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>editUniformTypeRanking</key>
+				<string>id</string>
+				<key>popUpValueChanged</key>
+				<string>id</string>
+				<key>valueChanged</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>PreferencesPanelControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>defaultColorMappingPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>defaultColorPalettePopUp</key>
+				<string>NSPopUpButton</string>
+				<key>fileDeletionConfirmationCheckBox</key>
+				<string>NSButton</string>
+				<key>fileDeletionPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>fileSizeMeasurePopUp</key>
+				<string>NSPopUpButton</string>
+				<key>showPackageContentsByDefaultCheckBox</key>
+				<string>NSButton</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>
