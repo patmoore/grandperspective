@@ -23,7 +23,8 @@ This can help you to optimise your Time Machine back-up scheme, for example, by 
 <p>
 First of all, it is important to understand how Time Machine back-ups are stored.
 Time Machine makes extensive use of <a href="HardLinks.html">hard links</a>.
-Each back-up appears to store the entire drive, yet the amount of disk space needed for the back-up is limited to the files that have changed since the last back-up.
+Each back-up appears to store a copy of the entire drive that is backed up.
+Yet the amount of disk space needed for a back-up is limited the files that have changed since the preceding back-up.
 All files and folders that have not changed, are represented by hard links to these items in the preceding back-up.
 </p>
 
@@ -36,7 +37,7 @@ You are of course free to experiment with other approaches.
 <h2>Scanning all back-ups</h2>
 
 <p>
-Execute <b>Scan folder</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
+Execute <b>Scan folder...</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
 This may take a while.
 When scanning is complete, a <a href="Views.html">view</a> is shown showing all back-ups.
 In the <a href="ViewDisplayPanel.html">Display panel</a>, select coloring by "Top folder".
@@ -59,7 +60,7 @@ You need to <a href="EditingMaskAndFilterRules.html">create a new rule</a>.
 Name the rule "Main back-up", apply it to "files and folders", and let it include the Path test, matching paths that start with "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
 The parts in italics will be different in your case. 
 You can get the path string you need from the <a href="ViewFocusPanel.html">Focus panel</a>.
-First in the view select any file from the main back-up folder, 
+First in the view select any file from the largest back-up folder, 
 go one step "Down", copy the path from the "Folder in view" text box, and go "Up" again in the view.
 </p>
 
@@ -84,7 +85,7 @@ If you spot files that should not be backed up, update your Time Machine prefere
 <h2>Check which files have been backed up during the latest back-up</h2>
 
 <p>
-Initiate a <b>Filtered scan</b>.
+Initiate a <b>Filtered Scan...</b>.
 As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
 Apply the following filter: "Do not show: hard-linked items".
 The result is a view showing the files that are new in the latest back-up.
