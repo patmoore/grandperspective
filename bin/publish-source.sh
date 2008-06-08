@@ -1,7 +1,8 @@
 #!/bin/bash
 
-VERSION="0.9.11"
-VERSION_ID="0_9_11"
+VERSION="0.9.12"
+VERSION_ID="0_9_12"
+REV=795
 
 if [ $# -ne "1" ]
 then
@@ -29,27 +30,19 @@ OUT_FILE="GrandPerspective-${VERSION_ID}-src.tgz"
 mkdir $OUTER_DIR_PATH
 
 echo "Exporting text files."
-./export-docs.sh trunk/docs 652 $OUTER_DIR_PATH $VERSION $VERSION_ID
+./export-docs.sh trunk/docs $REV $OUTER_DIR_PATH $VERSION $VERSION_ID
 
 mkdir $OUTER_DIR_PATH/src
 echo "Exporting source code."
-./export-source.sh trunk/code 653 $OUTER_DIR_PATH/src $VERSION
+./export-source.sh trunk/code $REV $OUTER_DIR_PATH/src $VERSION
 
 echo "Exporting help documentation."
-./export-help.sh 652 $OUTER_DIR_PATH/src English
-./export-help.sh 652 $OUTER_DIR_PATH/src nl
+./export-help.sh $REV $OUTER_DIR_PATH/src English
+./export-help.sh $REV $OUTER_DIR_PATH/src nl
 
 echo "Generating help indexes."
-./update-help-index.sh $OUTER_DIR_PATH/src/English.lproj/$HELP_FOLDER English
-
-echo -n "[Please press return once the indexing is done]" 
-read dummy
-
-./update-help-index.sh $OUTER_DIR_PATH/src/nl.lproj/$HELP_FOLDER European
-
-echo -n "[Please press return once the indexing is done]" 
-read dummy
-
+./update-help-index.sh $OUTER_DIR_PATH/src/English.lproj/$HELP_FOLDER 1
+./update-help-index.sh $OUTER_DIR_PATH/src/nl.lproj/$HELP_FOLDER 2
 
 echo "Creating TGZ file."
 pushd $TEMP_PUBLISH_DIR > /dev/null
