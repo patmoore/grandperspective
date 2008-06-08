@@ -204,8 +204,6 @@ NSString* scanActivityFormatString() {
     return;
   }
   
-  NSString  *dirName = [[pathModel scanTree] stringForFileItemPath];
-    
   DerivedDirViewWindowCreator  *windowCreator =
     [[DerivedDirViewWindowCreator alloc] 
         initWithWindowManager: windowManager
@@ -215,13 +213,14 @@ NSString* scanActivityFormatString() {
   TreeContext  *oldContext = [oldControl treeContext];
   ScanTaskInput  *input = 
     [[ScanTaskInput alloc] 
-        initWithDirectoryName: [[oldContext scanTree] stringForFileItemPath]
+        initWithDirectoryName: [[oldContext scanTree] path]
           fileSizeMeasure: [oldContext fileSizeMeasure]
           filterTest: [oldContext fileItemFilter]];
     
-  NSString  *format = scanActivityFormatString();
+  NSString  *descr = [NSString stringWithFormat: scanActivityFormatString(),
+                                                 [[pathModel scanTree] path] ];
   [scanTaskManager asynchronouslyRunTaskWithInput: input
-                     description: [NSString stringWithFormat: format, dirName]
+                     description: descr
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
 
@@ -260,10 +259,10 @@ NSString* scanActivityFormatString() {
   NSString  *format = NSLocalizedString( 
                         @"Filtering %@", 
                         @"Message in progress panel while filtering" );
-  NSString  *pathName = [[oldPathModel scanTree] stringForFileItemPath];
+  NSString  *descr = 
+    [NSString stringWithFormat: format, [[oldPathModel scanTree] path]];
   [filterTaskManager asynchronouslyRunTaskWithInput: input
-                       description: 
-                           [NSString stringWithFormat: format, pathName]
+                       description: descr
                        callback: windowCreator
                        selector: @selector(createWindowForTree:)];
 
@@ -414,7 +413,7 @@ NSString* scanActivityFormatString() {
 // Creates window title based on scan location, scan time and filter (if any).
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeContext  *treeContext = [control treeContext];
-  NSString  *scanPath = [[treeContext scanTree] stringForFileItemPath];
+  NSString  *scanPath = [[treeContext scanTree] path];
 
   NSString  *scanTimeString = 
     [[treeContext scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"

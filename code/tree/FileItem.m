@@ -109,15 +109,16 @@
   return [self isSpecial] ? nil : name;
 }
 
-- (NSString *) stringForFileItemPath {
+- (NSString *) path {
   NSString  *comp = [self pathComponent];
   
   if (comp != nil) {
-    return (parent != nil) ? [[parent stringForFileItemPath] 
-                                 stringByAppendingPathComponent: comp] : comp;
+    return ( (parent != nil) 
+             ? [[parent path] stringByAppendingPathComponent: comp] 
+             : comp );
   }
   else {
-    return (parent != nil) ? [parent stringForFileItemPath] : @"";
+    return (parent != nil) ? [parent path] : @"";
   }
 }
 

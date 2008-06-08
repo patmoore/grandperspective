@@ -80,7 +80,7 @@
  * system representation of the path can be different. This is for example the
  * case when a path component contain slash characters.
  */
-- (NSString *) stringForFileItemPath;
+- (NSString *) path;
 
 
 /* Returns a short string, approximating the given size. E.g. "1.23 MB"

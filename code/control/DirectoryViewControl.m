@@ -134,7 +134,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     pathModelView = [[ItemPathModelView alloc] initWithPathModel: pathModel];
     initialSettings = [settings retain];
 
-    scanPathName = [[[treeContext scanTree] stringForFileItemPath] retain];
+    scanPathName = [[[treeContext scanTree] path] retain];
     
     invisiblePathName = nil;
        
@@ -339,7 +339,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [super windowDidLoad];
   
   NSAssert(invisiblePathName == nil, @"invisiblePathName unexpectedly set.");
-  invisiblePathName = [[visibleTree stringForFileItemPath] retain];
+  invisiblePathName = [[visibleTree path] retain];
 
   [self showEntireVolumeCheckBoxChanged: nil];
   [self showPackageContentsCheckBoxChanged: nil];
@@ -424,9 +424,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     ancestor = [ancestor parentDirectory];
   }
   
-  NSString  *filePath = [fileToOpen stringForFileItemPath];
-  NSString  *rootPath = 
-    (package != nil) ? [package stringForFileItemPath] : invisiblePathName;
+  NSString  *filePath = [fileToOpen path];
+  NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
 
   NSLog( @"package = %@, filePath = %@, rootPath = %@", 
          [package name], filePath, rootPath);
@@ -664,7 +663,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   FileItem  *selectedFile = [pathModelView selectedFileItem];
 
   NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
-  NSString  *sourceDir = [[selectedFile parentDirectory] stringForFileItemPath];
+  NSString  *sourceDir = [[selectedFile parentDirectory] path];
     // Note: Can always obtain the encompassing directory this way. The 
     // volume tree cannot be deleted so there is always a valid parent
     // directory.
@@ -730,7 +729,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   FileItem  *visibleTree = [pathModelView visibleTree];
   
   [invisiblePathName release];
-  invisiblePathName = [[visibleTree stringForFileItemPath] retain];
+  invisiblePathName = [[visibleTree path] retain];
 
   [visibleFolderFocusControls showFileItem: visibleTree];
 
@@ -763,7 +762,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       itemPath = relativeItemPath;
     }
     else {
-      itemPath = [selectedItem stringForFileItemPath];
+      itemPath = [selectedItem path];
       
       NSAssert([itemPath hasPrefix: scanPathName], @"Invalid path prefix.");
       relativeItemPath = [itemPath substringFromIndex: [scanPathName length]];
@@ -938,7 +937,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     ( [item isSpecial] 
       ? [[NSBundle mainBundle] localizedStringForKey: [item name] 
                                  value: nil table: @"Names"]
-      : [item stringForFileItemPath] );
+      : [item path] );
     
   [self showFileItem: item itemPath: itemPath sizeString: sizeString];
 }
