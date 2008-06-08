@@ -12,21 +12,16 @@ fi
 HELP_PATH=$1
 TOKENIZER=$2
 
-VOLUME="Macintosh HD"
+pushd /Developer/Applications/Utilities/Help\ Indexer.app/Contents/MacOS > /dev/null
 
-# Convert path name to string as used by AppleScript
-HELP_PATH_AS=`echo ${VOLUME}${HELP_PATH} | sed 's/\//:/g' `
+./Help\ Indexer $HELP_PATH \
+   -PantherIndexing YES \
+   -Tokenizer $TOKENIZER \
+   -ShowProgress YES -LogStyle 0
 
-osascript <<EOF
-tell application "Finder"
-	activate
-	set folderAlias to "${HELP_PATH_AS}" as alias
-end tell
+./Help\ Indexer $HELP_PATH \
+   -TigerIndexing YES \
+   -Tokenizer $TOKENIZER \
+   -ShowProgress YES -LogStyle 0
 
-tell application "Apple Help Indexing Tool"
-	activate
-	use tokenizer "${TOKENIZER}"
-	turn anchor indexing "on"
-	open folderAlias
-end tell
-EOF
+popd > /dev/null
