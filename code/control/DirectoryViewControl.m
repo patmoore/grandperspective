@@ -427,8 +427,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSString  *filePath = [fileToOpen path];
   NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
 
-  NSLog( @"package = %@, filePath = %@, rootPath = %@", 
-         [package name], filePath, rootPath);
+  //NSLog( @"package = %@, filePath = %@, rootPath = %@", 
+  //       [package name], filePath, rootPath);
 
   if ( [[NSWorkspace sharedWorkspace] 
            selectFile: filePath 

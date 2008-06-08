@@ -68,8 +68,6 @@
     else {
       testUsesSize = NO;
     }
-  
-    NSLog(@"testUsesSize %d", testUsesSize);
   }
 }
 
