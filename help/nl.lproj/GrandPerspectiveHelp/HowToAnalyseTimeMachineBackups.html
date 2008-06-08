@@ -1,0 +1,103 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Het analyseren van Time Machine reservekopieën</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Het analyseren van Time Machine reservekopieën.">
+<meta name="keywords" content="Time Machine, back-up, back up, reservekopie, analyse, hoe, hard link">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Het analyseren van Time Machine reservekopieën</h1>
+</div>
+
+<p>
+GrandPerspective kan gebruikt worden om Time Machine reservekopieën te analyseren.
+Dit kan u helpen om de Time Machine instellingen te optimaliseren, bijvoorbeeld doordat u bestanden en mappen ontdekt die Time Machine buiten beschouwing kan laten.
+</p>
+
+<p>
+Het is eerst nodig te begrijpen hoe Time Machine reservekopieën opgeslagen zijn.
+Time Machine maakt uitgebreid gebruik van <a href="HardLinks.html">harde links</a>.
+Elke reservekopie lijkt een volledig kopie te zijn van uw schijf op een bepaald moment.
+Echter, de benodigde schijfruimte is beperkt tot de bestanden die veranderd zijn sinds de vorige reservekopie.
+Alle bestanden en mappen die ongewijzigd zijn worden vertegenwoordigt door harde links naar deze items in de vorige reservekopie.
+</p>
+
+<p>
+Hieronder vindt u een aantal manieren waarop u GrandPerspective kan gebruiken om uw Time Machine reservekopieën te analyseren.
+Dit zal een idee geven van wat er mogelijk is.
+U bent natuurlijk vrij om andere aanpakken uit te proberen.
+</p>
+
+<h2>Het inlezen van alle reservekopieën</h2>
+
+<p>
+Voer <b>Map inlezen...</b> uit op de map "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>".
+Dit kan even duren.
+Wanneer het inlezen volbracht is zal een <a href="Views.html">overzicht venster</a> getoond worden met alle reservekopieën.
+Kies vervolgens kleuren naar "Buitenste map" in het <a href="ViewDisplayPanel.html">Beeld paneel</a>.
+Alle bestanden die bij dezelfde reservekopie horen hebben nu dezelfde kleur.
+</p>
+
+<p>
+U zult waarschijnlijk zien dat één reservekopie aanzienelijk groter is dan de rest.
+Dit is de reservekopie die als eerste ingelezen is (dit hoeft niet de oudste reservekopie te zijn).
+Alle bestanden in deze map waren nog niet eerder gezien, en zijn daarom in beschouwing genomen.
+Tijdens het inlezen van de overige reservekopieën zijn de meeste harde links al eens gezien, waardoor ze vervolgens buiten beschouwing worden gelaten.
+</p>
+
+<p>
+De map die als eerste is ingelezen is daarom het minst interessant.
+Deze toont "slechts" de inhoud van de harde schijf op een bepaald moment.
+Daarom kan het nuttig zijn deze map niet te tonen in het overzichts venster.
+Begin hiermee door het <a href="MasksAndFilters.html">masker</a> aan te passen.
+Hiervoor is het nodig dat u een <a href="EditingMaskAndFilterRules.html">nieuwe regel maakt</a>.
+Noem de regel "Hoofd kopie", pas deze toe op "bestanden en mappen", en laat deze de Padnaam test bevatten, waarbij padnamen moeten beginnen met "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/<em>2008-08-08-888888</em>". 
+De cursieve gedeeltes zullen anders zijn in uw geval. 
+U kunt de string met de padnaam verkrijgen in het <a href="ViewFocusPanel.html">Focus paneel</a>.
+Selecteer eerst een willekeurig bestand in de grootste reservekopie, 
+"Daal" een stap, kopieer de padnaam onder het kopje "Getoonde map", en ga vervolgens weer "Omhoog".
+</p>
+
+<p>
+Nadat u de "Hoofd kopie" regel gemaakt heeft, gebruikt u deze als volgt in het masker: "Toon geen: Hoofd kopie".
+U zult nu zien dat de hoofd kopie gemaskeerd is in het venster. 
+Indien dit niet het geval is heeft u het masker niet juist ingesteld.
+Wijzig het masker totdat het werkt.
+</p>
+
+<p>
+Wanneer het masker werkt moet u een filter toepassen op het venster.
+Gebruik hiervoor de <b>Filter...</b> opdracht. 
+Deze neemt standaard de instelling van het masker over, dus u kunt gelijk op "OK" drukken.
+Een nieuw overzichts venster wordt gemaakt, zonder de grootste reservekopie.
+Dit nieuwe venster geeft een veel beter idee van de ruimte die nodig is voor iedere nieuwe reservekopie.
+<a href="NavigatingViews.html">Verken</a> dit venster om een goed idee te krijgen van de bestanden die telkens weer opnieuw gekopieerd worden.
+Als u bestanden tegenkomt die niet in de reservekopieën thuis horen kunt u uw Time Machine instellingen hierop aanpassen.
+</p>
+
+
+<h2>Bekijk welke bestanden tijdens het maken van de meest recente reservekopie gekopieerd zijn</h2>
+
+<p>
+Start het <b>Inlezen map met filter...</b>.
+Voor de in te lezen map kies "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/Latest".
+Pas de volgende filter toe: "Toon geen: harde links".
+Het resultaat is een venster dat alle bestanden toont die nieuw zijn in meest recente reservekopie.
+Alle bestanden die al voorkwamen in een eerdere reservekopie worden niet getoond.
+</p>
+
+<p>
+Let op: U kunt dit filter ook toepassen op eerdere reservekopieën.
+Echter, de juiste interpretatie van het venster is dan iets anders.
+In dit geval worden bestanden niet getoond wanneer ze in een eerdere reservekopie of <em>in een latere reservekopie</em> voorkomen. 
+<p>
+
+</body>
+</html>
+

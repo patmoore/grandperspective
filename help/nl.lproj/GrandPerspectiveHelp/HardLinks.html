@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Harde links</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Describes what hard links are and how they are handled.">
+<meta name="keywords" content="harde link, link, Time Machine">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Harde links</h1>
+</div>
+
+<p>
+Besturingssystemen gebaseerd op Unix, waaronder ook Mac OS X, ondersteunen het concept "harde links".
+Harde links kunnen gebruikt worden om een bestand op meerdere plaatsen (d.w.z. in verschillende mappen) of onder verschillende namen op te slaan binnen één opslagmedium.
+Elk van deze harde links verwijst naar dezelfde data op het opslagmedium, zodat het slechts één keer ruimte inneemt.
+Dit betekend bijvoorbeeld dat wanneer een hard-gelinkt bestand gewijzigd wordt, alle andere "kopieën" ook gewijzigd worden.
+</p>
+
+<p>
+Het is nodig dat harde links speciaal behandelt worden om te zorgen dat de schijfruimte die ingenomen wordt niet overschat wordt.
+GrandPerspective behandelt harde links daarom als volgt.
+Wanneer een hard-gelinkt bestand of map voor het eerst wordt tegengekomen tijdens het <a href="CreatingViews.html">inlezen van een map</a>, dan wordt het in beschouwing genomen.
+Wanneer vervolgens hetzelfde bestand of map elders nogmaals tegengekomen wordt, dan wordt het genegeerd.
+Dit heeft als gevolg dat binnen een <a href="Views.html">overzichts venster</a> een hard-gelinkt item maximaal één keer zal voorkomen, wat overéén komt met de ingenomen schijfruimte.
+Let wel, waar een hard-gelinkt item in een overzichts venster verschijnt is vrij willekeurig.
+Dit kan zijn in elk van de mappen waar het zich bevindt. 
+Welke hangt af van de volgorde waarin de mappen zijn ingelezen.
+</p>
+
+<p>
+Wanneer een hard-gelinkt bestand of map verwijderd wordt, verdwijnt het uit de map waarin het getoond wordt.
+Echter, de totale beschikbare ruimte zal niet toenemen, omdat het item nog ruimte inneemt op de schijf zolang niet alle links verwijderd zijn.
+</p>
+
+
+<h2>Zie ook</h2>
+
+<p>
+<ul>
+<li><a href="HowToAnalyseTimeMachineBackups.html">Het analyseren van Time Machine reservekopieën</a> - Time Machine maakt uitgebreid gebruik van harde links.</li>
+</ul>
+</p>
+
+
+</body>
+</html>
