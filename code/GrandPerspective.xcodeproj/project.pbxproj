@@ -179,8 +179,8 @@
 		AA6E27D00D7B02BE00D5FBBA /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
 		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
 		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
-		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; };
-		AA7C64E90AFE734A007B8CD2 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; };
+		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
+		AA7C64E90AFE734A007B8CD2 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
 		AA7C64F50AFE7568007B8CD2 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/ProgressPanel.nib; sourceTree = "<group>"; };
 		AA7C64F90AFE75DE007B8CD2 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		AA7DEA070D6718ED0057F5F8 /* UniformType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniformType.h; path = util/UniformType.h; sourceTree = "<group>"; };
