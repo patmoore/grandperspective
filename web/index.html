@@ -49,6 +49,8 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
 <p>
 <ul>
 
+<li><p><b>10 Jun 2008</b> GrandPerspective 0.9.12 has been released and is available for <a href="#download">download</a>. It includes three eagerly awaited features: correct handling of hard-links (scan your Time Machine back-ups), optional showing of package contents, and the ability to apply mask and filter rules to folders.</p></li> 
+
 <li><p><b>22 Apr 2008</b> A localized version of GrandPerspective 0.9.11 is now available for <a href="#download">download</a>. Unfortunately, it contains fewer localizations than the previous release, mostly because various localizers were too busy to provide an update in their language. Maybe you can <a href="#localization">help out</a> for the next release? Furthermore, thanks to all who have shown support by <a href="http://sourceforge.net/project/project_donations.php?group_id=148156">making a donation</a>. Thanks to a recent generous donation the upgrade to Leopard is nearly covered (the dollar being a bit weak doesn't help unfortunately) so expect improved support for OS X 10.5 in the next release.</p></li>
 
 <li><p><b>17 Apr 2008</b> GrandPerspective has been downloaded more than 100.000 times. Happy happy joy joy.</p></li>
@@ -85,7 +87,7 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
   <li>Choice of color mapping schemes</li>
   <li>Choice of color palettes</li>
   <li>Configurable mapping by file type</li>
-  <li><em>Optionally view package contents</em></li>
+  <li>Optionally view package contents</li>
   <li>Optionally view the entire volume</li>
   </ul></li>
 <li>Convenient navigation of views:
@@ -95,14 +97,14 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
   </ul></li>
 <li>Reveal files and folders in the Finder</li>
 <li>Delete files and folders from the view</li>
-<li>User-configurable tests on files <em>and folders</em>:
+<li>User-configurable rules on files and folders:
   <ul>
-  <li>Construct test rules based on an item's: name, path, size<em>, file type, hard-link status, and package status</em></li>
-  <li>Use tests to:
+  <li>Construct rules using tests on an item's: name, path, size, file type, hard-link status, and package status</li>
+  <li>Use these rules to:
     <ul>
     <li>Mask files in the view</li>
     <li>Filter files from the view</li>
-    <li><em>Exclude files and folders when scanning a disk</em></li>
+    <li>Exclude files and folders when scanning a disk</li>
     </ul></li>
   </ul></li>
 <li>Multiple view support:
@@ -110,9 +112,9 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
   <li>Re-scan a view to compare results before and after clean-up</li>
   <li>Twin or duplicate a view for different displays of the same data</li>
   </ul></li>
-<li><em>Support for hard-linked files and folders</em>
+<li>Support for hard-linked files and folders
   <ul>
-  <li><em>Analyse TimeMachine back-ups</em></li>
+  <li>Analyse Time Machine back-ups</li>
   </ul></li>
 <li>Configurable user preferences</li>
 <li>Generate images from views</li>
@@ -132,17 +134,15 @@ Screenshot of main window (<a href="screenshots.html">more screenshots</a>)
 </ul>
 </p>
 
-<p><b>Note:</b> Features <em>in italics</em> are planned to appear in the next release (Version 0.9.12).</p>
-
 
 <a name="download">
 <h2>Download it</h2></a>
 
 <p>GrandPerspective has been released as <a href="http://www.opensource.org/">Open Source</a> under the <a href="http://www.gnu.org/licenses/licenses.html#GPL">GNU General Public License</a>. The official release files are available from the <a href="http://sourceforge.net/project/showfiles.php?group_id=148156">GrandPerspective download area</a>.
-The latest release (Version 0.9.11) consists of three files:
+The latest release (Version 0.9.12) consists of three files:
 
 <ul>
-<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_11.dmg?download">GrandPerspective-0_9_11.dmg</a></b> (English)
+<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_12.dmg?download">GrandPerspective-0_9_12.dmg</a></b> (English)
  
 <p>This is the main release file. It contains all you need to run
 the application. To install the application, open the disk 
@@ -150,21 +150,19 @@ image and drag the application icon onto your Applications
 folder, or wher'ever you want to put it onto your file system.
 Next, run the application by clicking on the icon.</p></li>
 
-<li><b><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_11-local.dmg?download">GrandPerspective-0_9_11-local.dmg</a></b> (English, Japanese, and Dutch)
+<li><b>GrandPerspective-0_9_12-local.dmg</b> (English, Japanese, Dutch, <a href="#localization">and more?</a>)
  
 <p>This is the localized version of GrandPerspective. It includes
 support for languages other than English.</p>
 
-<!--- 
 <p>The localized version has not yet been released. This will be done 
 once all localized resources have been updated. The target date is
 four weeks after the main release. In the meantime, here is the
 link to the localized version of the previous release:
-<a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_10-local.dmg?download">GrandPerspective-0_9_10-local.dmg</a></p>
---->
+<a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_11-local.dmg?download">GrandPerspective-0_9_11-local.dmg</a></p>
 </li>
 
-<li><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_11-src.tgz?download">GrandPerspective-0_9_11-src.tgz</a>
+<li><a href="http://prdownloads.sourceforge.net/grandperspectiv/GrandPerspective-0_9_12-src.tgz?download">GrandPerspective-0_9_12-src.tgz</a>
 
 <p>This contains the source code of the application. It consists of
 the Objective C source code, as well as various auxiliary files,
@@ -342,7 +340,7 @@ Retain a sense of control.</p>
 
 <hr>
 
-<p>Copyright 2005-2008, Eriban. Last updated: 3 June 2008</p>
+<p>Copyright 2005-2008, Eriban. Last updated: 10 June 2008</p>
 
 </body>
 </html>
