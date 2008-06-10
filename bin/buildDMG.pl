@@ -153,6 +153,24 @@ die "FATAL: Couldn't mount DMG $dmgName (Error: $?)\n" if $?;
 my ($dev)  = ($output =~ /(\/dev\/.+?)\s*Apple_partition_scheme/im);
 my ($dest) = ($output =~ /Apple_HFS\s+(.+?)\s*$/im);
 
+# disable FSEvents logging
+$output = `touch \"$dest\"/.fseventsd/no_log`; 
+
+# unmount the dmg
+print "> hdiutil detach $dev\n" if $debug;
+$output = `hdiutil detach $dev`;
+die "FATAL: Couldn't unmount device $dev: $?\n" if $?;
+
+# mounting again (so that "no_log" setting is in effect)
+$output = `hdiutil attach \"$buildDir/$dmgName\"`;
+die "FATAL: Couldn't mount DMG $dmgName (Error: $?)\n" if $?;
+
+($dev)  = ($output =~ /(\/dev\/.+?)\s*Apple_partition_scheme/im);
+($dest) = ($output =~ /Apple_HFS\s+(.+?)\s*$/im);
+
+# disable Spotlight indexing
+# $output = `mdutil -i off $dest`;
+
 # copy the files onto the dmg
 print "Copying files to $dest...\n";
 print "> /Developer/Tools/CpMac -r $files \"$dest\"\n" if $debug;
