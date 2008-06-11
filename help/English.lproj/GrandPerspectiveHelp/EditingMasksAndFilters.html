@@ -24,8 +24,15 @@ You can select rules that should be used by moving them from the right to the le
 </p>
 
 <p>
-When there is more than one rule in the mask (or filter), a file only needs to match one for the mask (or filter) to apply.
+When there is more than one rule in the mask (or filter), a file or folder only needs to match one for the mask (or filter) to apply.
 In other words, the rules are combined using "OR" as opposed to "AND".
+</p>
+
+<p>
+Most rules only apply to files, but some (also) apply to folders.
+When a folder should not be shown, none of its contents will be shown.
+When using one or more rules that (also) apply to folders, it therefore rarely make sense to "only show" items matching the rules.
+The reason is that a file will then only be shown when <em>all folders in its path</em> (starting from the folder that was scanned) match one of the rules.
 </p>
 
 <p>
