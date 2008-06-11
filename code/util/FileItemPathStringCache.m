@@ -48,9 +48,12 @@
   while (lastFileItem != item && 
          lastFileItem != parentDirectory &&
          lastFileItem != nil) {
+    // Fetch before releasing "lastFileItem"
+    DirectoryItem  *newLastFileItem = [lastFileItem parentDirectory];
+
     [cachedPathStrings removeLastObject];
     [lastFileItem release];
-    lastFileItem = [[lastFileItem parentDirectory] retain];
+    lastFileItem = [newLastFileItem retain];
   }
 
   if (lastFileItem == item) {
