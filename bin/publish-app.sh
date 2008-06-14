@@ -47,4 +47,4 @@ pushd $DEST_PATH > /dev/null
 $BIN_DIR/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 2 -compressionLevel 9 $OUTER_DIR_PATH/*.txt $OUTER_DIR_PATH/GrandPerspective.app
 popd > /dev/null
 
-echo rm -rf $TEMP_PUBLISH_DIR
+rm -rf $TEMP_PUBLISH_DIR
