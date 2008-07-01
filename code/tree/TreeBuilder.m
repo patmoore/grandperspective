@@ -12,6 +12,10 @@
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
+NSString  *NumBuildableFoldersKey = @"numBuildableFolders";
+NSString  *NumFoldersBuiltKey = @"numFoldersBuilt";
+NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
+
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
  * pages. This is a good balance between the iteration I/O overhead and the 
@@ -105,6 +109,8 @@ typedef struct  {
     hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
     
+    statsLock = [[NSLock alloc] init];
+    
     pathBuffer = NULL;
     pathBufferLen = 0;
     
@@ -130,6 +136,8 @@ typedef struct  {
   
   [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
+  
+  [statsLock release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -229,11 +237,20 @@ typedef struct  {
                             filterTest: [treeGuide fileItemTest]
                             volumeSize: volumeSize 
                             freeSpace: freeSpace] autorelease];
-    
+
+  [statsLock lock];
+  numBuildableFolders = 1;
+  numFoldersBuilt = 0;
+  numInaccessibleFolders = 0;
+  [statsLock unlock];
+      
   if (! [self buildTreeForDirectory: [scanResult scanTree] fileRef: &pathRef
                 parentPath: volumePath]) {
     return nil;
   }
+  
+  NSLog(@"numBuildable=%d, numBuilt=%d, numInaccessible=%d", 
+        numBuildableFolders, numFoldersBuilt, numInaccessibleFolders);
   
   [scanResult postInit];
   
@@ -242,6 +259,24 @@ typedef struct  {
   // [typeInventory dumpTypesToLog];
     
   return scanResult;
+}
+
+
+- (NSDictionary *) treeBuilderProgressInfo {
+  NSDictionary  *dict;
+
+  [statsLock lock];
+  dict = [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInt: numBuildableFolders],
+            NumBuildableFoldersKey,
+            [NSNumber numberWithInt: numFoldersBuilt],
+            NumFoldersBuiltKey,
+            [NSNumber numberWithInt: numInaccessibleFolders],
+            NumInaccessibleFoldersKey,
+            nil];
+  [statsLock unlock];
+
+  return dict;
 }
 
 @end // @implementation TreeBuilder
@@ -285,13 +320,20 @@ typedef struct  {
                                              namesArray );
                                    
     if (result != noErr && result != errFSNoMoreItems) {
-      if (result != afpAccessDenied) {
-        NSLog(@"Failed to get bulk catalog info for %@: %i", path, result);
+      if (result == afpAccessDenied) {
+        NSAssert([dirs count] == 0 && [files count] == 0, 
+                 @"Partial access denied?");
+        [statsLock lock];
+        numInaccessibleFolders++;
+        [statsLock unlock];
+      }
+      else {
+        NSLog(@"Failed to get bulk catalog info for '%@': %i", path, result);
       }
       break;
     }
-      
-    if ( actualCount > 16 && localAutoreleasePool == nil) {
+    
+    if ( localAutoreleasePool == nil && actualCount > 16) {
       localAutoreleasePool = [[NSAutoreleasePool alloc] init];
     }
       
@@ -306,7 +348,7 @@ typedef struct  {
                             
       // The "system path" path to the child item. It may not be needed, so it
       // is created lazily.
-       NSString  *systemPath = nil; 
+      NSString  *systemPath = nil; 
 
       if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo
                   systemPath: &systemPath]) {
@@ -333,13 +375,17 @@ typedef struct  {
             [[DirectoryItem alloc] initWithName: childName parent: dirItem
                                      flags: flags];
 
-          // Collect all directories (the filter test is applied later).
-          [dirs addObject: dirChildItem];
+          // Only add directories that should be scanned (this does not
+          // necessarily mean that it has passed the filter test already) 
+          if ( [treeGuide shouldDescendIntoDirectory: dirChildItem] ) {
+            [dirs addObject: dirChildItem];
 
-          FSRefObject  *refObject = 
-            [[FSRefObject alloc] initWithFileRef: childRef];
-          [dirFileRefs addObject: refObject];
-          [refObject release];
+            FSRefObject  *refObject = 
+              [[FSRefObject alloc] initWithFileRef: childRef];
+
+            [dirFileRefs addObject: refObject];
+            [refObject release];
+          }
           
           [dirChildItem release];
         }
@@ -375,18 +421,23 @@ typedef struct  {
       break;
     }
   }
+  
+  if ([dirs count] > 0) {
+    [statsLock lock];
+    numBuildableFolders += [dirs count];
+    [statsLock unlock];
 
-  for (i = [dirFileRefs count]; --i >= 0 && !abort; ) {
-    DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
+    for (i = [dirs count]; --i >= 0 && !abort; ) {
+      DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
 
-    if ( [treeGuide shouldDescendIntoDirectory: dirChildItem] ) {
       [self buildTreeForDirectory: dirChildItem
               fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
               parentPath: path];
-    }
-    if ( ! [treeGuide includeFileItem: dirChildItem] ) {
-      // The directory did not pass the test. So exclude it.
-      [dirs removeObjectAtIndex: i];
+
+      if ( ! [treeGuide includeFileItem: dirChildItem] ) {
+        // The directory did not pass the test. So exclude it.
+        [dirs removeObjectAtIndex: i];
+      }
     }
   }
   
@@ -394,6 +445,10 @@ typedef struct  {
     [CompoundItem 
        compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
                       second: [treeBalancer createTreeForItems: dirs]]];
+                      
+  [statsLock lock];
+  numFoldersBuilt++;
+  [statsLock unlock];
   
   [files release];
   [dirs release];
