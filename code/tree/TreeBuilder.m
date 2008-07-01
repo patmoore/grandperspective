@@ -15,6 +15,7 @@ NSString  *PhysicalFileSize = @"physical";
 NSString  *NumBuildableFoldersKey = @"numBuildableFolders";
 NSString  *NumFoldersBuiltKey = @"numFoldersBuilt";
 NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
+NSString  *CurrentFolderPathKey = @"currentFolderPath";
 
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
@@ -138,6 +139,7 @@ typedef struct  {
   [fileSizeMeasure release];
   
   [statsLock release];
+  [currentDirectory release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -273,6 +275,8 @@ typedef struct  {
             NumFoldersBuiltKey,
             [NSNumber numberWithInt: numInaccessibleFolders],
             NumInaccessibleFoldersKey,
+            [currentDirectory path],
+            CurrentFolderPathKey,
             nil];
   [statsLock unlock];
 
@@ -299,6 +303,11 @@ typedef struct  {
   }
   
   [treeGuide descendIntoDirectory: dirItem];
+  
+  [statsLock lock];
+  [currentDirectory release];
+  currentDirectory = [dirItem retain];
+  [statsLock unlock];
 
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
   NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];

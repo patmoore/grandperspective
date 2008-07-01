@@ -16,7 +16,7 @@ extern NSString  *PhysicalFileSize;
 extern NSString  *NumBuildableFoldersKey;
 extern NSString  *NumFoldersBuiltKey;
 extern NSString  *NumInaccessibleFoldersKey;
-
+extern NSString  *CurrentFolderPathKey;
 
 /* Constructs trees for folders by (recursively) scanning the folder's 
  * contents.
@@ -54,6 +54,9 @@ extern NSString  *NumInaccessibleFoldersKey;
   // The number of folders whose contents could not be read due to 
   // insufficient permissions.
   int  numInaccessibleFolders;
+  
+  // The directory that is currently being scanned.
+  DirectoryItem  *currentDirectory;
   
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;
