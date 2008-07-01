@@ -24,9 +24,11 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
+				<key>progressDetails</key>
+				<string>NSTextField</string>
 				<key>progressIndicator</key>
 				<string>NSProgressIndicator</string>
-				<key>progressText</key>
+				<key>progressSummary</key>
 				<string>NSTextField</string>
 			</dict>
 			<key>SUPERCLASS</key>

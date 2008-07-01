@@ -46,7 +46,7 @@
 		AA63515B0972E2070024C9D0 /* GrandPerspective.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA6351350972DDC40024C9D0 /* GrandPerspective.icns */; };
 		AA63516C0972E2CC0024C9D0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
 		AA636B1F0E1A63BA0073873E /* ScanProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA636B1E0E1A63BA0073873E /* ScanProgressPanelControl.m */; };
-		AA636B350E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA636B340E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.m */; };
+		AA636C900E1AC5200073873E /* FilterProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA636C8F0E1AC5200073873E /* FilterProgressPanelControl.m */; };
 		AA6814860A07D6FC00802D88 /* ProgressPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA6814840A07D6FC00802D88 /* ProgressPanel.nib */; };
 		AA6E27A40D7AE95E00D5FBBA /* ColorLegendTableViewControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */; };
 		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
@@ -177,8 +177,8 @@
 		AA6351350972DDC40024C9D0 /* GrandPerspective.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = GrandPerspective.icns; sourceTree = "<group>"; };
 		AA636B1D0E1A63BA0073873E /* ScanProgressPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ScanProgressPanelControl.h; path = control/ScanProgressPanelControl.h; sourceTree = "<group>"; };
 		AA636B1E0E1A63BA0073873E /* ScanProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanProgressPanelControl.m; path = control/ScanProgressPanelControl.m; sourceTree = "<group>"; };
-		AA636B330E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleAsynchronousScanTaskManager.h; path = control/VisibleAsynchronousScanTaskManager.h; sourceTree = "<group>"; };
-		AA636B340E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VisibleAsynchronousScanTaskManager.m; path = control/VisibleAsynchronousScanTaskManager.m; sourceTree = "<group>"; };
+		AA636C8E0E1AC5200073873E /* FilterProgressPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterProgressPanelControl.h; path = control/FilterProgressPanelControl.h; sourceTree = "<group>"; };
+		AA636C8F0E1AC5200073873E /* FilterProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterProgressPanelControl.m; path = control/FilterProgressPanelControl.m; sourceTree = "<group>"; };
 		AA6814850A07D6FC00802D88 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressPanel.nib; sourceTree = "<group>"; };
 		AA6E27A10D7AE95E00D5FBBA /* ColorLegendTableViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorLegendTableViewControl.h; path = control/ColorLegendTableViewControl.h; sourceTree = "<group>"; };
 		AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorLegendTableViewControl.m; path = control/ColorLegendTableViewControl.m; sourceTree = "<group>"; };
@@ -577,12 +577,12 @@
 				AA402FEC0A5B01A6004EAAF3 /* SaveImageDialogControl.m */,
 				AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */,
 				AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */,
-				AA636B330E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.h */,
-				AA636B340E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.m */,
 				AA402FE90A5B01A6004EAAF3 /* ProgressPanelControl.h */,
 				AA402FF70A5B01A6004EAAF3 /* ProgressPanelControl.m */,
 				AA636B1D0E1A63BA0073873E /* ScanProgressPanelControl.h */,
 				AA636B1E0E1A63BA0073873E /* ScanProgressPanelControl.m */,
+				AA636C8E0E1AC5200073873E /* FilterProgressPanelControl.h */,
+				AA636C8F0E1AC5200073873E /* FilterProgressPanelControl.m */,
 				AA402FF30A5B01A6004EAAF3 /* EditFilterWindowControl.h */,
 				AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */,
 				AA402FF80A5B01A6004EAAF3 /* EditFilterRuleWindowControl.h */,
@@ -771,7 +771,7 @@
 				AA9881BD0DF57C6B00A6EA33 /* StringSuffixTest.m in Sources */,
 				AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */,
 				AA636B1F0E1A63BA0073873E /* ScanProgressPanelControl.m in Sources */,
-				AA636B350E1A6AFE0073873E /* VisibleAsynchronousScanTaskManager.m in Sources */,
+				AA636C900E1AC5200073873E /* FilterProgressPanelControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

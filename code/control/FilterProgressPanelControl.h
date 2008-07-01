@@ -3,7 +3,7 @@
 #import "ProgressPanelControl.h"
 
 
-@interface ScanProgressPanelControl : ProgressPanelControl {
+@interface FilterProgressPanelControl : ProgressPanelControl {
 
 }
 

@@ -1,15 +1,22 @@
 #import "ProgressPanelControl.h"
 
 
+@interface ProgressPanelControl (PrivateMethods)
+
+- (void) updatePanel;
+
+@end
+
+
 @implementation ProgressPanelControl
 
 - (id) init {
-  return [self initWithTitle: nil];
+  NSAssert(NO, @"Use initWithTaskExecutor: instead.");
 }
 
-- (id) initWithTitle: (NSString*) titleVal {
+- (id) initWithTaskExecutor: (NSObject <TaskExecutor> *)taskExecutorVal {
   if (self = [super initWithWindowNibName: @"ProgressPanel" owner: self]) {
-    title = [titleVal retain];
+    taskExecutor = [taskExecutorVal retain];
   }
   
   return self;
@@ -17,28 +24,40 @@
 
 
 - (void) dealloc {
-  [title release];
-  [cancelCallback release];
+  [taskExecutor release];
+
+  NSAssert(cancelCallback==nil, @"cancelCallback not nil.");
   
   [super dealloc];  
 }
 
 
-- (void) taskStarted: (NSString *)taskDescription
+- (void) windowDidLoad {
+  [progressDetails setStringValue: @""];
+  [progressSummary setStringValue: @""];
+}
+
+
+- (NSObject <TaskExecutor> *) taskExecutor {
+  return taskExecutor;
+}
+
+
+- (void) taskStartedWithInput: (id) taskInput
            cancelCallback: (NSObject *)callback selector: (SEL) selector {
   NSAssert( cancelCallback==nil, @"Callback already set." );
   
   cancelCallback = [callback retain];
   cancelCallbackSelector = selector;
 
-  [[self window] setTitle: title];
-
-  [progressText setStringValue: taskDescription];
-
   [[self window] center];
   [[self window] orderFront: self];
 
+  [self initProgressInfoForTaskWithInput: taskInput];
   [progressIndicator startAnimation: self];
+
+  taskRunning = YES;
+  [self updatePanel];
 }
 
 - (void) taskStopped {
@@ -48,8 +67,10 @@
   cancelCallback = nil;
   
   [progressIndicator stopAnimation: self];  
-  
+
   [[self window] close];
+
+  taskRunning = NO;  
 }
 
 
@@ -60,4 +81,35 @@
   // of "taskStarted".
 }
 
-@end
+@end // @implementation ProgressPanelControl
+
+
+@implementation ProgressPanelControl (ProtectedMethods)
+
+- (void) initProgressInfoForTaskWithInput: (id) taskInput {
+  // void. To be overridden
+}
+
+- (void) updateProgressInfo {
+  // void. To be overridden
+}
+
+@end // @implementation ProgressPanelControl (ProtectedMethods)
+
+
+@implementation ProgressPanelControl (PrivateMethods)
+
+- (void) updatePanel {
+  if (!taskRunning) {
+    return;
+  }
+
+  [self updateProgressInfo];
+
+  // Schedule another update    
+  [self performSelector: @selector(updatePanel) withObject: 0 afterDelay: 1];
+}
+
+@end // @implementation ProgressPanelControl (PrivateMethods)
+
+

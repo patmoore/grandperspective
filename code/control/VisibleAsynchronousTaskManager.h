@@ -10,13 +10,12 @@
 @interface VisibleAsynchronousTaskManager : NSObject {
 
   AsynchronousTaskManager  *taskManager;
-  NSString  *panelTitle;
+  ProgressPanelControl  *progressPanelControl;
 
 }
 
 
-- (id) initWithTaskManager: (AsynchronousTaskManager*) taskManager
-         panelTitle: (NSString *)title;
+- (id) initWithProgressPanel: (ProgressPanelControl *)panelControl;
 
 - (void) dispose;
 
@@ -24,15 +23,7 @@
 - (void) abortTask;
 
 - (void) asynchronouslyRunTaskWithInput: (id) input 
-           description: (NSString *)description
            callback: (NSObject *)callback 
            selector: (SEL) selector;
-
-@end
-
-
-@interface VisibleAsynchronousTaskManager (ProtectedMethods) 
-
-- (ProgressPanelControl *) createProgressPanelControl;
 
 @end

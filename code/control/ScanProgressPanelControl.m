@@ -1,53 +1,41 @@
 #import "ScanProgressPanelControl.h"
 
 #import "ScanTaskExecutor.h"
+#import "ScanTaskInput.h"
 #import "TreeBuilder.h"
 
 
 @interface ScanProgressPanelControl (PrivateMethods)
 
-- (void) updatePanel;
+- (void) updateProgressDetails: (NSString *)currentPath;
+- (void) updateProgressSummary: (int) numFoldersScanned;
 
 @end
 
 
 @implementation ScanProgressPanelControl
 
-// Overrides designated initialiser.
-- (id) initWithTitle: (NSString *)title {
-  NSAssert(NO, @"Use initWithTitle:scanTaskExecutor: instead.");
+- (void) windowDidLoad {
+  [super windowDidLoad];
+  
+  [[self window] setTitle: NSLocalizedString( @"Scanning in progress",
+                                              @"Title of progress panel." )];
 }
 
-- (id) initWithTitle: (NSString *)titleVal 
-         scanTaskExecutor: (ScanTaskExecutor *)taskExecutor {
-  if (self = [super initWithTitle: titleVal]) {
-    scanTaskExecutor = [taskExecutor retain];
+- (void) initProgressInfoForTaskWithInput: (id) taskInput {
+  [self updateProgressDetails: [taskInput directoryName]];
+  [self updateProgressSummary: 0];
+}
+
+- (void) updateProgressInfo {
+  NSDictionary  *dict = [((ScanTaskExecutor *)taskExecutor) scanProgressInfo];
+  if (dict == nil) {
+    return;
   }
   
-  return self;
-}
-
-- (void) dealloc {
-  [scanTaskExecutor release];
-  
-  [super dealloc];
-}
-
-
-- (void) taskStarted: (NSString*) taskDescription
-           cancelCallback: (NSObject*) callback selector: (SEL) selector {
-  [super taskStarted: taskDescription 
-           cancelCallback: callback selector: selector];
-           
-  taskRunning = YES;
-
-  [self updatePanel];
-}
-           
-- (void) taskStopped {
-  taskRunning = NO;
-  
-  [super taskStopped];
+  [self updateProgressDetails: [dict objectForKey: CurrentFolderPathKey]];
+  [self updateProgressSummary: 
+          [[dict objectForKey: NumFoldersBuiltKey] intValue]];  
 }
 
 @end // @implementation ScanProgressPanelControl
@@ -55,19 +43,20 @@
 
 @implementation ScanProgressPanelControl (PrivateMethods)
 
-- (void) updatePanel {
-  if (!taskRunning) {
-    return;
-  }
-  
-  NSDictionary  *dict = [scanTaskExecutor scanProgressInfo];
-  
-  int  numFoldersScanned = [[dict objectForKey: NumFoldersBuiltKey] intValue];
-       
-  NSLog(@"%d\t%@", numFoldersScanned, 
-          [dict objectForKey: CurrentFolderPathKey]);
-  
-  [self performSelector: @selector(updatePanel) withObject: 0 afterDelay: 1];
+- (void) updateProgressDetails: (NSString *)currentPath {
+  NSString  *format = 
+    NSLocalizedString( @"Scanning %@", 
+                       @"Message in progress panel while scanning" );
+  [progressDetails setStringValue: 
+                     [NSString stringWithFormat: format, currentPath]];
+}
+
+- (void) updateProgressSummary: (int) numFoldersScanned {
+  NSString  *format = 
+    NSLocalizedString( @"%d folders scanned", 
+                       @"Message in progress panel while scanning" );
+  [progressSummary setStringValue: 
+                     [NSString stringWithFormat: format, numFoldersScanned]];
 }
 
 @end // @implementation ScanProgressPanelControl (PrivateMethods)

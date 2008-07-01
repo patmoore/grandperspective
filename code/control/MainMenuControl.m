@@ -16,8 +16,8 @@
 #import "WindowManager.h"
 
 #import "VisibleAsynchronousTaskManager.h"
-#import "VisibleAsynchronousScanTaskManager.h"
-#import "AsynchronousTaskManager.h"
+#import "ScanProgressPanelControl.h"
+#import "FilterProgressPanelControl.h"
 #import "ScanTaskInput.h"
 #import "ScanTaskExecutor.h"
 #import "FilterTaskInput.h"
@@ -31,12 +31,6 @@
 
 
 static int  nextFilterId = 1;
-
-
-NSString* scanActivityFormatString() {
-  return NSLocalizedString( @"Scanning %@", 
-                            @"Message in progress panel while scanning" );
-}
 
 
 @interface FreshDirViewWindowCreator : NSObject {
@@ -119,25 +113,23 @@ NSString* scanActivityFormatString() {
   if (self = [super init]) {
     windowManager = [[WindowManager alloc] init];  
 
-    AsynchronousTaskManager  *actualScanTaskManager = 
-      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
-          [[[ScanTaskExecutor alloc] init] autorelease]] autorelease];
+    ProgressPanelControl  *scanProgressPanelControl = 
+      [[[ScanProgressPanelControl alloc] 
+           initWithTaskExecutor: [[[ScanTaskExecutor alloc] init] autorelease] 
+       ] autorelease];
 
     scanTaskManager =
-      [[VisibleAsynchronousScanTaskManager alloc] 
-         initWithTaskManager: actualScanTaskManager 
-           panelTitle: NSLocalizedString ( @"Scanning in progress",
-                                           @"Title of progress panel." )];    
+      [[VisibleAsynchronousTaskManager alloc] 
+          initWithProgressPanel: scanProgressPanelControl];    
 
-    AsynchronousTaskManager  *actualFilterTaskManager = 
-      [[[AsynchronousTaskManager alloc] initWithTaskExecutor:
-          [[[FilterTaskExecutor alloc] init] autorelease]] autorelease];
+    ProgressPanelControl  *filterProgressPanelControl = 
+      [[[FilterProgressPanelControl alloc] 
+           initWithTaskExecutor: [[[FilterTaskExecutor alloc] init] autorelease]
+       ] autorelease];
 
     filterTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
-         initWithTaskManager: actualFilterTaskManager 
-           panelTitle: NSLocalizedString ( @"Filtering in progress",
-                                           @"Title of progress panel." )];
+          initWithProgressPanel: filterProgressPanelControl];
   }
   return self;
 }
@@ -218,10 +210,7 @@ NSString* scanActivityFormatString() {
           fileSizeMeasure: [oldContext fileSizeMeasure]
           filterTest: [oldContext fileItemFilter]];
     
-  NSString  *descr = [NSString stringWithFormat: scanActivityFormatString(),
-                                                 [[pathModel scanTree] path] ];
   [scanTaskManager asynchronouslyRunTaskWithInput: input
-                     description: descr
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
 
@@ -257,13 +246,7 @@ NSString* scanActivityFormatString() {
           filterTest: filterTest
           packagesAsFiles: ! [oldSettings showPackageContents]];
 
-  NSString  *format = NSLocalizedString( 
-                        @"Filtering %@", 
-                        @"Message in progress panel while filtering" );
-  NSString  *descr = 
-    [NSString stringWithFormat: format, [[oldPathModel scanTree] path]];
   [filterTaskManager asynchronouslyRunTaskWithInput: input
-                       description: descr
                        callback: windowCreator
                        selector: @selector(createWindowForTree:)];
 
@@ -342,9 +325,7 @@ NSString* scanActivityFormatString() {
                              fileSizeMeasure: fileSizeMeasure 
                              filterTest: filter];
     
-  NSString  *format = scanActivityFormatString();
   [scanTaskManager asynchronouslyRunTaskWithInput: input
-                     description: [NSString stringWithFormat: format, dirName]
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
                        

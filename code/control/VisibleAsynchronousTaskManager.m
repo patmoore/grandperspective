@@ -24,14 +24,16 @@
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use -initWithTaskMamager:panelTitle instead.");
+  NSAssert(NO, @"Use -initWithProgressPanel: instead.");
 }
 
-- (id) initWithTaskManager: (AsynchronousTaskManager*) taskManagerVal
-         panelTitle: (NSString*) title {
+- (id) initWithProgressPanel: (ProgressPanelControl *)panelControl {
   if (self = [super init]) {
-    taskManager = [taskManagerVal retain];
-    panelTitle = [title retain];
+    progressPanelControl = [panelControl retain];
+    
+    taskManager = 
+      [[AsynchronousTaskManager alloc] initWithTaskExecutor:
+                                         [progressPanelControl taskExecutor]];
   }
 
   return self;
@@ -39,7 +41,7 @@
 
 - (void) dealloc {
   [taskManager release];
-  [panelTitle release];
+  [progressPanelControl release];
 
   [super dealloc];
 }
@@ -60,18 +62,15 @@
 
 
 - (void) asynchronouslyRunTaskWithInput: (id) input 
-           description: (NSString *)description
            callback: (NSObject *)callback 
            selector: (SEL) selector {
-  ProgressPanelControl  *progressPanel = [self createProgressPanelControl];
-
   // Show the progess panel and let its Cancel button abort the task.
-  [progressPanel taskStarted: description
-                   cancelCallback: taskManager
-                   selector: @selector(abortTask) ];
+  [progressPanelControl taskStartedWithInput: input
+                          cancelCallback: taskManager
+                          selector: @selector(abortTask) ];
 
   CallbackHandler  *callbackHandler = 
-    [[[CallbackHandler alloc] initWithProgressPanel: progressPanel
+    [[[CallbackHandler alloc] initWithProgressPanel: progressPanelControl
                                 callback: callback
                                 selector: selector] autorelease];
 
@@ -83,15 +82,6 @@
 }
 
 @end // @implementation VisibleAsynchronousTaskManager
-
-
-@implementation VisibleAsynchronousTaskManager (ProtectedMethods) 
-
-- (ProgressPanelControl *) createProgressPanelControl {
-  return [[[ProgressPanelControl alloc] initWithTitle: panelTitle] autorelease];
-}
-
-@end // @implementatione VisibleAsynchronousTaskManager (ProtectedMethods) 
 
 
 @implementation CallbackHandler
