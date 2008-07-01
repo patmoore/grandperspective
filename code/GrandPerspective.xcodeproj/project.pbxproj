@@ -507,10 +507,10 @@
 				AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */,
 				AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */,
 				AA6012750A5AF5E200DEBCB8 /* TaskExecutor.h */,
-				AA6012660A5AF5A600DEBCB8 /* PeekingEnumerator.h */,
-				AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */,
 				AA6012540A5AF55400DEBCB8 /* AsynchronousTaskManager.h */,
 				AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */,
+				AA6012660A5AF5A600DEBCB8 /* PeekingEnumerator.h */,
+				AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */,
 				AA61786C0A38B8D500B8AB16 /* NotifyingDictionary.h */,
 				AA61786D0A38B8D500B8AB16 /* NotifyingDictionary.m */,
 			);
@@ -600,10 +600,10 @@
 				AAC26BB70A8CAF4800F2DA33 /* FilterTaskExecutor.m */,
 				AAC26BB80A8CAF4800F2DA33 /* FilterTaskInput.h */,
 				AAC26BB90A8CAF4800F2DA33 /* FilterTaskInput.m */,
-				AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */,
-				AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */,
 				AAC26BBE0A8CAF4800F2DA33 /* ScanTaskExecutor.h */,
 				AAC26BBF0A8CAF4800F2DA33 /* ScanTaskExecutor.m */,
+				AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */,
+				AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */,
 			);
 			name = task;
 			sourceTree = "<group>";

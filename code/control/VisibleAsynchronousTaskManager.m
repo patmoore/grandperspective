@@ -68,8 +68,8 @@
 
   // Show the progess panel and let its Cancel button abort the task.
   [progressPanel taskStarted: description
-                   cancelCallback: [taskManager taskExecutor]
-                   selector: @selector(disable) ];
+                   cancelCallback: taskManager
+                   selector: @selector(abortTask) ];
 
   CallbackHandler  *callbackHandler = 
     [[CallbackHandler alloc] initWithProgressPanel: progressPanel

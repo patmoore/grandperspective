@@ -89,10 +89,14 @@ enum {
 
 
 - (void) abortTask {
+  [settingsLock lock];
+
   if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
     // Abort task
     [executor disable];
   }
+
+  [settingsLock unlock];
 }
 
 
