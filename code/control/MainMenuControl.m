@@ -206,7 +206,7 @@ static int  nextFilterId = 1;
   TreeContext  *oldContext = [oldControl treeContext];
   ScanTaskInput  *input = 
     [[ScanTaskInput alloc] 
-        initWithDirectoryName: [[oldContext scanTree] path]
+        initWithPath: [[oldContext scanTree] path]
           fileSizeMeasure: [oldContext fileSizeMeasure]
           filterTest: [oldContext fileItemFilter]];
     
@@ -311,7 +311,7 @@ static int  nextFilterId = 1;
     return; // Abort
   }  
 
-  NSString  *dirName = [[openPanel filenames] objectAtIndex: 0];
+  NSString  *pathToScan = [[openPanel filenames] objectAtIndex: 0];
   
   NSObject <FileItemTest>  *filter = useFilter ? [self getFilter: nil] : nil;
 
@@ -321,7 +321,7 @@ static int  nextFilterId = 1;
   FreshDirViewWindowCreator  *windowCreator =
     [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
   ScanTaskInput  *input = 
-    [[ScanTaskInput alloc] initWithDirectoryName: dirName
+    [[ScanTaskInput alloc] initWithPath: pathToScan
                              fileSizeMeasure: fileSizeMeasure 
                              filterTest: filter];
     

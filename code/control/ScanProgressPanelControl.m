@@ -23,7 +23,7 @@
 }
 
 - (void) initProgressInfoForTaskWithInput: (id) taskInput {
-  [self updateProgressDetails: [taskInput directoryName]];
+  [self updateProgressDetails: [taskInput pathToScan]];
   [self updateProgressSummary: 0];
 }
 

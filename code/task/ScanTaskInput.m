@@ -7,10 +7,10 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithDirectoryName:fileSizeMeasure:filterTest instead");
+  NSAssert(NO, @"Use initWithPath:fileSizeMeasure:filterTest instead");
 }
 
-- (id) initWithDirectoryName: (NSString *)dirNameVal 
+- (id) initWithPath: (NSString *)path 
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
          filterTest: (NSObject <FileItemTest> *)filterTestVal {
 
@@ -20,18 +20,18 @@
           ( [userDefaults boolForKey: ShowPackageContentsByDefaultKey]
             ? NSOnState : NSOffState );
             
-  return [self initWithDirectoryName: dirNameVal
+  return [self initWithPath: path
                  fileSizeMeasure: fileSizeMeasureVal
                  filterTest: filterTestVal
                  packagesAsFiles: !showPackageContentsByDefault];
 }
          
-- (id) initWithDirectoryName: (NSString *)dirNameVal 
+- (id) initWithPath: (NSString *)path 
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
          filterTest: (NSObject <FileItemTest> *)filterTestVal
          packagesAsFiles: (BOOL) packagesAsFilesVal {
   if (self = [super init]) {
-    dirName = [dirNameVal retain];
+    pathToScan = [path retain];
     fileSizeMeasure = [fileSizeMeasureVal retain];
     filterTest = [filterTestVal retain];
     packagesAsFiles = packagesAsFilesVal;
@@ -40,7 +40,7 @@
 }
 
 - (void) dealloc {
-  [dirName release];
+  [pathToScan release];
   [fileSizeMeasure release];
   [filterTest release];
   
@@ -48,8 +48,8 @@
 }
 
 
-- (NSString *) directoryName {
-  return dirName;
+- (NSString *) pathToScan {
+  return pathToScan;
 }
 
 - (NSString *) fileSizeMeasure {

@@ -5,21 +5,21 @@
 
 @interface ScanTaskInput : NSObject {
   BOOL  packagesAsFiles;
-  NSString  *dirName;
+  NSString  *pathToScan;
   NSString  *fileSizeMeasure;
   NSObject <FileItemTest>  *filterTest;
 }
 
-- (id) initWithDirectoryName: (NSString *)name 
+- (id) initWithPath: (NSString *)path 
          fileSizeMeasure: (NSString *) measure
          filterTest: (NSObject <FileItemTest> *)filter;
 
-- (id) initWithDirectoryName: (NSString *)name 
+- (id) initWithPath: (NSString *)path 
          fileSizeMeasure: (NSString *) measure
          filterTest: (NSObject <FileItemTest> *)filter
          packagesAsFiles: (BOOL) packagesAsFiles;
 
-- (NSString *) directoryName;
+- (NSString *) pathToScan;
 - (NSString *) fileSizeMeasure;
 - (NSObject <FileItemTest> *) filterTest;
 - (BOOL) packagesAsFiles;

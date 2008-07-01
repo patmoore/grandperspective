@@ -40,8 +40,6 @@
          initWithFileItemTest: [myInput filterTest]
            packagesAsFiles: [myInput packagesAsFiles]] autorelease];
 
-  NSString  *path = [myInput directoryName];
-  
   [taskLock lock];
   treeBuilder = [[TreeBuilder alloc] initWithFilteredTreeGuide: treeGuide];
   [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
@@ -49,7 +47,8 @@
   
   NSDate  *startTime = [NSDate date];
   
-  TreeContext*  scanResult = [treeBuilder buildTreeForPath: path];
+  TreeContext*  scanResult = 
+    [treeBuilder buildTreeForPath: [myInput pathToScan]];
   
   if (scanResult != nil) {
     NSLog(@"Done scanning: %d folders scanned in %.2fs.",
