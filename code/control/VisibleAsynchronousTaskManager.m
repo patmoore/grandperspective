@@ -63,8 +63,7 @@
            description: (NSString *)description
            callback: (NSObject *)callback 
            selector: (SEL) selector {
-  ProgressPanelControl  *progressPanel = 
-    [[ProgressPanelControl alloc] initWithTitle: panelTitle];
+  ProgressPanelControl  *progressPanel = [self createProgressPanelControl];
 
   // Show the progess panel and let its Cancel button abort the task.
   [progressPanel taskStarted: description
@@ -72,21 +71,27 @@
                    selector: @selector(abortTask) ];
 
   CallbackHandler  *callbackHandler = 
-    [[CallbackHandler alloc] initWithProgressPanel: progressPanel
-                               callback: callback
-                               selector: selector];
+    [[[CallbackHandler alloc] initWithProgressPanel: progressPanel
+                                callback: callback
+                                selector: selector] autorelease];
 
   // Let callback go through handler object, so that progress panel is also
   // closed.
   [taskManager asynchronouslyRunTaskWithInput: input 
                  callback: callbackHandler 
                  selector: @selector(taskDone:) ];
-                 
-  [callbackHandler release];
-  [progressPanel release];
 }
 
 @end // @implementation VisibleAsynchronousTaskManager
+
+
+@implementation VisibleAsynchronousTaskManager (ProtectedMethods) 
+
+- (ProgressPanelControl *) createProgressPanelControl {
+  return [[[ProgressPanelControl alloc] initWithTitle: panelTitle] autorelease];
+}
+
+@end // @implementatione VisibleAsynchronousTaskManager (ProtectedMethods) 
 
 
 @implementation CallbackHandler

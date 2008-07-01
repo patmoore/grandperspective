@@ -11,13 +11,17 @@
 
 - (id) init {
   if (self = [super init]) {
-    enabled = YES;
+    taskLock = [[NSLock init] alloc];
+
+    enabled = YES;    
   }
   return self;
 }
 
 - (void) dealloc {
-  [treeBuilder release];
+  [taskLock release];
+  
+  NSAssert(treeBuilder==nil, @"treeBuilder should be nil.");
   
   [super dealloc];
 }
@@ -38,19 +42,28 @@
 
   NSString  *path = [myInput directoryName];
   
+  [taskLock lock];
   treeBuilder = [[TreeBuilder alloc] initWithFilteredTreeGuide: treeGuide];
   [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
+  [taskLock unlock];
   
   NSDate  *startTime = [NSDate date];
   
   TreeContext*  scanResult = [treeBuilder buildTreeForPath: path];
   
+  if (scanResult != nil) {
+    NSLog(@"Done scanning: %d folders scanned in %.2fs.",
+          [[[self scanProgressInfo] objectForKey: NumFoldersBuiltKey] intValue],
+          -[startTime timeIntervalSinceNow]);
+  }
+  else {
+    NSLog(@"Scanning aborted.");
+  }
+
+  [taskLock lock];
   [treeBuilder release];
   treeBuilder = nil;
-  
-  if (scanResult != nil) {
-    NSLog(@"Done scanning. Time taken=%f", -[startTime timeIntervalSinceNow]);
-  }
+  [taskLock unlock];
 
   return scanResult;
 }
@@ -62,9 +75,20 @@
   [treeBuilder abort];
 }
 
-
 - (void) enable {
   enabled = YES;
+}
+
+- (NSDictionary *)scanProgressInfo {
+  NSDictionary  *dict;
+
+  [taskLock lock];
+  // The "taskLock" ensures that when treeBuilder is not nil, the object will
+  // always be valid when it is used (i.e. it won't be deallocated).
+  dict = [treeBuilder treeBuilderProgressInfo];
+  [taskLock unlock];
+  
+  return dict;
 }
 
 @end

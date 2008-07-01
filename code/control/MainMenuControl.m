@@ -16,6 +16,7 @@
 #import "WindowManager.h"
 
 #import "VisibleAsynchronousTaskManager.h"
+#import "VisibleAsynchronousScanTaskManager.h"
 #import "AsynchronousTaskManager.h"
 #import "ScanTaskInput.h"
 #import "ScanTaskExecutor.h"
@@ -123,7 +124,7 @@ NSString* scanActivityFormatString() {
           [[[ScanTaskExecutor alloc] init] autorelease]] autorelease];
 
     scanTaskManager =
-      [[VisibleAsynchronousTaskManager alloc] 
+      [[VisibleAsynchronousScanTaskManager alloc] 
          initWithTaskManager: actualScanTaskManager 
            panelTitle: NSLocalizedString ( @"Scanning in progress",
                                            @"Title of progress panel." )];    
