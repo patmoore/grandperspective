@@ -13,7 +13,6 @@ extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
 
 // Keys used in the dictionary returned by -treeBuilderProgressInfo
-extern NSString  *NumBuildableFoldersKey;
 extern NSString  *NumFoldersBuiltKey;
 extern NSString  *NumInaccessibleFoldersKey;
 extern NSString  *CurrentFolderPathKey;
@@ -36,15 +35,9 @@ extern NSString  *CurrentFolderPathKey;
   // more, it is ignored. 
   NSMutableSet  *hardLinkedFileNumbers;
   
-  // Lock protecting the progress statistics.
+  // Lock protecting the progress statistics (which can be retrieved from a
+  // thread different than the one building the tree).
   NSLock  *statsLock;
-  
-  // The (current) total number of folders that need to be build. It includes
-  // folders that have been built already. This count goes up when new folders 
-  // are being encountered while the tree is being built. It is always larger
-  // than "numFoldersBuilt", except when the tree has been completely built,
-  // in which case both numbers should be equal.
-  int  numBuildableFolders;
   
   // The number of folders that have been constructed so far. This includes
   // folders that were subsequently discarded because they did not pass the

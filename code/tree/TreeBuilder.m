@@ -12,7 +12,6 @@
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
-NSString  *NumBuildableFoldersKey = @"numBuildableFolders";
 NSString  *NumFoldersBuiltKey = @"numFoldersBuilt";
 NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
 NSString  *CurrentFolderPathKey = @"currentFolderPath";
@@ -111,6 +110,7 @@ typedef struct  {
     abort = NO;
     
     statsLock = [[NSLock alloc] init];
+    currentDirectory = nil;
     
     pathBuffer = NULL;
     pathBufferLen = 0;
@@ -241,7 +241,6 @@ typedef struct  {
                             freeSpace: freeSpace] autorelease];
 
   [statsLock lock];
-  numBuildableFolders = 1;
   numFoldersBuilt = 0;
   numInaccessibleFolders = 0;
   [statsLock unlock];
@@ -250,9 +249,6 @@ typedef struct  {
                 parentPath: volumePath]) {
     return nil;
   }
-  
-  NSLog(@"numBuildable=%d, numBuilt=%d, numInaccessible=%d", 
-        numBuildableFolders, numFoldersBuilt, numInaccessibleFolders);
   
   [scanResult postInit];
   
@@ -269,8 +265,6 @@ typedef struct  {
 
   [statsLock lock];
   dict = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: numBuildableFolders],
-            NumBuildableFoldersKey,
             [NSNumber numberWithInt: numFoldersBuilt],
             NumFoldersBuiltKey,
             [NSNumber numberWithInt: numInaccessibleFolders],
@@ -431,22 +425,16 @@ typedef struct  {
     }
   }
   
-  if ([dirs count] > 0) {
-    [statsLock lock];
-    numBuildableFolders += [dirs count];
-    [statsLock unlock];
+  for (i = [dirs count]; --i >= 0 && !abort; ) {
+    DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
 
-    for (i = [dirs count]; --i >= 0 && !abort; ) {
-      DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
+    [self buildTreeForDirectory: dirChildItem
+            fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
+            parentPath: path];
 
-      [self buildTreeForDirectory: dirChildItem
-              fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
-              parentPath: path];
-
-      if ( ! [treeGuide includeFileItem: dirChildItem] ) {
-        // The directory did not pass the test. So exclude it.
-        [dirs removeObjectAtIndex: i];
-      }
+    if ( ! [treeGuide includeFileItem: dirChildItem] ) {
+      // The directory did not pass the test. So exclude it.
+      [dirs removeObjectAtIndex: i];
     }
   }
   
