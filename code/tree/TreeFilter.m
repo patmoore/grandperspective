@@ -52,7 +52,7 @@
           
   [filterResult postInit];
                  
-  return filterResult; 
+  return abort ? nil : filterResult;
 }
 
 - (void) abort {
