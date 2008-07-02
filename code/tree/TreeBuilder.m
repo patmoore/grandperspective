@@ -243,6 +243,8 @@ typedef struct  {
   [statsLock lock];
   numFoldersProcessed = 0;
   numInaccessibleFolders = 0;
+  [currentDirectory release];
+  currentDirectory = nil;
   [statsLock unlock];
       
   if (! [self buildTreeForDirectory: [scanResult scanTree] fileRef: &pathRef
