@@ -8,6 +8,7 @@ extern NSString  *FileSizeMeasureKey;
 extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
 extern NSString  *ShowPackageContentsByDefaultKey;
+extern NSString  *ProgressPanelRefreshRateKey;
 
 
 @class EditUniformTypeRankingWindowControl;

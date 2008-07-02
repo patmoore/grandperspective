@@ -1,5 +1,7 @@
 #import "ProgressPanelControl.h"
 
+#import "PreferencesPanelControl.h"
+
 
 @interface ProgressPanelControl (PrivateMethods)
 
@@ -17,6 +19,13 @@
 - (id) initWithTaskExecutor: (NSObject <TaskExecutor> *)taskExecutorVal {
   if (self = [super initWithWindowNibName: @"ProgressPanel" owner: self]) {
     taskExecutor = [taskExecutorVal retain];
+    
+    refreshRate = [[NSUserDefaults standardUserDefaults] 
+                      floatForKey: ProgressPanelRefreshRateKey];
+    if (refreshRate <= 0) {
+      NSLog(@"Invalid value for progressPanelRefreshRate.");
+      refreshRate = 1;
+    }
   }
   
   return self;
@@ -107,7 +116,8 @@
   [self updateProgressInfo];
 
   // Schedule another update    
-  [self performSelector: @selector(updatePanel) withObject: 0 afterDelay: 1];
+  [self performSelector: @selector(updatePanel) withObject: 0 
+          afterDelay: refreshRate];
 }
 
 @end // @implementation ProgressPanelControl (PrivateMethods)

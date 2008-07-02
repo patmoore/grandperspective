@@ -38,6 +38,8 @@
         <true/>
         <key>confirmFolderDeletion</key>
         <true/>
+        <key>progressPanelRefreshRate</key>
+        <real>0.25</real>
         <key>defaultColorPalette</key>
         <string>CoffeeBeans</string>
         <key>defaultColorMapping</key>

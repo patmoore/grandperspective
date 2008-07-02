@@ -18,10 +18,12 @@ NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
 NSString  *ShowPackageContentsByDefaultKey = @"showPackageContentsByDefault";
 
 
-// Note: Confirmation of folder deletion can currently not be configured using 
-// the preferences panel; it is only controlled by way of the application 
-// defaults.
+/* Note: The preferences below cannot currently be changed from the 
+ * preferences panel; they can only be controlled by way of the application 
+ * defaults.
+ */
 NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
+NSString  *ProgressPanelRefreshRateKey = @"progressPanelRefreshRate";
 
 
 @interface PreferencesPanelControl (PrivateMethods)
