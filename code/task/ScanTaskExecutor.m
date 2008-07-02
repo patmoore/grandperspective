@@ -79,6 +79,7 @@
   enabled = YES;
 }
 
+
 - (NSDictionary *)scanProgressInfo {
   NSDictionary  *dict;
 

@@ -1,14 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class FilteredTreeGuide;
-@class TreeBalancer;
-@class UniformTypeInventory;
-@class FileItem;
-@class DirectoryItem;
-@class TreeContext;
-
-
 extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
 
@@ -16,6 +8,15 @@ extern NSString  *PhysicalFileSize;
 extern NSString  *NumFoldersProcessedKey;
 extern NSString  *NumInaccessibleFoldersKey;
 extern NSString  *CurrentFolderPathKey;
+
+
+@class FilteredTreeGuide;
+@class TreeBalancer;
+@class UniformTypeInventory;
+@class FileItem;
+@class DirectoryItem;
+@class TreeContext;
+
 
 /* Constructs trees for folders by (recursively) scanning the folder's 
  * contents.

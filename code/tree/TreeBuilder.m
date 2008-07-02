@@ -444,11 +444,7 @@ typedef struct  {
     [CompoundItem 
        compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
                       second: [treeBalancer createTreeForItems: dirs]]];
-                      
-  [statsLock lock];
-  numFoldersProcessed++;
-  [statsLock unlock];
-  
+
   [files release];
   [dirs release];
   [dirFileRefs release];
@@ -457,6 +453,10 @@ typedef struct  {
   
   [treeGuide emergedFromDirectory: dirItem];
     
+  [statsLock lock];
+  numFoldersProcessed++;
+  [statsLock unlock];
+  
   FSCloseIterator(iterator);
   
   return !abort;
