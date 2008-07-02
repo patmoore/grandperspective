@@ -52,8 +52,9 @@
   
   if (scanResult != nil) {
     NSLog(@"Done scanning: %d folders scanned in %.2fs.",
-          [[[self scanProgressInfo] objectForKey: NumFoldersBuiltKey] intValue],
-          -[startTime timeIntervalSinceNow]);
+            [[[self scanProgressInfo] 
+                 objectForKey: NumFoldersProcessedKey] intValue],
+            -[startTime timeIntervalSinceNow]);
   }
   else {
     NSLog(@"Scanning aborted.");

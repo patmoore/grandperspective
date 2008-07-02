@@ -12,7 +12,7 @@
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
-NSString  *NumFoldersBuiltKey = @"numFoldersBuilt";
+NSString  *NumFoldersProcessedKey = @"numFoldersProcessed";
 NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
 NSString  *CurrentFolderPathKey = @"currentFolderPath";
 
@@ -241,7 +241,7 @@ typedef struct  {
                             freeSpace: freeSpace] autorelease];
 
   [statsLock lock];
-  numFoldersBuilt = 0;
+  numFoldersProcessed = 0;
   numInaccessibleFolders = 0;
   [statsLock unlock];
       
@@ -265,8 +265,8 @@ typedef struct  {
 
   [statsLock lock];
   dict = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: numFoldersBuilt],
-            NumFoldersBuiltKey,
+            [NSNumber numberWithInt: numFoldersProcessed],
+            NumFoldersProcessedKey,
             [NSNumber numberWithInt: numInaccessibleFolders],
             NumInaccessibleFoldersKey,
             [currentDirectory path],
@@ -444,7 +444,7 @@ typedef struct  {
                       second: [treeBalancer createTreeForItems: dirs]]];
                       
   [statsLock lock];
-  numFoldersBuilt++;
+  numFoldersProcessed++;
   [statsLock unlock];
   
   [files release];

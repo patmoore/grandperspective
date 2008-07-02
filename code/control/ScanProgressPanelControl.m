@@ -35,7 +35,7 @@
   
   [self updateProgressDetails: [dict objectForKey: CurrentFolderPathKey]];
   [self updateProgressSummary: 
-          [[dict objectForKey: NumFoldersBuiltKey] intValue]];  
+          [[dict objectForKey: NumFoldersProcessedKey] intValue]];  
 }
 
 @end // @implementation ScanProgressPanelControl

@@ -13,7 +13,7 @@ extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
 
 // Keys used in the dictionary returned by -treeBuilderProgressInfo
-extern NSString  *NumFoldersBuiltKey;
+extern NSString  *NumFoldersProcessedKey;
 extern NSString  *NumInaccessibleFoldersKey;
 extern NSString  *CurrentFolderPathKey;
 
@@ -42,7 +42,7 @@ extern NSString  *CurrentFolderPathKey;
   // The number of folders that have been constructed so far. This includes
   // folders that were subsequently discarded because they did not pass the
   // filter test. It also includes folders whose contents could not be read.
-  int  numFoldersBuilt;
+  int  numFoldersProcessed;
   
   // The number of folders whose contents could not be read due to 
   // insufficient permissions.
