@@ -9,6 +9,8 @@
   IBOutlet NSTextField  *progressSummary;
   
   NSTimeInterval  refreshRate;
+  NSString  *detailsFormat;
+  NSString  *summaryFormat;
   
   BOOL  taskRunning;
   NSObject <TaskExecutor>  *taskExecutor;
@@ -23,21 +25,36 @@
 - (NSObject <TaskExecutor> *) taskExecutor;
 
 
-// Should be called from main thread.
+/* Signals that a task has started execution. It also provides the callback
+ * method that should be called when the task execution finished. The panel
+ * itself is notified about this by way of its -taskStopped method.
+ *
+ * It should be called from main thread.
+ */
 - (void) taskStartedWithInput: (id) taskInput
            cancelCallback: (NSObject *)callback selector: (SEL) selector;
-// Should be called from main thread.
+
+/* Callback method. It should be called when the task has stopped executing,
+ * either because it finished, or because it was aborted.
+ *
+ * It should be called from main thread.
+ */
 - (void) taskStopped;
 
-// Aborts the task (if ongoing).
+/* Aborts the task (if it is still ongoing).
+ */
 - (IBAction) abort: (id) sender;
 
 @end
 
 
-@interface ProgressPanelControl (ProtectedMethods)
+@interface ProgressPanelControl (AbstractMethods)
 
-- (void) initProgressInfoForTaskWithInput: (id) taskInput;
-- (void) updateProgressInfo;
+- (NSString *)windowTitle;
+- (NSString *)progressDetailsFormat;
+- (NSString *)progressSummaryFormat;
+
+- (NSString *)pathFromTaskInput: (id) taskInput;
+- (NSDictionary *)progressInfo;
 
 @end

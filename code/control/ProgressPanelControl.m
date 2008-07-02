@@ -3,9 +3,16 @@
 #import "PreferencesPanelControl.h"
 
 
+extern NSString  *NumFoldersProcessedKey;
+extern NSString  *CurrentFolderPathKey;
+
+
 @interface ProgressPanelControl (PrivateMethods)
 
 - (void) updatePanel;
+
+- (void) updateProgressDetails: (NSString *)currentPath;
+- (void) updateProgressSummary: (int) numProcessed;
 
 @end
 
@@ -26,6 +33,9 @@
       NSLog(@"Invalid value for progressPanelRefreshRate.");
       refreshRate = 1;
     }
+    
+    detailsFormat = [[self progressDetailsFormat] retain];
+    summaryFormat = [[self progressSummaryFormat] retain];
   }
   
   return self;
@@ -34,6 +44,9 @@
 
 - (void) dealloc {
   [taskExecutor release];
+  
+  [detailsFormat release];
+  [summaryFormat release];
 
   NSAssert(cancelCallback==nil, @"cancelCallback not nil.");
   
@@ -42,8 +55,10 @@
 
 
 - (void) windowDidLoad {
-  [progressDetails setStringValue: @""];
-  [progressSummary setStringValue: @""];
+  [self updateProgressDetails: @""];
+  [self updateProgressSummary: 0];
+  
+  [[self window] setTitle: [self windowTitle]];
 }
 
 
@@ -62,7 +77,9 @@
   [[self window] center];
   [[self window] orderFront: self];
 
-  [self initProgressInfoForTaskWithInput: taskInput];
+  [self updateProgressDetails: [self pathFromTaskInput: taskInput]];
+  [self updateProgressSummary: 0];
+  
   [progressIndicator startAnimation: self];
 
   taskRunning = YES;
@@ -93,19 +110,6 @@
 @end // @implementation ProgressPanelControl
 
 
-@implementation ProgressPanelControl (ProtectedMethods)
-
-- (void) initProgressInfoForTaskWithInput: (id) taskInput {
-  // void. To be overridden
-}
-
-- (void) updateProgressInfo {
-  // void. To be overridden
-}
-
-@end // @implementation ProgressPanelControl (ProtectedMethods)
-
-
 @implementation ProgressPanelControl (PrivateMethods)
 
 - (void) updatePanel {
@@ -113,11 +117,27 @@
     return;
   }
 
-  [self updateProgressInfo];
+  NSDictionary  *dict = [self progressInfo];
+  if (dict != nil) {
+    [self updateProgressDetails: [dict objectForKey: CurrentFolderPathKey]];
+    [self updateProgressSummary: 
+            [[dict objectForKey: NumFoldersProcessedKey] intValue]];
+  }
 
   // Schedule another update    
   [self performSelector: @selector(updatePanel) withObject: 0 
           afterDelay: refreshRate];
+}
+
+
+- (void) updateProgressDetails: (NSString *)currentPath {
+  [progressDetails setStringValue: 
+                     [NSString stringWithFormat: detailsFormat, currentPath]];
+}
+
+- (void) updateProgressSummary: (int) numProcessed {
+  [progressSummary setStringValue: 
+                     [NSString stringWithFormat: summaryFormat, numProcessed]];
 }
 
 @end // @implementation ProgressPanelControl (PrivateMethods)

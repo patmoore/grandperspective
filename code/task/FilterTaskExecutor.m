@@ -34,13 +34,18 @@
     [[[FilteredTreeGuide alloc] 
          initWithFileItemTest: [filterInput filterTest]
            packagesAsFiles: [filterInput packagesAsFiles]] autorelease];
-
+  
+  [taskLock lock];
   treeFilter = [[TreeFilter alloc] initWithFilteredTreeGuide: treeGuide];
+  [taskLock unlock];
+
   TreeContext  *filteredTree = 
     [treeFilter filterTree: [filterInput oldContext]];
   
+  [taskLock lock];
   [treeFilter release];
   treeFilter = nil;
+  [taskLock unlock];
   
   return filteredTree;
 }
@@ -54,6 +59,19 @@
 
 - (void) enable {
   enabled = YES;
+}
+
+
+- (NSDictionary *)filterProgressInfo {
+  NSDictionary  *dict;
+
+  [taskLock lock];
+  // The "taskLock" ensures that when treeFilter is not nil, the object will
+  // always be valid when it is used (i.e. it won't be deallocated).
+  dict = [treeFilter treeFilterProgressInfo];
+  [taskLock unlock];
+  
+  return dict;
 }
 
 @end

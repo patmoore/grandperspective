@@ -1,25 +1,33 @@
 #import "FilterProgressPanelControl.h"
 
+#import "FilterTaskExecutor.h"
 #import "FilterTaskInput.h"
 #import "TreeContext.h"
 
 
 @implementation FilterProgressPanelControl
 
-- (void) windowDidLoad {
-  [super windowDidLoad];
-  
-  [[self window] setTitle: NSLocalizedString( @"Filtering in progress",
-                                              @"Title of progress panel." )];
+- (NSString *)windowTitle {
+  return NSLocalizedString( @"Filtering in progress",
+                            @"Title of progress panel." );
 }
 
-- (void) initProgressInfoForTaskWithInput: (id) taskInput {
-  NSString  *format = NSLocalizedString( 
-                        @"Filtering %@", 
-                        @"Message in progress panel while filtering" );
-  NSString  *path = [[[taskInput oldContext] scanTree] path];
+- (NSString *)progressDetailsFormat {
+  return NSLocalizedString( @"Filtering %@", 
+                            @"Message in progress panel while filtering" );
+}
 
-  [progressDetails setStringValue: [NSString stringWithFormat: format, path]];
+- (NSString *)progressSummaryFormat {
+  return NSLocalizedString( @"%d folders filtered", 
+                            @"Message in progress panel while filtering" );
+}
+
+- (NSString *)pathFromTaskInput: (id) taskInput {
+  return [[[taskInput oldContext] scanTree] path];
+}
+
+- (NSDictionary *)progressInfo {
+  return  [((FilterTaskExecutor *)taskExecutor) filterProgressInfo];
 }
 
 @end

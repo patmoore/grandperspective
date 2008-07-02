@@ -29,6 +29,9 @@
     treeBalancer = [[TreeBalancer alloc] init];
     
     abort = NO;
+    
+    statsLock = [[NSLock alloc] init];
+    currentDirectory = nil;
 
     tmpDirItems = nil;
     tmpFileItems = nil;
@@ -40,6 +43,9 @@
 - (void) dealloc {
   [treeGuide release];
   [treeBalancer release];
+
+  [statsLock release];
+  [currentDirectory release];
   
   [super dealloc];
 }
@@ -47,6 +53,12 @@
 - (TreeContext *)filterTree: (TreeContext *)oldTree {
   TreeContext  *filterResult = 
     [oldTree contextAfterFiltering: [treeGuide fileItemTest]];
+
+  [statsLock lock];
+  numFoldersProcessed = 0;
+  [currentDirectory release];
+  currentDirectory = nil;
+  [statsLock unlock];
   
   [self filterItemTree: [oldTree scanTree] into: [filterResult scanTree]];
           
@@ -57,6 +69,22 @@
 
 - (void) abort {
   abort = YES;
+}
+
+
+- (NSDictionary *) treeFilterProgressInfo {
+  NSDictionary  *dict;
+
+  [statsLock lock];
+  dict = [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInt: numFoldersProcessed],
+            NumFoldersProcessedKey,
+            [currentDirectory path],
+            CurrentFolderPathKey,
+            nil];
+  [statsLock unlock];
+
+  return dict;
 }
 
 @end
@@ -70,6 +98,11 @@
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
   
   [treeGuide descendIntoDirectory: newDir];
+
+  [statsLock lock];
+  [currentDirectory release];
+  currentDirectory = [newDir retain];
+  [statsLock unlock];
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
           directoryItems: dirs fileItems: files];
@@ -108,6 +141,10 @@
   }
   
   [treeGuide emergedFromDirectory: newDir];
+  
+  [statsLock lock];
+  numFoldersProcessed++;
+  [statsLock unlock];
 
   [dirs release];
   [files release];
