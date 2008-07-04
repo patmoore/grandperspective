@@ -189,6 +189,8 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   }
   
   if (treeImage!=nil && !NSEqualSizes([treeImage size], [self bounds].size)) {
+    // Discard the existing image.
+    [treeImage release];
     treeImage = nil;
   }
 
