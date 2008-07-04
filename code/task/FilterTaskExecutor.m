@@ -38,9 +38,13 @@
   [taskLock lock];
   treeFilter = [[TreeFilter alloc] initWithFilteredTreeGuide: treeGuide];
   [taskLock unlock];
+    
+  TreeContext  *oldContext = [filterInput oldContext];
+  [oldContext obtainReadLock];
 
-  TreeContext  *filteredTree = 
-    [treeFilter filterTree: [filterInput oldContext]];
+  TreeContext  *filteredTree = [treeFilter filterTree: oldContext];
+                         
+  [oldContext releaseReadLock];
   
   [taskLock lock];
   [treeFilter release];
