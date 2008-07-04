@@ -192,6 +192,9 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     // Discard the existing image.
     [treeImage release];
     treeImage = nil;
+    
+    [[NSColor blackColor] set];	 
+    NSRectFill([self bounds]);
   }
 
   if (treeImage==nil) {
