@@ -1,5 +1,6 @@
 #import "TreeFilter.h"
 
+#import "TreeConstants.h"
 #import "PlainFileItem.h"
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
@@ -93,8 +94,10 @@
 
 - (void) filterItemTree: (DirectoryItem *)oldDir 
            into: (DirectoryItem *)newDir {
-  NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 64];
-  NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 512]; 
+  NSMutableArray  *dirs = 
+    [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
+  NSMutableArray  *files = 
+    [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
   
   [treeGuide descendIntoDirectory: newDir];
 

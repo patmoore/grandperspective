@@ -1,5 +1,6 @@
 #import "TreeBuilder.h"
 
+#import "TreeConstants.h"
 #import "CompoundItem.h"
 #import "DirectoryItem.h"
 #import "PlainFileItem.h"
@@ -303,9 +304,12 @@ typedef struct  {
   [directoryStack addObject: dirItem];
   [statsLock unlock];
 
-  NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
-  NSMutableArray  *dirs = [[NSMutableArray alloc] initWithCapacity: 32];
-  NSMutableArray  *dirFileRefs = [[NSMutableArray alloc] initWithCapacity: 32];
+  NSMutableArray  *files = 
+    [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
+  NSMutableArray  *dirs = 
+    [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
+  NSMutableArray  *dirFileRefs = 
+    [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
   
