@@ -31,7 +31,7 @@
     abort = NO;
     
     statsLock = [[NSLock alloc] init];
-    currentDirectory = nil;
+    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
 
     tmpDirItems = nil;
     tmpFileItems = nil;
@@ -45,7 +45,7 @@
   [treeBalancer release];
 
   [statsLock release];
-  [currentDirectory release];
+  [directoryStack release];
   
   [super dealloc];
 }
@@ -56,8 +56,7 @@
 
   [statsLock lock];
   numFoldersProcessed = 0;
-  [currentDirectory release];
-  currentDirectory = nil;
+  [directoryStack removeAllObjects];
   [statsLock unlock];
   
   [self filterItemTree: [oldTree scanTree] into: [filterResult scanTree]];
@@ -79,7 +78,7 @@
   dict = [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithInt: numFoldersProcessed],
             NumFoldersProcessedKey,
-            [currentDirectory path],
+            [[directoryStack lastObject] path],
             CurrentFolderPathKey,
             nil];
   [statsLock unlock];
@@ -100,8 +99,7 @@
   [treeGuide descendIntoDirectory: newDir];
 
   [statsLock lock];
-  [currentDirectory release];
-  currentDirectory = [newDir retain];
+  [directoryStack addObject: newDir];
   [statsLock unlock];
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
@@ -143,6 +141,8 @@
   [treeGuide emergedFromDirectory: newDir];
   
   [statsLock lock];
+  NSAssert([directoryStack lastObject] == newDir, @"Inconsistent stack.");
+  [directoryStack removeLastObject];
   numFoldersProcessed++;
   [statsLock unlock];
 

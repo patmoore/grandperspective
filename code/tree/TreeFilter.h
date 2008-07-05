@@ -25,8 +25,9 @@ extern NSString  *CurrentFolderPathKey;
   // The number of folders that have been filtered so far.
   int  numFoldersProcessed;
    
-  // The directory that is currently being filtered.
-  DirectoryItem  *currentDirectory;
+  // The stack of directories that is currently being processed. The last
+  // item is the directory that is currently being filtered.
+  NSMutableArray  *directoryStack;
 
 @private
   NSMutableArray*  tmpDirItems;

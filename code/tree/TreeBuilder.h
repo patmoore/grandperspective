@@ -49,8 +49,9 @@ extern NSString  *CurrentFolderPathKey;
   // insufficient permissions.
   int  numInaccessibleFolders;
   
-  // The directory that is currently being scanned.
-  DirectoryItem  *currentDirectory;
+  // The stack of directories that is currently being processed. The last
+  // item is the directory that is currently being scanned.
+  NSMutableArray  *directoryStack;
   
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;

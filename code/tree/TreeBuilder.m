@@ -110,7 +110,7 @@ typedef struct  {
     abort = NO;
     
     statsLock = [[NSLock alloc] init];
-    currentDirectory = nil;
+    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
     
     pathBuffer = NULL;
     pathBufferLen = 0;
@@ -139,7 +139,7 @@ typedef struct  {
   [fileSizeMeasure release];
   
   [statsLock release];
-  [currentDirectory release];
+  [directoryStack release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -243,8 +243,7 @@ typedef struct  {
   [statsLock lock];
   numFoldersProcessed = 0;
   numInaccessibleFolders = 0;
-  [currentDirectory release];
-  currentDirectory = nil;
+  [directoryStack removeAllObjects];
   [statsLock unlock];
       
   if (! [self buildTreeForDirectory: [scanResult scanTree] fileRef: &pathRef
@@ -271,7 +270,7 @@ typedef struct  {
             NumFoldersProcessedKey,
             [NSNumber numberWithInt: numInaccessibleFolders],
             NumInaccessibleFoldersKey,
-            [currentDirectory path],
+            [[directoryStack lastObject] path],
             CurrentFolderPathKey,
             nil];
   [statsLock unlock];
@@ -301,8 +300,7 @@ typedef struct  {
   [treeGuide descendIntoDirectory: dirItem];
   
   [statsLock lock];
-  [currentDirectory release];
-  currentDirectory = [dirItem retain];
+  [directoryStack addObject: dirItem];
   [statsLock unlock];
 
   NSMutableArray  *files = [[NSMutableArray alloc] initWithCapacity: 128];
@@ -454,6 +452,8 @@ typedef struct  {
   [treeGuide emergedFromDirectory: dirItem];
     
   [statsLock lock];
+  NSAssert([directoryStack lastObject] == dirItem, @"Inconsistent stack.");
+  [directoryStack removeLastObject];
   numFoldersProcessed++;
   [statsLock unlock];
   
