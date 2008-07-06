@@ -120,13 +120,12 @@ enum {
     // Abort task 
     [executor disable];
   }
-  else if ([workLock condition] == BACKGROUND_THREAD_IDLE) {
+  else if ([workLock tryLockWhenCondition: BACKGROUND_THREAD_IDLE]) {
     // Notify the blocked thread (waiting on the BUSY condition)
-    [workLock lock];
     [workLock unlockWithCondition: BACKGROUND_THREAD_BUSY];
   }
   else {
-    NSAssert(NO, @"Unexpected state of workLock condition.");
+    NSAssert(NO, @"Unexpected state of workLock.");
   }
 
   [settingsLock unlock];
