@@ -33,6 +33,15 @@
 static int  nextFilterId = 1;
 
 
+@interface ModalityTerminator : NSObject {
+}
+
+- (void) abortModalAction: (NSNotification *)notification;
+- (void) stopModalAction: (NSNotification *)notification;
+
+@end
+
+
 @interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
 }
@@ -60,9 +69,6 @@ static int  nextFilterId = 1;
 
 
 @interface MainMenuControl (PrivateMethods)
-
-- (void) editFilterWindowCancelAction:(NSNotification*)notification;
-- (void) editFilterWindowOkAction:(NSNotification*)notification;
 
 - (void) scanFolderUsingFilter: (BOOL) useFilter;
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
@@ -143,7 +149,6 @@ static int  nextFilterId = 1;
   [filterTaskManager dispose];
   [filterTaskManager release];
   
-  [editFilterWindowControl release];
   [preferencesPanelControl release];
   
   [super dealloc];
@@ -288,15 +293,6 @@ static int  nextFilterId = 1;
 
 @implementation MainMenuControl (PrivateMethods)
 
-- (void) editFilterWindowCancelAction:(NSNotification*)notification {
-  [NSApp abortModal];
-}
-
-- (void) editFilterWindowOkAction:(NSNotification*)notification {
-  [NSApp stopModal];
-}
-
-
 - (void) scanFolderUsingFilter: (BOOL) useFilter {
   NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
   [openPanel setCanChooseFiles: NO];
@@ -359,27 +355,30 @@ static int  nextFilterId = 1;
 
 
 - (NSObject <FileItemTest> *)getFilter: (NSObject <FileItemTest> *)initialTest {
-  if (editFilterWindowControl == nil) {
-    // Lazily create it
-    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
-    
-    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
-          name: CancelPerformedEvent object: editFilterWindowControl];
-    [nc addObserver:self selector: @selector(editFilterWindowCancelAction:)
-          name: ClosePerformedEvent object: editFilterWindowControl];
-          // Closing a window can be considered the same as cancelling.
-    [nc addObserver:self selector: @selector(editFilterWindowOkAction:)
-          name: OkPerformedEvent object: editFilterWindowControl];
+  EditFilterWindowControl  *editFilterWindowControl = 
+    [[[EditFilterWindowControl alloc] init] autorelease];
 
-    [[editFilterWindowControl window] setTitle: 
-        NSLocalizedString( @"Apply filter", @"Window title" ) ];
-
-    [editFilterWindowControl removeApplyButton];
-  }  
+  [[editFilterWindowControl window] setTitle: 
+      NSLocalizedString( @"Apply filter", @"Window title" ) ];
+  [editFilterWindowControl removeApplyButton];
   [editFilterWindowControl representFileItemTest: initialTest];
-  
+
+  ModalityTerminator  *stopModal = 
+    [[[ModalityTerminator alloc] init] autorelease];
+    
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver: stopModal selector: @selector(abortModalAction:)
+        name: CancelPerformedEvent object: editFilterWindowControl];
+  [nc addObserver: stopModal selector: @selector(abortModalAction:)
+        name: ClosePerformedEvent object: editFilterWindowControl];
+        // Closing a window can be considered the same as cancelling.
+  [nc addObserver: stopModal selector: @selector(stopModalAction:)
+        name: OkPerformedEvent object: editFilterWindowControl];
+
   int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
+
+  [nc removeObserver: stopModal];
+  
   [[editFilterWindowControl window] close];
 
   if (status ==  NSRunAbortedResponse) {
@@ -414,6 +413,19 @@ static int  nextFilterId = 1;
 }
 
 @end // @implementation MainMenuControl (PrivateMethods)
+
+
+@implementation ModalityTerminator
+
+- (void) abortModalAction: (NSNotification *)notification {
+  [NSApp abortModal];
+}
+
+- (void) stopModalAction: (NSNotification *)notification {
+  [NSApp stopModal];
+}
+
+@end // @implementation ModalityTerminator
 
 
 @implementation FreshDirViewWindowCreator

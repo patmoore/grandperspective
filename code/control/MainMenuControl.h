@@ -11,7 +11,6 @@
   VisibleAsynchronousTaskManager  *scanTaskManager;
   VisibleAsynchronousTaskManager  *filterTaskManager;
   
-  EditFilterWindowControl  *editFilterWindowControl;
   PreferencesPanelControl  *preferencesPanelControl;
 }
 
