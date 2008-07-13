@@ -57,6 +57,7 @@
 		AA7DEDB60D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */; };
 		AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA7DEF4A0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib */; };
 		AA7DF3240D79BEA80057F5F8 /* GradientRectangleDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */; };
+		AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837DBE0E29ECE5005384E0 /* TreeWriter.m */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
 		AA8A38080D7B437300DB872C /* FileItemMappingCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FD0D7B437300DB872C /* FileItemMappingCollection.m */; };
 		AA8A380A0D7B437300DB872C /* FileItemMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FF0D7B437300DB872C /* FileItemMappingScheme.m */; };
@@ -200,6 +201,8 @@
 		AA7DEF480D7175D50057F5F8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
 		AA7DF3210D79BEA80057F5F8 /* GradientRectangleDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientRectangleDrawer.h; path = view/GradientRectangleDrawer.h; sourceTree = "<group>"; };
 		AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GradientRectangleDrawer.m; path = view/GradientRectangleDrawer.m; sourceTree = "<group>"; };
+		AA837DBD0E29ECE5005384E0 /* TreeWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeWriter.h; path = tree/TreeWriter.h; sourceTree = "<group>"; };
+		AA837DBE0E29ECE5005384E0 /* TreeWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeWriter.m; path = tree/TreeWriter.m; sourceTree = "<group>"; };
 		AA84171A088E5BD40074E92A /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
 		AA8877E80D0C0E3500F52571 /* TreeContext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeContext.h; path = tree/TreeContext.h; sourceTree = "<group>"; };
 		AA8877E90D0C0E3500F52571 /* TreeContext.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TreeContext.m; path = tree/TreeContext.m; sourceTree = "<group>"; };
@@ -474,6 +477,8 @@
 				AA6013200A5AFCC500DEBCB8 /* TreeFilter.m */,
 				AA6013230A5AFCC500DEBCB8 /* TreeBuilder.h */,
 				AA6013220A5AFCC500DEBCB8 /* TreeBuilder.m */,
+				AA837DBD0E29ECE5005384E0 /* TreeWriter.h */,
+				AA837DBE0E29ECE5005384E0 /* TreeWriter.m */,
 				AA6013240A5AFCC500DEBCB8 /* TreeBalancer.h */,
 				AA60131C0A5AFCC500DEBCB8 /* TreeBalancer.m */,
 				AA987F5F0DF16D0300A6EA33 /* FilteredTreeGuide.h */,
@@ -774,6 +779,7 @@
 				AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */,
 				AA636B1F0E1A63BA0073873E /* ScanProgressPanelControl.m in Sources */,
 				AA636C900E1AC5200073873E /* FilterProgressPanelControl.m in Sources */,
+				AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

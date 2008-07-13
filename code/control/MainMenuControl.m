@@ -2,6 +2,8 @@
 
 #import "DirectoryItem.h"
 
+#import "ControlConstants.h"
+
 #import "DirectoryViewControl.h"
 #import "DirectoryViewControlSettings.h"
 #import "SaveImageDialogControl.h"
@@ -11,6 +13,7 @@
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
 #import "TreeFilter.h"
+#import "TreeWriter.h"
 #import "TreeContext.h"
 
 #import "WindowManager.h"
@@ -173,7 +176,8 @@ static int  nextFilterId = 1;
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
   
-  if ( [anItem action]==@selector(saveDirectoryViewImage:) ||
+  if ( [anItem action]==@selector(saveScanData:) ||
+       [anItem action]==@selector(saveDirectoryViewImage:) ||
        [anItem action]==@selector(rescanDirectoryView:) ||
        [anItem action]==@selector(filterDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
@@ -266,6 +270,40 @@ static int  nextFilterId = 1;
 
 - (IBAction) twinDirectoryView:(id)sender {
   [self duplicateCurrentWindowSharingPath:YES];
+}
+
+
+- (IBAction) saveScanData: (id) sender {
+  DirectoryViewControl  *dirViewControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+    
+  NSSavePanel  *savePanel = [NSSavePanel savePanel];  
+  [savePanel setRequiredFileType: @"xml"];
+  [savePanel setTitle: 
+     NSLocalizedString( @"Save scan data", @"Title of save panel") ];
+  
+  if ([savePanel runModal] == NSOKButton) {
+    NSString  *filename = [savePanel filename];
+    
+    TreeWriter  *treeWriter = [[[TreeWriter alloc] init] autorelease];
+
+    if (! [treeWriter writeTree: [dirViewControl treeContext] 
+                        toFile: filename]) {
+      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+      [alert addButtonWithTitle: OK_BUTTON_TITLE];
+      [alert setMessageText: 
+        NSLocalizedString( @"Failed to save the scan data.", 
+                           @"Alert message" )];
+
+      [alert runModal];
+    }
+  }
+}
+
+
+- (IBAction) loadScanData: (id) sender {
+  NSLog(@"loadScanData not yet implemented.");
 }
 
 

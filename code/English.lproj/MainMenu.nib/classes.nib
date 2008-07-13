@@ -21,9 +21,13 @@
 				<string>id</string>
 				<key>filterDirectoryView</key>
 				<string>id</string>
+				<key>loadScanData</key>
+				<string>id</string>
 				<key>rescanDirectoryView</key>
 				<string>id</string>
 				<key>saveDirectoryViewImage</key>
+				<string>id</string>
+				<key>saveScanData</key>
 				<string>id</string>
 				<key>scanDirectoryView</key>
 				<string>id</string>

@@ -21,6 +21,9 @@
 - (IBAction) duplicateDirectoryView: (id) sender;
 - (IBAction) twinDirectoryView: (id) sender;
 
+- (IBAction) saveScanData: (id) sender;
+- (IBAction) loadScanData: (id) sender;
+
 - (IBAction) saveDirectoryViewImage: (id) sender;
 
 - (IBAction) editPreferences: (id) sender;
