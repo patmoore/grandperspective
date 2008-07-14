@@ -91,6 +91,7 @@ NSString *escapedAttributeValue(NSString *s) {
     dataBuffer = malloc(BUFFER_SIZE);
 
     abort = NO;
+    error = NO;
   }
   return self;
 }
@@ -117,14 +118,14 @@ NSString *escapedAttributeValue(NSString *s) {
   [self appendString: @"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
   [self appendScanDumpElement: tree];
   
-  if (!abort && dataBufferPos > 0) {
+  if (!error && dataBufferPos > 0) {
     // Write remaining characters in buffer
     unsigned  numWritten = fwrite( dataBuffer, 1, dataBufferPos, file );
     
     if (numWritten != dataBufferPos) {
       NSLog(@"Failed to write last data: %d bytes written out of %d.", 
                 numWritten, dataBufferPos);
-      abort = YES;
+      error = YES;
     }
   }
   
@@ -133,7 +134,7 @@ NSString *escapedAttributeValue(NSString *s) {
   
   NSLog(@"Dump completed");
   
-  return !abort;
+  return !(abort || error);
 }
 
 - (void) abort {
@@ -243,7 +244,11 @@ NSString *escapedAttributeValue(NSString *s) {
 
 
 - (void) appendString: (NSString *)s {
-  if (abort) {
+  if (error) {
+    // Don't write anything when an error has occurred. 
+    //
+    // Note: Still keep writing if "only" the abort flag is set. This way, an
+    // external "abort" of the write operation still results in valid XML.
     return;
   }
 
@@ -267,9 +272,10 @@ NSString *escapedAttributeValue(NSString *s) {
       
       if (numWritten != BUFFER_SIZE) {
         NSLog(@"Failed to write entire buffer, %d bytes written", numWritten);
-
+        error = YES;
         abort = YES;
-        return;
+        
+        return; // Do not attempt anymore writes to file.
       }
       
       dataBufferPos = 0;
