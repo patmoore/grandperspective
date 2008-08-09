@@ -613,6 +613,8 @@ NSError  *createNSError(NSString *details) {
                                     from: attribs defaultValue: nil];
     ITEM_SIZE  volumeSize = [self getItemSizeAttributeValue: @"volumeSize" 
                                     from: attribs defaultValue: nil];
+    ITEM_SIZE  freeSpace = [self getItemSizeAttributeValue: @"freeSpace" 
+                                   from: attribs defaultValue: @"0"];
     NSDate  *scanTime = [self getDateAttributeValue: @"scanTime" 
                                 from: attribs defaultValue: nil];
     NSString  *sizeMeasure = [self getStringAttributeValue: @"fileSizeMeasure" 
@@ -635,7 +637,7 @@ NSError  *createNSError(NSString *details) {
                       initWithVolumePath: volumePath
                       fileSizeMeasure: sizeMeasure
                       volumeSize: volumeSize 
-                      freeSpace: 0
+                      freeSpace: freeSpace
                       filter: nil
                       scanTime: scanTime];
     // TODO: also parse freeSpace (also need to write it).

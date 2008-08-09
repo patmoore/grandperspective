@@ -170,6 +170,8 @@ NSString *escapedAttributeValue(NSString *s) {
   [buf appendFormat: @" volumePath=\"%@\"", 
                        escapedAttributeValue([[tree volumeTree] name])];
   [buf appendFormat: @" volumeSize=\"%qu\"", [tree volumeSize]];
+  [buf appendFormat: @" freeSpace=\"%qu\"", ( [tree freeSpace] + 
+                                              [tree freedSpace] )];
   [buf appendFormat: @" scanTime=\"%@\"", [tree scanTime]];
   [buf appendFormat: @" fileSizeMeasure=\"%@\"", [tree fileSizeMeasure]];
   [buf appendString: @">\n"];
