@@ -149,7 +149,41 @@ NSString  *AttributeNameKey = @"name";
 @end // @interface FileElementHandler
 
 
+/* Convenience function for creating an NSError object.
+ *
+ * Note: The returned object is not auto-released.
+ */
+NSError  *createNSError(NSString *details) {
+  return
+    [[NSError alloc] 
+        initWithDomain: @"Application"
+          code: -1 
+          userInfo: [NSDictionary dictionaryWithObject: details
+                                    forKey: NSLocalizedDescriptionKey]];
+}
+
+
 @implementation TreeReader
+
+- (id) init {
+  if (self = [super init]) {
+    parser = nil;
+    tree = nil;
+    error = nil;
+    abort = NO;
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  NSAssert(parser == nil, @"parser should be nil.");
+  NSAssert(tree == nil, @"tree should be nil.");
+  
+  [error release];
+  
+  [super dealloc];
+}
 
 - (TreeContext *) readTreeFromFile: (NSString *)path {
   NSAssert(parser == nil, @"Invalid state. Already reading?");
@@ -165,12 +199,16 @@ NSString  *AttributeNameKey = @"name";
   parser = [[NSXMLParser alloc] initWithData: data];
   [parser setDelegate: self];
   
+  abort = NO;
+  [error release];
+  error = nil;
+  
   [parser parse];
   
   [parser release];
   parser = nil;
 
-  TreeContext  *retVal = (error || abort) ? nil : tree;
+  TreeContext  *retVal = (error!=nil || abort) ? nil : tree;
   [tree autorelease]; // Not releasing, as "retVal" should remain valid.
   tree = nil;
   
@@ -189,6 +227,14 @@ NSString  *AttributeNameKey = @"name";
 }
 
 
+- (BOOL) aborted {
+  return (error != nil) && abort;
+}
+
+- (NSError *) error {
+  return error;
+}
+
 //----------------------------------------------------------------------------
 // NSXMLParser delegate methods
 
@@ -197,22 +243,33 @@ NSString  *AttributeNameKey = @"name";
            namespaceURI: (NSString *)namespaceURI 
            qualifiedName: (NSString *)qName 
            attributes: (NSDictionary *)attribs {
-  if (! [elementName isEqualToString: @"GrandPerspectiveScanDump"]) {
-    [parser abortParsing];
-    error = YES;
-
-    return;
+  if (tree != nil) {
+    // Already finished handling one GrandPerspectiveScanDump element.
+    
+    error = createNSError( 
+              NSLocalizedString( @"Encountered more than one root element.",
+                                 @"Parse error." ));
   }
-
-  [[[ScanDumpElementHandler alloc] 
-       initWithElement: elementName reader: self callback: self
-         onSuccess: @selector(handler:finishedParsingScanDumpElement:)]
-           handleAttributes: attribs];
+  else if (! [elementName isEqualToString: @"GrandPerspectiveScanDump"]) {
+    error = createNSError( 
+              NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
+                                 @"Parse error." ));
+  }
+  
+  if (error != nil) {
+    [parser abortParsing];
+  }
+  else {
+    [[[ScanDumpElementHandler alloc] 
+         initWithElement: elementName reader: self callback: self
+           onSuccess: @selector(handler:finishedParsingScanDumpElement:)]
+             handleAttributes: attribs];
+  }
 }
 
 - (void) parser: (NSXMLParser *)parser 
            parseErrorOccurred: (NSError *)parseError {
-  error = YES;
+  error = [parseError retain];
 }
 
 
@@ -223,7 +280,7 @@ NSString  *AttributeNameKey = @"name";
            failedParsingElement: (NSError *)parseError {
   [handler release];
   
-  error = YES;
+  error = [parseError retain];
 }
 
 - (void) handler: (ElementHandler *)handler
@@ -256,6 +313,7 @@ NSString  *AttributeNameKey = @"name";
          reader: (TreeReader *)readerVal
          callback: (id) callbackVal
          onSuccess: (SEL) successSelectorVal {
+  NSLog(@"ElementHandler init: %@", elementNameVal);
   if (self = [super init]) {
     elementName = [elementNameVal retain];
     
@@ -365,13 +423,7 @@ NSString  *AttributeNameKey = @"name";
 
   [[reader parser] abortParsing];
 
-  // TODO: Use constants instead of literals.  
-  NSError  *error = 
-    [[[NSError alloc] initWithDomain: @"Application"
-                        code: -1 
-                        userInfo: [NSDictionary dictionaryWithObject: details
-                                                  forKey: @"message"]]
-         autorelease];
+  NSError  *error = [createNSError(details) autorelease];
   
   [callback handler: self failedParsingElement: error];
 }
@@ -508,7 +560,7 @@ NSString  *AttributeNameKey = @"name";
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"ScanInfo"]) {
     if (tree != nil) {
-      [self handlerError: @"Cannot have multiple ScanInfo elements."];  
+      [self handlerError: @"Encountered more than one ScanInfo element."];  
     }
     else {
       [[[ScanInfoElementHandler alloc] 
@@ -600,7 +652,7 @@ NSString  *AttributeNameKey = @"name";
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"Folder"]) {
     if ([[treeContext scanTree] getContents] != nil) {
-      [self handlerError: @"Can only have one root Folder element."];  
+      [self handlerError: @"Encountered more than one root Folder element."];  
     }
     else {
       [[[FolderElementHandler alloc] 
@@ -784,7 +836,7 @@ NSString  *AttributeNameKey = @"name";
       [typeInventory uniformTypeForExtension: [name pathExtension]];
 
     fileItem = 
-      [[FileItem alloc]
+      [[PlainFileItem alloc]
           initWithName: name parent: parentItem size: size
             type: fileType flags: flags];
   NS_HANDLER

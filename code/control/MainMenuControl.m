@@ -14,6 +14,7 @@
 #import "ItemPathModelView.h"
 #import "TreeFilter.h"
 #import "TreeWriter.h"
+#import "TreeReader.h"
 #import "TreeContext.h"
 
 #import "WindowManager.h"
@@ -303,7 +304,42 @@ static int  nextFilterId = 1;
 
 
 - (IBAction) loadScanData: (id) sender {
-  NSLog(@"loadScanData not yet implemented.");
+  DirectoryViewControl  *dirViewControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+    
+  NSOpenPanel  *openPanel = [NSOpenPanel openPanel];  
+  [openPanel setRequiredFileType: @"xml"];
+  [openPanel setTitle: 
+     NSLocalizedString( @"Load scan data", @"Title of load panel") ];
+  
+  if ([openPanel runModal] == NSOKButton) {
+    NSString  *filename = [openPanel filename];
+    
+    TreeReader  *treeReader = [[[TreeReader alloc] init] autorelease];
+
+    TreeContext  *treeContext = [treeReader readTreeFromFile: filename];
+      
+    if (treeContext != nil) {
+      FreshDirViewWindowCreator  *windowCreator =
+        [[[FreshDirViewWindowCreator alloc] 
+             initWithWindowManager: windowManager] autorelease];
+      
+      [windowCreator createWindowForTree: treeContext];
+    }
+    else if (! [treeReader aborted]) {
+      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+      [alert addButtonWithTitle: OK_BUTTON_TITLE];
+      [alert setMessageText: 
+        NSLocalizedString( @"Failed to load the scan data.", 
+                           @"Alert message" )];
+      if ([treeReader error] != nil) {
+        [alert setInformativeText: [[treeReader error] localizedDescription]];
+      }
+
+      [alert runModal];
+    }
+  }
 }
 
 
