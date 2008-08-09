@@ -12,7 +12,6 @@
 
 #import "UniformTypeInventory.h"
 
-NSString  *AttributeParseException = @"AttributeParseException";
 NSString  *AttributeNameKey = @"name";
 
 
@@ -20,6 +19,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (BOOL) isAborted;
 - (NSXMLParser *) parser;
+
+- (void) setParseError: (NSError *)error;
 
 @end
 
@@ -149,17 +150,30 @@ NSString  *AttributeNameKey = @"name";
 @end // @interface FileElementHandler
 
 
+@interface AttributeParseException : NSException {
+}
+
+- (id) initWithAttributeName: (NSString *)attribName 
+         reason: (NSString *)reason;
+         
++ (id) exceptionWithAttributeName: (NSString *)attribName 
+         reason: (NSString *)reason;
+
+@end // @interface AttributeParseException
+
+
 /* Convenience function for creating an NSError object.
  *
- * Note: The returned object is not auto-released.
+ * Note: The returned object is auto-released.
  */
 NSError  *createNSError(NSString *details) {
   return
-    [[NSError alloc] 
-        initWithDomain: @"Application"
-          code: -1 
-          userInfo: [NSDictionary dictionaryWithObject: details
-                                    forKey: NSLocalizedDescriptionKey]];
+    [[[NSError alloc] 
+         initWithDomain: @"Application"
+           code: -1 
+           userInfo: [NSDictionary dictionaryWithObject: details
+                                     forKey: NSLocalizedDescriptionKey]]
+         autorelease];
 }
 
 
@@ -243,20 +257,22 @@ NSError  *createNSError(NSString *details) {
            namespaceURI: (NSString *)namespaceURI 
            qualifiedName: (NSString *)qName 
            attributes: (NSDictionary *)attribs {
+  NSError  *parseError = nil;
   if (tree != nil) {
-    // Already finished handling one GrandPerspectiveScanDump element.
-    
-    error = createNSError( 
-              NSLocalizedString( @"Encountered more than one root element.",
-                                 @"Parse error." ));
+    parseError = 
+      createNSError( 
+        NSLocalizedString( @"Encountered more than one root element.",
+                           @"Parse error" ));
   }
   else if (! [elementName isEqualToString: @"GrandPerspectiveScanDump"]) {
-    error = createNSError( 
-              NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
-                                 @"Parse error." ));
+    parseError = 
+      createNSError( 
+        NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
+                           @"Parse error" ));
   }
   
-  if (error != nil) {
+  if (parseError != nil) {
+    [self setParseError: parseError];
     [parser abortParsing];
   }
   else {
@@ -269,7 +285,7 @@ NSError  *createNSError(NSString *details) {
 
 - (void) parser: (NSXMLParser *)parser 
            parseErrorOccurred: (NSError *)parseError {
-  error = [parseError retain];
+  [self setParseError: parseError];
 }
 
 
@@ -278,20 +294,25 @@ NSError  *createNSError(NSString *details) {
 
 - (void) handler: (ElementHandler *)handler 
            failedParsingElement: (NSError *)parseError {
+  [parser setDelegate: self];
+  
+  [self setParseError: parseError];
+  
   [handler release];
   
-  error = [parseError retain];
+  [parser abortParsing];
 }
 
 - (void) handler: (ElementHandler *)handler
            finishedParsingScanDumpElement: (TreeContext *)treeVal {
-  [parser setDelegate: self];  
-  tree = [treeVal retain];
+  [parser setDelegate: self];
   
+  tree = [treeVal retain];
+    
   [handler release];
 }
 
-@end
+@end // @implementation TreeReader
 
 
 @implementation TreeReader (PrivateMethods) 
@@ -303,6 +324,22 @@ NSError  *createNSError(NSString *details) {
 - (NSXMLParser *) parser {
   return parser;
 }
+
+- (void) setParseError: (NSError *)parseError {
+  if ( error == nil // There is no error yet
+       && !abort    // ... and parsing has not been aborted (this also 
+                    // triggers an error, which should be ignored).
+     ) {
+    NSString  *format =
+      NSLocalizedString( @"Parse error (line %d): %@", @"Parse error" );
+      
+    error = [createNSError( [NSString stringWithFormat: format, 
+                                        [parser lineNumber],
+                                        [parseError localizedDescription]] )
+              retain];
+  }
+}
+
 
 @end // @implementation  TreeReader (PrivateMethods)
 
@@ -345,7 +382,9 @@ NSError  *createNSError(NSString *details) {
            qualifiedName: (NSString *)qName 
            attributes: (NSDictionary *)attribs {
   if ([reader isAborted]) {
-    [[reader parser] abortParsing];
+    NSError  *error = createNSError(NSLocalizedString( @"Parsing aborted", 
+                                                       @"Parse error" ));
+    [callback handler: self failedParsingElement: error];
   }
   else {
     [self handleChildElement: childElement attributes: attribs];
@@ -375,6 +414,8 @@ NSError  *createNSError(NSString *details) {
 
 - (void) handler: (ElementHandler *)handler 
            failedParsingElement: (NSError *)parseError {
+  [[reader parser] setDelegate: self];
+  
   [callback handler: self failedParsingElement: parseError];
 
   [handler release];  
@@ -421,17 +462,14 @@ NSError  *createNSError(NSString *details) {
 - (void) handlerError: (NSString *)details {
   NSLog(@"Encountered error: %@", details);
 
-  [[reader parser] abortParsing];
-
-  NSError  *error = [createNSError(details) autorelease];
-  
-  [callback handler: self failedParsingElement: error];
+  [callback handler: self failedParsingElement: createNSError(details)];
 }
 
 - (void) handlerAttributeParseError: (NSException *)ex {
   NSString  *details = 
     [NSString stringWithFormat:
-       NSLocalizedString(@"Error parsing %@ attribute: %@", @"Parse error"),
+       NSLocalizedString( @"Error parsing \"%@\" attribute: %@", 
+                          @"Parse error" ),
        [[ex userInfo] objectForKey: AttributeNameKey], [ex reason]];
        
   [self handlerError: details];
@@ -456,12 +494,10 @@ NSError  *createNSError(NSString *details) {
 
   NSString  *reason = 
     NSLocalizedString(@"Attribute not found.", @"Parse error");
-  NSDictionary  *userInfo = 
-    [NSDictionary dictionaryWithObject: name forKey: AttributeNameKey];
   NSException  *ex = 
-    [[[NSException alloc] initWithName: AttributeParseException
-                            reason: reason userInfo: userInfo] autorelease];
-  [ex raise];
+    [[[AttributeParseException alloc] initWithAttributeName: name
+                                          reason: reason] autorelease];
+  @throw ex;
 }
 
 - (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
@@ -479,12 +515,9 @@ NSError  *createNSError(NSString *details) {
           && signedValue >= 0 ) ) {
     NSString  *reason = 
       NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
-    NSDictionary  *userInfo = 
-      [NSDictionary dictionaryWithObject: name forKey: AttributeNameKey];
-    NSException  *ex = 
-      [[[NSException alloc] initWithName: AttributeParseException
-                              reason: reason userInfo: userInfo] autorelease];
-    [ex raise];
+    NSException  *ex = [AttributeParseException 
+                          exceptionWithAttributeName: name reason: reason];
+    @throw ex;
   }
 
   // Note: NSScanner cannot read "unsigned long long" values, only "signed long 
@@ -528,12 +561,9 @@ NSError  *createNSError(NSString *details) {
           && [scanner isAtEnd] ) ) {
     NSString  *reason = 
       NSLocalizedString(@"Expected integer value.", @"Parse error");
-    NSDictionary  *userInfo = 
-      [NSDictionary dictionaryWithObject: name forKey: AttributeNameKey];
-    NSException  *ex = 
-      [[[NSException alloc] initWithName: AttributeParseException
-                              reason: reason userInfo: userInfo] autorelease];
-    [ex raise];
+    NSException  *ex = [AttributeParseException 
+                          exceptionWithAttributeName: name reason: reason];
+    @throw ex;
   }
   
   return intValue;
@@ -557,7 +587,6 @@ NSError  *createNSError(NSString *details) {
 }
 
 
-
 - (void) handleAttributes: (NSDictionary *)attribs {
   // Not doing anything with "appVersion" and "formatVersion" attributes.
   // These can be ignored as they won't affect the parsing anyway (there
@@ -571,7 +600,9 @@ NSError  *createNSError(NSString *details) {
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"ScanInfo"]) {
     if (tree != nil) {
-      [self handlerError: @"Encountered more than one ScanInfo element."];  
+      [self handlerError: 
+              NSLocalizedString(@"Encountered more than one ScanInfo element.",
+                                @"Parse error")];  
     }
     else {
       [[[ScanInfoElementHandler alloc] 
@@ -619,7 +650,7 @@ NSError  *createNSError(NSString *details) {
 - (void) handleAttributes: (NSDictionary *)attribs {
   NSAssert(treeContext == nil, @"treeContext not nil.");
   
-  NS_DURING
+  @try {
     NSString  *volumePath = [self getStringAttributeValue: @"volumePath" 
                                     from: attribs defaultValue: nil];
     ITEM_SIZE  volumeSize = [self getItemSizeAttributeValue: @"volumeSize" 
@@ -635,13 +666,10 @@ NSError  *createNSError(NSString *details) {
             [sizeMeasure isEqualToString: PhysicalFileSize] ) ) {
       NSString  *reason = 
         NSLocalizedString(@"Unrecognized value.", @"Parse error");
-      NSDictionary  *userInfo = 
-        [NSDictionary dictionaryWithObject: @"fileSizeMeasure" 
-                        forKey: AttributeNameKey];
       NSException  *ex = 
-        [[[NSException alloc] initWithName: AttributeParseException
-                                reason: reason userInfo: userInfo] autorelease];
-      [ex raise];
+        [AttributeParseException exceptionWithAttributeName: @"fileSizeMeasure" 
+                                   reason: reason];
+      @throw ex;
     }
   
     treeContext = [[TreeContext alloc]  
@@ -651,19 +679,19 @@ NSError  *createNSError(NSString *details) {
                       freeSpace: freeSpace
                       filter: nil
                       scanTime: scanTime];
-    // TODO: also parse freeSpace (also need to write it).
-  NS_HANDLER
-    if ([[localException name] isEqualToString: AttributeParseException]) {
-      [self handlerAttributeParseError: localException];
-    }
-  NS_ENDHANDLER
+  }
+  @catch (AttributeParseException *ex) {
+    [self handlerAttributeParseError: ex];
+  }
 }
   
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"Folder"]) {
     if ([[treeContext scanTree] getContents] != nil) {
-      [self handlerError: @"Encountered more than one root Folder element."];  
+      [self handlerError: 
+              NSLocalizedString( @"Encountered more than one root folder.",
+                                 @"Parse error" )];
     }
     else {
       [[[FolderElementHandler alloc] 
@@ -732,7 +760,7 @@ NSError  *createNSError(NSString *details) {
 
 
 - (void) handleAttributes: (NSDictionary *)attribs {
-  NS_DURING
+  @try {
     NSString  *name = [self getStringAttributeValue: @"name" 
                               from: attribs defaultValue: nil];
     int  flags = [self getIntegerAttributeValue: @"flags"
@@ -741,11 +769,10 @@ NSError  *createNSError(NSString *details) {
     dirItem = 
       [[DirectoryItem alloc]
           initWithName: name parent: parentItem flags: flags];
-  NS_HANDLER
-    if ([[localException name] isEqualToString: AttributeParseException]) {
-      [self handlerAttributeParseError: localException];
-    }
-  NS_ENDHANDLER    
+  }
+  @catch (AttributeParseException *ex) {
+    [self handlerAttributeParseError: ex];
+  }
 }
 
 - (void) handleChildElement: (NSString *)childElement 
@@ -832,7 +859,7 @@ NSError  *createNSError(NSString *details) {
 
 
 - (void) handleAttributes: (NSDictionary *)attribs {
-  NS_DURING
+  @try {
     NSString  *name = [self getStringAttributeValue: @"name" 
                               from: attribs defaultValue: nil];
     int  flags = [self getIntegerAttributeValue: @"flags"
@@ -849,15 +876,41 @@ NSError  *createNSError(NSString *details) {
       [[PlainFileItem alloc]
           initWithName: name parent: parentItem size: size
             type: fileType flags: flags];
-  NS_HANDLER
-    if ([[localException name] isEqualToString: AttributeParseException]) {
-      [self handlerAttributeParseError: localException];
-    }
-  NS_ENDHANDLER    
+  }
+  @catch (AttributeParseException *ex) {
+    [self handlerAttributeParseError: ex];
+  }
 }
 
 - (id) objectForElement {
   return fileItem;
 }
 
-@end // @implementation FileElementHandler 
+@end // @implementation FileElementHandler
+
+
+@implementation AttributeParseException 
+
+// Overrides designated initialiser.
+- (id) initWithName: (NSString *)name reason: (NSString *)reason 
+         userInfo: (NSDictionary *)userInfo {
+  NSAssert(NO, @"Use -initWithAttributeName:reason: instead.");
+}
+
+- (id) initWithAttributeName: (NSString *)attribName 
+         reason: (NSString *)reason {
+  NSDictionary  *userInfo = 
+    [NSDictionary dictionaryWithObject: attribName forKey: AttributeNameKey];
+
+  return [super initWithName: @"AttributeParseException"
+                  reason: reason 
+                  userInfo: userInfo];
+}
+
++ (id) exceptionWithAttributeName: (NSString *)attribName 
+         reason: (NSString *)reason {
+  return [[[AttributeParseException alloc]
+              initWithAttributeName: attribName reason: reason] autorelease];
+}
+
+@end // @implementation AttributeParseException
