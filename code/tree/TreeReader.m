@@ -472,10 +472,11 @@ NSError  *createNSError(NSString *details) {
     [self getStringAttributeValue: name from: attribs defaultValue: defVal];
 
   NSScanner  *scanner = [NSScanner scannerWithString: stringValue];
-  ITEM_SIZE  itemSizeValue;
-  if (! ( [scanner scanLongLong: &itemSizeValue] 
+  long long  signedValue;
+  
+  if (! ( [scanner scanLongLong: &signedValue] 
           && [scanner isAtEnd]
-          && itemSizeValue >= 0 ) ) {
+          && signedValue >= 0 ) ) {
     NSString  *reason = 
       NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
     NSDictionary  *userInfo = 
@@ -485,8 +486,18 @@ NSError  *createNSError(NSString *details) {
                               reason: reason userInfo: userInfo] autorelease];
     [ex raise];
   }
+
+  // Note: NSScanner cannot read "unsigned long long" values, only "signed long 
+  // long" values. So cannot parse values larger than LONG_LONG_MAX even though
+  // these could (theoretically) appear in the input. This should never happen 
+  // in practise though because "signed long long" values can represent up to
+  // 2^23 TB, whould should be enough really. 
+  if ( signedValue == LONG_LONG_MAX ) {
+    NSLog( @"Warning (line %d): Overflow when parsing \"%@\" attribute value.",
+             [[reader parser] lineNumber], name );  
+  }
   
-  return itemSizeValue;
+  return (ITEM_SIZE)signedValue;
 }
 
 
