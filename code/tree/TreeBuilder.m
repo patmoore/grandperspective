@@ -235,24 +235,28 @@ typedef struct  {
        
   TreeContext  *scanResult =
     [[[TreeContext alloc] initWithVolumePath: volumePath
-                            scanPath: relativePath
                             fileSizeMeasure: fileSizeMeasure
-                            filterTest: [treeGuide fileItemTest]
                             volumeSize: volumeSize 
-                            freeSpace: freeSpace] autorelease];
+                            freeSpace: freeSpace
+                            filter: [treeGuide fileItemTest]] autorelease];
+  DirectoryItem  *scanTree = 
+    [[[DirectoryItem alloc] initWithName: relativePath 
+                              parent: [scanResult scanTreeParent]
+                              flags: 0] autorelease];
+  // TODO: Correctly set flags
 
   [statsLock lock];
   numFoldersProcessed = 0;
   numInaccessibleFolders = 0;
   [directoryStack removeAllObjects];
   [statsLock unlock];
-      
-  if (! [self buildTreeForDirectory: [scanResult scanTree] fileRef: &pathRef
+        
+  if (! [self buildTreeForDirectory: scanTree fileRef: &pathRef
                 parentPath: volumePath]) {
     return nil;
   }
   
-  [scanResult postInit];
+  [scanResult setScanTree: scanTree];
   
   UniformTypeInventory  *typeInventory = 
     [UniformTypeInventory defaultUniformTypeInventory];

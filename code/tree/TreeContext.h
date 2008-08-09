@@ -18,13 +18,13 @@ extern NSString  *FileItemDeletedEvent;
   unsigned long long  freedSpace;
 
   DirectoryItem  *volumeTree;
+  DirectoryItem  *usedSpaceItem;
   DirectoryItem  *scanTree;
 
   NSDate  *scanTime;
   NSString  *fileSizeMeasure;
   
   NSObject <FileItemTest>  *filter;
-//  int  filterId;
   
   FileItem  *replacedItem;
   FileItem  *replacingItem;
@@ -43,18 +43,26 @@ extern NSString  *FileItemDeletedEvent;
 }
 
 
-/* Creates a new tree context, without a filter and with a scan time set to 
- * "now". A volume-tree skeleton is created, but still needs to be finalised.
- *
- * Note: The returned object is not yet fully ready. The contents scanTree
- * of its scan tree need to be set, after which -postInit must be called.
+/* Creates a new tree context, without a scan time set to "now". 
  */
 - (id) initWithVolumePath: (NSString *)volumePath
-         scanPath: (NSString *)relativePath
-         fileSizeMeasure: (NSString *)fileSizeMeasureVal
-         filterTest: (NSObject <FileItemTest> *)filter
+         fileSizeMeasure: (NSString *)fileSizeMeasure
          volumeSize: (unsigned long long) volumeSize 
-         freeSpace: (unsigned long long) freeSpace;
+         freeSpace: (unsigned long long) freeSpace
+         filter: (NSObject <FileItemTest> *)filter;
+         
+/* Creates a new tree context. 
+ *
+ * Note: The returned object is not yet fully ready. A volume-tree skeleton
+ * is created, but still needs to be finalised. The scanTree still needs
+ * to be set using -setScanTree.
+ */
+- (id) initWithVolumePath: (NSString *)volumePath
+         fileSizeMeasure: (NSString *)fileSizeMeasure
+         volumeSize: (unsigned long long) volumeSize 
+         freeSpace: (unsigned long long) freeSpace
+         filter: (NSObject <FileItemTest> *)filter
+         scanTime: (NSDate *)scanTime;
 
 /* Creates a new tree context, based on the current one, but with an additional
  * filter applied. The filtering itself still needs to be performed. This is
@@ -66,10 +74,14 @@ extern NSString  *FileItemDeletedEvent;
  */
 - (TreeContext *) contextAfterFiltering: (NSObject <FileItemTest> *)newFilter;
 
-/* Finalises the volume tree. It should be called after the scan tree
- * contents have been set.
+/* Sets the scan tree. This finalises the volume tree. The parent of the scan
+ * tree should be that returned by -scanTreeParent.
  */
-- (void) postInit;
+- (void) setScanTree: (DirectoryItem *)scanTree;
+
+/* The parent (to be) for the scan tree.
+ */
+- (DirectoryItem *) scanTreeParent;
 
 
 - (DirectoryItem*) volumeTree;

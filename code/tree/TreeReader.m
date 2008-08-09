@@ -313,7 +313,7 @@ NSError  *createNSError(NSString *details) {
          reader: (TreeReader *)readerVal
          callback: (id) callbackVal
          onSuccess: (SEL) successSelectorVal {
-  NSLog(@"ElementHandler init: %@", elementNameVal);
+  // NSLog(@"ElementHandler init: %@", elementNameVal);
   if (self = [super init]) {
     elementName = [elementNameVal retain];
     
@@ -613,15 +613,13 @@ NSError  *createNSError(NSString *details) {
                                     from: attribs defaultValue: nil];
     ITEM_SIZE  volumeSize = [self getItemSizeAttributeValue: @"volumeSize" 
                                     from: attribs defaultValue: nil];
-    NSString  *scanPath = [self getStringAttributeValue: @"scanPath" 
-                                  from: attribs defaultValue: nil];
     NSDate  *scanTime = [self getDateAttributeValue: @"scanTime" 
                                 from: attribs defaultValue: nil];
-    NSString  *fSizeMeasure = [self getStringAttributeValue: @"fileSizeMeasure" 
-                                      from: attribs defaultValue: nil];
+    NSString  *sizeMeasure = [self getStringAttributeValue: @"fileSizeMeasure" 
+                                     from: attribs defaultValue: nil];
 
-    if (! ( [fSizeMeasure isEqualToString: LogicalFileSize] ||
-            [fSizeMeasure isEqualToString: PhysicalFileSize] ) ) {
+    if (! ( [sizeMeasure isEqualToString: LogicalFileSize] ||
+            [sizeMeasure isEqualToString: PhysicalFileSize] ) ) {
       NSString  *reason = 
         NSLocalizedString(@"Unrecognized value.", @"Parse error");
       NSDictionary  *userInfo = 
@@ -635,11 +633,11 @@ NSError  *createNSError(NSString *details) {
   
     treeContext = [[TreeContext alloc]  
                       initWithVolumePath: volumePath
-                      scanPath: scanPath
-                      fileSizeMeasure: fSizeMeasure
-                      filterTest: nil
+                      fileSizeMeasure: sizeMeasure
                       volumeSize: volumeSize 
-                      freeSpace: 0];
+                      freeSpace: 0
+                      filter: nil
+                      scanTime: scanTime];
     // TODO: also parse freeSpace (also need to write it).
   NS_HANDLER
     if ([[localException name] isEqualToString: AttributeParseException]) {
@@ -658,7 +656,7 @@ NSError  *createNSError(NSString *details) {
       [[[FolderElementHandler alloc] 
            initWithElement: childElement reader: reader callback: self 
              onSuccess: @selector(handler:finishedParsingFolderElement:) 
-             parent: nil]
+             parent: [treeContext scanTreeParent]]
                handleAttributes: attribs];
     }
   }
@@ -675,8 +673,7 @@ NSError  *createNSError(NSString *details) {
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem {
-  [[treeContext scanTree] setDirectoryContents: [dirItem getContents]];
-  [treeContext postInit];
+  [treeContext setScanTree: dirItem];
   
   [self handler: handler finishedParsingElement: dirItem];
 }
@@ -744,14 +741,14 @@ NSError  *createNSError(NSString *details) {
     [[[FolderElementHandler alloc] 
          initWithElement: childElement reader: reader callback: self 
            onSuccess: @selector(handler:finishedParsingFolderElement:) 
-           parent: nil]
+           parent: dirItem]
              handleAttributes: attribs];
   }
   else if ([childElement isEqualToString: @"File"]) {
     [[[FileElementHandler alloc] 
          initWithElement: childElement reader: reader callback: self 
            onSuccess: @selector(handler:finishedParsingFileElement:) 
-           parent: nil]
+           parent: dirItem]
              handleAttributes: attribs];
   }
   else {

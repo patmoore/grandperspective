@@ -55,14 +55,20 @@
   TreeContext  *filterResult = 
     [oldTree contextAfterFiltering: [treeGuide fileItemTest]];
 
+  DirectoryItem  *oldScanTree = [oldTree scanTree];
+  DirectoryItem  *scanTree = 
+    [[[DirectoryItem alloc] initWithName: [oldScanTree name]
+                              parent: [filterResult scanTreeParent]
+                              flags: [oldScanTree fileItemFlags]] autorelease];
+
   [statsLock lock];
   numFoldersProcessed = 0;
   [directoryStack removeAllObjects];
   [statsLock unlock];
   
-  [self filterItemTree: [oldTree scanTree] into: [filterResult scanTree]];
-          
-  [filterResult postInit];
+  [self filterItemTree: oldScanTree into: scanTree];
+
+  [filterResult setScanTree: scanTree];
                  
   return abort ? nil : filterResult;
 }
