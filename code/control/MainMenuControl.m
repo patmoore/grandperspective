@@ -49,6 +49,17 @@ static int  nextFilterId = 1;
 @end
 
 
+@interface WriteTaskCallback : NSObject {
+  WriteTaskInput  *taskInput;
+}
+
+- (id) initWithWriteTaskInput: (WriteTaskInput *)taskInput;
+
+- (void) writeTaskCompleted: (id) result;
+
+@end // @interface WriteTaskCallback
+
+
 @interface FreshDirViewWindowCreator : NSObject {
   WindowManager  *windowManager;
 }
@@ -81,8 +92,6 @@ static int  nextFilterId = 1;
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
 
 - (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
-
-- (void) writeTaskCallback: (id) result;
 
 /* Creates window title based on scan location, scan time and filter (if any).
  */
@@ -304,10 +313,13 @@ static int  nextFilterId = 1;
       [[[WriteTaskInput alloc] 
            initWithTreeContext: [dirViewControl treeContext] path: filename]  
            autorelease];
+           
+    WriteTaskCallback  *callback = 
+      [[[WriteTaskCallback alloc] initWithWriteTaskInput: input] autorelease];
     
     [writeTaskManager asynchronouslyRunTaskWithInput: input
-                        callback: self
-                        selector: @selector(writeTaskCallback:)];
+                        callback: callback
+                        selector: @selector(writeTaskCompleted:)];
   }
 }
 
@@ -473,38 +485,6 @@ static int  nextFilterId = 1;
 }
 
 
-- (void) writeTaskCallback: (id) result {
-  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-
-  if (result == SuccessfulVoidResult) {
-    [alert setAlertStyle:  NSInformationalAlertStyle];
-    
-    [alert setMessageText: 
-       NSLocalizedString( @"Successfully saved the scan data.", 
-                          @"Alert message" )];
-  }
-  else if (result == nil) {
-    // Writing was aborted
-    [alert setMessageText: 
-       NSLocalizedString( @"Aborted saving the scan data.", 
-                          @"Alert message" )];
-    [alert setInformativeText: 
-       NSLocalizedString( @"The resulting file is valid but incomplete.", 
-                          @"Alert informative text" )];
-  }
-  else {
-    // An error occured while writing
-    [alert setMessageText: 
-             NSLocalizedString( @"Failed to save the scan data.", 
-                                @"Alert message" )];
-    [alert setInformativeText: [((NSError *)result) localizedDescription]];     
-  }
-
-  [alert addButtonWithTitle: OK_BUTTON_TITLE];
-  [alert runModal];
-}
-
-
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeContext  *treeContext = [control treeContext];
   NSString  *scanPath = [[treeContext scanTree] path];
@@ -539,6 +519,65 @@ static int  nextFilterId = 1;
 }
 
 @end // @implementation ModalityTerminator
+
+
+@implementation WriteTaskCallback
+
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithWriteTaskInput: instead.");
+}
+
+- (id) initWithWriteTaskInput: (WriteTaskInput *)taskInputVal {
+  if (self = [super init]) {
+    taskInput = [taskInputVal retain];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [taskInput release];
+
+  [super dealloc];
+}
+
+
+- (void) writeTaskCompleted: (id) result {
+  NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
+  NSString  *msgFormat = nil;
+
+  if (result == SuccessfulVoidResult) {
+    [alert setAlertStyle:  NSInformationalAlertStyle];
+    
+    msgFormat = 
+      NSLocalizedString( @"Successfully saved the scan data to \"%@\"", 
+                         @"Alert message (with filename arg)" );
+  }
+  else if (result == nil) {
+    // Writing was aborted
+    msgFormat = NSLocalizedString( @"Aborted saving the scan data to \"%@\"", 
+                                   @"Alert message (with filename arg)" );
+    [alert setInformativeText: 
+       NSLocalizedString( @"The resulting file is valid but incomplete.", 
+                          @"Alert informative text" )];
+  }
+  else {
+    // An error occured while writing
+    msgFormat = NSLocalizedString( @"Failed to save the scan data to \"%@\"", 
+                                   @"Alert message (with filename arg)" );
+    [alert setInformativeText: [((NSError *)result) localizedDescription]];     
+  }
+
+  [alert setMessageText: 
+           [NSString stringWithFormat: msgFormat, 
+                                       [[taskInput path] lastPathComponent]]];
+  
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert runModal];
+}
+
+@end // @interface WriteTaskCallback
 
 
 @implementation FreshDirViewWindowCreator
