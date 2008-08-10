@@ -5,6 +5,8 @@
 
 #import "TreeContext.h"
 
+#import "ApplicationError.h"
+
 
 #define  BUFFER_SIZE  4096
 
@@ -91,14 +93,22 @@ NSString *escapedAttributeValue(NSString *s) {
     dataBuffer = malloc(BUFFER_SIZE);
 
     abort = NO;
-    error = NO;
+    error = nil;
+    
+    statsLock = [[NSLock alloc] init];
+    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
   }
   return self;
 }
 
 - (void) dealloc {
   free(dataBuffer);
+  
+  [error release];
 
+  [statsLock release];
+  [directoryStack release];
+  
   [super dealloc];
 }
 
@@ -106,7 +116,10 @@ NSString *escapedAttributeValue(NSString *s) {
 - (BOOL) writeTree: (TreeContext *)tree toFile: (NSString *)filename {
   NSAssert(file == NULL, @"File not NULL");
 
-  NSLog(@"Start dump");
+  [statsLock lock];
+  numFoldersProcessed = 0;
+  [directoryStack removeAllObjects];
+  [statsLock unlock];
   
   file = fopen( [filename cString], "w");
   if (file == NULL) {
@@ -118,27 +131,51 @@ NSString *escapedAttributeValue(NSString *s) {
   [self appendString: @"<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"];
   [self appendScanDumpElement: tree];
   
-  if (!error && dataBufferPos > 0) {
+  if (error==nil && dataBufferPos > 0) {
     // Write remaining characters in buffer
     unsigned  numWritten = fwrite( dataBuffer, 1, dataBufferPos, file );
     
     if (numWritten != dataBufferPos) {
       NSLog(@"Failed to write last data: %d bytes written out of %d.", 
                 numWritten, dataBufferPos);
-      error = YES;
+
+      error = [[ApplicationError alloc] initWithLocalizedDescription: 
+                  NSLocalizedString( @"Failed to write last data to file.", 
+                                     @"Error message" )];
     }
   }
   
   fclose(file);
   file = NULL;
   
-  NSLog(@"Dump completed");
-  
-  return !(abort || error);
+  return (error==nil) && !abort;
 }
 
 - (void) abort {
   abort = YES;
+}
+
+- (BOOL) aborted {
+  return (error==nil) && abort;
+}
+
+- (NSError *) error {
+  return error;
+}
+
+- (NSDictionary *) treeWriterProgressInfo {
+  NSDictionary  *dict;
+
+  [statsLock lock];
+  dict = [NSDictionary dictionaryWithObjectsAndKeys:
+            [NSNumber numberWithInt: numFoldersProcessed],
+            NumFoldersProcessedKey,
+            [[directoryStack lastObject] path],
+            CurrentFolderPathKey,
+            nil];
+  [statsLock unlock];
+
+  return dict;
 }
 
 @end
@@ -186,6 +223,10 @@ NSString *escapedAttributeValue(NSString *s) {
 
 
 - (void) appendFolderElement: (DirectoryItem *)dirItem {
+  [statsLock lock];
+  [directoryStack addObject: dirItem];
+  [statsLock unlock];
+  
   NSString  *nameVal = escapedAttributeValue([dirItem name]);
   [self appendString: 
           ( ([dirItem fileItemFlags] != 0) 
@@ -199,6 +240,12 @@ NSString *escapedAttributeValue(NSString *s) {
   [self dumpItemContents: [dirItem getContents]];
   
   [self appendString: @"</Folder>\n"];
+  
+  [statsLock lock];
+  NSAssert([directoryStack lastObject] == dirItem, @"Inconsistent stack.");
+  [directoryStack removeLastObject];
+  numFoldersProcessed++;
+  [statsLock unlock];
 }
 
 
@@ -244,7 +291,7 @@ NSString *escapedAttributeValue(NSString *s) {
 
 
 - (void) appendString: (NSString *)s {
-  if (error) {
+  if (error != nil) {
     // Don't write anything when an error has occurred. 
     //
     // Note: Still keep writing if "only" the abort flag is set. This way, an
@@ -272,7 +319,10 @@ NSString *escapedAttributeValue(NSString *s) {
       
       if (numWritten != BUFFER_SIZE) {
         NSLog(@"Failed to write entire buffer, %d bytes written", numWritten);
-        error = YES;
+        
+        error = [[ApplicationError alloc] initWithLocalizedDescription: 
+                    NSLocalizedString( @"Failed to write entire buffer.", 
+                                       @"Error message" )];
         abort = YES;
         
         return; // Do not attempt anymore writes to file.

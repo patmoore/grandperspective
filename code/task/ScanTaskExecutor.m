@@ -1,7 +1,6 @@
 #import "ScanTaskExecutor.h"
 
 #import "TreeBuilder.h"
-#import "DirectoryItem.h"
 #import "TreeContext.h"
 #import "ScanTaskInput.h"
 #import "FilteredTreeGuide.h"

@@ -21,11 +21,14 @@
 
 #import "VisibleAsynchronousTaskManager.h"
 #import "ScanProgressPanelControl.h"
-#import "FilterProgressPanelControl.h"
 #import "ScanTaskInput.h"
 #import "ScanTaskExecutor.h"
+#import "FilterProgressPanelControl.h"
 #import "FilterTaskInput.h"
 #import "FilterTaskExecutor.h"
+#import "WriteProgressPanelControl.h"
+#import "WriteTaskInput.h"
+#import "WriteTaskExecutor.h"
 
 #import "FileItemTest.h"
 #import "FileItemTestRepository.h"
@@ -79,6 +82,10 @@ static int  nextFilterId = 1;
 
 - (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
 
+- (void) writeTaskCallback: (id) result;
+
+/* Creates window title based on scan location, scan time and filter (if any).
+ */
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control;
 
 @end // @interface MainMenuControl (PrivateMethods)
@@ -140,6 +147,15 @@ static int  nextFilterId = 1;
     filterTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: filterProgressPanelControl];
+          
+    ProgressPanelControl  *writeProgressPanelControl = 
+      [[[WriteProgressPanelControl alloc] 
+           initWithTaskExecutor: [[[WriteTaskExecutor alloc] init] autorelease]
+       ] autorelease];
+
+    writeTaskManager =
+      [[VisibleAsynchronousTaskManager alloc] 
+          initWithProgressPanel: writeProgressPanelControl];
   }
   return self;
 }
@@ -208,24 +224,23 @@ static int  nextFilterId = 1;
   }
   
   DerivedDirViewWindowCreator  *windowCreator =
-    [[DerivedDirViewWindowCreator alloc] 
-        initWithWindowManager: windowManager
-          targetPath: pathModel
-          settings: [oldControl directoryViewControlSettings]];
+    [[[DerivedDirViewWindowCreator alloc] 
+         initWithWindowManager: windowManager
+           targetPath: pathModel
+           settings: [oldControl directoryViewControlSettings]]
+         autorelease];
 
   TreeContext  *oldContext = [oldControl treeContext];
   ScanTaskInput  *input = 
-    [[ScanTaskInput alloc] 
-        initWithPath: [[oldContext scanTree] path]
-          fileSizeMeasure: [oldContext fileSizeMeasure]
-          filterTest: [oldContext fileItemFilter]];
+    [[[ScanTaskInput alloc] 
+         initWithPath: [[oldContext scanTree] path]
+           fileSizeMeasure: [oldContext fileSizeMeasure]
+           filterTest: [oldContext fileItemFilter]]
+         autorelease];
     
   [scanTaskManager asynchronouslyRunTaskWithInput: input
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
-
-  [input release];                       
-  [windowCreator release];
 }
 
 
@@ -245,23 +260,22 @@ static int  nextFilterId = 1;
     [oldControl directoryViewControlSettings];
 
   DerivedDirViewWindowCreator  *windowCreator =
-    [[DerivedDirViewWindowCreator alloc] 
-        initWithWindowManager: windowManager
-          targetPath: oldPathModel
-          settings: oldSettings];
+    [[[DerivedDirViewWindowCreator alloc] 
+         initWithWindowManager: windowManager
+           targetPath: oldPathModel
+           settings: oldSettings]
+         autorelease];
 
   FilterTaskInput  *input = 
-    [[FilterTaskInput alloc] 
-        initWithOldContext: [oldControl treeContext]
-          filterTest: filterTest
-          packagesAsFiles: ! [oldSettings showPackageContents]];
+    [[[FilterTaskInput alloc] 
+         initWithOldContext: [oldControl treeContext]
+           filterTest: filterTest
+           packagesAsFiles: ! [oldSettings showPackageContents]]
+         autorelease];
 
   [filterTaskManager asynchronouslyRunTaskWithInput: input
                        callback: windowCreator
                        selector: @selector(createWindowForTree:)];
-
-  [input release];
-  [windowCreator release];
 }
 
 
@@ -286,19 +300,14 @@ static int  nextFilterId = 1;
   if ([savePanel runModal] == NSOKButton) {
     NSString  *filename = [savePanel filename];
     
-    TreeWriter  *treeWriter = [[[TreeWriter alloc] init] autorelease];
-
-    if (! [treeWriter writeTree: [dirViewControl treeContext] 
-                        toFile: filename]) {
-      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-
-      [alert addButtonWithTitle: OK_BUTTON_TITLE];
-      [alert setMessageText: 
-        NSLocalizedString( @"Failed to save the scan data.", 
-                           @"Alert message" )];
-
-      [alert runModal];
-    }
+    WriteTaskInput  *input = 
+      [[[WriteTaskInput alloc] 
+           initWithTreeContext: [dirViewControl treeContext] path: filename]  
+           autorelease];
+    
+    [writeTaskManager asynchronouslyRunTaskWithInput: input
+                        callback: self
+                        selector: @selector(writeTaskCallback:)];
   }
 }
 
@@ -389,18 +398,17 @@ static int  nextFilterId = 1;
     [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
 
   FreshDirViewWindowCreator  *windowCreator =
-    [[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager];
+    [[[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager]
+         autorelease];
   ScanTaskInput  *input = 
-    [[ScanTaskInput alloc] initWithPath: pathToScan
-                             fileSizeMeasure: fileSizeMeasure 
-                             filterTest: filter];
+    [[[ScanTaskInput alloc] initWithPath: pathToScan
+                              fileSizeMeasure: fileSizeMeasure 
+                              filterTest: filter] 
+         autorelease];
     
   [scanTaskManager asynchronouslyRunTaskWithInput: input
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
-                       
-  [input release];
-  [windowCreator release];  
 }
 
 
@@ -465,7 +473,38 @@ static int  nextFilterId = 1;
 }
 
 
-// Creates window title based on scan location, scan time and filter (if any).
+- (void) writeTaskCallback: (id) result {
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  if (result == SuccessfulVoidResult) {
+    [alert setAlertStyle:  NSInformationalAlertStyle];
+    
+    [alert setMessageText: 
+       NSLocalizedString( @"Successfully saved the scan data.", 
+                          @"Alert message" )];
+  }
+  else if (result == nil) {
+    // Writing was aborted
+    [alert setMessageText: 
+       NSLocalizedString( @"Aborted saving the scan data.", 
+                          @"Alert message" )];
+    [alert setInformativeText: 
+       NSLocalizedString( @"The resulting file is valid but incomplete.", 
+                          @"Alert informative text" )];
+  }
+  else {
+    // An error occured while writing
+    [alert setMessageText: 
+             NSLocalizedString( @"Failed to save the scan data.", 
+                                @"Alert message" )];
+    [alert setInformativeText: [((NSError *)result) localizedDescription]];     
+  }
+
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert runModal];
+}
+
+
 + (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
   TreeContext  *treeContext = [control treeContext];
   NSString  *scanPath = [[treeContext scanTree] path];

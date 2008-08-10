@@ -49,6 +49,11 @@
 		AA636C900E1AC5200073873E /* FilterProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA636C8F0E1AC5200073873E /* FilterProgressPanelControl.m */; };
 		AA6814860A07D6FC00802D88 /* ProgressPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA6814840A07D6FC00802D88 /* ProgressPanel.nib */; };
 		AA6E27A40D7AE95E00D5FBBA /* ColorLegendTableViewControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */; };
+		AA7A7E0D0E4EE29D00EB366E /* WriteTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */; };
+		AA7A7E110E4EE3DA00EB366E /* WriteTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E100E4EE3DA00EB366E /* WriteTaskExecutor.m */; };
+		AA7A7E130E4EE80D00EB366E /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */; };
+		AA7A7E1C0E4EF00D00EB366E /* ApplicationError.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */; };
+		AA7A7E9F0E4F0B7100EB366E /* WriteProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E9E0E4F0B7100EB366E /* WriteProgressPanelControl.m */; };
 		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
 		AA7C64D60AFE71DC007B8CD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */; };
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
@@ -185,6 +190,15 @@
 		AA6E27A10D7AE95E00D5FBBA /* ColorLegendTableViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorLegendTableViewControl.h; path = control/ColorLegendTableViewControl.h; sourceTree = "<group>"; };
 		AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorLegendTableViewControl.m; path = control/ColorLegendTableViewControl.m; sourceTree = "<group>"; };
 		AA6E27D00D7B02BE00D5FBBA /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
+		AA7A7E0B0E4EE29D00EB366E /* WriteTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteTaskInput.h; path = task/WriteTaskInput.h; sourceTree = "<group>"; };
+		AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteTaskInput.m; path = task/WriteTaskInput.m; sourceTree = "<group>"; };
+		AA7A7E0F0E4EE3DA00EB366E /* WriteTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteTaskExecutor.h; path = task/WriteTaskExecutor.h; sourceTree = "<group>"; };
+		AA7A7E100E4EE3DA00EB366E /* WriteTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteTaskExecutor.m; path = task/WriteTaskExecutor.m; sourceTree = "<group>"; };
+		AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TaskExecutor.m; path = util/TaskExecutor.m; sourceTree = "<group>"; };
+		AA7A7E1A0E4EF00D00EB366E /* ApplicationError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationError.h; path = util/ApplicationError.h; sourceTree = "<group>"; };
+		AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplicationError.m; path = util/ApplicationError.m; sourceTree = "<group>"; };
+		AA7A7E9D0E4F0B7100EB366E /* WriteProgressPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteProgressPanelControl.h; path = control/WriteProgressPanelControl.h; sourceTree = "<group>"; };
+		AA7A7E9E0E4F0B7100EB366E /* WriteProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteProgressPanelControl.m; path = control/WriteProgressPanelControl.m; sourceTree = "<group>"; };
 		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
 		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
 		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
@@ -525,12 +539,15 @@
 				AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */,
 				AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */,
 				AA6012750A5AF5E200DEBCB8 /* TaskExecutor.h */,
+				AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */,
 				AA6012540A5AF55400DEBCB8 /* AsynchronousTaskManager.h */,
 				AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */,
 				AA6012660A5AF5A600DEBCB8 /* PeekingEnumerator.h */,
 				AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */,
 				AA61786C0A38B8D500B8AB16 /* NotifyingDictionary.h */,
 				AA61786D0A38B8D500B8AB16 /* NotifyingDictionary.m */,
+				AA7A7E1A0E4EF00D00EB366E /* ApplicationError.h */,
+				AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -595,6 +612,8 @@
 				AA636B1E0E1A63BA0073873E /* ScanProgressPanelControl.m */,
 				AA636C8E0E1AC5200073873E /* FilterProgressPanelControl.h */,
 				AA636C8F0E1AC5200073873E /* FilterProgressPanelControl.m */,
+				AA7A7E9D0E4F0B7100EB366E /* WriteProgressPanelControl.h */,
+				AA7A7E9E0E4F0B7100EB366E /* WriteProgressPanelControl.m */,
 				AA402FF30A5B01A6004EAAF3 /* EditFilterWindowControl.h */,
 				AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */,
 				AA402FF80A5B01A6004EAAF3 /* EditFilterRuleWindowControl.h */,
@@ -626,6 +645,10 @@
 				AAC26BBF0A8CAF4800F2DA33 /* ScanTaskExecutor.m */,
 				AA8FEA0A0B6BFBB40049FF42 /* ScanTaskInput.h */,
 				AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */,
+				AA7A7E0F0E4EE3DA00EB366E /* WriteTaskExecutor.h */,
+				AA7A7E100E4EE3DA00EB366E /* WriteTaskExecutor.m */,
+				AA7A7E0B0E4EE29D00EB366E /* WriteTaskInput.h */,
+				AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */,
 			);
 			name = task;
 			sourceTree = "<group>";
@@ -786,6 +809,11 @@
 				AA636C900E1AC5200073873E /* FilterProgressPanelControl.m in Sources */,
 				AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */,
 				AA837E740E2D171D005384E0 /* TreeReader.m in Sources */,
+				AA7A7E0D0E4EE29D00EB366E /* WriteTaskInput.m in Sources */,
+				AA7A7E110E4EE3DA00EB366E /* WriteTaskExecutor.m in Sources */,
+				AA7A7E130E4EE80D00EB366E /* TaskExecutor.m in Sources */,
+				AA7A7E1C0E4EF00D00EB366E /* ApplicationError.m in Sources */,
+				AA7A7E9F0E4F0B7100EB366E /* WriteProgressPanelControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
