@@ -11,6 +11,7 @@
 #import "TreeBalancer.h"
 
 #import "UniformTypeInventory.h"
+#import "ApplicationError.h"
 
 NSString  *AttributeNameKey = @"name";
 
@@ -162,21 +163,6 @@ NSString  *AttributeNameKey = @"name";
 @end // @interface AttributeParseException
 
 
-/* Convenience function for creating an NSError object.
- *
- * Note: The returned object is auto-released.
- */
-NSError  *createNSError(NSString *details) {
-  return
-    [[[NSError alloc] 
-         initWithDomain: @"Application"
-           code: -1 
-           userInfo: [NSDictionary dictionaryWithObject: details
-                                     forKey: NSLocalizedDescriptionKey]]
-         autorelease];
-}
-
-
 @implementation TreeReader
 
 - (id) init {
@@ -260,15 +246,15 @@ NSError  *createNSError(NSString *details) {
   NSError  *parseError = nil;
   if (tree != nil) {
     parseError = 
-      createNSError( 
-        NSLocalizedString( @"Encountered more than one root element.",
-                           @"Parse error" ));
+      [ApplicationError errorWithLocalizedDescription:
+         NSLocalizedString( @"Encountered more than one root element.",
+                            @"Parse error" )];
   }
   else if (! [elementName isEqualToString: @"GrandPerspectiveScanDump"]) {
-    parseError = 
-      createNSError( 
-        NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
-                           @"Parse error" ));
+    parseError =
+      [ApplicationError errorWithLocalizedDescription:
+         NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
+                            @"Parse error" )];
   }
   
   if (parseError != nil) {
@@ -330,13 +316,13 @@ NSError  *createNSError(NSString *details) {
        && !abort    // ... and parsing has not been aborted (this also 
                     // triggers an error, which should be ignored).
      ) {
-    NSString  *format =
-      NSLocalizedString( @"Parse error (line %d): %@", @"Parse error" );
-      
-    error = [createNSError( [NSString stringWithFormat: format, 
-                                        [parser lineNumber],
-                                        [parseError localizedDescription]] )
-              retain];
+    error = 
+      [[ApplicationError alloc] initWithLocalizedDescription:
+          [NSString stringWithFormat: 
+                      NSLocalizedString( @"Parse error (line %d): %@", 
+                                         @"Parse error" ), 
+                      [parser lineNumber],
+                      [parseError localizedDescription]]];
   }
 }
 
@@ -382,8 +368,9 @@ NSError  *createNSError(NSString *details) {
            qualifiedName: (NSString *)qName 
            attributes: (NSDictionary *)attribs {
   if ([reader isAborted]) {
-    NSError  *error = createNSError(NSLocalizedString( @"Parsing aborted", 
-                                                       @"Parse error" ));
+    NSError  *error = 
+      [ApplicationError errorWithLocalizedDescription:
+         NSLocalizedString( @"Parsing aborted", @"Parse error" )];
     [callback handler: self failedParsingElement: error];
   }
   else {
@@ -462,7 +449,8 @@ NSError  *createNSError(NSString *details) {
 - (void) handlerError: (NSString *)details {
   NSLog(@"Encountered error: %@", details);
 
-  [callback handler: self failedParsingElement: createNSError(details)];
+  NSError  *error = [ApplicationError errorWithLocalizedDescription: details];
+  [callback handler: self failedParsingElement: error];
 }
 
 - (void) handlerAttributeParseError: (NSException *)ex {
