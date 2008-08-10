@@ -4,7 +4,7 @@
 
 #import "DirectoryView.h"
 #import "DirectoryViewControl.h"
-#import "ItemTreeDrawer.h"
+#import "TreeDrawer.h"
 #import "ItemPathModel.h"
 #import "DirectoryItem.h"
 
@@ -99,8 +99,8 @@
     // Draw the image.
     DirectoryView  *dirView = [dirViewControl directoryView];
     ItemPathModelView  *pathModelView = [dirView pathModelView];
-    ItemTreeDrawer  *treeDrawer = 
-      [[[ItemTreeDrawer alloc] 
+    TreeDrawer  *treeDrawer = 
+      [[[TreeDrawer alloc] 
            initWithScanTree: [pathModelView scanTree]
              treeDrawerSettings: [dirView treeDrawerSettings]]
                autorelease];

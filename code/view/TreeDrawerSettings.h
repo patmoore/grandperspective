@@ -5,9 +5,10 @@
 @protocol FileItemTest;
 
 
-// Settings for ItemTreeDrawer objects. The settings are immutable, to 
-// facilitate use in multi-threading context. 
-@interface ItemTreeDrawerSettings : NSObject {
+/* Settings for TreeDrawer objects. The settings are immutable, to 
+ * facilitate use in multi-threading context. 
+ */
+@interface TreeDrawerSettings : NSObject {
   NSColorList  *colorPalette;
   NSObject <FileItemMapping>  *colorMapper;
   NSObject <FileItemTest>  *fileItemMask;

@@ -3,17 +3,17 @@
 #import "TaskExecutor.h"
 
 @class DirectoryItem;
-@class ItemTreeDrawer;
-@class ItemTreeDrawerSettings;
+@class TreeDrawer;
+@class TreeDrawerSettings;
 @class TreeContext;
 
 
 @interface DrawTaskExecutor : NSObject <TaskExecutor> {
   TreeContext  *treeContext;
 
-  ItemTreeDrawer  *treeDrawer;
+  TreeDrawer  *treeDrawer;
   
-  ItemTreeDrawerSettings  *treeDrawerSettings;
+  TreeDrawerSettings  *treeDrawerSettings;
   NSLock  *settingsLock;
   
   BOOL  enabled;
@@ -21,9 +21,9 @@
 
 - (id) initWithTreeContext: (TreeContext *)treeContext;
 - (id) initWithTreeContext: (TreeContext *)treeContext 
-         drawingSettings: (ItemTreeDrawerSettings *)settings;
+         drawingSettings: (TreeDrawerSettings *)settings;
 
-- (ItemTreeDrawerSettings *) treeDrawerSettings;
-- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (TreeDrawerSettings *) treeDrawerSettings;
+- (void) setTreeDrawerSettings: (TreeDrawerSettings *)settings;
 
 @end

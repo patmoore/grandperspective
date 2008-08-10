@@ -15,7 +15,7 @@ extern NSString  *ColorMappingChangedEvent;
 @class AsynchronousTaskManager;
 @class TreeLayoutBuilder;
 @class FileItem;
-@class ItemTreeDrawerSettings;
+@class TreeDrawerSettings;
 @class ItemPathDrawer;
 @class ItemPathModelView;
 @protocol FileItemMappingScheme;
@@ -50,8 +50,8 @@ extern NSString  *ColorMappingChangedEvent;
 - (ItemPathModelView *)pathModelView;
 - (FileItem *)treeInView;
 
-- (ItemTreeDrawerSettings *) treeDrawerSettings;
-- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+- (TreeDrawerSettings *) treeDrawerSettings;
+- (void) setTreeDrawerSettings: (TreeDrawerSettings *)settings;
 
 - (BOOL) showEntireVolume;
 - (void) setShowEntireVolume: (BOOL) flag;

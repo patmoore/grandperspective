@@ -8,7 +8,7 @@
 #import "FileItemMapping.h"
 
 #import "GradientRectangleDrawer.h"
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawerSettings.h"
 
 
 NSString  *ColorImageColumnIdentifier = @"colorImage";

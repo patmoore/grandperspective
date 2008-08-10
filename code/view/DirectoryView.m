@@ -5,8 +5,8 @@
 #import "DirectoryItem.h"
 
 #import "TreeLayoutBuilder.h"
-#import "ItemTreeDrawer.h"
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawer.h"
+#import "TreeDrawerSettings.h"
 #import "ItemPathDrawer.h"
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
@@ -126,18 +126,18 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 
-- (ItemTreeDrawerSettings *) treeDrawerSettings {
+- (TreeDrawerSettings *) treeDrawerSettings {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
   return [drawTaskExecutor treeDrawerSettings];
 }
 
-- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (void) setTreeDrawerSettings: (TreeDrawerSettings *)settings {
   DrawTaskExecutor  *drawTaskExecutor = 
     (DrawTaskExecutor*)[drawTaskManager taskExecutor];
 
-  ItemTreeDrawerSettings  *oldSettings = [drawTaskExecutor treeDrawerSettings];
+  TreeDrawerSettings  *oldSettings = [drawTaskExecutor treeDrawerSettings];
   if (settings != oldSettings) {
     [oldSettings retain];
 
@@ -429,7 +429,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 
 - (void) observeColorMapping {
-  ItemTreeDrawerSettings  *treeDrawerSettings = [self treeDrawerSettings];
+  TreeDrawerSettings  *treeDrawerSettings = [self treeDrawerSettings];
   NSObject <FileItemMappingScheme>  *colorMapping = 
     [[treeDrawerSettings colorMapper] fileItemMappingScheme];
     

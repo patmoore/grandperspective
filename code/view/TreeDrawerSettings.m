@@ -1,23 +1,23 @@
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawerSettings.h"
 
 #import "StatelessFileItemMapping.h"
 
 
-@interface ItemTreeDrawerSettings (PrivateMethods)
+@interface TreeDrawerSettings (PrivateMethods)
 
 + (NSColorList *) defaultColorPalette;
 
 @end
 
 
-@implementation ItemTreeDrawerSettings
+@implementation TreeDrawerSettings
 
 // Creates default settings.
 - (id) init {
   return 
     [self initWithColorMapper: 
                           [[[StatelessFileItemMapping alloc] init] autorelease]
-            colorPalette: [ItemTreeDrawerSettings defaultColorPalette]
+            colorPalette: [TreeDrawerSettings defaultColorPalette]
             fileItemMask: nil
             showPackageContents: YES];
 }
@@ -47,7 +47,7 @@
 
 
 - (id) copyWithColorMapper: (NSObject <FileItemMapping> *)colorMapperVal {
-  return [[[ItemTreeDrawerSettings alloc]
+  return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
               fileItemMask: fileItemMask
@@ -55,7 +55,7 @@
 }
 
 - (id) copyWithColorPalette: (NSColorList *)colorPaletteVal {
-  return [[[ItemTreeDrawerSettings alloc]
+  return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPaletteVal
               fileItemMask: fileItemMask
@@ -63,7 +63,7 @@
 }
 
 - (id) copyWithFileItemMask: (NSObject<FileItemTest> *)fileItemMaskVal {
-  return [[[ItemTreeDrawerSettings alloc]
+  return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
               fileItemMask: fileItemMaskVal
@@ -71,7 +71,7 @@
 }
 
 - (id) copyWithShowPackageContents: (BOOL) showPackageContentsVal {
-  return [[[ItemTreeDrawerSettings alloc]
+  return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
               fileItemMask: fileItemMask
@@ -94,17 +94,17 @@
   return showPackageContents;
 }
 
-@end
+@end // @implementation TreeDrawerSettings
 
 
 NSColorList  *defaultColorPalette = nil;
 
-@implementation ItemTreeDrawerSettings (PrivateMethods)
+@implementation TreeDrawerSettings (PrivateMethods)
 
 + (NSColorList *) defaultColorPalette {
   if (defaultColorPalette==nil) {
     NSColorList  *colorList =
-      [[NSColorList alloc] initWithName: @"DefaultItemTreeDrawerPalette"];
+      [[NSColorList alloc] initWithName: @"DefaultTreeDrawerPalette"];
 
     [colorList insertColor: [NSColor blueColor]    key: @"blue"    atIndex: 0];
     [colorList insertColor: [NSColor redColor]     key: @"red"     atIndex: 1];
@@ -121,4 +121,4 @@ NSColorList  *defaultColorPalette = nil;
   return defaultColorPalette;
 }
 
-@end
+@end // @implementation TreeDrawerSettings (PrivateMethods)

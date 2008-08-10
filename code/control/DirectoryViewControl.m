@@ -14,7 +14,7 @@
 #import "EditFilterWindowControl.h"
 #import "ColorLegendTableViewControl.h"
 #import "PreferencesPanelControl.h"
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawerSettings.h"
 #import "ControlConstants.h"
 #import "UniformType.h"
 

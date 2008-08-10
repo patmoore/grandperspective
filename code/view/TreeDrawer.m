@@ -1,14 +1,14 @@
-#import "ItemTreeDrawer.h"
+#import "TreeDrawer.h"
 
 #import "DirectoryItem.h"
 #import "FileItemMapping.h"
 #import "TreeLayoutBuilder.h"
 #import "FilteredTreeGuide.h"
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawerSettings.h"
 #import "TreeContext.h"
 
 
-@implementation ItemTreeDrawer
+@implementation TreeDrawer
 
 // Overrides designated initialiser
 - (id) initWithColorPalette: (NSColorList *)colorPaletteVal {
@@ -16,15 +16,15 @@
 }
 
 - (id) initWithScanTree: (DirectoryItem *)scanTreeVal {
-  ItemTreeDrawerSettings  *defaultSettings = 
-    [[[ItemTreeDrawerSettings alloc] init] autorelease];
+  TreeDrawerSettings  *defaultSettings = 
+    [[[TreeDrawerSettings alloc] init] autorelease];
     
   return [self initWithScanTree: scanTreeVal 
                  treeDrawerSettings: defaultSettings];
 }
 
 - (id) initWithScanTree: (DirectoryItem *)scanTreeVal 
-         treeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+         treeDrawerSettings: (TreeDrawerSettings *)settings {
   if (self = [super initWithColorPalette: [settings colorPalette]]) {
     scanTree = [scanTreeVal retain];
   
@@ -88,7 +88,7 @@
 }
 
 
-- (void) updateSettings: (ItemTreeDrawerSettings *)settings {
+- (void) updateSettings: (TreeDrawerSettings *)settings {
   [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
   [self setFileItemMask: [settings fileItemMask]];
@@ -232,7 +232,7 @@
   // Do not descend into the item. 
   //
   // Note: This is not just an optimisation but needs to be done. Even though 
-  // the item is seen as a file by the ItemTreeDrawer, it may actually be a 
+  // the item is seen as a file by the TreeDrawer, it may actually be a 
   // package whose contents are hidden. The TreeLayoutBuilder should not 
   // descend into the directoy in this case.
   return NO;
@@ -250,4 +250,4 @@
   }
 }
 
-@end // @implementation ItemTreeDrawer
+@end // @implementation TreeDrawer

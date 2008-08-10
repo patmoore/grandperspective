@@ -32,7 +32,6 @@
 		AA6012570A5AF55400DEBCB8 /* AsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */; };
 		AA6012690A5AF5A600DEBCB8 /* PeekingEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */; };
 		AA6012EC0A5AFB7F00DEBCB8 /* DirectoryView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012EA0A5AFB7F00DEBCB8 /* DirectoryView.m */; };
-		AA6013060A5AFC2500DEBCB8 /* ItemTreeDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012F60A5AFC2500DEBCB8 /* ItemTreeDrawer.m */; };
 		AA6013080A5AFC2500DEBCB8 /* ItemPathDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012F80A5AFC2500DEBCB8 /* ItemPathDrawer.m */; };
 		AA60130A0A5AFC2500DEBCB8 /* ItemPathBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012FA0A5AFC2500DEBCB8 /* ItemPathBuilder.m */; };
 		AA6013250A5AFCC500DEBCB8 /* TreeBalancer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA60131C0A5AFCC500DEBCB8 /* TreeBalancer.m */; };
@@ -40,7 +39,6 @@
 		AA6013290A5AFCC500DEBCB8 /* TreeFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6013200A5AFCC500DEBCB8 /* TreeFilter.m */; };
 		AA60132B0A5AFCC500DEBCB8 /* TreeBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6013220A5AFCC500DEBCB8 /* TreeBuilder.m */; };
 		AA61786F0A38B8D500B8AB16 /* NotifyingDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = AA61786D0A38B8D500B8AB16 /* NotifyingDictionary.m */; };
-		AA62D5DB0BCA67BB0095A09A /* ItemTreeDrawerSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA62D5D90BCA67BB0095A09A /* ItemTreeDrawerSettings.m */; };
 		AA63515A0972E1F70024C9D0 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = AAD6855008D9FE600096C6C1 /* Credits.rtf */; };
 		AA63515B0972E2070024C9D0 /* GrandPerspective.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA6351350972DDC40024C9D0 /* GrandPerspective.icns */; };
 		AA63516C0972E2CC0024C9D0 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 8D1107310486CEB800E47090 /* Info.plist */; };
@@ -54,6 +52,8 @@
 		AA7A7EE10E4F28D100EB366E /* ScanProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EDC0E4F28D100EB366E /* ScanProgressPanelControl.m */; };
 		AA7A7EE20E4F28D100EB366E /* WriteProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EDE0E4F28D100EB366E /* WriteProgressPanelControl.m */; };
 		AA7A7EF00E4F2A1C00EB366E /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EEF0E4F2A1C00EB366E /* TaskExecutor.m */; };
+		AA7A7EF60E4F2B5E00EB366E /* TreeDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EF30E4F2B5E00EB366E /* TreeDrawer.m */; };
+		AA7A7EF70E4F2B5E00EB366E /* TreeDrawerSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EF50E4F2B5E00EB366E /* TreeDrawerSettings.m */; };
 		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
 		AA7C64D60AFE71DC007B8CD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */; };
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
@@ -159,8 +159,6 @@
 		AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeekingEnumerator.m; path = util/PeekingEnumerator.m; sourceTree = "<group>"; };
 		AA6012E90A5AFB7F00DEBCB8 /* DirectoryView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryView.h; path = view/DirectoryView.h; sourceTree = "<group>"; };
 		AA6012EA0A5AFB7F00DEBCB8 /* DirectoryView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DirectoryView.m; path = view/DirectoryView.m; sourceTree = "<group>"; };
-		AA6012F60A5AFC2500DEBCB8 /* ItemTreeDrawer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ItemTreeDrawer.m; path = view/ItemTreeDrawer.m; sourceTree = "<group>"; };
-		AA6012F70A5AFC2500DEBCB8 /* ItemTreeDrawer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ItemTreeDrawer.h; path = view/ItemTreeDrawer.h; sourceTree = "<group>"; };
 		AA6012F80A5AFC2500DEBCB8 /* ItemPathDrawer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ItemPathDrawer.m; path = view/ItemPathDrawer.m; sourceTree = "<group>"; };
 		AA6012F90A5AFC2500DEBCB8 /* ItemPathDrawer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ItemPathDrawer.h; path = view/ItemPathDrawer.h; sourceTree = "<group>"; };
 		AA6012FA0A5AFC2500DEBCB8 /* ItemPathBuilder.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ItemPathBuilder.m; path = view/ItemPathBuilder.m; sourceTree = "<group>"; };
@@ -176,8 +174,6 @@
 		AA6013240A5AFCC500DEBCB8 /* TreeBalancer.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeBalancer.h; path = tree/TreeBalancer.h; sourceTree = "<group>"; };
 		AA61786C0A38B8D500B8AB16 /* NotifyingDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingDictionary.h; path = util/NotifyingDictionary.h; sourceTree = "<group>"; };
 		AA61786D0A38B8D500B8AB16 /* NotifyingDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotifyingDictionary.m; path = util/NotifyingDictionary.m; sourceTree = "<group>"; };
-		AA62D5D80BCA67BB0095A09A /* ItemTreeDrawerSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemTreeDrawerSettings.h; path = view/ItemTreeDrawerSettings.h; sourceTree = "<group>"; };
-		AA62D5D90BCA67BB0095A09A /* ItemTreeDrawerSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemTreeDrawerSettings.m; path = view/ItemTreeDrawerSettings.m; sourceTree = "<group>"; };
 		AA6351350972DDC40024C9D0 /* GrandPerspective.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = GrandPerspective.icns; sourceTree = "<group>"; };
 		AA6814850A07D6FC00802D88 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressPanel.nib; sourceTree = "<group>"; };
 		AA6E27A10D7AE95E00D5FBBA /* ColorLegendTableViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorLegendTableViewControl.h; path = control/ColorLegendTableViewControl.h; sourceTree = "<group>"; };
@@ -199,6 +195,10 @@
 		AA7A7EDE0E4F28D100EB366E /* WriteProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteProgressPanelControl.m; path = control/progress/WriteProgressPanelControl.m; sourceTree = "<group>"; };
 		AA7A7EEE0E4F2A1C00EB366E /* TaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TaskExecutor.h; path = task/TaskExecutor.h; sourceTree = "<group>"; };
 		AA7A7EEF0E4F2A1C00EB366E /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TaskExecutor.m; path = task/TaskExecutor.m; sourceTree = "<group>"; };
+		AA7A7EF20E4F2B5E00EB366E /* TreeDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeDrawer.h; path = view/TreeDrawer.h; sourceTree = "<group>"; };
+		AA7A7EF30E4F2B5E00EB366E /* TreeDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeDrawer.m; path = view/TreeDrawer.m; sourceTree = "<group>"; };
+		AA7A7EF40E4F2B5E00EB366E /* TreeDrawerSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeDrawerSettings.h; path = view/TreeDrawerSettings.h; sourceTree = "<group>"; };
+		AA7A7EF50E4F2B5E00EB366E /* TreeDrawerSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeDrawerSettings.m; path = view/TreeDrawerSettings.m; sourceTree = "<group>"; };
 		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
 		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
 		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
@@ -513,10 +513,10 @@
 				AA6012EA0A5AFB7F00DEBCB8 /* DirectoryView.m */,
 				AA7DF3210D79BEA80057F5F8 /* GradientRectangleDrawer.h */,
 				AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */,
-				AA6012F70A5AFC2500DEBCB8 /* ItemTreeDrawer.h */,
-				AA6012F60A5AFC2500DEBCB8 /* ItemTreeDrawer.m */,
-				AA62D5D80BCA67BB0095A09A /* ItemTreeDrawerSettings.h */,
-				AA62D5D90BCA67BB0095A09A /* ItemTreeDrawerSettings.m */,
+				AA7A7EF20E4F2B5E00EB366E /* TreeDrawer.h */,
+				AA7A7EF30E4F2B5E00EB366E /* TreeDrawer.m */,
+				AA7A7EF40E4F2B5E00EB366E /* TreeDrawerSettings.h */,
+				AA7A7EF50E4F2B5E00EB366E /* TreeDrawerSettings.m */,
 				AA6012F90A5AFC2500DEBCB8 /* ItemPathDrawer.h */,
 				AA6012F80A5AFC2500DEBCB8 /* ItemPathDrawer.m */,
 				AA6012FB0A5AFC2500DEBCB8 /* ItemPathBuilder.h */,
@@ -744,7 +744,6 @@
 				AA6012570A5AF55400DEBCB8 /* AsynchronousTaskManager.m in Sources */,
 				AA6012690A5AF5A600DEBCB8 /* PeekingEnumerator.m in Sources */,
 				AA6012EC0A5AFB7F00DEBCB8 /* DirectoryView.m in Sources */,
-				AA6013060A5AFC2500DEBCB8 /* ItemTreeDrawer.m in Sources */,
 				AA6013080A5AFC2500DEBCB8 /* ItemPathDrawer.m in Sources */,
 				AA60130A0A5AFC2500DEBCB8 /* ItemPathBuilder.m in Sources */,
 				AA6013250A5AFCC500DEBCB8 /* TreeBalancer.m in Sources */,
@@ -770,7 +769,6 @@
 				AAD8DFB30B077ED20060DADA /* PreferencesPanelControl.m in Sources */,
 				AA5974CA0B31687600EF3248 /* FileItemPathStringCache.m in Sources */,
 				AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */,
-				AA62D5DB0BCA67BB0095A09A /* ItemTreeDrawerSettings.m in Sources */,
 				AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */,
 				AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */,
 				AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */,
@@ -822,6 +820,8 @@
 				AA7A7EE10E4F28D100EB366E /* ScanProgressPanelControl.m in Sources */,
 				AA7A7EE20E4F28D100EB366E /* WriteProgressPanelControl.m in Sources */,
 				AA7A7EF00E4F2A1C00EB366E /* TaskExecutor.m in Sources */,
+				AA7A7EF60E4F2B5E00EB366E /* TreeDrawer.m in Sources */,
+				AA7A7EF70E4F2B5E00EB366E /* TreeDrawerSettings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

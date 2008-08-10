@@ -1,7 +1,7 @@
 #import "DrawTaskExecutor.h"
 
-#import "ItemTreeDrawer.h"
-#import "ItemTreeDrawerSettings.h"
+#import "TreeDrawer.h"
+#import "TreeDrawerSettings.h"
 #import "DrawTaskInput.h"
 #import "TreeContext.h"
 
@@ -17,17 +17,17 @@
 - (id) initWithTreeContext: (TreeContext *)treeContextVal {
   return [self initWithTreeContext: treeContextVal 
                  drawingSettings:
-                   [[[ItemTreeDrawerSettings alloc] init] autorelease]];
+                   [[[TreeDrawerSettings alloc] init] autorelease]];
 }
 
 - (id) initWithTreeContext: (TreeContext *)treeContextVal
-         drawingSettings: (ItemTreeDrawerSettings *)settings {
+         drawingSettings: (TreeDrawerSettings *)settings {
   if (self = [super init]) {
     treeContext = [treeContextVal retain];
   
     treeDrawer = 
-      [[ItemTreeDrawer alloc] initWithScanTree: [treeContext scanTree]
-                                treeDrawerSettings: settings];
+      [[TreeDrawer alloc] initWithScanTree: [treeContext scanTree]
+                            treeDrawerSettings: settings];
     treeDrawerSettings = [settings retain];
     
     settingsLock = [[NSLock alloc] init];
@@ -49,11 +49,11 @@
 }
 
 
-- (ItemTreeDrawerSettings *) treeDrawerSettings {
+- (TreeDrawerSettings *) treeDrawerSettings {
   return treeDrawerSettings;
 }
 
-- (void) setTreeDrawerSettings: (ItemTreeDrawerSettings *)settings {
+- (void) setTreeDrawerSettings: (TreeDrawerSettings *)settings {
   [settingsLock lock];
   if (settings != treeDrawerSettings) {
     [treeDrawerSettings release];

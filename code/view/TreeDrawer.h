@@ -6,12 +6,12 @@
 @class FileItem;
 @class DirectoryItem;
 @class TreeLayoutBuilder;
-@class ItemTreeDrawerSettings;
+@class TreeDrawerSettings;
 @class FilteredTreeGuide;
 @protocol FileItemMapping;
 @protocol FileItemTest;
 
-@interface ItemTreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
+@interface TreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
   NSObject <FileItemMapping>  *colorMapper;
   FilteredTreeGuide  *treeGuide;
   
@@ -29,7 +29,7 @@
 
 - (id) initWithScanTree: (DirectoryItem *)scanTree;
 - (id) initWithScanTree: (DirectoryItem *)scanTree 
-         treeDrawerSettings: (ItemTreeDrawerSettings *)settings;
+         treeDrawerSettings: (TreeDrawerSettings *)settings;
 
 - (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (NSObject <FileItemTest> *) fileItemMask;
@@ -41,7 +41,7 @@
 - (BOOL) showPackageContents;
 
 // Updates the drawer according to the given settings.
-- (void) updateSettings: (ItemTreeDrawerSettings *)settings;
+- (void) updateSettings: (TreeDrawerSettings *)settings;
 
 // Note: The tree starting at "treeRoot" should be immutable.
 - (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree
