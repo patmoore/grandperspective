@@ -66,13 +66,13 @@
 }
 
 
-- (NSDictionary *)filterProgressInfo {
+- (NSDictionary *)progressInfo {
   NSDictionary  *dict;
 
   [taskLock lock];
   // The "taskLock" ensures that when treeFilter is not nil, the object will
   // always be valid when it is used (i.e. it won't be deallocated).
-  dict = [treeFilter treeFilterProgressInfo];
+  dict = [treeFilter progressInfo];
   [taskLock unlock];
   
   return dict;

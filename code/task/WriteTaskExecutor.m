@@ -66,13 +66,13 @@
 }
 
 
-- (NSDictionary *)writeProgressInfo {
+- (NSDictionary *)progressInfo {
   NSDictionary  *dict;
 
   [taskLock lock];
   // The "taskLock" ensures that when treeWriter is not nil, the object will
   // always be valid when it is used (i.e. it won't be deallocated).
-  dict = [treeWriter treeWriterProgressInfo];
+  dict = [treeWriter progressInfo];
   [taskLock unlock];
   
   return dict;

@@ -27,7 +27,7 @@
 }
 
 - (NSDictionary *)progressInfo {
-  return  [((ScanTaskExecutor *)taskExecutor) scanProgressInfo];
+  return  [((ScanTaskExecutor *)taskExecutor) progressInfo];
 }
 
 @end // @implementation ScanProgressPanelControl

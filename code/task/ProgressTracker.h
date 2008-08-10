@@ -2,6 +2,7 @@
 
 
 extern NSString  *NumFoldersProcessedKey;
+extern NSString  *NumFoldersSkippedKey;
 extern NSString  *CurrentFolderPathKey;
 
 
@@ -20,6 +21,9 @@ extern NSString  *CurrentFolderPathKey;
   
   // The number of folders that have been processed so far.
   int  numFoldersProcessed;
+
+  // The number of folders that have been skipped so far.
+  int  numFoldersSkipped;
    
   // The stack of directories that are being processed.
   NSMutableArray  *directoryStack;
@@ -36,6 +40,11 @@ extern NSString  *CurrentFolderPathKey;
 /* Called to signal that a folder has been processed completely.
  */
 - (void) processedFolder: (DirectoryItem *)dirItem;
+
+/* Called to signal that a folder is skipped. I.e. it is encountered, but not
+ * processed.
+ */
+- (void) skippedFolder: (DirectoryItem *)dirItem;
 
 /* Returns a dictionary with progress statistics.
  */

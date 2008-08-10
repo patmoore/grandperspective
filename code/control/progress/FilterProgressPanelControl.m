@@ -27,7 +27,7 @@
 }
 
 - (NSDictionary *)progressInfo {
-  return  [((FilterTaskExecutor *)taskExecutor) filterProgressInfo];
+  return  [((FilterTaskExecutor *)taskExecutor) progressInfo];
 }
 
 @end

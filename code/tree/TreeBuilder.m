@@ -7,13 +7,13 @@
 #import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
 #import "TreeContext.h"
+
+#import "ProgressTracker.h"
 #import "UniformTypeInventory.h"
 
 
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
-
-NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
 
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
@@ -108,8 +108,7 @@ typedef struct  {
     hardLinkedFileNumbers = [[NSMutableSet alloc] initWithCapacity: 32];
     abort = NO;
     
-    statsLock = [[NSLock alloc] init];
-    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
+    progressTracker = [[ProgressTracker alloc] init];
     
     pathBuffer = NULL;
     pathBufferLen = 0;
@@ -137,8 +136,7 @@ typedef struct  {
   [hardLinkedFileNumbers release];
   [fileSizeMeasure release];
   
-  [statsLock release];
-  [directoryStack release];
+  [progressTracker release];
   
   free(pathBuffer);
   free(bulkCatalogInfo);
@@ -243,11 +241,7 @@ typedef struct  {
                               flags: 0] autorelease];
   // TODO: Correctly set flags
 
-  [statsLock lock];
-  numFoldersProcessed = 0;
-  numInaccessibleFolders = 0;
-  [directoryStack removeAllObjects];
-  [statsLock unlock];
+  [progressTracker reset];
         
   if (! [self buildTreeForDirectory: scanTree fileRef: &pathRef
                 parentPath: volumePath]) {
@@ -264,21 +258,8 @@ typedef struct  {
 }
 
 
-- (NSDictionary *) treeBuilderProgressInfo {
-  NSDictionary  *dict;
-
-  [statsLock lock];
-  dict = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: numFoldersProcessed],
-            NumFoldersProcessedKey,
-            [NSNumber numberWithInt: numInaccessibleFolders],
-            NumInaccessibleFoldersKey,
-            [[directoryStack lastObject] path],
-            CurrentFolderPathKey,
-            nil];
-  [statsLock unlock];
-
-  return dict;
+- (NSDictionary *) progressInfo {
+  return [progressTracker progressInfo];
 }
 
 @end // @implementation TreeBuilder
@@ -301,10 +282,7 @@ typedef struct  {
   }
   
   [treeGuide descendIntoDirectory: dirItem];
-  
-  [statsLock lock];
-  [directoryStack addObject: dirItem];
-  [statsLock unlock];
+  [progressTracker processingFolder: dirItem];
 
   NSMutableArray  *files = 
     [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
@@ -332,9 +310,10 @@ typedef struct  {
       if (result == afpAccessDenied) {
         NSAssert([dirs count] == 0 && [files count] == 0, 
                  @"Partial access denied?");
-        [statsLock lock];
-        numInaccessibleFolders++;
-        [statsLock unlock];
+        [progressTracker skippedFolder: dirItem];
+        // Note: In the progressInfo for TreeBuilder the skipped folders are
+        // also counted as processed. In a way this is the case, so no need to
+        // change this, at least not for now.
       }
       else {
         NSLog(@"Failed to get bulk catalog info for '%@': %i", path, result);
@@ -456,12 +435,7 @@ typedef struct  {
   [localAutoreleasePool release];
   
   [treeGuide emergedFromDirectory: dirItem];
-    
-  [statsLock lock];
-  NSAssert([directoryStack lastObject] == dirItem, @"Inconsistent stack.");
-  [directoryStack removeLastObject];
-  numFoldersProcessed++;
-  [statsLock unlock];
+  [progressTracker processedFolder: dirItem];
   
   FSCloseIterator(iterator);
   

@@ -5,6 +5,8 @@
 
 #import "TreeContext.h"
 
+#import "ProgressTracker.h"
+
 #import "ApplicationError.h"
 
 
@@ -95,8 +97,7 @@ NSString *escapedAttributeValue(NSString *s) {
     abort = NO;
     error = nil;
     
-    statsLock = [[NSLock alloc] init];
-    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
+    progressTracker = [[ProgressTracker alloc] init];
   }
   return self;
 }
@@ -106,8 +107,7 @@ NSString *escapedAttributeValue(NSString *s) {
   
   [error release];
 
-  [statsLock release];
-  [directoryStack release];
+  [progressTracker release];
   
   [super dealloc];
 }
@@ -116,10 +116,7 @@ NSString *escapedAttributeValue(NSString *s) {
 - (BOOL) writeTree: (TreeContext *)tree toFile: (NSString *)filename {
   NSAssert(file == NULL, @"File not NULL");
 
-  [statsLock lock];
-  numFoldersProcessed = 0;
-  [directoryStack removeAllObjects];
-  [statsLock unlock];
+  [progressTracker reset];
   
   file = fopen( [filename cString], "w");
   if (file == NULL) {
@@ -163,19 +160,8 @@ NSString *escapedAttributeValue(NSString *s) {
   return error;
 }
 
-- (NSDictionary *) treeWriterProgressInfo {
-  NSDictionary  *dict;
-
-  [statsLock lock];
-  dict = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: numFoldersProcessed],
-            NumFoldersProcessedKey,
-            [[directoryStack lastObject] path],
-            CurrentFolderPathKey,
-            nil];
-  [statsLock unlock];
-
-  return dict;
+- (NSDictionary *) progressInfo {
+  return [progressTracker progressInfo];
 }
 
 @end
@@ -223,10 +209,8 @@ NSString *escapedAttributeValue(NSString *s) {
 
 
 - (void) appendFolderElement: (DirectoryItem *)dirItem {
-  [statsLock lock];
-  [directoryStack addObject: dirItem];
-  [statsLock unlock];
-  
+  [progressTracker processingFolder: dirItem];
+
   NSString  *nameVal = escapedAttributeValue([dirItem name]);
   [self appendString: 
           ( ([dirItem fileItemFlags] != 0) 
@@ -241,11 +225,7 @@ NSString *escapedAttributeValue(NSString *s) {
   
   [self appendString: @"</Folder>\n"];
   
-  [statsLock lock];
-  NSAssert([directoryStack lastObject] == dirItem, @"Inconsistent stack.");
-  [directoryStack removeLastObject];
-  numFoldersProcessed++;
-  [statsLock unlock];
+  [progressTracker processedFolder: dirItem];
 }
 
 

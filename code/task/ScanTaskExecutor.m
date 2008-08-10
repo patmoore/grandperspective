@@ -4,6 +4,7 @@
 #import "TreeContext.h"
 #import "ScanTaskInput.h"
 #import "FilteredTreeGuide.h"
+#import "ProgressTracker.h"
 
 
 @implementation ScanTaskExecutor
@@ -50,9 +51,11 @@
     [treeBuilder buildTreeForPath: [myInput pathToScan]];
   
   if (scanResult != nil) {
-    NSLog(@"Done scanning: %d folders scanned in %.2fs.",
-            [[[self scanProgressInfo] 
+    NSLog(@"Done scanning: %d folders scanned (%d skipped) in %.2fs.",
+            [[[self progressInfo] 
                  objectForKey: NumFoldersProcessedKey] intValue],
+            [[[self progressInfo] 
+                 objectForKey: NumFoldersSkippedKey] intValue],
             -[startTime timeIntervalSinceNow]);
   }
   else {
@@ -79,13 +82,13 @@
 }
 
 
-- (NSDictionary *)scanProgressInfo {
+- (NSDictionary *)progressInfo {
   NSDictionary  *dict;
 
   [taskLock lock];
   // The "taskLock" ensures that when treeBuilder is not nil, the object will
   // always be valid when it is used (i.e. it won't be deallocated).
-  dict = [treeBuilder treeBuilderProgressInfo];
+  dict = [treeBuilder progressInfo];
   [taskLock unlock];
   
   return dict;

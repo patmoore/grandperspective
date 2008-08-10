@@ -4,11 +4,6 @@
 extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
 
-// Keys used in the dictionary returned by -treeBuilderProgressInfo
-extern NSString  *NumFoldersProcessedKey;
-extern NSString  *NumInaccessibleFoldersKey;
-extern NSString  *CurrentFolderPathKey;
-
 
 @class FilteredTreeGuide;
 @class TreeBalancer;
@@ -16,6 +11,7 @@ extern NSString  *CurrentFolderPathKey;
 @class FileItem;
 @class DirectoryItem;
 @class TreeContext;
+@class ProgressTracker;
 
 
 /* Constructs trees for folders by (recursively) scanning the folder's 
@@ -36,22 +32,7 @@ extern NSString  *CurrentFolderPathKey;
   // more, it is ignored. 
   NSMutableSet  *hardLinkedFileNumbers;
   
-  // Lock protecting the progress statistics (which can be retrieved from a
-  // thread different than the one building the tree).
-  NSLock  *statsLock;
-  
-  // The number of folders that have been constructed so far. This includes
-  // folders that were subsequently discarded because they did not pass the
-  // filter test. It also includes folders whose contents could not be read.
-  int  numFoldersProcessed;
-  
-  // The number of folders whose contents could not be read due to 
-  // insufficient permissions.
-  int  numInaccessibleFolders;
-  
-  // The stack of directories that is currently being processed. The last
-  // item is the directory that is currently being scanned.
-  NSMutableArray  *directoryStack;
+  ProgressTracker  *progressTracker;
   
   // Temporary buffer for constructing path names
   UInt8  *pathBuffer;
@@ -84,6 +65,6 @@ extern NSString  *CurrentFolderPathKey;
  * It can safely be invoked from a different thread than the one that invoked
  * -buildTreeForPath: (and not doing so would actually be quite silly).
  */
-- (NSDictionary *) treeBuilderProgressInfo;
+- (NSDictionary *) progressInfo;
 
 @end

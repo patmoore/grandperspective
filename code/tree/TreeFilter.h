@@ -1,14 +1,11 @@
 #import <Cocoa/Cocoa.h>
 
 
-extern NSString  *NumFoldersProcessedKey;
-extern NSString  *CurrentFolderPathKey;
-
-
 @class FilteredTreeGuide;
 @class TreeBalancer;
 @class TreeContext;
 @class DirectoryItem;
+@class ProgressTracker;
 
 
 @interface TreeFilter : NSObject {
@@ -18,17 +15,8 @@ extern NSString  *CurrentFolderPathKey;
 
   BOOL  abort;
   
-  // Lock protecting the progress statistics (which can be retrieved from a
-  // thread different than the one building the tree).
-  NSLock  *statsLock;
+  ProgressTracker  *progressTracker;
   
-  // The number of folders that have been filtered so far.
-  int  numFoldersProcessed;
-   
-  // The stack of directories that is currently being processed. The last
-  // item is the directory that is currently being filtered.
-  NSMutableArray  *directoryStack;
-
 @private
   NSMutableArray*  tmpDirItems;
   NSMutableArray*  tmpFileItems;
@@ -52,6 +40,6 @@ extern NSString  *CurrentFolderPathKey;
  * It can safely be invoked from a different thread than the one that invoked
  * -filterTree: (and not doing so would actually be quite silly).
  */
-- (NSDictionary *) treeFilterProgressInfo;
+- (NSDictionary *) progressInfo;
 
 @end

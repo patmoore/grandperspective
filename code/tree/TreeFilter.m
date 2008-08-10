@@ -8,6 +8,9 @@
 #import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
 
+#import "ProgressTracker.h"
+
+
 @interface TreeFilter (PrivateMethods)
 
 - (void) filterItemTree: (DirectoryItem *)oldDirItem 
@@ -31,8 +34,7 @@
     
     abort = NO;
     
-    statsLock = [[NSLock alloc] init];
-    directoryStack = [[NSMutableArray alloc] initWithCapacity: 16];
+    progressTracker = [[ProgressTracker alloc] init];
 
     tmpDirItems = nil;
     tmpFileItems = nil;
@@ -45,8 +47,7 @@
   [treeGuide release];
   [treeBalancer release];
 
-  [statsLock release];
-  [directoryStack release];
+  [progressTracker release];
   
   [super dealloc];
 }
@@ -61,10 +62,7 @@
                               parent: [filterResult scanTreeParent]
                               flags: [oldScanTree fileItemFlags]] autorelease];
 
-  [statsLock lock];
-  numFoldersProcessed = 0;
-  [directoryStack removeAllObjects];
-  [statsLock unlock];
+  [progressTracker reset];
   
   [self filterItemTree: oldScanTree into: scanTree];
 
@@ -78,19 +76,8 @@
 }
 
 
-- (NSDictionary *) treeFilterProgressInfo {
-  NSDictionary  *dict;
-
-  [statsLock lock];
-  dict = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt: numFoldersProcessed],
-            NumFoldersProcessedKey,
-            [[directoryStack lastObject] path],
-            CurrentFolderPathKey,
-            nil];
-  [statsLock unlock];
-
-  return dict;
+- (NSDictionary *) progressInfo {
+  return [progressTracker progressInfo];
 }
 
 @end
@@ -106,10 +93,7 @@
     [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
   
   [treeGuide descendIntoDirectory: newDir];
-
-  [statsLock lock];
-  [directoryStack addObject: newDir];
-  [statsLock unlock];
+  [progressTracker processingFolder: newDir];
 
   [self flattenAndFilterSiblings: [oldDir getContents] 
           directoryItems: dirs fileItems: files];
@@ -148,13 +132,8 @@
   }
   
   [treeGuide emergedFromDirectory: newDir];
+  [progressTracker processedFolder: newDir];
   
-  [statsLock lock];
-  NSAssert([directoryStack lastObject] == newDir, @"Inconsistent stack.");
-  [directoryStack removeLastObject];
-  numFoldersProcessed++;
-  [statsLock unlock];
-
   [dirs release];
   [files release];
 }
@@ -198,6 +177,11 @@
       }
       else {
         [tmpFileItems addObject: fileItem];
+      }
+    }
+    else {
+      if ( [fileItem isDirectory] ) {
+        [progressTracker skippedFolder: (DirectoryItem *)fileItem];
       }
     }
   }

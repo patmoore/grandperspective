@@ -1,11 +1,8 @@
 #import <Cocoa/Cocoa.h>
 
 
-extern NSString  *NumFoldersProcessedKey;
-extern NSString  *CurrentFolderPathKey;
-
-
 @class TreeContext;
+@class ProgressTracker;
 
 @interface TreeWriter : NSObject {
 
@@ -17,16 +14,7 @@ extern NSString  *CurrentFolderPathKey;
   BOOL  abort;
   NSError  *error;
   
-  // Lock protecting the progress statistics (which can be retrieved from a
-  // thread different than the one writing the tree).
-  NSLock  *statsLock;
-  
-  // The number of folders that have been written so far.
-  int  numFoldersProcessed;
-   
-  // The stack of directories that is currently being processed. The last
-  // item is the directory that is currently being written.
-  NSMutableArray  *directoryStack;
+  ProgressTracker  *progressTracker;
 }
 
 /* Writes the tree to file (in XML format). Returns YES if the operation
@@ -55,6 +43,6 @@ extern NSString  *CurrentFolderPathKey;
  * It can safely be invoked from a different thread than the one that invoked
  * -writeTree:toFile: (and not doing so would actually be quite silly).
  */
-- (NSDictionary *) treeWriterProgressInfo;
+- (NSDictionary *) progressInfo;
 
 @end

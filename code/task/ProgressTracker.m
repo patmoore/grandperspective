@@ -4,6 +4,7 @@
 
 
 NSString  *NumFoldersProcessedKey = @"numFoldersProcessed";
+NSString  *NumFoldersSkippedKey = @"numFoldersSkipped";
 NSString  *CurrentFolderPathKey = @"currentFolderPath";
 
 
@@ -29,6 +30,7 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
 - (void) reset {
   [mutex lock];
   numFoldersProcessed = 0;
+  numFoldersSkipped = 0;
   [directoryStack removeAllObjects];
   [mutex unlock];
 }
@@ -48,6 +50,12 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
   [mutex unlock];
 }
 
+- (void) skippedFolder: (DirectoryItem *)dirItem {
+  [mutex lock];
+  numFoldersSkipped++;
+  [mutex unlock];
+}
+
 
 - (NSDictionary *)progressInfo {
   NSDictionary  *dict;
@@ -56,6 +64,8 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
   dict = [NSDictionary dictionaryWithObjectsAndKeys:
             [NSNumber numberWithInt: numFoldersProcessed],
             NumFoldersProcessedKey,
+            [NSNumber numberWithInt: numFoldersSkipped],
+            NumFoldersSkippedKey,
             [[directoryStack lastObject] path],
             CurrentFolderPathKey,
             nil];
