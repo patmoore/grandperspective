@@ -26,6 +26,9 @@
 #import "FilterProgressPanelControl.h"
 #import "FilterTaskInput.h"
 #import "FilterTaskExecutor.h"
+#import "ReadProgressPanelControl.h"
+#import "ReadTaskInput.h"
+#import "ReadTaskExecutor.h"
 #import "WriteProgressPanelControl.h"
 #import "WriteTaskInput.h"
 #import "WriteTaskExecutor.h"
@@ -47,6 +50,19 @@ static int  nextFilterId = 1;
 - (void) stopModalAction: (NSNotification *)notification;
 
 @end
+
+
+@interface ReadTaskCallback : NSObject {
+  WindowManager  *windowManager;
+  ReadTaskInput  *taskInput;
+}
+
+- (id) initWithWindowManager: (WindowManager *)windowManager 
+         readTaskInput: (ReadTaskInput *)taskInput;
+
+- (void) readTaskCompleted: (id) result;
+
+@end // @interface ReadTaskCallback
 
 
 @interface WriteTaskCallback : NSObject {
@@ -165,6 +181,15 @@ static int  nextFilterId = 1;
     writeTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: writeProgressPanelControl];
+          
+    ProgressPanelControl  *readProgressPanelControl = 
+      [[[ReadProgressPanelControl alloc] 
+           initWithTaskExecutor: [[[ReadTaskExecutor alloc] init] autorelease]
+       ] autorelease];
+
+    readTaskManager =
+      [[VisibleAsynchronousTaskManager alloc] 
+          initWithProgressPanel: readProgressPanelControl];
   }
   return self;
 }
@@ -336,30 +361,17 @@ static int  nextFilterId = 1;
   if ([openPanel runModal] == NSOKButton) {
     NSString  *filename = [openPanel filename];
     
-    TreeReader  *treeReader = [[[TreeReader alloc] init] autorelease];
-
-    TreeContext  *treeContext = [treeReader readTreeFromFile: filename];
-      
-    if (treeContext != nil) {
-      FreshDirViewWindowCreator  *windowCreator =
-        [[[FreshDirViewWindowCreator alloc] 
-             initWithWindowManager: windowManager] autorelease];
-      
-      [windowCreator createWindowForTree: treeContext];
-    }
-    else if (! [treeReader aborted]) {
-      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-
-      [alert addButtonWithTitle: OK_BUTTON_TITLE];
-      [alert setMessageText: 
-        NSLocalizedString( @"Failed to load the scan data.", 
-                           @"Alert message" )];
-      if ([treeReader error] != nil) {
-        [alert setInformativeText: [[treeReader error] localizedDescription]];
-      }
-
-      [alert runModal];
-    }
+    ReadTaskInput  *input = 
+      [[[ReadTaskInput alloc] initWithPath: filename] autorelease];
+           
+    ReadTaskCallback  *callback = 
+      [[[ReadTaskCallback alloc] 
+           initWithWindowManager: windowManager readTaskInput: input] 
+           autorelease];
+    
+    [readTaskManager asynchronouslyRunTaskWithInput: input
+                        callback: callback
+                        selector: @selector(readTaskCompleted:)];
   }
 }
 
@@ -519,6 +531,65 @@ static int  nextFilterId = 1;
 }
 
 @end // @implementation ModalityTerminator
+
+
+@implementation ReadTaskCallback
+
+// Overrides designated initialiser
+- (id) init {
+  NSAssert(NO, @"Use initWithReadTaskInput: instead.");
+}
+
+- (id) initWithWindowManager: (WindowManager *)windowManagerVal 
+         readTaskInput: (ReadTaskInput *)taskInputVal {
+  if (self = [super init]) {
+    windowManager = [windowManagerVal retain];
+    taskInput = [taskInputVal retain];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [windowManager release];
+  [taskInput release];
+
+  [super dealloc];
+}
+
+
+- (void) readTaskCompleted: (id) result {
+  if ( result == nil ) {
+    // The task was aborted. Silently ignore.
+  }
+  else if ([result isKindOfClass: [TreeContext class]]) {
+    FreshDirViewWindowCreator  *windowCreator =
+      [[[FreshDirViewWindowCreator alloc] 
+           initWithWindowManager: windowManager] autorelease];
+      
+    [windowCreator createWindowForTree: result];
+  }
+  else if ([result isKindOfClass: [NSError class]]) {
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+    NSString  *format = 
+      NSLocalizedString( @"Failed to load the scan data from \"%@\"", 
+                         @"Alert message (with filename arg)" );
+
+    [alert addButtonWithTitle: OK_BUTTON_TITLE];
+    [alert setMessageText: 
+             [NSString stringWithFormat: format, 
+                                         [[taskInput path] lastPathComponent]]];
+    [alert setInformativeText: [result localizedDescription]];
+
+    [alert runModal];
+  }
+  else {
+    NSAssert(NO, @"Unexpected result type.");
+  }
+}
+
+@end // @interface ReadTaskCallback
 
 
 @implementation WriteTaskCallback

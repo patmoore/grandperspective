@@ -13,9 +13,7 @@
 NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
-NSString  *NumFoldersProcessedKey = @"numFoldersProcessed";
 NSString  *NumInaccessibleFoldersKey = @"numInaccessibleFolders";
-NSString  *CurrentFolderPathKey = @"currentFolderPath";
 
 
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 

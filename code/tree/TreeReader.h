@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
-
 @class TreeContext;
+@class ProgressTracker;
 
 @interface TreeReader : NSObject {
 
@@ -10,6 +10,8 @@
 
   BOOL  abort;
   NSError  *error;
+  
+  ProgressTracker  *progressTracker;
 }
 
 
@@ -27,5 +29,13 @@
  * reading task.
  */
 - (NSError *) error;
+
+/* Returns a dictionary containing information about the progress of the
+ * ongoing tree-reading task.
+ *
+ * It can safely be invoked from a different thread than the one that invoked
+ * -writeTree:toFile: (and not doing so would actually be quite silly).
+ */
+- (NSDictionary *) progressInfo;
 
 @end

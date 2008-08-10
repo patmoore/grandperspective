@@ -10,6 +10,8 @@
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
 
+#import "ProgressTracker.h"
+
 #import "UniformTypeInventory.h"
 #import "ApplicationError.h"
 
@@ -20,6 +22,7 @@ NSString  *AttributeNameKey = @"name";
 
 - (BOOL) isAborted;
 - (NSXMLParser *) parser;
+- (ProgressTracker *) progressTracker;
 
 - (void) setParseError: (NSError *)error;
 
@@ -171,6 +174,8 @@ NSString  *AttributeNameKey = @"name";
     tree = nil;
     error = nil;
     abort = NO;
+    
+    progressTracker = [[ProgressTracker alloc] init];
   }
   
   return self;
@@ -181,6 +186,8 @@ NSString  *AttributeNameKey = @"name";
   NSAssert(tree == nil, @"tree should be nil.");
   
   [error release];
+  
+  [progressTracker release];
   
   [super dealloc];
 }
@@ -202,6 +209,8 @@ NSString  *AttributeNameKey = @"name";
   abort = NO;
   [error release];
   error = nil;
+  
+  [progressTracker reset];
   
   [parser parse];
   
@@ -234,6 +243,11 @@ NSString  *AttributeNameKey = @"name";
 - (NSError *) error {
   return error;
 }
+
+- (NSDictionary *) progressInfo {
+  return [progressTracker progressInfo];
+}
+
 
 //----------------------------------------------------------------------------
 // NSXMLParser delegate methods
@@ -311,6 +325,11 @@ NSString  *AttributeNameKey = @"name";
   return parser;
 }
 
+- (ProgressTracker *) progressTracker {
+  return progressTracker;
+}
+
+
 - (void) setParseError: (NSError *)parseError {
   if ( error == nil // There is no error yet
        && !abort    // ... and parsing has not been aborted (this also 
@@ -325,7 +344,6 @@ NSString  *AttributeNameKey = @"name";
                       [parseError localizedDescription]]];
   }
 }
-
 
 @end // @implementation  TreeReader (PrivateMethods)
 
@@ -757,6 +775,7 @@ NSString  *AttributeNameKey = @"name";
     dirItem = 
       [[DirectoryItem alloc]
           initWithName: name parent: parentItem flags: flags];
+    [[reader progressTracker] processingFolder: dirItem];
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];
@@ -793,6 +812,8 @@ NSString  *AttributeNameKey = @"name";
                       second: [treeBalancer createTreeForItems: dirs]]];
 
   [treeBalancer release];
+    
+  [[reader progressTracker] processedFolder: dirItem];
   
   return dirItem;
 }

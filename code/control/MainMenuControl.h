@@ -11,6 +11,7 @@
   VisibleAsynchronousTaskManager  *scanTaskManager;
   VisibleAsynchronousTaskManager  *filterTaskManager;
   VisibleAsynchronousTaskManager  *writeTaskManager;
+  VisibleAsynchronousTaskManager  *readTaskManager;
   
   PreferencesPanelControl  *preferencesPanelControl;
 }
