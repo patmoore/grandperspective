@@ -48,12 +48,12 @@
 		AA6E27A40D7AE95E00D5FBBA /* ColorLegendTableViewControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */; };
 		AA7A7E0D0E4EE29D00EB366E /* WriteTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */; };
 		AA7A7E110E4EE3DA00EB366E /* WriteTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E100E4EE3DA00EB366E /* WriteTaskExecutor.m */; };
-		AA7A7E130E4EE80D00EB366E /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */; };
 		AA7A7E1C0E4EF00D00EB366E /* ApplicationError.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */; };
 		AA7A7EDF0E4F28D100EB366E /* FilterProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7ED80E4F28D100EB366E /* FilterProgressPanelControl.m */; };
 		AA7A7EE00E4F28D100EB366E /* ProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EDA0E4F28D100EB366E /* ProgressPanelControl.m */; };
 		AA7A7EE10E4F28D100EB366E /* ScanProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EDC0E4F28D100EB366E /* ScanProgressPanelControl.m */; };
 		AA7A7EE20E4F28D100EB366E /* WriteProgressPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EDE0E4F28D100EB366E /* WriteProgressPanelControl.m */; };
+		AA7A7EF00E4F2A1C00EB366E /* TaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7EEF0E4F2A1C00EB366E /* TaskExecutor.m */; };
 		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
 		AA7C64D60AFE71DC007B8CD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */; };
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
@@ -157,7 +157,6 @@
 		AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsynchronousTaskManager.m; path = util/AsynchronousTaskManager.m; sourceTree = "<group>"; };
 		AA6012660A5AF5A600DEBCB8 /* PeekingEnumerator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PeekingEnumerator.h; path = util/PeekingEnumerator.h; sourceTree = "<group>"; };
 		AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PeekingEnumerator.m; path = util/PeekingEnumerator.m; sourceTree = "<group>"; };
-		AA6012750A5AF5E200DEBCB8 /* TaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TaskExecutor.h; path = util/TaskExecutor.h; sourceTree = "<group>"; };
 		AA6012E90A5AFB7F00DEBCB8 /* DirectoryView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryView.h; path = view/DirectoryView.h; sourceTree = "<group>"; };
 		AA6012EA0A5AFB7F00DEBCB8 /* DirectoryView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DirectoryView.m; path = view/DirectoryView.m; sourceTree = "<group>"; };
 		AA6012F60A5AFC2500DEBCB8 /* ItemTreeDrawer.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ItemTreeDrawer.m; path = view/ItemTreeDrawer.m; sourceTree = "<group>"; };
@@ -188,7 +187,6 @@
 		AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteTaskInput.m; path = task/WriteTaskInput.m; sourceTree = "<group>"; };
 		AA7A7E0F0E4EE3DA00EB366E /* WriteTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteTaskExecutor.h; path = task/WriteTaskExecutor.h; sourceTree = "<group>"; };
 		AA7A7E100E4EE3DA00EB366E /* WriteTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteTaskExecutor.m; path = task/WriteTaskExecutor.m; sourceTree = "<group>"; };
-		AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TaskExecutor.m; path = util/TaskExecutor.m; sourceTree = "<group>"; };
 		AA7A7E1A0E4EF00D00EB366E /* ApplicationError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ApplicationError.h; path = util/ApplicationError.h; sourceTree = "<group>"; };
 		AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ApplicationError.m; path = util/ApplicationError.m; sourceTree = "<group>"; };
 		AA7A7ED70E4F28D100EB366E /* FilterProgressPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterProgressPanelControl.h; path = control/progress/FilterProgressPanelControl.h; sourceTree = "<group>"; };
@@ -199,6 +197,8 @@
 		AA7A7EDC0E4F28D100EB366E /* ScanProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ScanProgressPanelControl.m; path = control/progress/ScanProgressPanelControl.m; sourceTree = "<group>"; };
 		AA7A7EDD0E4F28D100EB366E /* WriteProgressPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteProgressPanelControl.h; path = control/progress/WriteProgressPanelControl.h; sourceTree = "<group>"; };
 		AA7A7EDE0E4F28D100EB366E /* WriteProgressPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteProgressPanelControl.m; path = control/progress/WriteProgressPanelControl.m; sourceTree = "<group>"; };
+		AA7A7EEE0E4F2A1C00EB366E /* TaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TaskExecutor.h; path = task/TaskExecutor.h; sourceTree = "<group>"; };
+		AA7A7EEF0E4F2A1C00EB366E /* TaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TaskExecutor.m; path = task/TaskExecutor.m; sourceTree = "<group>"; };
 		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
 		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
 		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
@@ -538,8 +538,6 @@
 				AA5974C80B31687600EF3248 /* FileItemPathStringCache.m */,
 				AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */,
 				AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */,
-				AA6012750A5AF5E200DEBCB8 /* TaskExecutor.h */,
-				AA7A7E120E4EE80D00EB366E /* TaskExecutor.m */,
 				AA6012540A5AF55400DEBCB8 /* AsynchronousTaskManager.h */,
 				AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */,
 				AA6012660A5AF5A600DEBCB8 /* PeekingEnumerator.h */,
@@ -641,6 +639,8 @@
 		AAFDC5FF0A8BD6F800DB84D7 /* task */ = {
 			isa = PBXGroup;
 			children = (
+				AA7A7EEE0E4F2A1C00EB366E /* TaskExecutor.h */,
+				AA7A7EEF0E4F2A1C00EB366E /* TaskExecutor.m */,
 				AAC26BB20A8CAF4800F2DA33 /* DrawTaskExecutor.h */,
 				AAC26BB30A8CAF4800F2DA33 /* DrawTaskExecutor.m */,
 				AAC26BB40A8CAF4800F2DA33 /* DrawTaskInput.h */,
@@ -816,12 +816,12 @@
 				AA837E740E2D171D005384E0 /* TreeReader.m in Sources */,
 				AA7A7E0D0E4EE29D00EB366E /* WriteTaskInput.m in Sources */,
 				AA7A7E110E4EE3DA00EB366E /* WriteTaskExecutor.m in Sources */,
-				AA7A7E130E4EE80D00EB366E /* TaskExecutor.m in Sources */,
 				AA7A7E1C0E4EF00D00EB366E /* ApplicationError.m in Sources */,
 				AA7A7EDF0E4F28D100EB366E /* FilterProgressPanelControl.m in Sources */,
 				AA7A7EE00E4F28D100EB366E /* ProgressPanelControl.m in Sources */,
 				AA7A7EE10E4F28D100EB366E /* ScanProgressPanelControl.m in Sources */,
 				AA7A7EE20E4F28D100EB366E /* WriteProgressPanelControl.m in Sources */,
+				AA7A7EF00E4F2A1C00EB366E /* TaskExecutor.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
