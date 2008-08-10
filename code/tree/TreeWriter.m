@@ -116,7 +116,7 @@ NSString *escapedAttributeValue(NSString *s) {
 - (BOOL) writeTree: (TreeContext *)tree toFile: (NSString *)filename {
   NSAssert(file == NULL, @"File not NULL");
 
-  [progressTracker reset];
+  [progressTracker startingTask];
   
   file = fopen( [filename cString], "w");
   if (file == NULL) {
@@ -144,6 +144,8 @@ NSString *escapedAttributeValue(NSString *s) {
   
   fclose(file);
   file = NULL;
+  
+  [progressTracker finishedTask];
   
   return (error==nil) && !abort;
 }

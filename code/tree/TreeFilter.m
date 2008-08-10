@@ -62,9 +62,11 @@
                               parent: [filterResult scanTreeParent]
                               flags: [oldScanTree fileItemFlags]] autorelease];
 
-  [progressTracker reset];
+  [progressTracker startingTask];
   
   [self filterItemTree: oldScanTree into: scanTree];
+
+  [progressTracker finishedTask];
 
   [filterResult setScanTree: scanTree];
                  

@@ -241,10 +241,14 @@ typedef struct  {
                               flags: 0] autorelease];
   // TODO: Correctly set flags
 
-  [progressTracker reset];
+  [progressTracker startingTask];
         
-  if (! [self buildTreeForDirectory: scanTree fileRef: &pathRef
-                parentPath: volumePath]) {
+  BOOL  ok = [self buildTreeForDirectory: scanTree fileRef: &pathRef
+                     parentPath: volumePath];
+
+  [progressTracker finishedTask];
+
+  if (! ok) {
     return nil;
   }
   

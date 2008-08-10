@@ -27,12 +27,16 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
 
 }
 
-- (void) reset {
+- (void) startingTask {
   [mutex lock];
   numFoldersProcessed = 0;
   numFoldersSkipped = 0;
   [directoryStack removeAllObjects];
   [mutex unlock];
+}
+
+- (void) finishedTask {
+  // void. This method can be overridden.
 }
 
 

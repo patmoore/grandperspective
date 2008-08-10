@@ -58,6 +58,7 @@
 		AA7A7F0D0E4F339D00EB366E /* ReadTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7F0C0E4F339D00EB366E /* ReadTaskInput.m */; };
 		AA7A7F110E4F342100EB366E /* ReadTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7F100E4F342100EB366E /* ReadTaskExecutor.m */; };
 		AA7A7F170E4F3C2800EB366E /* ProgressTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7F160E4F3C2800EB366E /* ProgressTracker.m */; };
+		AA7A7FE40E4F724300EB366E /* AutoreleaseProgressTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7A7FE30E4F724300EB366E /* AutoreleaseProgressTracker.m */; };
 		AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7B90690DD707F000488CAA /* ItemPathModelView.m */; };
 		AA7C64D60AFE71DC007B8CD2 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */; };
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
@@ -211,6 +212,8 @@
 		AA7A7F100E4F342100EB366E /* ReadTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReadTaskExecutor.m; path = task/ReadTaskExecutor.m; sourceTree = "<group>"; };
 		AA7A7F150E4F3C2800EB366E /* ProgressTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ProgressTracker.h; path = task/ProgressTracker.h; sourceTree = "<group>"; };
 		AA7A7F160E4F3C2800EB366E /* ProgressTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProgressTracker.m; path = task/ProgressTracker.m; sourceTree = "<group>"; };
+		AA7A7FE20E4F724300EB366E /* AutoreleaseProgressTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AutoreleaseProgressTracker.h; path = task/AutoreleaseProgressTracker.h; sourceTree = "<group>"; };
+		AA7A7FE30E4F724300EB366E /* AutoreleaseProgressTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AutoreleaseProgressTracker.m; path = task/AutoreleaseProgressTracker.m; sourceTree = "<group>"; };
 		AA7B90680DD707F000488CAA /* ItemPathModelView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemPathModelView.h; path = tree/ItemPathModelView.h; sourceTree = "<group>"; };
 		AA7B90690DD707F000488CAA /* ItemPathModelView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemPathModelView.m; path = tree/ItemPathModelView.m; sourceTree = "<group>"; };
 		AA7C64CA0AFE717A007B8CD2 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Localizable.strings; sourceTree = "<group>"; wrapsLines = 1; };
@@ -677,6 +680,8 @@
 				AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */,
 				AA7A7F150E4F3C2800EB366E /* ProgressTracker.h */,
 				AA7A7F160E4F3C2800EB366E /* ProgressTracker.m */,
+				AA7A7FE20E4F724300EB366E /* AutoreleaseProgressTracker.h */,
+				AA7A7FE30E4F724300EB366E /* AutoreleaseProgressTracker.m */,
 			);
 			name = task;
 			sourceTree = "<group>";
@@ -846,6 +851,7 @@
 				AA7A7F0D0E4F339D00EB366E /* ReadTaskInput.m in Sources */,
 				AA7A7F110E4F342100EB366E /* ReadTaskExecutor.m in Sources */,
 				AA7A7F170E4F3C2800EB366E /* ProgressTracker.m in Sources */,
+				AA7A7FE40E4F724300EB366E /* AutoreleaseProgressTracker.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -29,9 +29,15 @@ extern NSString  *CurrentFolderPathKey;
   NSMutableArray  *directoryStack;
 }
 
-/* Resets the progress statistics.
+/* Called to signal that a new task is about to be carried out. The progress
+ * statistics are reset.
  */
-- (void) reset;
+- (void) startingTask;
+
+/* Called to signal that the task has finished.
+ */
+- (void) finishedTask;
+
 
 /* Called to signal that a new folder is being processed.
  */

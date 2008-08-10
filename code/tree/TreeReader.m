@@ -10,7 +10,7 @@
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
 
-#import "ProgressTracker.h"
+#import "AutoreleaseProgressTracker.h"
 
 #import "UniformTypeInventory.h"
 #import "ApplicationError.h"
@@ -23,6 +23,7 @@ NSString  *AttributeNameKey = @"name";
 - (BOOL) isAborted;
 - (NSXMLParser *) parser;
 - (ProgressTracker *) progressTracker;
+- (TreeBalancer *) treeBalancer;
 
 - (void) setParseError: (NSError *)error;
 
@@ -175,7 +176,8 @@ NSString  *AttributeNameKey = @"name";
     error = nil;
     abort = NO;
     
-    progressTracker = [[ProgressTracker alloc] init];
+    progressTracker = [[AutoreleaseProgressTracker alloc] init];
+    treeBalancer = [[TreeBalancer alloc] init];
   }
   
   return self;
@@ -188,6 +190,7 @@ NSString  *AttributeNameKey = @"name";
   [error release];
   
   [progressTracker release];
+  [treeBalancer release];
   
   [super dealloc];
 }
@@ -210,9 +213,11 @@ NSString  *AttributeNameKey = @"name";
   [error release];
   error = nil;
   
-  [progressTracker reset];
+  [progressTracker startingTask];
   
   [parser parse];
+  
+  [progressTracker finishedTask];
   
   [parser release];
   parser = nil;
@@ -327,6 +332,10 @@ NSString  *AttributeNameKey = @"name";
 
 - (ProgressTracker *) progressTracker {
   return progressTracker;
+}
+
+- (TreeBalancer *) treeBalancer {
+  return treeBalancer;
 }
 
 
@@ -513,12 +522,15 @@ NSString  *AttributeNameKey = @"name";
   NSString  *stringValue = 
     [self getStringAttributeValue: name from: attribs defaultValue: defVal];
 
-  NSScanner  *scanner = [NSScanner scannerWithString: stringValue];
+  // Note: Explicitly releasing scanner to minimise use of autorelease pool.
+  NSScanner  *scanner = [[NSScanner alloc] initWithString: stringValue];
   long long  signedValue;
-  
-  if (! ( [scanner scanLongLong: &signedValue] 
-          && [scanner isAtEnd]
-          && signedValue >= 0 ) ) {
+  BOOL  ok = ( [scanner scanLongLong: &signedValue] 
+               && [scanner isAtEnd]
+               && signedValue >= 0 );
+  [scanner release];
+
+  if (! ok) {
     NSString  *reason = 
       NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
     NSException  *ex = [AttributeParseException 
@@ -561,10 +573,13 @@ NSString  *AttributeNameKey = @"name";
   NSString  *stringValue = 
     [self getStringAttributeValue: name from: attribs defaultValue: defVal];
 
-  NSScanner  *scanner = [NSScanner scannerWithString: stringValue];
+  // Note: Explicitly releasing scanner to minimise use of autorelease pool.
+  NSScanner  *scanner = [[NSScanner alloc] initWithString: stringValue];
   int  intValue;
-  if (! ( [scanner scanInt: &intValue] 
-          && [scanner isAtEnd] ) ) {
+  BOOL  ok  = ( [scanner scanInt: &intValue] && [scanner isAtEnd] );
+  [scanner release];
+     
+  if (! ok) {
     NSString  *reason = 
       NSLocalizedString(@"Expected integer value.", @"Parse error");
     NSException  *ex = [AttributeParseException 
@@ -772,9 +787,8 @@ NSString  *AttributeNameKey = @"name";
     int  flags = [self getIntegerAttributeValue: @"flags"
                          from: attribs defaultValue: @"0"];
 
-    dirItem = 
-      [[DirectoryItem alloc]
-          initWithName: name parent: parentItem flags: flags];
+    dirItem = [[DirectoryItem alloc]
+                  initWithName: name parent: parentItem flags: flags];
     [[reader progressTracker] processingFolder: dirItem];
   }
   @catch (AttributeParseException *ex) {
@@ -804,15 +818,13 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  TreeBalancer  *treeBalancer = [[TreeBalancer alloc] init];
+  TreeBalancer  *treeBalancer = [reader treeBalancer];
 
   [dirItem setDirectoryContents: 
     [CompoundItem 
        compoundItemWithFirst: [treeBalancer createTreeForItems: files] 
                       second: [treeBalancer createTreeForItems: dirs]]];
 
-  [treeBalancer release];
-    
   [[reader progressTracker] processedFolder: dirItem];
   
   return dirItem;
@@ -881,10 +893,9 @@ NSString  *AttributeNameKey = @"name";
     UniformType  *fileType = 
       [typeInventory uniformTypeForExtension: [name pathExtension]];
 
-    fileItem = 
-      [[PlainFileItem alloc]
-          initWithName: name parent: parentItem size: size
-            type: fileType flags: flags];
+    fileItem = [[PlainFileItem alloc]
+                   initWithName: name parent: parentItem size: size
+                     type: fileType flags: flags];
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];

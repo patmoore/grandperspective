@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class TreeContext;
+@class TreeBalancer;
 @class ProgressTracker;
 
 @interface TreeReader : NSObject {
@@ -12,6 +13,7 @@
   NSError  *error;
   
   ProgressTracker  *progressTracker;
+  TreeBalancer  *treeBalancer;
 }
 
 
