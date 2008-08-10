@@ -42,7 +42,8 @@
     result = SuccessfulVoidResult;
   }
   else {
-    result = [treeWriter error]; // Will return nil when task was aborted
+    result = [[[treeWriter error] retain] autorelease]; 
+      // Will return nil when task was aborted
   }
 
   [taskLock lock];
