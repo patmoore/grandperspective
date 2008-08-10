@@ -10,7 +10,7 @@
   NSAssert(NO, @"Use initWithOldContext:filterTest: instead");
 }
 
-- (id) initWithOldContext: (TreeContext *)oldContextVal
+- (id) initWithTreeContext: (TreeContext *)treeContextVal
          filterTest: (NSObject <FileItemTest> *)filterTestVal {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
@@ -18,15 +18,15 @@
           ( [userDefaults boolForKey: ShowPackageContentsByDefaultKey]
             ? NSOnState : NSOffState );
 
-  return [self initWithOldContext: oldContextVal filterTest: filterTestVal
+  return [self initWithTreeContext: treeContextVal filterTest: filterTestVal
                  packagesAsFiles: !showPackageContentsByDefault];
 }
 
-- (id) initWithOldContext: (TreeContext *)oldContextVal
+- (id) initWithTreeContext: (TreeContext *)treeContextVal
          filterTest: (NSObject <FileItemTest> *)filterTestVal
          packagesAsFiles: (BOOL) packagesAsFilesVal {
   if (self = [super init]) {
-    oldContext = [oldContextVal retain];
+    treeContext = [treeContextVal retain];
     filterTest = [filterTestVal retain];
     
     packagesAsFiles = packagesAsFilesVal;
@@ -35,15 +35,15 @@
 }
 
 - (void) dealloc {
-  [oldContext release];
+  [treeContext release];
   [filterTest release];
   
   [super dealloc];
 }
 
 
-- (TreeContext *) oldContext {
-  return oldContext;
+- (TreeContext *) treeContext {
+  return treeContext;
 }
 
 - (NSObject <FileItemTest> *) filterTest {

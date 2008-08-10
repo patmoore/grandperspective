@@ -277,7 +277,7 @@ static int  nextFilterId = 1;
 
   FilterTaskInput  *input = 
     [[[FilterTaskInput alloc] 
-         initWithOldContext: [oldControl treeContext]
+         initWithTreeContext: [oldControl treeContext]
            filterTest: filterTest
            packagesAsFiles: ! [oldSettings showPackageContents]]
          autorelease];
