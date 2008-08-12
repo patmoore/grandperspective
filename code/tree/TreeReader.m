@@ -14,6 +14,8 @@
 
 #import "UniformTypeInventory.h"
 #import "ApplicationError.h"
+#import "MutableArrayPool.h"
+
 
 NSString  *AttributeNameKey = @"name";
 
@@ -24,6 +26,8 @@ NSString  *AttributeNameKey = @"name";
 - (NSXMLParser *) parser;
 - (ProgressTracker *) progressTracker;
 - (TreeBalancer *) treeBalancer;
+- (ObjectPool *) dirsArrayPool;
+- (ObjectPool *) filesArrayPool;
 
 - (void) setParseError: (NSError *)error;
 
@@ -178,6 +182,13 @@ NSString  *AttributeNameKey = @"name";
     
     progressTracker = [[AutoreleaseProgressTracker alloc] init];
     treeBalancer = [[TreeBalancer alloc] init];
+
+    dirsArrayPool = [[MutableArrayPool alloc] 
+                        initWithCapacity: 16 
+                        initialArrayCapacity: INITIAL_DIRS_CAPACITY * 4];
+    filesArrayPool = [[MutableArrayPool alloc]  
+                        initWithCapacity: 16 
+                        initialArrayCapacity: INITIAL_FILES_CAPACITY * 4];
   }
   
   return self;
@@ -191,6 +202,8 @@ NSString  *AttributeNameKey = @"name";
   
   [progressTracker release];
   [treeBalancer release];
+  [dirsArrayPool release];
+  [filesArrayPool release];
   
   [super dealloc];
 }
@@ -336,6 +349,14 @@ NSString  *AttributeNameKey = @"name";
 
 - (TreeBalancer *) treeBalancer {
   return treeBalancer;
+}
+
+- (ObjectPool *) dirsArrayPool {
+  return dirsArrayPool;
+}
+
+- (ObjectPool *) filesArrayPool {
+  return filesArrayPool;
 }
 
 
@@ -762,8 +783,8 @@ NSString  *AttributeNameKey = @"name";
                       callback: callbackVal onSuccess: successSelectorVal]) {
     parentItem = [parentVal retain];
 
-    files = [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
-    dirs = [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
+    files = [[[reader filesArrayPool] borrowObject] retain];
+    dirs = [[[reader dirsArrayPool] borrowObject] retain];
   }
   
   return self;
@@ -773,7 +794,10 @@ NSString  *AttributeNameKey = @"name";
   [parentItem release];
   [dirItem release];
   
+  [[reader filesArrayPool] returnObject: files];
   [files release];
+
+  [[reader dirsArrayPool] returnObject: dirs];
   [dirs release];
   
   [super dealloc];

@@ -101,6 +101,8 @@
 		AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
 		AAB35D850A330BE8006535FF /* EditFilterRuleWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D840A330BE8006535FF /* EditFilterRuleWindow.nib */; };
+		AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */; };
+		AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */; };
 		AAC26BC10A8CAF4800F2DA33 /* DrawTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB30A8CAF4800F2DA33 /* DrawTaskExecutor.m */; };
 		AAC26BC30A8CAF4800F2DA33 /* DrawTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB50A8CAF4800F2DA33 /* DrawTaskInput.m */; };
 		AAC26BC50A8CAF4800F2DA33 /* FilterTaskExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = AAC26BB70A8CAF4800F2DA33 /* FilterTaskExecutor.m */; };
@@ -302,6 +304,10 @@
 		AA9882BD0DF71B8900A6EA33 /* ItemSizeTestFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTestFinder.h; path = test/ItemSizeTestFinder.h; sourceTree = "<group>"; };
 		AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTestFinder.m; path = test/ItemSizeTestFinder.m; sourceTree = "<group>"; };
 		AAB35D7D0A330BB3006535FF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };
+		AAB52EB90E4F8DFE00BF7B20 /* ObjectPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjectPool.h; path = util/ObjectPool.h; sourceTree = "<group>"; };
+		AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectPool.m; path = util/ObjectPool.m; sourceTree = "<group>"; };
+		AAB52EC10E520E7A00BF7B20 /* MutableArrayPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutableArrayPool.h; path = util/MutableArrayPool.h; sourceTree = "<group>"; };
+		AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutableArrayPool.m; path = util/MutableArrayPool.m; sourceTree = "<group>"; };
 		AAB922110E200D29003FB89A /* TreeConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeConstants.h; path = tree/TreeConstants.h; sourceTree = "<group>"; };
 		AAC26BB20A8CAF4800F2DA33 /* DrawTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DrawTaskExecutor.h; path = task/DrawTaskExecutor.h; sourceTree = "<group>"; };
 		AAC26BB30A8CAF4800F2DA33 /* DrawTaskExecutor.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DrawTaskExecutor.m; path = task/DrawTaskExecutor.m; sourceTree = "<group>"; };
@@ -561,6 +567,10 @@
 				AA61786D0A38B8D500B8AB16 /* NotifyingDictionary.m */,
 				AA7A7E1A0E4EF00D00EB366E /* ApplicationError.h */,
 				AA7A7E1B0E4EF00D00EB366E /* ApplicationError.m */,
+				AAB52EB90E4F8DFE00BF7B20 /* ObjectPool.h */,
+				AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */,
+				AAB52EC10E520E7A00BF7B20 /* MutableArrayPool.h */,
+				AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -852,6 +862,8 @@
 				AA7A7F110E4F342100EB366E /* ReadTaskExecutor.m in Sources */,
 				AA7A7F170E4F3C2800EB366E /* ProgressTracker.m in Sources */,
 				AA7A7FE40E4F724300EB366E /* AutoreleaseProgressTracker.m in Sources */,
+				AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */,
+				AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

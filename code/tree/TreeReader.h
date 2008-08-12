@@ -3,6 +3,7 @@
 @class TreeContext;
 @class TreeBalancer;
 @class ProgressTracker;
+@class ObjectPool;
 
 @interface TreeReader : NSObject {
 
@@ -14,6 +15,8 @@
   
   ProgressTracker  *progressTracker;
   TreeBalancer  *treeBalancer;
+  ObjectPool  *dirsArrayPool;
+  ObjectPool  *filesArrayPool;
 }
 
 
