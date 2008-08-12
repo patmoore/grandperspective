@@ -1,7 +1,5 @@
 #import "DirectoryView.h"
 
-#import "math.h"
-
 #import "DirectoryItem.h"
 
 #import "TreeLayoutBuilder.h"
