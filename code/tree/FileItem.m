@@ -13,6 +13,11 @@
 
 @implementation FileItem
 
++ (id) alloc {
+  return [FileItem allocWithZone: [Item zone]];
+}
+
+
 // Overrides super's designated initialiser.
 - (id) initWithItemSize: (ITEM_SIZE) sizeVal {
   return [self initWithName: @"" parent: nil size: sizeVal];
@@ -35,7 +40,7 @@
 - (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal
          size: (ITEM_SIZE)sizeVal flags: (UInt8) flagsVal {
   if (self = [super initWithItemSize: sizeVal]) {
-    name = [nameVal retain];
+    name = [nameVal copyWithZone: [self zone]];
     parent = parentVal; // not retaining it, as it is not owned.
     flags = flagsVal;
   }

@@ -6,6 +6,11 @@
 
 @implementation DirectoryItem
 
++ (id) alloc {
+  return [DirectoryItem allocWithZone: [Item zone]];
+}
+
+
 - (void) dealloc {
   [contents release];
 

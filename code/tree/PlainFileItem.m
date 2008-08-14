@@ -4,6 +4,11 @@
 
 @implementation PlainFileItem
 
++ (id) alloc {
+  return [PlainFileItem allocWithZone: [Item zone]];
+}
+
+
 // Overrides designated initialiser
 - (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal 
          size: (ITEM_SIZE) sizeVal flags: (UInt8) flagsVal {

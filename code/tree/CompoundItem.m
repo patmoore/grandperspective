@@ -3,6 +3,10 @@
 
 @implementation CompoundItem
 
++ (id) alloc {
+  return [CompoundItem allocWithZone: [Item zone]];
+}
+
 + (Item*) compoundItemWithFirst:(Item*)firstVal second:(Item*)secondVal {
   if (firstVal!=nil && secondVal!=nil) {
     return [[[CompoundItem alloc] initWithFirst:firstVal second:secondVal]
