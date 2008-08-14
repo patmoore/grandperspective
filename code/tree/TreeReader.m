@@ -115,7 +115,7 @@ NSString  *AttributeNameKey = @"name";
 
 
 @interface ScanInfoElementHandler : ElementHandler {
-  TreeContext  *treeContext;
+  TreeContext  *tree;
 }
 
 - (void) handler: (ElementHandler *)handler 
@@ -628,6 +628,12 @@ NSString  *AttributeNameKey = @"name";
   return self;
 }
 
+- (void) dealloc {
+  [tree release];
+  
+  [super dealloc];
+}
+
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   // Not doing anything with "appVersion" and "formatVersion" attributes.
@@ -682,15 +688,21 @@ NSString  *AttributeNameKey = @"name";
          onSuccess: (SEL) successSelectorVal {
   if (self = [super initWithElement: elementNameVal reader: readerVal 
                       callback: callbackVal onSuccess: successSelectorVal]) {
-    treeContext = nil;
+    tree = nil;
   }
   
   return self;
 }
 
+- (void) dealloc {
+  [tree release];
+  
+  [super dealloc];
+}
+
 
 - (void) handleAttributes: (NSDictionary *)attribs {
-  NSAssert(treeContext == nil, @"treeContext not nil.");
+  NSAssert(tree == nil, @"tree not nil.");
   
   @try {
     NSString  *volumePath = [self getStringAttributeValue: @"volumePath" 
@@ -714,13 +726,13 @@ NSString  *AttributeNameKey = @"name";
       @throw ex;
     }
   
-    treeContext = [[TreeContext alloc]  
-                      initWithVolumePath: volumePath
-                      fileSizeMeasure: sizeMeasure
-                      volumeSize: volumeSize 
-                      freeSpace: freeSpace
-                      filter: nil
-                      scanTime: scanTime];
+    tree = [[TreeContext alloc]  
+               initWithVolumePath: volumePath
+               fileSizeMeasure: sizeMeasure
+               volumeSize: volumeSize 
+               freeSpace: freeSpace
+               filter: nil
+               scanTime: scanTime];
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];
@@ -730,7 +742,7 @@ NSString  *AttributeNameKey = @"name";
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"Folder"]) {
-    if ([[treeContext scanTree] getContents] != nil) {
+    if ([[tree scanTree] getContents] != nil) {
       [self handlerError: 
               NSLocalizedString( @"Encountered more than one root folder.",
                                  @"Parse error" )];
@@ -739,7 +751,7 @@ NSString  *AttributeNameKey = @"name";
       [[[FolderElementHandler alloc] 
            initWithElement: childElement reader: reader callback: self 
              onSuccess: @selector(handler:finishedParsingFolderElement:) 
-             parent: [treeContext scanTreeParent]]
+             parent: [tree scanTreeParent]]
                handleAttributes: attribs];
     }
   }
@@ -749,14 +761,14 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  return treeContext;
+  return tree;
 }
 
 
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem {
-  [treeContext setScanTree: dirItem];
+  [tree setScanTree: dirItem];
   
   [self handler: handler finishedParsingElement: dirItem];
 }
