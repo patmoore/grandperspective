@@ -148,15 +148,6 @@ static int  nextFilterId = 1;
   [uniformTypeRanking 
      performSelectorOnMainThread: @selector(observeUniformTypeInventory:)
      withObject: uniformTypeInventory waitUntilDone: NO];
-     
-  // Create all trees in a separate memory zone. The reason for doing so is 
-  // that the life-span of all objects in a tree is identical, and typically
-  // long-lived. Therefore it is beneficial to use a dedicated memory zone.
-  // This way, short-lived, temporary objects needed during tree construction
-  // are not interspersed in memory with the longer-lived tree. So there will
-  // be far less (hardly any) memory fragmentation, which means that memory
-  // can be used far more efficiently.
-  [Item useDedicatedZone: YES];
 }
 
 

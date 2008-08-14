@@ -8,15 +8,15 @@
 }
 
 
-/* Determines if a dedicated memory zone for allocating item objects. If "flag"
- * equals YES, all newly created items will be allocated in a dedicated zone.
+/* Returns a memory zone that is intended solely for storing Item trees.
+ *
+ * Using this dedicated zone can be beneficial because the life-span of all 
+ * objects in a tree is identical, and typically long-lived. As short-lived, 
+ * temporary objects needed during tree construction are created in the default
+ * zone, they won't be mixed in memory. This should result in far less (hardly 
+ * any) memory fragmentation, which means that memory is used more efficiently.
  */
-+ (void) useDedicatedZone: (BOOL) flag;
-
-/* Returns the memory zone in which newly created items are allocated. It
- * returns "nil" if the default zone is used.
- */
-+ (NSZone *) zone;
++ (NSZone *) dedicatedZone;
 
 - (id) initWithItemSize:(ITEM_SIZE)size;
 

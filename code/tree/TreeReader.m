@@ -823,7 +823,7 @@ NSString  *AttributeNameKey = @"name";
     int  flags = [self getIntegerAttributeValue: @"flags"
                          from: attribs defaultValue: @"0"];
 
-    dirItem = [[DirectoryItem alloc]
+    dirItem = [[DirectoryItem allocWithZone: [parentItem zone]]
                   initWithName: name parent: parentItem flags: flags];
     [[reader progressTracker] processingFolder: dirItem];
   }
@@ -929,7 +929,7 @@ NSString  *AttributeNameKey = @"name";
     UniformType  *fileType = 
       [typeInventory uniformTypeForExtension: [name pathExtension]];
 
-    fileItem = [[PlainFileItem alloc]
+    fileItem = [[PlainFileItem allocWithZone: [parentItem zone]]
                    initWithName: name parent: parentItem size: size
                      type: fileType flags: flags];
   }

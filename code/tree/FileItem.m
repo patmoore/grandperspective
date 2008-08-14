@@ -13,11 +13,6 @@
 
 @implementation FileItem
 
-+ (id) alloc {
-  return [FileItem allocWithZone: [Item zone]];
-}
-
-
 // Overrides super's designated initialiser.
 - (id) initWithItemSize: (ITEM_SIZE) sizeVal {
   return [self initWithName: @"" parent: nil size: sizeVal];

@@ -3,22 +3,14 @@
 
 @implementation Item
 
-static NSZone  *dedicatedZone = nil;
-static BOOL  useDedicatedZone = NO;
++ (NSZone *) dedicatedZone {
+  static NSZone  *dedicatedZone = nil;
 
-+ (void) useDedicatedZone: (BOOL) flag {
-  useDedicatedZone = flag;
-  if (useDedicatedZone && dedicatedZone == nil) {
-    dedicatedZone = NSCreateZone(8192 * 16, 4096 * 16, NO);
+  if (dedicatedZone == nil) {
+    dedicatedZone = NSCreateZone(8192 * 16, 4096 * 16, YES);
   }
-}
 
-+ (NSZone *) zone {
-  return useDedicatedZone ? dedicatedZone : nil;
-}
-
-+ (id) alloc {
-  return [Item allocWithZone: [Item zone]];
+  return dedicatedZone;
 }
 
 

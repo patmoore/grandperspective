@@ -116,8 +116,8 @@ int compareBySize(id item1, id item2, void* context) {
       }
     }
     
-    CompoundItem  *newBranch = 
-      [[CompoundItem alloc] initWithFirst:first second:second];
+    CompoundItem  *newBranch = [[CompoundItem allocWithZone: [first zone]] 
+                                   initWithFirst: first second: second];
     numBranches++;
     [sortedBranches addObject:newBranch];
     // Not auto-releasing to minimise size of auto-release pool.

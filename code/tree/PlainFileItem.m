@@ -4,11 +4,6 @@
 
 @implementation PlainFileItem
 
-+ (id) alloc {
-  return [PlainFileItem allocWithZone: [Item zone]];
-}
-
-
 // Overrides designated initialiser
 - (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal 
          size: (ITEM_SIZE) sizeVal flags: (UInt8) flagsVal {
@@ -41,11 +36,9 @@
 
 
 - (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
-  return [[[PlainFileItem alloc] initWithName: name 
-                                   parent: newParent
-                                   size: size
-                                   type: type
-                                   flags: flags] autorelease];
+  return [[[PlainFileItem allocWithZone: [newParent zone]] 
+              initWithName: name parent: newParent size: size
+                type: type flags: flags] autorelease];
 }
 
 

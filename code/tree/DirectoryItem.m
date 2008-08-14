@@ -6,11 +6,6 @@
 
 @implementation DirectoryItem
 
-+ (id) alloc {
-  return [DirectoryItem allocWithZone: [Item zone]];
-}
-
-
 - (void) dealloc {
   [contents release];
 
@@ -19,9 +14,8 @@
 
 
 - (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
-  return [[[DirectoryItem alloc] initWithName: name
-                                   parent: newParent
-                                   flags: flags] autorelease];
+  return [[[DirectoryItem allocWithZone: [newParent zone]] 
+              initWithName: name parent: newParent flags: flags] autorelease];
 }
 
 
@@ -49,6 +43,7 @@
       [[UniformTypeInventory defaultUniformTypeInventory] 
          uniformTypeForExtension: [name pathExtension]];
   
+    // Note: This item is short-lived, so it is allocated in the default zone.
     return [[[PlainFileItem alloc] initWithName: name
                                      parent: parent
                                      size: size

@@ -58,9 +58,10 @@
 
   DirectoryItem  *oldScanTree = [oldTree scanTree];
   DirectoryItem  *scanTree = 
-    [[[DirectoryItem alloc] initWithName: [oldScanTree name]
-                              parent: [filterResult scanTreeParent]
-                              flags: [oldScanTree fileItemFlags]] autorelease];
+    [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
+         initWithName: [oldScanTree name]
+         parent: [filterResult scanTreeParent]
+         flags: [oldScanTree fileItemFlags]] autorelease];
 
   [progressTracker startingTask];
   

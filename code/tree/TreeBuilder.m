@@ -236,9 +236,10 @@ typedef struct  {
                             freeSpace: freeSpace
                             filter: [treeGuide fileItemTest]] autorelease];
   DirectoryItem  *scanTree = 
-    [[[DirectoryItem alloc] initWithName: relativePath 
-                              parent: [scanResult scanTreeParent]
-                              flags: 0] autorelease];
+    [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
+         initWithName: relativePath 
+         parent: [scanResult scanTreeParent]
+         flags: 0] autorelease];
   // TODO: Correctly set flags
 
   [progressTracker startingTask];
@@ -364,8 +365,8 @@ typedef struct  {
           }
 
           DirectoryItem  *dirChildItem = 
-            [[DirectoryItem alloc] initWithName: childName parent: dirItem
-                                     flags: flags];
+            [[DirectoryItem allocWithZone: [dirItem zone]] 
+                initWithName: childName parent: dirItem flags: flags];
 
           // Only add directories that should be scanned (this does not
           // necessarily mean that it has passed the filter test already) 
@@ -393,9 +394,9 @@ typedef struct  {
             [typeInventory uniformTypeForExtension: [childName pathExtension]];
       
           PlainFileItem  *fileChildItem =
-            [[PlainFileItem alloc] initWithName: childName parent: dirItem 
-                                     size: childSize type: fileType 
-                                     flags: flags];
+            [[PlainFileItem allocWithZone: [dirItem zone]] 
+                initWithName: childName parent: dirItem size: childSize 
+                  type: fileType flags: flags];
 
           // Only add file items that pass the filter test.
           if ( [treeGuide includeFileItem: fileChildItem] ) {
