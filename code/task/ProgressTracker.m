@@ -28,6 +28,8 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
 }
 
 - (void) startingTask {
+  NSLog(@"startingTask");
+
   [mutex lock];
   numFoldersProcessed = 0;
   numFoldersSkipped = 0;
@@ -36,6 +38,8 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
 }
 
 - (void) finishedTask {
+  NSLog(@"finishedTask");
+
   // void. This method can be overridden.
 }
 

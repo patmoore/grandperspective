@@ -42,15 +42,13 @@
   numAutoreleasePoolsTotal = 0;
   maxAutoreleasePools = 0;
 
-  NSLog(@"startingTask");
-
   [super startingTask];
 }
 
 - (void) finishedTask {
   [super finishedTask];
   
-  NSLog(@"finishedTask: max active=%d, total created=%d", 
+  NSLog(@"Autorelease pools: max active=%d, total created=%d", 
           maxAutoreleasePools, numAutoreleasePoolsTotal);
 
   while ([autoreleasePoolStack count] > 0) {
