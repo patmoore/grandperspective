@@ -620,33 +620,30 @@ NSString  *AttributeNameKey = @"name";
 
 - (ITEM_SIZE) parseItemSizeAttribute: (NSString *)name 
                 value: (NSString *)stringValue {
-  // Note: Explicitly releasing scanner to minimise use of autorelease pool.
-  NSScanner  *scanner = [[NSScanner alloc] initWithString: stringValue];
-  long long  signedValue;
-  BOOL  ok = ( [scanner scanLongLong: &signedValue] 
-               && [scanner isAtEnd]
-               && signedValue >= 0 );
-  [scanner release];
+  // Using own parsing code instead of NSScanner's scanLongLong for two 
+  // reasons:
+  // 1) NSScanner cannot handle unsigned long long values
+  // 2) This is faster (partly because there's no need to allocate and release
+  //    memory).
 
-  if (! ok) {
-    NSString  *reason = 
-      NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
-    NSException  *ex = [AttributeParseException 
-                          exceptionWithAttributeName: name reason: reason];
-    @throw ex;
-  }
-
-  // Note: NSScanner cannot read "unsigned long long" values, only "signed long 
-  // long" values. So cannot parse values larger than LONG_LONG_MAX even though
-  // these could (theoretically) appear in the input. This should never happen 
-  // in practise though because "signed long long" values can represent up to
-  // 2^23 TB, whould should be enough really. 
-  if ( signedValue == LONG_LONG_MAX ) {
-    NSLog( @"Warning (line %d): Overflow when parsing \"%@\" attribute value.",
-             [[reader parser] lineNumber], name );  
+  ITEM_SIZE  size = 0;
+  int  i = 0;
+  int  len = [stringValue length];
+  while (i < len) {
+    unichar  ch = [stringValue characterAtIndex: i++];
+    
+    if (ch < '0' || ch > '9') {
+      NSString  *reason = 
+        NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
+      NSException  *ex = [AttributeParseException 
+                            exceptionWithAttributeName: name reason: reason];
+      @throw ex;
+    }
+    
+    size = size * 10 + (ch - '0');
   }
   
-  return (ITEM_SIZE)signedValue;
+  return size;
 }
 
 - (NSDate *) parseDateValue: (NSString *)stringValue {
