@@ -93,15 +93,35 @@ NSString  *AttributeNameKey = @"name";
 
 
 - (NSString *) getStringAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (NSString *)defVal;
-- (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (NSString *)defVal;
-- (NSDate *) getDateAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (NSString *)defVal;
-- (int) getIntegerAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs;
+- (NSString *) getStringAttributeValue: (NSString *)name 
                  from: (NSDictionary *)attribs defaultValue: (NSString *)defVal;
 
-@end
+- (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs;
+- (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs defaultValue: (ITEM_SIZE) defVal;
+
+- (NSDate *) getDateAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs;
+- (NSDate *) getDateAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs defaultValue: (NSDate *)defVal;
+
+- (int) getIntegerAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs;
+- (int) getIntegerAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs defaultValue: (int) defVal;
+
+@end // @interface ElementHandler
+
+
+@interface ElementHandler (PrivateMethods) 
+
+- (ITEM_SIZE) parseItemSizeAttribute: (NSString *)name value: (NSString *)value;
+- (NSDate *) parseDateValue: (NSString *)stringValue;
+- (int) parseIntegerAttribute: (NSString *)name value: (NSString *)value; 
+
+@end // @interface ElementHandler (PrivateMethods) 
 
 
 @interface ScanDumpElementHandler : ElementHandler {
@@ -523,17 +543,12 @@ NSString  *AttributeNameKey = @"name";
 // Attribute parsing helper methods
 
 - (NSString *) getStringAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs 
-                 defaultValue: (NSString *)defVal { 
-
+                 from: (NSDictionary *)attribs { 
   NSString  *value = [attribs objectForKey: name];
 
   if (value != nil) {
     return value;
   }  
-  if (defVal != nil) {
-    return defVal;
-  }
 
   NSString  *reason = 
     NSLocalizedString(@"Attribute not found.", @"Parse error");
@@ -543,13 +558,68 @@ NSString  *AttributeNameKey = @"name";
   @throw ex;
 }
 
+- (NSString *) getStringAttributeValue: (NSString *)name 
+                 from: (NSDictionary *)attribs 
+                 defaultValue: (NSString *)defVal { 
+  NSString  *value = [attribs objectForKey: name];
+
+  return (value != nil) ? value : defVal;
+}
+
+
 - (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
-                from: (NSDictionary *)attribs 
-                defaultValue: (NSString *)defVal {
+                from: (NSDictionary *)attribs {
+  return [self parseItemSizeAttribute: name
+                 value: [self getStringAttributeValue: name from: attribs]];
+}
 
-  NSString  *stringValue = 
-    [self getStringAttributeValue: name from: attribs defaultValue: defVal];
+- (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
+                from: (NSDictionary *)attribs defaultValue: (ITEM_SIZE) defVal {
+  NSString  *stringValue = [attribs objectForKey: name];
 
+  return ( (stringValue != nil) 
+           ? [self parseItemSizeAttribute: name value: stringValue] : defVal );
+}
+
+
+- (NSDate *) getDateAttributeValue: (NSString *)name 
+               from: (NSDictionary *)attribs {
+  return [self parseDateValue:
+                 [self getStringAttributeValue: name from: attribs]];
+}
+
+- (NSDate *) getDateAttributeValue: (NSString *)name 
+               from: (NSDictionary *)attribs
+               defaultValue: (NSDate *)defVal {
+  NSString  *stringValue = [attribs objectForKey: name];
+
+  return ( (stringValue != nil) 
+           ? [self parseDateValue: stringValue] : defVal );
+}
+
+
+- (int) getIntegerAttributeValue: (NSString *)name 
+          from: (NSDictionary *)attribs {
+  return [self parseIntegerAttribute: name
+                 value: [self getStringAttributeValue: name from: attribs]];
+}
+
+- (int) getIntegerAttributeValue: (NSString *)name 
+          from: (NSDictionary *)attribs
+          defaultValue: (int) defVal {
+  NSString  *stringValue = [attribs objectForKey: name];
+
+  return ( (stringValue != nil) 
+           ? [self parseIntegerAttribute: name value: stringValue] : defVal );
+}
+
+@end // @implementation ElementHandler
+
+
+@implementation ElementHandler (PrivateMethods) 
+
+- (ITEM_SIZE) parseItemSizeAttribute: (NSString *)name 
+                value: (NSString *)stringValue {
   // Note: Explicitly releasing scanner to minimise use of autorelease pool.
   NSScanner  *scanner = [[NSScanner alloc] initWithString: stringValue];
   long long  signedValue;
@@ -579,28 +649,15 @@ NSString  *AttributeNameKey = @"name";
   return (ITEM_SIZE)signedValue;
 }
 
-
-- (NSDate *) getDateAttributeValue: (NSString *)name 
-               from: (NSDictionary *)attribs
-               defaultValue: (NSString *)defVal {
-
-  NSString  *stringValue = 
-    [self getStringAttributeValue: name from: attribs defaultValue: defVal];
-
+- (NSDate *) parseDateValue: (NSString *)stringValue {
   NSDate  *dateValue = [NSDate dateWithString: stringValue];
   // TODO: Check what happens if format is incorrect.
 
   return dateValue;
 }
 
-
-- (int) getIntegerAttributeValue: (NSString *)name 
-          from: (NSDictionary *)attribs
-          defaultValue: (NSString *)defVal {
-
-  NSString  *stringValue = 
-    [self getStringAttributeValue: name from: attribs defaultValue: defVal];
-
+- (int) parseIntegerAttribute: (NSString *)name 
+          value: (NSString *)stringValue {
   // Note: Explicitly releasing scanner to minimise use of autorelease pool.
   NSScanner  *scanner = [[NSScanner alloc] initWithString: stringValue];
   int  intValue;
@@ -618,7 +675,7 @@ NSString  *AttributeNameKey = @"name";
   return intValue;
 }
 
-@end
+@end // @implementation ElementHandler (PrivateMethods) 
 
 
 @implementation ScanDumpElementHandler 
@@ -712,16 +769,16 @@ NSString  *AttributeNameKey = @"name";
   NSAssert(tree == nil, @"tree not nil.");
   
   @try {
-    NSString  *volumePath = [self getStringAttributeValue: @"volumePath" 
-                                    from: attribs defaultValue: nil];
-    ITEM_SIZE  volumeSize = [self getItemSizeAttributeValue: @"volumeSize" 
-                                    from: attribs defaultValue: nil];
-    ITEM_SIZE  freeSpace = [self getItemSizeAttributeValue: @"freeSpace" 
-                                   from: attribs defaultValue: @"0"];
-    NSDate  *scanTime = [self getDateAttributeValue: @"scanTime" 
-                                from: attribs defaultValue: nil];
-    NSString  *sizeMeasure = [self getStringAttributeValue: @"fileSizeMeasure" 
-                                     from: attribs defaultValue: nil];
+    NSString  *volumePath = 
+      [self getStringAttributeValue: @"volumePath" from: attribs];
+    ITEM_SIZE  volumeSize = 
+      [self getItemSizeAttributeValue: @"volumeSize" from: attribs];
+    ITEM_SIZE  freeSpace = 
+      [self getItemSizeAttributeValue: @"freeSpace" from: attribs];
+    NSDate  *scanTime = 
+      [self getDateAttributeValue: @"scanTime" from: attribs];
+    NSString  *sizeMeasure = 
+      [self getStringAttributeValue: @"fileSizeMeasure" from: attribs];
 
     if (! ( [sizeMeasure isEqualToString: LogicalFileSize] ||
             [sizeMeasure isEqualToString: PhysicalFileSize] ) ) {
@@ -825,10 +882,9 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: @"name" 
-                              from: attribs defaultValue: nil];
+    NSString  *name = [self getStringAttributeValue: @"name" from: attribs];
     int  flags = [self getIntegerAttributeValue: @"flags"
-                         from: attribs defaultValue: @"0"];
+                         from: attribs defaultValue: 0];
 
     dirItem = [[DirectoryItem allocWithZone: [parentItem zone]]
                   initWithName: name parent: parentItem flags: flags];
@@ -841,17 +897,17 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
-  if ([childElement isEqualToString: @"Folder"]) {
-    [[[FolderElementHandler alloc] 
-         initWithElement: childElement reader: reader callback: self 
-           onSuccess: @selector(handler:finishedParsingFolderElement:) 
-           parent: dirItem]
-             handleAttributes: attribs];
-  }
-  else if ([childElement isEqualToString: @"File"]) {
+ if ([childElement isEqualToString: @"File"]) {
     [[[FileElementHandler alloc] 
          initWithElement: childElement reader: reader callback: self 
            onSuccess: @selector(handler:finishedParsingFileElement:) 
+           parent: dirItem]
+             handleAttributes: attribs];
+  }
+  else if ([childElement isEqualToString: @"Folder"]) {
+    [[[FolderElementHandler alloc] 
+         initWithElement: childElement reader: reader callback: self 
+           onSuccess: @selector(handler:finishedParsingFolderElement:) 
            parent: dirItem]
              handleAttributes: attribs];
   }
@@ -924,12 +980,10 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: @"name" 
-                              from: attribs defaultValue: nil];
+    NSString  *name = [self getStringAttributeValue: @"name" from: attribs];
     int  flags = [self getIntegerAttributeValue: @"flags"
-                         from: attribs defaultValue: @"0"];
-    ITEM_SIZE  size = [self getItemSizeAttributeValue: @"size" 
-                              from: attribs defaultValue: nil];
+                         from: attribs defaultValue: 0];
+    ITEM_SIZE  size = [self getItemSizeAttributeValue: @"size" from: attribs];
     
     UniformTypeInventory  *typeInventory = 
       [UniformTypeInventory defaultUniformTypeInventory];
