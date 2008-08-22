@@ -12,17 +12,12 @@
   // pool is emptied.
   int  autoreleasePeriod;
   
-  // The number of folders to process before emptying the autorelease pool  
-  int  autoreleaseCountdown;
+  // The number of folders from the root till the current one.
+  int  recursionDepth;
   
-  // The stack of autorelease pools. There is an entry for each folder that
-  // is currently being processed. However, not all will have their own
-  // autoreleasePool, in which case the stack contains NSNull.
+  // The stack of autorelease pools that are currently being used.
   NSMutableArray  *autoreleasePoolStack;
-  
-  // The number of active autorelease pools
-  int  numAutoreleasePools;
-  
+    
   // The maximum number of active autorelease pools
   int  maxAutoreleasePools;
   

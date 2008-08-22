@@ -13,7 +13,7 @@
 @implementation AutoreleaseProgressTracker
 
 - (id) init {
-  return [self initWithAutoreleasePeriod: 64];
+  return [self initWithAutoreleasePeriod: 2];
 }
 
 - (id) initWithAutoreleasePeriod: (int) period {
@@ -21,7 +21,6 @@
     autoreleasePeriod = period;
 
     autoreleasePoolStack = [[NSMutableArray alloc] initWithCapacity: 16];
-    numAutoreleasePools = 0;
   }
   
   return self;
@@ -38,7 +37,7 @@
   NSAssert( [autoreleasePoolStack count] == 0, 
             @"autoreleasePoolStack should be empty." );
 
-  autoreleaseCountdown = autoreleasePeriod;
+  recursionDepth = 0;
   numAutoreleasePoolsTotal = 0;
   maxAutoreleasePools = 0;
 
@@ -52,48 +51,34 @@
           maxAutoreleasePools, numAutoreleasePoolsTotal);
 
   while ([autoreleasePoolStack count] > 0) {
-    if ([autoreleasePoolStack lastObject] != [NSNull null]) {
-      numAutoreleasePools--;
-    }
-  
     [autoreleasePoolStack removeLastObject];
   }
-  NSAssert( numAutoreleasePools == 0, @"Pool count mismatch.");
 }
 
 
 - (void) processingFolder: (DirectoryItem *)dirItem {
   [super processingFolder: dirItem];
   
-  if (autoreleaseCountdown-- <= 0) {
+  recursionDepth++;
+  if (recursionDepth % autoreleasePeriod == 0) {
     AutoreleasePoolProxy  *poolProxy =  [[AutoreleasePoolProxy alloc] init];
     [autoreleasePoolStack addObject: poolProxy];
     [poolProxy release]; // Release it so that only the stack is retaining it.
     
-    numAutoreleasePools++;
     numAutoreleasePoolsTotal++;
-    if (numAutoreleasePools > maxAutoreleasePools) {
-      maxAutoreleasePools = numAutoreleasePools;
+    if ([autoreleasePoolStack count] > maxAutoreleasePools) {
+      maxAutoreleasePools = [autoreleasePoolStack count];
     }
-    autoreleaseCountdown = autoreleasePeriod;
-
-    //NSLog(@"Created pool: active=%d, total=%d", 
-    //        numAutoreleasePools, numAutoreleasePoolsTotal);
-  }
-  else {
-    [autoreleasePoolStack addObject: [NSNull null]];
   }
 }
 
 
 - (void) processedFolder: (DirectoryItem *)dirItem {
-  if ([autoreleasePoolStack lastObject] != [NSNull null]) {
-    numAutoreleasePools--;
-    autoreleaseCountdown = 0; // Create a new one asap.
+  if (recursionDepth % autoreleasePeriod == 0) {
+    [autoreleasePoolStack removeLastObject];
   }
+  recursionDepth--;
   
-  [autoreleasePoolStack removeLastObject];
-
   [super processedFolder: dirItem];
 }
 

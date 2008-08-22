@@ -180,7 +180,14 @@ NSString  *AttributeNameKey = @"name";
     error = nil;
     abort = NO;
     
-    progressTracker = [[AutoreleaseProgressTracker alloc] init];
+    // Either ProgressTracker can be used, or AutoreleaseProgressTracker. Using
+    // the latter means that temporary objects using autorelease will be 
+    // released while a tree is being read, thus reducing the total amount of
+    // memory needed. However, execution is slower (by approximately 10%),
+    // presumably because it fragments the memory, which slows allocation of
+    // new objects. 
+    progressTracker = [[ProgressTracker alloc] init];
+
     treeBalancer = [[TreeBalancer alloc] init];
 
     dirsArrayPool = [[MutableArrayPool alloc] 
