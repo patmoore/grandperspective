@@ -63,8 +63,6 @@ NSString  *OkPerformedEvent = @"okPerformed";
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int)returnCode contextInfo:(void *)contextInfo;
 
-- (void) clearBrowserSelection: (NSBrowser *)browser;
-
 @end // EditFilterWindowControl (PrivateMethods)
 
 
@@ -104,8 +102,6 @@ NSString  *OkPerformedEvent = @"okPerformed";
        addObjectsFromArray:[((NSDictionary*)repositoryTestsByName) allKeys]];
        
     allowEmptyFilter = NO; // Default
-
-    clearBrowserSelectionHack = NO; // Default mode. Only true in "hack" mode.
   }
   return self;
 }
@@ -129,8 +125,11 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
 
 - (void) windowDidLoad {
-  [filterTestsBrowser setDelegate:self];
-  [availableTestsBrowser setDelegate:self];
+  [filterTestsView setDelegate: self];
+  [filterTestsView setDataSource: self];
+  
+  [availableTestsView setDelegate: self];
+  [availableTestsView setDataSource: self];
     
   [self updateWindowState:nil];
 }
@@ -156,6 +155,13 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
 - (void)windowDidBecomeKey:(NSNotification *)aNotification {
   finalNotificationFired = NO;
+
+  if ([filterTestsView selectedRow] != -1) {
+    [[self window] makeFirstResponder: filterTestsView];
+  }
+  else {
+    [[self window] makeFirstResponder: availableTestsView];
+  }
 }
 
 - (void) windowWillClose:(NSNotification*)notification {
@@ -341,13 +347,13 @@ NSString  *OkPerformedEvent = @"okPerformed";
     [filterTests addObject: testName];
     [filterTestsByName setObject: test forKey: testName];
     
-    [filterTestsBrowser validateVisibleColumns];
-    [availableTestsBrowser validateVisibleColumns];
+    [filterTestsView reloadData];
+    [availableTestsView reloadData];
     
     // Select the newly added test.
-    [filterTestsBrowser selectRow: [filterTests indexOfObject:testName]
-                          inColumn: 0];
-    [[self window] makeFirstResponder: filterTestsBrowser];
+    [filterTestsView selectRow: [filterTests indexOfObject:testName]
+                       byExtendingSelection: NO];
+    [[self window] makeFirstResponder: filterTestsView];
 
     [self updateWindowState: nil];
   }
@@ -360,14 +366,14 @@ NSString  *OkPerformedEvent = @"okPerformed";
     [filterTests removeObject: testName];
     [filterTestsByName removeObjectForKey: testName];
 
-    [filterTestsBrowser validateVisibleColumns];
-    [availableTestsBrowser validateVisibleColumns];
+    [filterTestsView reloadData];
+    [availableTestsView reloadData];
     
     // Select the test in the repository (if it still exists there)
     int  index = [availableTests indexOfObject: testName];
     if (index != NSNotFound) {
-      [availableTestsBrowser selectRow: index inColumn: 0];
-      [[self window] makeFirstResponder: availableTestsBrowser];
+      [availableTestsView selectRow: index byExtendingSelection: NO];
+      [[self window] makeFirstResponder: availableTestsView];
     }
     
     [self updateWindowState: nil];
@@ -378,8 +384,8 @@ NSString  *OkPerformedEvent = @"okPerformed";
   [filterTests removeAllObjects];
   [filterTestsByName removeAllObjects];
   
-  [filterTestsBrowser validateVisibleColumns];
-  [availableTestsBrowser validateVisibleColumns];
+  [filterTestsView reloadData];
+  [availableTestsView reloadData];
 
   [self updateWindowState: nil];
 }
@@ -399,28 +405,14 @@ NSString  *OkPerformedEvent = @"okPerformed";
 }
 
 
-//-----------------------------------------------------------------------------
-// Delegate methods for NSBrowser
+//----------------------------------------------------------------------------
+// NSTableSource
 
-- (BOOL) browser:(NSBrowser*)sender isColumnValid:(int)column {
-  NSAssert(column==0, @"Invalid column.");
-  
-  // When "validateVisibleColumns" is called, the visible column (just one)
-  // can always be assumed to invalid.
-  return NO;
-}
-
-- (int) browser:(NSBrowser *)sender numberOfRowsInColumn:(int)column {
-  NSAssert(column==0, @"Invalid column.");
-  
-  if (clearBrowserSelectionHack) {
-    return 0;
-  }
-  
-  if (sender == filterTestsBrowser) {
+- (int) numberOfRowsInTableView: (NSTableView *)tableView {
+  if (tableView == filterTestsView) {
     return [filterTests count];
   }
-  else if (sender == availableTestsBrowser) {
+  else if (tableView == availableTestsView) {
     return [availableTests count];
   }
   else {
@@ -428,40 +420,43 @@ NSString  *OkPerformedEvent = @"okPerformed";
   }
 }
 
-- (void) browser:(NSBrowser *)sender willDisplayCell:(id)cell atRow:(int)row 
-           column:(int)column {
-  NSAssert(column==0, @"Invalid column.");
-
+- (id) tableView: (NSTableView *)tableView 
+         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
-  if (sender == filterTestsBrowser) {
+  if (tableView == filterTestsView) {
     NSString  *name = [filterTests objectAtIndex:row];
     NSString  *localizedName = 
       [mainBundle localizedStringForKey: name value: nil table: @"Names"];
 
-    [cell setStringValue: localizedName];
+    return localizedName;
   }
-  else if (sender == availableTestsBrowser) {
+  else if (tableView == availableTestsView) {
     NSString  *name = [availableTests objectAtIndex:row]; 
     NSString  *localizedName = 
       [mainBundle localizedStringForKey: name value: nil table: @"Names"];
 
-    [cell setStringValue: localizedName];
-    [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
+    return localizedName;
   }
-  else {
-    NSAssert(NO, @"Unexpected sender.");
-  }
-
-  // Common for both.
-  [cell setLeaf:YES];
 }
 
 
-// HACK: This is a brute force mechanism to track changes to the browser
-// selection. There does not seem to be another way.
-- (IBAction) handleTestsBrowserClick:(id)sender {
-  [self updateWindowState:nil];
+//-----------------------------------------------------------------------------
+// Delegate methods for NSTableView
+
+- (void) tableView:(NSTableView *)tableView willDisplayCell: (id) cell 
+           forTableColumn: (NSTableColumn *)column row: (int) row {
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  
+  if (tableView == availableTestsView) {
+    NSString  *name = [availableTests objectAtIndex: row]; 
+
+    [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
+  }
+}
+
+- (void) tableViewSelectionDidChange: (NSNotification *) notification {
+  [self updateWindowState: nil];
 }
 
 
@@ -500,8 +495,8 @@ NSString  *OkPerformedEvent = @"okPerformed";
     }
   }
   
-  [filterTestsBrowser validateVisibleColumns];
-  [availableTestsBrowser validateVisibleColumns];
+  [filterTestsView reloadData];
+  [availableTestsView reloadData];
   
   [self updateWindowState:nil];
 }
@@ -561,14 +556,14 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
 // Returns the non-localized name of the selected available test (if any).
 - (NSString *) selectedAvailableTestName {
-  int  index = [availableTestsBrowser selectedRowInColumn: 0];
+  int  index = [availableTestsView selectedRow];
   
   return (index < 0) ? nil : [availableTests objectAtIndex: index];
 }
 
 // Returns the non-localized name of the selected filter test (if any).
 - (NSString *) selectedFilterTestName {
-  int  index = [filterTestsBrowser selectedRowInColumn: 0];
+  int  index = [filterTestsView selectedRow];
   
   return (index < 0) ? nil : [filterTests objectAtIndex: index];
 }
@@ -578,13 +573,13 @@ NSString  *OkPerformedEvent = @"okPerformed";
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
 
   [availableTests addObject:testName];
-  [availableTestsBrowser validateVisibleColumns];
+  [availableTestsView reloadData];
         
   if ([testNameToSelect isEqualToString:testName]) { 
     // Select the newly added test.
-    [availableTestsBrowser selectRow:[availableTests indexOfObject:testName]
-                             inColumn:0];
-    [[self window] makeFirstResponder:availableTestsBrowser];
+    [availableTestsView selectRow: [availableTests indexOfObject:testName]
+                          byExtendingSelection: NO];
+    [[self window] makeFirstResponder: availableTestsView];
 
     [testNameToSelect release];
     testNameToSelect = nil;
@@ -601,7 +596,7 @@ NSString  *OkPerformedEvent = @"okPerformed";
   NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
   [availableTests removeObjectAtIndex:index];
-  [availableTestsBrowser validateVisibleColumns];
+  [availableTestsView reloadData];
 
   [self updateWindowState:nil];
 }
@@ -630,19 +625,23 @@ NSString  *OkPerformedEvent = @"okPerformed";
   NSString  *oldSelectedName = [self selectedAvailableTestName];
 
   [availableTests replaceObjectAtIndex: index withObject: newTestName];    
-  [availableTestsBrowser validateVisibleColumns];
+  [availableTestsView reloadData];
     
   if ([oldSelectedName isEqualToString: oldTestName]) {
     // It was selected, so make sure it still is.
-    [availableTestsBrowser selectRow: index inColumn: 0];
+    [availableTestsView selectRow: index byExtendingSelection: NO];
   }
 }
 
 
 - (void) updateWindowState: (NSNotification *)notification {
-  if (! [[availableTestsBrowser selectedCell] isEnabled]) {
+  NSString  *selectedFilterTestName = [self selectedFilterTestName];
+  NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
+
+  if (selectedAvailableTestName != nil 
+      && [filterTestsByName objectForKey: selectedAvailableTestName] != nil) {
     // The window is in an anomalous situation: a test is selected in the
-    // available tests browser, even though the test is disabled.
+    // available tests view, even though the test is used in the filter.
     //
     // This anomalous situation can occur as follows:
     // 1. Create a mask, and press OK (to apply it and close the window).
@@ -654,31 +653,22 @@ NSString  *OkPerformedEvent = @"okPerformed";
     //    this change was undone by cancelling the mask, the test is actually
     //    not available and thus disabled.
     
-    if ([filterTestsBrowser selectedCell] == nil) {
-      // There is no cell selected in the filterTestsBrowser. Try to select 
-      // the test that is selected (but disabled) in the other browser.      
-      int  index = [filterTests indexOfObject: 
-                                  [self selectedAvailableTestName]];
-      if (index != NSNotFound) {
-        [filterTestsBrowser selectRow: index inColumn: 0];
-      }
+    // Select the disabled test in the other view.      
+    int  index = [filterTests indexOfObject: selectedAvailableTestName];
+    if (index != NSNotFound) {
+      [filterTestsView selectRow: index byExtendingSelection: NO];
     }
 
-    // Hack to clear selection
-    [self clearBrowserSelection: availableTestsBrowser];
+    [availableTestsView deselectAll: nil];
+    selectedAvailableTestName = nil;
 
-    [[self window] makeFirstResponder: filterTestsBrowser];
+    [[self window] makeFirstResponder: filterTestsView];
   }
 
   BOOL  filterTestsHighlighted = 
-          ( [[self window] firstResponder]
-            == [filterTestsBrowser matrixInColumn: 0] );
+          ( [[self window] firstResponder] == filterTestsView );
   BOOL  availableTestsHighlighted = 
-          ( [[self window] firstResponder]
-            == [availableTestsBrowser matrixInColumn: 0] );
-
-  NSString  *selectedFilterTestName = [self selectedFilterTestName];
-  NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
+          ( [[self window] firstResponder] == availableTestsView );
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
@@ -750,17 +740,6 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
     // Rest of delete handled in response to notification event.
   }
-}
-
-
-- (void) clearBrowserSelection: (NSBrowser *)browser {
-  NSAssert(browser == filterTestsBrowser ||
-           browser == availableTestsBrowser, @"Unknown browser.");
-
-  clearBrowserSelectionHack = YES;
-  [browser validateVisibleColumns];
-  clearBrowserSelectionHack = NO;
-  [browser validateVisibleColumns];
 }
 
 @end

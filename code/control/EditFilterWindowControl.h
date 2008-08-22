@@ -39,8 +39,8 @@ extern NSString  *OkPerformedEvent;
   IBOutlet NSButton  *removeTestFromFilterButton;
   IBOutlet NSButton  *removeAllTestsFromFilterButton;
   
-  IBOutlet NSBrowser  *filterTestsBrowser;
-  IBOutlet NSBrowser  *availableTestsBrowser;
+  IBOutlet NSTableView  *filterTestsView;
+  IBOutlet NSTableView  *availableTestsView;
   
   FileItemTestRepository  *testRepository;
   
@@ -62,9 +62,6 @@ extern NSString  *OkPerformedEvent;
   
   // Controls if an empty filter (i.e. a filter without any tests) is allowed.
   BOOL  allowEmptyFilter;
-  
-  // True iff we currently applying a hack to clear the selection of a browser.
-  BOOL  clearBrowserSelectionHack;
 }
 
 - (IBAction) applyAction:(id)sender;
@@ -81,8 +78,6 @@ extern NSString  *OkPerformedEvent;
 
 - (IBAction) filterActionChanged:(id)sender;
 - (IBAction) showTestDescriptionChanged:(id)sender;
-
-- (IBAction) handleTestsBrowserClick:(id)sender;
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 
