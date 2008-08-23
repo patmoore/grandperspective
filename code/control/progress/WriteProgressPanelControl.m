@@ -13,12 +13,12 @@
 }
 
 - (NSString *)progressDetailsFormat {
-  return NSLocalizedString( @"Writing %@", 
+  return NSLocalizedString( @"Saving %@", 
                             @"Message in progress panel while saving data" );
 }
 
 - (NSString *)progressSummaryFormat {
-  return NSLocalizedString( @"%d folders written", 
+  return NSLocalizedString( @"%d folders saved", 
                             @"Message in progress panel while saving data" );
 }
 
