@@ -100,7 +100,12 @@ extern NSString  *FileItemDeletedEvent;
 - (unsigned long long) freedSpace;
 
 - (NSString*) fileSizeMeasure;
-- (NSDate*) scanTime;
+
+- (NSDate *) scanTime;
+
+/* A string representation for the scan time.
+ */
+- (NSString *) stringForScanTime;
 
 - (NSObject <FileItemTest>*) fileItemFilter;
 

@@ -218,9 +218,30 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   return fileSizeMeasure;
 }
 
+
 - (NSDate*) scanTime {
   return scanTime;
 }
+
+- (NSString *) stringForScanTime {  
+  NSString  *timeFormat =
+    NSLocalizedString( @"%H:%M:%S", @"Time format (for scan time)" );
+  NSString  *dateFormat =
+    NSLocalizedString( @"%d/%m/%y", @"Date format (for scan time)" );  
+    
+  NSString  *timeString = [scanTime descriptionWithCalendarFormat: timeFormat 
+                                      timeZone: nil locale: nil];
+  NSString  *dateString = [scanTime descriptionWithCalendarFormat: dateFormat
+                                      timeZone: nil locale: nil];
+  NSString  *todayString = 
+               [[NSDate date] descriptionWithCalendarFormat: dateFormat
+                                timeZone: nil locale: nil];
+  
+  return ( [dateString isEqualToString: todayString]
+           ? timeString
+           : [NSString stringWithFormat: @"%@, %@", timeString, dateString] );
+}
+
 
 - (NSObject <FileItemTest>*) fileItemFilter {
   return filter;

@@ -292,9 +292,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 
   
-  [scanTimeField setStringValue: 
-    [[treeContext scanTime] descriptionWithCalendarFormat:@"%H:%M:%S"
-                              timeZone:nil locale:nil]];
+  [scanTimeField setStringValue: [treeContext stringForScanTime]];
   [fileSizeMeasureField setStringValue: 
     [mainBundle localizedStringForKey: [treeContext fileSizeMeasure] value: nil
                   table: @"Names"]];

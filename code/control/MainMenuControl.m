@@ -501,9 +501,7 @@ static int  nextFilterId = 1;
   TreeContext  *treeContext = [control treeContext];
   NSString  *scanPath = [[treeContext scanTree] path];
 
-  NSString  *scanTimeString = 
-    [[treeContext scanTime] descriptionWithCalendarFormat: @"%H:%M:%S"
-                              timeZone: nil locale: nil];
+  NSString  *scanTimeString = [treeContext stringForScanTime]; 
   NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
 
   if (filter == nil) {
