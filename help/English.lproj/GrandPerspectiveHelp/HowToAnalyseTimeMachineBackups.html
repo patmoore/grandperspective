@@ -34,10 +34,30 @@ They are simply meant to give you an idea of what you can do.
 You are of course free to experiment with other approaches.
 </p>
 
+<h2>Comparing back-ups</h2>
+
+<p>
+You compare two back-ups to see what has changed on your hard drive.
+Doing so is very straightforward.
+First, you execute <b>Scan Folder</b> on an old back-up, e.g. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>".
+If you are only interested in a particular subfolder, you can of course navigate to this subfolder to avoid scanning in the folders that you are not interested in.
+</p>
+
+<p>
+Next, you can scan in the contents of the latest back-up, i.e. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
+Having both views open alongside each other you can compare their sizes.
+Hopefully you are also able to quickly visually spot where the biggest differences are.
+</p>
+
+<p>
+Note: Instead of scanning in the latest back-up you can scan in the current contents of your hard drive.
+The drawback of the latter approach is that the resulting view will include files that are excluded from Time Machine back-ups, which will make it more difficult to spot actual changes.
+</p>
+
 <h2>Scanning all back-ups</h2>
 
 <p>
-Execute <b>Scan folder...</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
+Execute <b>Scan Folder</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
 This may take a while.
 When scanning is complete, a <a href="Views.html">view</a> is shown showing all back-ups.
 In the <a href="ViewDisplayPanel.html">Display panel</a>, select coloring by "Top folder".
