@@ -411,7 +411,6 @@ NSString  *AttributeNameKey = @"name";
          reader: (TreeReader *)readerVal
          callback: (id) callbackVal
          onSuccess: (SEL) successSelectorVal {
-  // NSLog(@"ElementHandler init: %@", elementNameVal);
   if (self = [super init]) {
     elementName = [elementNameVal retain];
     
@@ -522,8 +521,6 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handlerError: (NSString *)details {
-  NSLog(@"Encountered error: %@", details);
-
   NSError  *error = [ApplicationError errorWithLocalizedDescription: details];
   [callback handler: self failedParsingElement: error];
 }

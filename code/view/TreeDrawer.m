@@ -100,8 +100,6 @@
                 startingAtTree: (FileItem *)treeRoot
                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
                 inRect: (NSRect) bounds {
-  NSDate  *startTime = [NSDate date];
-  
   [self setupBitmap: bounds];
   
   insideVisibleTree = NO;
@@ -116,8 +114,6 @@
   visibleTree = nil;
 
   if (!abort) {
-    // NSLog(@"Done drawing. Time taken=%f", -[startTime timeIntervalSinceNow]);
-    
     return [self createImageFromBitmap];
   }
   else {

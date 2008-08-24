@@ -47,8 +47,8 @@
 - (void) finishedTask {
   [super finishedTask];
   
-  NSLog(@"Autorelease pools: max active=%d, total created=%d", 
-          maxAutoreleasePools, numAutoreleasePoolsTotal);
+  // NSLog(@"Autorelease pools: max active=%d, total created=%d", 
+  //        maxAutoreleasePools, numAutoreleasePoolsTotal);
 
   while ([autoreleasePoolStack count] > 0) {
     [autoreleasePoolStack removeLastObject];
