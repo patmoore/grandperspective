@@ -19,10 +19,6 @@ Minor improvements:
 - The trees used to store scan results are now stored in a dedicated
   memory zone to minimise fragmentation and optimise memory usage.
 
-Refactoring:
-- Replaced all remaining NSBrowsers by NSTableViews.
-- Renamed and moved various classes and methods.
-
 Bug fixes:
 - Plugged a big memory leak. The image was not released when the view
   was resized. This has been fixed.
@@ -30,6 +26,13 @@ Bug fixes:
   window. This cannot happen anymore.
 - Aborting a filter task would create a view anyway. Not anymore.
 - Now obtaining readlock on the tree before filtering.
+
+Code clean-up:
+- Replaced all remaining NSBrowsers by NSTableViews.
+- Moved TaskExecutor protocol from "util" folder to "task".
+- Placed ProgressPanelControl and its new subclasses into the 
+  "control/progress" subfolder.
+- Renamed various classes and methods.
 
 
 ----------------------------------------------------------------------
