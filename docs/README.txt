@@ -24,13 +24,12 @@ rectangles as square as possible.
   This version of the application has been released as a Universal 
   Binary. It took a while, but I can now build Universal Binaries 
   from my own machine. Thanks to everyone that has shown support by
-  making a donation, as these have been used to fund the required 
+  making donations, as these have been used to fund the required 
   upgrade to Leopard. 
 
-  Many thanks to Martin Kahr who has been making Universal Binaries
-  available for earlier releases of GrandPerspective. Also thanks
-  to Craig Hughes who initially helped me to make the source code
-  Intel-compatible.
+  Also thanks to Martin Kahr who made Universal Binaries available
+  for earlier releases of GrandPerspective, and to Craig Hughes who
+  helped me early on to make the source code Intel-compatible.
 
 - Mac OS X, 10.3 or higher
 
