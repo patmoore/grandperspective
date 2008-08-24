@@ -40,13 +40,8 @@ You are of course free to experiment with other approaches.
 You compare two back-ups to see what has changed on your hard drive.
 Doing so is very straightforward.
 First, you execute <b>Scan Folder</b> on an old back-up, e.g. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>".
-If you are only interested in a particular subfolder, you can of course navigate to this subfolder to avoid scanning in the folders that you are not interested in.
-</p>
-
-<p>
 Next, you can scan in the contents of the latest back-up, i.e. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
-Having both views open alongside each other you can compare their sizes.
-Hopefully you are also able to quickly visually spot where the biggest differences are.
+Having both views open alongside each other will hopefully let you quickly spot the biggest differences.
 </p>
 
 <p>
@@ -93,7 +88,7 @@ Edit it again until it works.
 
 <p>
 When the mask works correctly, you should filter the view.
-Use the <b>Filter...</b> command. 
+Use the <b>Filter</b> command. 
 It should by default be configured the same as the mask, so simply click "OK".
 A new view window is created, only showing the other back-ups.
 This new view gives a much better idea of the size required by each incremental back-up.
@@ -105,7 +100,7 @@ If you spot files that should not be backed up, update your Time Machine prefere
 <h2>Check which files have been backed up during the latest back-up</h2>
 
 <p>
-Initiate a <b>Filtered Scan...</b>.
+Initiate a <b>Filtered Scan</b>.
 As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
 Apply the following filter: "Do not show: hard-linked items".
 The result is a view showing the files that are new in the latest back-up.
