@@ -22,10 +22,10 @@ rectangles as square as possible.
 - PowerPC/Intel processor
 
   This version of the application has been released as a Universal 
-  Binary. Doing so is actually a bit of a hassle for me, as I cannot
-  build Universal Binaries from my own machine; donations to support
-  the required upgrade are therefore greatly appreciated :-). You can
-  find out how to make a donation on the GrandPerspective website.
+  Binary. It took a while, but I can now build Universal Binaries 
+  from my own machine. Thanks to everyone that has shown support by
+  making a donation, as these have been used to fund the required 
+  upgrade to Leopard. 
 
   Many thanks to Martin Kahr who has been making Universal Binaries
   available for earlier releases of GrandPerspective. Also thanks
