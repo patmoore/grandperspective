@@ -3,6 +3,36 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 0.9.13, 26-08-2008
+----------------------------------------------------------------------
+
+New functionality:
+- Scan data can now be saved to an XML file and loaded again at a 
+  later time.
+- Progress of ongoing scan, filter, save, and load tasks is now 
+  reported.
+
+Minor improvements:
+- All text fields in the view's drawer are now selectable.
+- Views are immediately cleared when they are resized.
+- Reduced the amount of memory needed when scanning and filtering.
+- The trees used to store scan results are now stored in a dedicated
+  memory zone to minimise fragmentation and optimise memory usage.
+
+Refactoring:
+- Replaced all remaining NSBrowsers by NSTableViews.
+- Renamed and moved various classes and methods.
+
+Bug fixes:
+- Plugged a big memory leak. The image was not released when the view
+  was resized. This has been fixed.
+- The drawer of the Edit Filter window could be detached from its
+  window. This cannot happen anymore.
+- Aborting a filter task would create a view anyway. Not anymore.
+- Now obtaining readlock on the tree before filtering.
+
+
+----------------------------------------------------------------------
   Version 0.9.12.1, 14-06-2008
 ----------------------------------------------------------------------
 
