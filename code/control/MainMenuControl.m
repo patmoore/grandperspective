@@ -203,6 +203,12 @@ static int  nextFilterId = 1;
   [filterTaskManager dispose];
   [filterTaskManager release];
   
+  [writeTaskManager dispose];
+  [writeTaskManager release];
+
+  [readTaskManager dispose];
+  [readTaskManager release];
+  
   [preferencesPanelControl release];
   
   [super dealloc];
