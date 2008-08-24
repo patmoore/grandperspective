@@ -34,10 +34,25 @@ Dit zal een idee geven van wat er mogelijk is.
 U bent natuurlijk vrij om andere aanpakken uit te proberen.
 </p>
 
+<h2>Vergelijken van reservekopieën</h2>
+
+<p>
+U kunt twee reservekopieën vergelijken om te zien wat er verandert is op uw harde schijf.
+Dit is eenvoudig om te doen.
+Als eerste voert u <b>Map inlezen</b> uit op een oude reservekopie, bijvoorbeeld "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/<em>2008-08-08-888888</em>".
+Vervolgens leest u de inhoud van de meest recente reservekopie in, d.w.z.  "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/Latest".
+Wanneer u beide venster naast elkaar open heeft ziet u hopelijk snel waar de grootste verschillen in schijfgebruik zijn.
+</p>
+
+<p>
+Merk op: In plaats van het inlezen van de meeste recente reservekopie kunt u ook uw harde schijf zelf inlezen.
+Het nadeel hiervan is echter dat het resulterende venster ook de bestanden bevat die genegeerd worden door Time Machine, wat het lastiger maakt om te zien wat de eigenlijke veranderingen zijn.
+</p>
+
 <h2>Het inlezen van alle reservekopieën</h2>
 
 <p>
-Voer <b>Map inlezen...</b> uit op de map "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>".
+Voer <b>Map inlezen</b> uit op de map "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>".
 Dit kan even duren.
 Wanneer het inlezen volbracht is zal een <a href="Views.html">overzicht venster</a> getoond worden met alle reservekopieën.
 Kies vervolgens kleuren naar "Buitenste map" in het <a href="ViewDisplayPanel.html">Beeld paneel</a>.
@@ -73,7 +88,7 @@ Wijzig het masker totdat het werkt.
 
 <p>
 Wanneer het masker werkt moet u een filter toepassen op het venster.
-Gebruik hiervoor de <b>Filter...</b> opdracht. 
+Gebruik hiervoor de <b>Filter</b> opdracht. 
 Deze neemt standaard de instelling van het masker over, dus u kunt gelijk op "OK" drukken.
 Een nieuw overzichts venster wordt gemaakt, zonder de grootste reservekopie.
 Dit nieuwe venster geeft een veel beter idee van de ruimte die nodig is voor iedere nieuwe reservekopie.
@@ -85,7 +100,7 @@ Als u bestanden tegenkomt die niet in de reservekopieën thuis horen kunt u uw Ti
 <h2>Bekijk welke bestanden tijdens het maken van de meest recente reservekopie gekopieerd zijn</h2>
 
 <p>
-Start het <b>Inlezen map met filter...</b>.
+Start het <b>Inlezen map met filter</b>.
 Voor de in te lezen map kies "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/Latest".
 Pas de volgende filter toe: "Toon geen: harde links".
 Het resultaat is een venster dat alle bestanden toont die nieuw zijn in meest recente reservekopie.
