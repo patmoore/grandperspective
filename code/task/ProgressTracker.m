@@ -40,12 +40,32 @@ NSString  *CurrentFolderPathKey = @"currentFolderPath";
 - (void) finishedTask {
   // NSLog(@"finishedTask");
 
-  // void. This method can be overridden.
+  [mutex lock];
+  [directoryStack removeAllObjects];
+  [mutex unlock];
 }
 
 
 - (void) processingFolder: (DirectoryItem *)dirItem {
   [mutex lock];
+
+  if ([directoryStack count] == 0) {
+    // Find the root of the tree
+    DirectoryItem  *root = dirItem;
+    DirectoryItem  *parent = nil;
+    while ((parent = [root parentDirectory]) != nil) {
+      root = parent;
+    }
+
+    if (root != dirItem) {
+      // Add the root of the tree to the stack. This ensures that -path can be
+      // called for any FileItem in the stack, even after the tree has been 
+      // released externally (e.g. because the task constructing it has been 
+      // aborted).
+      [directoryStack addObject: root];
+    }
+  }
+
   [directoryStack addObject: dirItem];
   [mutex unlock];
 }
