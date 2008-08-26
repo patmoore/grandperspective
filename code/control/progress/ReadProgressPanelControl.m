@@ -21,7 +21,7 @@
 }
 
 - (NSString *)pathFromTaskInput: (id) taskInput {
-  return @""; // Path is not known until top folder is read from file.
+  return @"???"; // Path is not known until top folder is read from file.
 }
 
 - (NSDictionary *)progressInfo {

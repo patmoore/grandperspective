@@ -132,7 +132,9 @@ extern NSString  *CurrentFolderPathKey;
 
 - (void) updateProgressDetails: (NSString *)currentPath {
   [progressDetails setStringValue: 
-                     [NSString stringWithFormat: detailsFormat, currentPath]];
+                     (currentPath != nil)
+                     ? [NSString stringWithFormat: detailsFormat, currentPath]
+                     : @""];
 }
 
 - (void) updateProgressSummary: (int) numProcessed {
