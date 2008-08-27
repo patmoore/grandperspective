@@ -10,6 +10,9 @@
 
 - (id) init {
   if (self = [super init]) {
+    taskLock = [[NSLock init] alloc];
+    treeFilter = nil;
+    
     enabled = YES;
   }
   return self;

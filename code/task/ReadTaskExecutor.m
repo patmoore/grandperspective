@@ -9,6 +9,7 @@
 - (id) init {
   if (self = [super init]) {
     taskLock = [[NSLock init] alloc];
+    treeReader = nil;
 
     enabled = YES;    
   }

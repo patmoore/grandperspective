@@ -12,6 +12,7 @@
 - (id) init {
   if (self = [super init]) {
     taskLock = [[NSLock init] alloc];
+    treeBuilder = nil;
 
     enabled = YES;    
   }
