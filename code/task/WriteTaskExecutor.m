@@ -8,7 +8,7 @@
 
 - (id) init {
   if (self = [super init]) {
-    taskLock = [[NSLock init] alloc];
+    taskLock = [[NSLock alloc] init];
     treeWriter = nil;
 
     enabled = YES;    
