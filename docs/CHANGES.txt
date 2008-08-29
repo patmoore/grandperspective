@@ -6,9 +6,10 @@
   Version 0.9.13.1, 29-08-2008
 ----------------------------------------------------------------------
 
-Bug fix:
-- Fixed silly bug that caused crashes when scanning. It is a miracle 
-  it even worked before on some systems (including mine).
+Bug fixes:
+- Fixed "silly typo" bug that caused crashes when scanning. 
+- Failures of FSRefMakePath do not abort scanning anymore, but are
+  handled gracefully instead.
 
 
 ----------------------------------------------------------------------
