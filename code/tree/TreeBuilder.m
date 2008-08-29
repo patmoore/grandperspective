@@ -16,6 +16,9 @@ NSString  *LogicalFileSize = @"logical";
 NSString  *PhysicalFileSize = @"physical";
 
 
+NSString  *CouldNotEstablishSystemPath = @"CouldNotEstablishSystemPath";
+
+
 /* Set the bulk request size so that bulkCatalogInfo fits in exactly four VM 
  * pages. This is a good balance between the iteration I/O overhead and the 
  * risk of incurring additional I/O from additional memory allocation.
@@ -343,7 +346,7 @@ typedef struct  {
       // is created lazily.
       NSString  *systemPath = nil; 
 
-      if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo
+      if ([self includeItemForFileRef: childRef catalogInfo: catalogInfo 
                   systemPath: &systemPath]) {
         // Include this item
         
@@ -356,12 +359,19 @@ typedef struct  {
         if (catalogInfo->nodeFlags & kFSNodeIsDirectoryMask) {
           // A directory node.
           
+          // Check if it is a package.
           if (systemPath == nil) {
             // Lazily create the system path to the child item
             systemPath = [self systemPathStringForFileRef: childRef];
           }
-          if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: systemPath]) {
-            flags |= FILE_IS_PACKAGE;
+          if (systemPath != CouldNotEstablishSystemPath) {
+            if ([[NSWorkspace sharedWorkspace] 
+                    isFilePackageAtPath: systemPath]) {
+              flags |= FILE_IS_PACKAGE;
+            }
+          }
+          else {
+            NSLog(@"Assuming directory w/o a system path is not a package.");
           }
 
           DirectoryItem  *dirChildItem = 
@@ -405,6 +415,11 @@ typedef struct  {
           
           [fileChildItem release];
         }
+      }
+      
+      if (systemPath == CouldNotEstablishSystemPath) {
+        NSLog(@"Failed to establish system path for %@/%@.", 
+                  [dirItem path], childName);
       }
       
       [childName release];
@@ -463,7 +478,11 @@ typedef struct  {
     
     if (*systemPath == nil) {
       // Lazily create the system path
-      *systemPath = [self systemPathStringForFileRef: fileRef];
+      *systemPath = [self systemPathStringForFileRef: fileRef];      
+    }
+    if (*systemPath == CouldNotEstablishSystemPath) {
+      NSLog(@"Excluding hard-linked file item w/o a system path.");
+      return NO;
     }
     
     NSFileManager  *fileManager = [NSFileManager defaultManager];
@@ -522,7 +541,9 @@ typedef struct  {
       NSAssert(pathBuffer != NULL, @"Malloc failed.");
     }
     else {
-      NSAssert1(NO, @"Unknown status code %d", status);
+      // Failed to create path.
+      NSLog(@"FSRefMakePath failed (code=%d)", status);
+      return CouldNotEstablishSystemPath; 
     }
   }
 }
