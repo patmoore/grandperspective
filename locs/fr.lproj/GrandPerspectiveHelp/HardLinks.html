@@ -1,0 +1,52 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Liens matériel</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Décrit ce qu'est un lien matériel et comment ils sont gérés.">
+<meta name="keywords" content="lien matériel, lien, Time Machine">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Lien matériel</h1>
+</div>
+
+<p>
+Les Systèmes d'Exploitation basés sur Unix, incluant Mac OS X supportent le concept des liens matériels.
+Un lien matériel peut être utilisé pour placer un fichier à différents endroits (i.e. dans différents dossiers) ou sous différents noms dans le même système de fichiers.
+Chacun de ces liens matériels réfère aux mêmes données dans le système de fichiers ce qui ne prend de la place qu'une seule fois.
+Cela implique par exemple une modification de tous les liens matériels lorsque vous modifiez un fichier qui en est l'origine.
+</p>
+
+<p>
+Les liens matériels doivent être gérés de manière spéciale afin de ne pas surestimer l'espace du disque dur qu'ils occupent.
+GrandPerspective gère les liens matériels comme suit.
+Quand un lien matériel (fichier ou dossier) est rencontré lors d'une <a href="CreatingViews.html">analyse</a>, il est inclus.
+Ultérieurement, si le même fichier ou dossier est rencontré une fois de plus (dans un dossier différent) il est ignoré.
+De ce fait, à l'intérieur d'une seule <a href="Views.html">vue</a>, un lien matériel apparaît au plus une fois, ce qui reflète correctement la taille qui est actuellement prise sur le disque.
+Toutefois, la question de la localisation d'un lien matériel apparait dans la vue est assez arbitraire.
+Il peut être dans n'importe quel dossier où il apparaît.
+Cela dépend du premier dossier qui aura été analysé.
+</p>
+
+<p>
+Quand vous supprimez un fichier ou dossier qui est un lien matériel, il est supprimé du dossier donné.
+Toutefois, l'espace libre n'augmentera pas car l'objet prend de l'espace sur le disque tant que tous les liens matériels pointant vers ce dernier n'ont pas été supprimés.
+</p>
+
+
+<h2>Voir aussi</h2>
+
+<p>
+<ul>
+<li><a href="HowToAnalyseTimeMachineBackups.html">Comment analyser les sauvegardes de Time Machine</a> - Time Machine fait un usage intensif des liens matériels.</li>
+</ul>
+</p>
+
+
+</body>
+</html>

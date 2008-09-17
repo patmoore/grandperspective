@@ -16,31 +16,34 @@
 </div>
 
 <p>
-Le panneau d'information dans le <a href="ViewDrawer.html">"tiroir"</a> donne des informations à propos du dossier qui a été analysé.
-Il montre le nom du dossier ainsi que l'heure ou il a été analysé.
-Quand un <a href="MasksAndFilters.html">filtre</a> a été appliqué, il affiche également les détails de ce dernier.
+Le panneau d'information situé dans le <a href="ViewDrawer.html">"tiroir"</a> donne des informations à propos du dossier qui a été analysé.
+On y trouve le volume où se situe le dossier, le nom du dossier et la date de l'analyse.
+La <a href="FileSizeMeasures.html">mesure de la taille d'un fichier</a> qui a été utilisé est également disponible.
+Quand un <a href="MasksAndFilters.html">filtre</a> a été appliqué, on peut aussi voir les détails de ce dernier.
 </p>
 
 <p>
-Le panneau montre également 4 informations:
+Le panneau montre également 5 informations:
 <ul>
 <li><b>Taille du volume</b>: La taille totale du volume.
 </li>
-<li><b>Taille des fichiers scannés</b>: La taille total des fichiers scannés, utilisant la méthode de calcul spécifié et après application du(des) filtres si il y'avait lieu.
+<li><b>Taille des fichiers scannés</b>: La taille totale des fichiers scannés, utilisant la méthode de calcul spécifié et après application du(des) filtres si il y'avait lieu.
 </li>
-<li><b>Espace libre</b>: Espace disponible sur le volume, valeur identique à celle raportée par votre système d'exploitation au moment de l'analyse.
+<li><b>Espace libre</b>: Espace disponible sur le volume, valeur identique à celle rapportée par votre système d'exploitation au moment de l'analyse.
 </li>
 <li><b>Espace utilisé</b>: Tout l'espace utilisé qui n'est pas compté pour la taille des fichiers scannés. Cela inclus les fichiers suivants : 
   <ul>
-  <li>Fichier qui ne sont pas scannés soit parce que le dossier scanné n'est pas à la racine du volume ou bien parce que l'utilisateur n'a pas la permission d'accéder à tout les sous dossiers.
+  <li>Fichier qui ne sont pas scannés soit parce que le dossier scanné n'est pas à la racine du volume soit parce que l'utilisateur n'a pas la permission d'accéder à tous les sous dossiers.
   </li>
   <li>Les fichiers ont été exclus par un filtre (si il y'en a un).
   </li>
-  <li>L'espace disque qui n'est pas compté car la <a href="FileSizeMeasures.html">mesure de la taille des fichiers</a> "logique" est utilisé, cette dernière sous estime l'espace réellement utilisé par ces fichiers.
+  <li>L'espace disque qui n'est pas compté car la <a href="FileSizeMeasures.html">mesure de la taille des fichiers</a> "logique" est utilisée, cette dernière sous estime l'espace réellement utilisé par ces fichiers.
   </li>
-  <li>Fichier bas niveau, utilisé pour stocké la structure des dossiers.
+  <li>Fichier bas niveau, utilisé pour stocker la structure des dossiers.
   </li>
   </ul>  
+</li><li><b>Espace libéré</b>: La taille totale des fichiers qui ont été supprimés du dossier analysé depuis que l'analyse a eu lieu.
+Cela inclut seulement les fichiers qui ont été supprimés en utilisant le bouton <b>Supprimer</b> de la vue (ou le bouton Supprimer d'une vue <a href="CreatingViews.html">jumelle ou dupliquée</a>).
 </li>
 </ul>
 </p>

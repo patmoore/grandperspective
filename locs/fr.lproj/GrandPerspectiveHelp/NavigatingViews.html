@@ -16,34 +16,49 @@
 </div>
 
 <p>
-Vous pouvez afficher des informations supplémentaires sur les fichiers depuis <a href="Views.html">l'interface principal</a> en maintenant votre curseur au dessus du rectangle correspondant.
+Vous pouvez afficher des informations supplémentaires sur les fichiers depuis <a href="Views.html">l'interface principale</a> en maintenant votre curseur au dessus du rectangle correspondant.
 Le fichier sous le curseur de la souris est séléctionné et marqué par un rectangle.
-Les dossiers se trouvent le fichier sont marqués de la même manière.
+Les dossiers où se trouvent le fichier sont marqués de la même manière.
 Le nom et la taille du fichier séléctionné sont affichés en dessous de la vue principale.
 </p>
 
 <p>
 Vous pouvez changer la séléction du fichier pour l'un des dossiers dans lequels il se situe (de cette manière, vous pouvez par exemple rapidement trouver la taille d'un dossier spécifique).
-Vous pouvez faire cela soit en utilisant votre <b>molette</b> de souris bien en utilisant les touches "<b>[</b>" et "<b>]</b>" de votre clavier.
-Après avoir bouger la séléction d'un niveau dans la hiérarchie des fichiers, il va rester à ce niveau jusqu'à ce que le fassiez monter ou descendre explicitement.
-Si vous ramenez la séléction en arrière (vers un fichier) et que vous allez un peu au-delà de cela, la séléction restera fidèle aux dossiers comme c'était le cas à l'origine.
+Vous pouvez faire cela soit en utilisant votre <b>molette</b> de souris soit en utilisant les touches "<b>[</b>" et "<b>]</b>" de votre clavier.
+Après avoir bougé la séléction d'un niveau dans la hiérarchie des fichiers, il va rester à ce niveau jusqu'à ce que vous le fassiez monter ou descendre explicitement.
+Si vous ramenez la séléction en arrière (vers un fichier) et que vous allez un peu au-delà de cela, la sélection restera fidèle aux dossiers comme c'était le cas à l'origine.
 </p>
 
 <p>
-Cliquer sur un fichier bloque le focus sur ce dernier afin que les informations ne changent pas quand vous déplacez votre souris,
-Cliquer une fois de plus, n'importe dans l'interface pour retirer ce "blocage".
+Cliquer sur un fichier verouille le focus sur ce dernier afin que les informations ne changent pas quand vous déplacez votre souris,
+Cliquer une fois de plus, n'importe où dans l'interface pour retirer ce verrou.
 </p>
 
 <p>
 Quand le focus est verrouillé, vous pouvez changer le dossier qui est affiché dans l'interface.
 En cliquant sur le boutton <b>Bas</b>, vous descendez dans le premier sous dossier qui est dans le chemin du fichier séléctionné.
-Vous pouvez continuer à cliquer sur ce boutton tant que vous n'avez pas atteint le fichier lui même.
+Vous pouvez continuer à cliquer sur ce bouton tant que vous n'avez pas atteint le fichier lui même.
 En cliquant sur <b>Haut</b> vous reviendrez à l'étape précédente, niveau par niveau.
 </p>
 
 <p>
-Quand le focus est verouillé, vous pouvez voir le fichier séléctionné dans le Finder en utilisant le boutton <b>Révéler</b>.
+Quand le focus est verouillé, vous pouvez voir le fichier séléctionné dans le Finder en utilisant le bouton <b>Révéler</b>.
 Une fois cela fait, vous pouvez renommer, supprimer le fichier, etc. (Toutes les actions qui sont possible dans le Finder.)
+</p>
+
+<p>
+Quand la séléction est verrouillée, vous pouvez également supprimer le fichier ou dossier séléctionné en utilisant le bouton <b>Supprimer</b>.
+Les objets supprimés seront déplacés vers la Corbeille et la vue sera mise à jour pour vous montrer l'espace ainsi libéré.
+Par défaut, le bouton est désactivé pour réduire les risques d'un geste maladroit.
+La suppression peut être activée depuis les <a href="Preferences.html">Préférences</a>.
+</p>
+
+<!-- Note: warning repeated in Preferences.html -->
+<p>
+<em>Attention : La suppression de dossier déplacera le dossier entier vers la Corbeille, cela inclut tous les fichiers présent dans le dossier qui ne sont pas visible dans la vue.
+Un fichier peut ne pas être visible car il est <a href="MasksAndFilters.html">masqué ou filtré</a>, il n'a pas pu être analysé pour cause de permissions insuffisantes ou il est apparu dans le dossier après l'analyse de ce dernier.
+En bref, vous devez faire très attention quand vous supprimez un dossier.
+</em>
 </p>
 
 </body>

@@ -18,14 +18,35 @@
 <p>
 Une fenêtre "Edition des masques" ou "Edition des filtres" apparaît, respectivement, lorsque vous avez besoin de préciser un <a href="MasksAndFilters.html">masque ou un filtre</a>.
 La fenêtre contient deux listes.
-La liste a la gauche affiche les règles qui sont utilisés dans les masques ou les filtres.
-La liste a la droite affiche toutes les règles qui sont encore disponibles.
-Vous pouvez choisir les règles qui seront utilisés en les déplaçant de la droite à la gauche, en utilisant le boutton <b>&lt;</b>.
+La liste à la gauche affiche les règles qui sont utilisés dans les masques ou les filtres.
+La liste à la droite affiche toutes les règles qui sont encore disponibles.
+Vous pouvez choisir les règles qui seront utilisées en les déplaçant de la droite à la gauche, en utilisant le bouton <b>&lt;</b>.
 </p>
 
 <p>
-Quand il y a plus d'une règle dans le masque (ou filtre), un fichier a seulement besoin de rencontrer
-En d'autre mots, les règles sont combinés en utilisant "OR" (ou) qui est opposé à "AND" (et).
+Quand il y a plus d'une règle dans le masque (ou filtre), un fichier a seulement besoin de rencontrer l'une d'elles.
+En d'autre mots, les règles sont combinées en utilisant "OR" (ou) qui est opposée à "AND" (et).
+</p>
+
+<p>
+La plupart des règles ne s'appliquent qu'au fichier mais certaine s'appliquent (aussi) aux dossiers.
+Quand un dosser ne doit pas être visible, son contenu ne l'est pas non plus.
+Quand vous utilisez une ou plusieurs règles qui s'appliquent (aussi) aux dossiers, il est rarement utile d'afficher seulement les objets qui correspondent à ces règles.
+La raison est qu'un fichier sera alors seulement visible quand <em>tout les dossiers dans son chemin</em> (à commencer par le dossier qui a été scanné) correspondront une des règles.
+</p>
+
+<p>
+GrandPerspective est livré avec quelques règles par défaut pour les masques et filtres.
+Vous pouvez créer vos propres règles en utilisant le bouton <b>Nouveau</b>, ou modifier les règles existantes en utilisant le bouton <b>Editer</b>.
+Dans les deux, une fenêtre "Editez la règle du filtre" apparaîtra où vous pourrez <a href="EditingMaskAndFilterRules.html">éditer la règle</a>.
+Les règles que vous créez ou modifiez sont stockées dans le dépôt des règles qui est automatiquement stocké dans vos préférences.
+De cette manière, elles sont disponibles à votre prochain lancement de GrandPerspective.
+</p>
+
+<p>
+Vous pouvez supprimer des règles que vous avez créées en utilisant le bouton <b>Supprimer</b>.
+Vous pouvez également utiliser ce bouton pour annuler des changements que vous avez effectués sur les règles fournies avec l'application.
+Ces règles seront alors remplacées par les règles d'origine portant ces noms.
 </p>
 
 <h2>Voir aussi</h2>

@@ -1,39 +1,131 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {
-                cancelAction = id; 
-                lowerBoundCheckBoxChanged = id; 
-                nameCheckBoxChanged = id; 
-                okAction = id; 
-                pathCheckBoxChanged = id; 
-                updateEnabledState = id; 
-                upperBoundCheckBoxChanged = id; 
-                valueEntered = id; 
-            }; 
-            CLASS = EditFilterRuleWindowControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                doneButton = NSButton; 
-                nameCaseInsensitiveCheckBox = NSButton; 
-                nameCheckBox = NSButton; 
-                nameMatchPopUpButton = NSPopUpButton; 
-                nameTargetsView = NSTextView; 
-                pathCaseInsensitiveCheckBox = NSButton; 
-                pathCheckBox = NSButton; 
-                pathMatchPopUpButton = NSPopUpButton; 
-                pathTargetsView = NSTextView; 
-                ruleNameField = NSTextField; 
-                sizeLowerBoundCheckBox = NSButton; 
-                sizeLowerBoundField = NSTextField; 
-                sizeLowerBoundUnits = NSPopUpButton; 
-                sizeUpperBoundCheckBox = NSButton; 
-                sizeUpperBoundField = NSTextField; 
-                sizeUpperBoundUnits = NSPopUpButton; 
-            }; 
-            SUPERCLASS = NSWindowController; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>addNameTarget</key>
+				<string>id</string>
+				<key>addPathTarget</key>
+				<string>id</string>
+				<key>addTypeTarget</key>
+				<string>id</string>
+				<key>cancelAction</key>
+				<string>id</string>
+				<key>hardLinkCheckBoxChanged</key>
+				<string>id</string>
+				<key>lowerBoundCheckBoxChanged</key>
+				<string>id</string>
+				<key>nameCheckBoxChanged</key>
+				<string>id</string>
+				<key>okAction</key>
+				<string>id</string>
+				<key>packageCheckBoxChanged</key>
+				<string>id</string>
+				<key>pathCheckBoxChanged</key>
+				<string>id</string>
+				<key>removeNameTarget</key>
+				<string>id</string>
+				<key>removePathTarget</key>
+				<string>id</string>
+				<key>removeTypeTarget</key>
+				<string>id</string>
+				<key>targetPopUpChanged</key>
+				<string>id</string>
+				<key>typeCheckBoxChanged</key>
+				<string>id</string>
+				<key>updateEnabledState</key>
+				<string>id</string>
+				<key>upperBoundCheckBoxChanged</key>
+				<string>id</string>
+				<key>valueEntered</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>EditFilterRuleWindowControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>addNameTargetButton</key>
+				<string>NSButton</string>
+				<key>addPathTargetButton</key>
+				<string>NSButton</string>
+				<key>addTypeTargetButton</key>
+				<string>NSButton</string>
+				<key>cancelButton</key>
+				<string>NSButton</string>
+				<key>doneButton</key>
+				<string>NSButton</string>
+				<key>hardLinkCheckBox</key>
+				<string>NSButton</string>
+				<key>hardLinkStatusPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>nameCaseInsensitiveCheckBox</key>
+				<string>NSButton</string>
+				<key>nameCheckBox</key>
+				<string>NSButton</string>
+				<key>nameMatchPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>nameTargetsView</key>
+				<string>NSTableView</string>
+				<key>packageCheckBox</key>
+				<string>NSButton</string>
+				<key>packageStatusPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>pathCaseInsensitiveCheckBox</key>
+				<string>NSButton</string>
+				<key>pathCheckBox</key>
+				<string>NSButton</string>
+				<key>pathMatchPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>pathTargetsView</key>
+				<string>NSTableView</string>
+				<key>removeNameTargetButton</key>
+				<string>NSButton</string>
+				<key>removePathTargetButton</key>
+				<string>NSButton</string>
+				<key>removeTypeTargetButton</key>
+				<string>NSButton</string>
+				<key>ruleNameField</key>
+				<string>NSTextField</string>
+				<key>ruleTargetPopUp</key>
+				<string>NSPopUpButton</string>
+				<key>sizeLowerBoundCheckBox</key>
+				<string>NSButton</string>
+				<key>sizeLowerBoundField</key>
+				<string>NSTextField</string>
+				<key>sizeLowerBoundUnits</key>
+				<string>NSPopUpButton</string>
+				<key>sizeUpperBoundCheckBox</key>
+				<string>NSButton</string>
+				<key>sizeUpperBoundField</key>
+				<string>NSTextField</string>
+				<key>sizeUpperBoundUnits</key>
+				<string>NSPopUpButton</string>
+				<key>typeCheckBox</key>
+				<string>NSButton</string>
+				<key>typeMatchPopUpButton</key>
+				<string>NSPopUpButton</string>
+				<key>typeTargetsView</key>
+				<string>NSTableView</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSWindowController</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

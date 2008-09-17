@@ -7,59 +7,53 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
-				<key>addTestToFilter</key>
-				<string>id</string>
-				<key>addTestToRepository</key>
-				<string>id</string>
-				<key>applyAction</key>
-				<string>id</string>
 				<key>cancelAction</key>
 				<string>id</string>
-				<key>editTestInRepository</key>
+				<key>moveDownAction</key>
 				<string>id</string>
-				<key>filterActionChanged</key>
+				<key>moveToBottomAction</key>
+				<string>id</string>
+				<key>moveToHideAction</key>
+				<string>id</string>
+				<key>moveToRevealAction</key>
+				<string>id</string>
+				<key>moveToTopAction</key>
+				<string>id</string>
+				<key>moveUpAction</key>
 				<string>id</string>
 				<key>okAction</key>
 				<string>id</string>
-				<key>removeAllTestsFromFilter</key>
-				<string>id</string>
-				<key>removeTestFromFilter</key>
-				<string>id</string>
-				<key>removeTestFromRepository</key>
-				<string>id</string>
-				<key>showTestDescriptionChanged</key>
+				<key>showTypeDescriptionChanged</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
-			<string>EditFilterWindowControl</string>
+			<string>EditUniformTypeRankingWindowControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
-				<key>addTestToFilterButton</key>
+				<key>hideButton</key>
 				<string>NSButton</string>
-				<key>applyButton</key>
+				<key>moveDownButton</key>
 				<string>NSButton</string>
-				<key>availableTestsView</key>
-				<string>NSTableView</string>
-				<key>editTestInRepositoryButton</key>
+				<key>moveToBottomButton</key>
 				<string>NSButton</string>
-				<key>filterActionButton</key>
-				<string>NSPopUpButton</string>
-				<key>filterTestsView</key>
-				<string>NSTableView</string>
-				<key>okButton</key>
+				<key>moveToTopButton</key>
 				<string>NSButton</string>
-				<key>removeAllTestsFromFilterButton</key>
+				<key>moveUpButton</key>
 				<string>NSButton</string>
-				<key>removeTestFromFilterButton</key>
+				<key>revealButton</key>
 				<string>NSButton</string>
-				<key>removeTestFromRepositoryButton</key>
-				<string>NSButton</string>
-				<key>testDescriptionDrawer</key>
+				<key>typeConformsToField</key>
+				<string>NSTextField</string>
+				<key>typeDescriptionDrawer</key>
 				<string>NSDrawer</string>
-				<key>testDescriptionView</key>
-				<string>NSTextView</string>
+				<key>typeDescriptionField</key>
+				<string>NSTextField</string>
+				<key>typeIdentifierField</key>
+				<string>NSTextField</string>
+				<key>typesTable</key>
+				<string>NSTableView</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSWindowController</string>

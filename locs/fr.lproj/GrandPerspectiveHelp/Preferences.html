@@ -1,0 +1,56 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Préférences utilisateurs</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Décrit les préférences utilisateurs.">
+<meta name="keywords" content="préférences, supression, défaut, paramètres, configuration, configurer, customiser, customizer, customize, custo" >
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Préférences</h1>
+</div>
+
+<p>
+L'application peut être personnalisée en utilisant les Préférences, elles sont accessibles depuis le menu de GrandPerspective.
+Le panneau de Préférences est divisé en trois parties : Actions, Info et Affichage.
+</p>
+
+<p>
+Dans la section <b>Actions</b> vous pouvez configurer si la suppression de fichier est supporté dans la <a href="Views.html">fenêtre principale</a> ou non.
+Vous pouvez activer/désactiver la suppression des fichiers seuls ou l'activer pour des dossiers entiers.
+De plus, vous pouvez spécifier si une confirmation est requises ou non.
+</p>
+
+<!-- Note: warning repeated in NavigatingViews.html -->
+<p>
+<em>Attention : La suppression de dossier déplacera le dossier entier vers la Corbeille, cela inclut tous les fichiers présent dans le dossier qui ne sont pas visible dans la vue.
+Un fichier peut ne pas être visible car il est <a href="MasksAndFilters.html">masqué ou filtré</a>, il n'a pas pu être analysé pour cause de permissions insuffisantes ou il est apparu dans le dossier après l'analyse de ce dernier.
+En bref, vous devez faire très attention quand vous supprimez un dossier.
+</em>
+</p>
+
+<p>
+Dans la partie <b>Info</b> vous pouvez configurer <a href="FileSizeMeasures.html">la mesure de la taille des fichiers</a> qui sera utilisé lors des analyses.
+Un changement de ce paramètre ne prendra effet lorsque une nouvelle analyse sera effectuée.
+Il n'affecte pas les vues existantes ou les vues qui ont été <a href="CreatingViews.html">créées</a> après une nouvelle analyse (les paramètres seront pris depuis la vue originelle).
+La mesure de la taille des fichiers qui est utilisée par une fenêtre spécifique peut être trouvée dans le <a href="ViewInfoPanel.html">panneau Info</a>.
+</p>
+
+<p>
+La partie <b>Affichage</b> contient les paramètres qui touchent à l'apparence de la vue.
+Vous pouvez spécifier les palettes de couleurs et le schéma de colorisation qui seront utilisés pour toutes nouvelles vues.
+En <a href="EditingFileTypeColorMapping.html">éditant le schéma de couleurs "Type de fichiers"</a> vous pouvez contrôler les couleurs qui sont liées à certains types de fichiers.
+Les changements de ce paramètre sera prise en compte dans toutes les vues qui utilise la colorisation par type de fichiers.
+Vous pouvez également spécifier si le contenu des paquets doit être visible pour les nouvelles vues crées ou non.
+La plupart de ces paramètres est seulement spécifique à l'apparence de la vue initialement crée.
+Vous pouvez ultérieurement changer l'apparence d'une vue en utilisant le <a href="ViewDisplayPanel.html">panneau Affichage</a>.
+</p>
+
+</body>
+</html>
+

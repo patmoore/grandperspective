@@ -1,49 +1,50 @@
-{
-    IBClasses = (
-        {
-            ACTIONS = {colorMappingChoiceAction = id; paletteChoiceAction = id; upAction = id; }; 
-            CLASS = DirectoryViewControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                colorMappingChoice = NSPopUpButton; 
-                mainView = NSView; 
-                paletteChoice = NSPopUpButton; 
-                upButton = NSButton; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
-        {
-            ACTIONS = {
-                duplicateDirectoryView = id; 
-                editPreferences = id; 
-                filterDirectoryView = id; 
-                openDirectoryView = id; 
-                rescanDirectoryView = id; 
-                saveDirectoryViewImage = id; 
-                twinDirectoryView = id; 
-            }; 
-            CLASS = MainMenuControl; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSObject; 
-        }, 
-        {
-            ACTIONS = {
-                abort = id; 
-                duplicateDirectoryView = id; 
-                openDirectoryView = id; 
-                saveDirectoryViewImage = id; 
-                twinDirectoryView = id; 
-            }; 
-            CLASS = StartupControl; 
-            LANGUAGE = ObjC; 
-            OUTLETS = {
-                progressIndicator = NSProgressIndicator; 
-                progressPanel = NSPanel; 
-                progressText = NSTextField; 
-            }; 
-            SUPERCLASS = NSObject; 
-        }
-    ); 
-    IBVersion = 1; 
-}
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IBClasses</key>
+	<array>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>duplicateDirectoryView</key>
+				<string>id</string>
+				<key>editPreferences</key>
+				<string>id</string>
+				<key>filterDirectoryView</key>
+				<string>id</string>
+				<key>loadScanData</key>
+				<string>id</string>
+				<key>rescanDirectoryView</key>
+				<string>id</string>
+				<key>saveDirectoryViewImage</key>
+				<string>id</string>
+				<key>saveScanData</key>
+				<string>id</string>
+				<key>scanDirectoryView</key>
+				<string>id</string>
+				<key>scanFilteredDirectoryView</key>
+				<string>id</string>
+				<key>twinDirectoryView</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>MainMenuControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+	</array>
+	<key>IBVersion</key>
+	<string>1</string>
+</dict>
+</plist>

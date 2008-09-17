@@ -27,6 +27,8 @@
 				<string>id</string>
 				<key>colorPaletteChanged</key>
 				<string>id</string>
+				<key>deleteFile</key>
+				<string>id</string>
 				<key>downAction</key>
 				<string>id</string>
 				<key>editMask</key>
@@ -37,6 +39,8 @@
 				<string>id</string>
 				<key>showEntireVolumeCheckBoxChanged</key>
 				<string>id</string>
+				<key>showPackageContentsCheckBoxChanged</key>
+				<string>id</string>
 				<key>upAction</key>
 				<string>id</string>
 			</dict>
@@ -46,10 +50,14 @@
 			<string>ObjC</string>
 			<key>OUTLETS</key>
 			<dict>
+				<key>colorLegendTable</key>
+				<string>NSTableView</string>
 				<key>colorMappingPopUp</key>
 				<string>NSPopUpButton</string>
 				<key>colorPalettePopUp</key>
 				<string>NSPopUpButton</string>
+				<key>deleteButton</key>
+				<string>NSButton</string>
 				<key>downButton</key>
 				<string>NSButton</string>
 				<key>drawer</key>
@@ -62,6 +70,8 @@
 				<string>NSTextField</string>
 				<key>freeSpaceField</key>
 				<string>NSTextField</string>
+				<key>freedSpaceField</key>
+				<string>NSTextField</string>
 				<key>itemPathField</key>
 				<string>NSTextField</string>
 				<key>itemSizeField</key>
@@ -70,8 +80,6 @@
 				<string>DirectoryView</string>
 				<key>maskCheckBox</key>
 				<string>NSButton</string>
-				<key>maskDescriptionTextView</key>
-				<string>NSTextView</string>
 				<key>miscUsedSpaceField</key>
 				<string>NSTextField</string>
 				<key>openButton</key>
@@ -88,7 +96,13 @@
 				<string>NSTextField</string>
 				<key>selectedItemTitleField</key>
 				<string>NSTextField</string>
+				<key>selectedItemTypeDescriptionField</key>
+				<string>NSTextField</string>
+				<key>selectedItemTypeIdentifierField</key>
+				<string>NSTextField</string>
 				<key>showEntireVolumeCheckBox</key>
+				<string>NSButton</string>
+				<key>showPackageContentsCheckBox</key>
 				<string>NSButton</string>
 				<key>treeSizeField</key>
 				<string>NSTextField</string>
@@ -100,10 +114,12 @@
 				<string>NSTextView</string>
 				<key>visibleFolderSizeField</key>
 				<string>NSTextField</string>
+				<key>visibleFolderTitleField</key>
+				<string>NSTextField</string>
 				<key>volumeIconView</key>
 				<string>NSImageView</string>
-				<key>volumeNameTextView</key>
-				<string>NSTextView</string>
+				<key>volumeNameField</key>
+				<string>NSTextField</string>
 				<key>volumeSizeField</key>
 				<string>NSTextField</string>
 			</dict>
