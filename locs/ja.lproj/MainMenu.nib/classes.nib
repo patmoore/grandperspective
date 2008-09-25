@@ -1,22 +1,6 @@
 {
     IBClasses =     (
                 {
-            ACTIONS =             {
-                colorMappingChoiceAction = id;
-                paletteChoiceAction = id;
-                upAction = id;
-            };
-            CLASS = DirectoryViewControl;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                colorMappingChoice = NSPopUpButton;
-                mainView = NSView;
-                paletteChoice = NSPopUpButton;
-                upButton = NSButton;
-            };
-            SUPERCLASS = NSObject;
-        },
-                {
             CLASS = FirstResponder;
             LANGUAGE = ObjC;
             SUPERCLASS = NSObject;
@@ -26,30 +10,16 @@
                 duplicateDirectoryView = id;
                 editPreferences = id;
                 filterDirectoryView = id;
-                openDirectoryView = id;
+                loadScanData = id;
                 rescanDirectoryView = id;
                 saveDirectoryViewImage = id;
+                saveScanData = id;
+                scanDirectoryView = id;
+                scanFilteredDirectoryView = id;
                 twinDirectoryView = id;
             };
             CLASS = MainMenuControl;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                abort = id;
-                duplicateDirectoryView = id;
-                openDirectoryView = id;
-                saveDirectoryViewImage = id;
-                twinDirectoryView = id;
-            };
-            CLASS = StartupControl;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                progressIndicator = NSProgressIndicator;
-                progressPanel = NSPanel;
-                progressText = NSTextField;
-            };
             SUPERCLASS = NSObject;
         }
     );

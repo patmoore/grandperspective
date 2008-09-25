@@ -8,7 +8,6 @@
                 cancelAction = id;
                 editTestInRepository = id;
                 filterActionChanged = id;
-                handleTestsBrowserClick = id;
                 okAction = id;
                 removeAllTestsFromFilter = id;
                 removeTestFromFilter = id;
@@ -20,10 +19,10 @@
             OUTLETS =             {
                 addTestToFilterButton = NSButton;
                 applyButton = NSButton;
-                availableTestsBrowser = NSBrowser;
+                availableTestsView = NSTableView;
                 editTestInRepositoryButton = NSButton;
                 filterActionButton = NSPopUpButton;
-                filterTestsBrowser = NSBrowser;
+                filterTestsView = NSTableView;
                 okButton = NSButton;
                 removeAllTestsFromFilterButton = NSButton;
                 removeTestFromFilterButton = NSButton;
@@ -37,11 +36,6 @@
             CLASS = FirstResponder;
             LANGUAGE = ObjC;
             SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = NotifyingPanel;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSPanel;
         }
     );
     IBVersion = 1;

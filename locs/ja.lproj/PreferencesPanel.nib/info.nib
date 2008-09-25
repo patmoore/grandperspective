@@ -3,10 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>IBDocumentLocation</key>
-	<string>288 117 356 240 0 0 1680 1028 </string>
+	<string>69 14 356 240 0 0 1680 1028 </string>
 	<key>IBFramework Version</key>
 	<string>489.0</string>
+	<key>IBLastKnownRelativeProjectPath</key>
+	<string>../../GrandPerspective.xcodeproj</string>
+	<key>IBOldestOS</key>
+	<integer>5</integer>
+	<key>IBOpenObjects</key>
+	<array>
+		<integer>6</integer>
+	</array>
 	<key>IBSystem Version</key>
-	<string>9C31</string>
+	<string>9F33</string>
+	<key>targetFramework</key>
+	<string>IBCocoaFramework</string>
 </dict>
 </plist>

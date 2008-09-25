@@ -19,6 +19,7 @@
                 fileDeletionConfirmationCheckBox = NSButton;
                 fileDeletionPopUp = NSPopUpButton;
                 fileSizeMeasurePopUp = NSPopUpButton;
+                showPackageContentsByDefaultCheckBox = NSButton;
             };
             SUPERCLASS = NSWindowController;
         }
