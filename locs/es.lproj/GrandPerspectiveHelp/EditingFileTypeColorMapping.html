@@ -1,0 +1,40 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Editandolo mapas de color de los &quot;Tipos de archivo&quot;</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Explica como editar los mapas de color de los tipos de archivo.">
+<meta name="keywords" content="tipo de archivo, orden, color, mapa, editar">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Editandolo mapas de color de los &quot;Tipos de archivo&quot;</h1>
+</div>
+
+<p>
+Desde las <a href="Preferences.html">Preferencias</a> puedes editar el mapeado de los Tipos de archivo.
+Hazlo cambiando el orden de los <a href="FileTypes.html">Tipos de archivo</a> que son usados por el mapa de color.
+Cada archivo es mapeado al color del primer tipo de archivo de la lista que se adecue a &eacute;l.
+El orden de los tipos de archivo es importante por dos razones:
+
+<ul>
+
+<li>Algunos archivos se adecuan a m&aacute;s de un tipo de archivo: un tipo de archivo espec&iacute;fico, y posiblemente uno o m&aacute;s tipos generales.
+El orden entonces determina cual de esos tipos es usado para colorear el archivo.
+Por ejemplo, si el tipo <tt>public.jpeg</tt> aparece <em>debajo</em> del tipo m&aacute;s general, <tt>public.image</tt>, entonces las im&aacute;genes JPEG ser&aacute;n asignadas al mismo color que otras imagenes.
+Si, por otro lado, el tipo <tt>public.jpeg</tt> aparece <em>debajo</em> del tipo  <tt>public.image</tt>, las imagenes JPEG ser&aacute;n coloreadas de distinto color que las dem&aacute;s im&aacute;genes.
+<!-- (assuming that there is not an even more general applicable file type above the <tt>public.jpeg</tt> in the list) -->
+</li>
+
+<li>El n&uacute;mero disponible de colores normalmente es menor que el n&uacute;mero de tipos de archivo.
+Por eso no siempre es posible asignar cada tipo a su propio color. Solo a los tipos al principio de la lista se les podr&aacute; asignar los colores que les corresponden. Los tipos por debajo, puede que se les mapee a todos el &uacute;ltimo color que representa todos los otros tipos de archivos.</li>
+</ul> 
+<p>Si un tipo de archivo aparece en la lista debajo de un tipo de archivo (m&aacute;s general) del que forma parte, es &quot;ocultado&quot; porque nunca ser&aacute; usado (el tipo de archivo m&aacute;s general siempre ser&aacute; asignado a cualquier archivo que tambi&eacute;n se ajuste altipo de archivo m&aacute;s especifico). Los tipos de archivos ocultados son indicados en gris claro.</p>
+<p>El bot&oacute;n <b>Mover a mostrar</b> mover&aacute; un tipo de archivo oculto hacia arriba en la lista hasta que est&eacute; por encima de todos los tipos de archivo a los que se ajuste. El resultado es que el tipo de archivo ahora es usado activamente por el mapa de color. Similarmente, el <b>Mover a oculto</b> mueve un tipo de archivo activo hacia abajo en la lista hasta que est&eacute; por debajo de un tipo al que se ajuste (o a la base de la lista, en caso de que no se ajuste a ning&uacute;n tipo). Ocultar un tipo de archivo significa que ya no es usado en el mapa de color.</p>
+<p>Los botones <b>Mover a la cima</b> y <b>Mover a la base</b> pueden ser usados para mover un tipo de archivo al comienzo o final de la lista respectivamente. los botones <b>Mover arriba</b> y <b>Mover abajo</b> pueden ser usados para mover un tipo de archivo arriba o abajo una posici&oacute;n en la lista. Alternativamente, puedes usar arrastrar y soltar para cambiar el orden de los tipos de archivos en la lista.</p>
+</body>
+</html>

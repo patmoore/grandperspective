@@ -1,10 +1,10 @@
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<title>Editando m&aacute;scaras y reglas de filtrado</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Editando reglas de m&aacute;scaras y filtros</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<meta name="description" content="Explica como editar reglas de máscaras y filtros.">
-<meta name="keywords" content="máscara, filtro, editar, reglas">
+<meta name="description" content="Explica como editar reglas de m&aacute;scaras y filtros.">
+<meta name="keywords" content="mascara, filtro, editar, regla, reglas, test, comprobaci&oacute;n, tests, comprobaciones, nombre, ruta, tipo de archivo, tamaño, paquete, hard link, enlace duro">
 </head>
 <body>
 
@@ -12,20 +12,31 @@
 <img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
 </div>
 <div id="pagetitle">
-<h1>Editando mascaras y reglas de filtrado</h1>
+<h1>Editando reglas de m&aacute;scaras y  filtrado</h1>
 </div>
 
 <p>
-GrandPerspective viene con unas pocas reglas de filtrado por defecto para  <a href="MasksAndFilters.html">m&aacute;scaras y filtros</a>.
-Cuando <a href="EditingMasksAndFilters.html">editas una m&aacute;scara o filtro</a>, puedes a&ntilde;adir tus propias reglas usando el bot&oacute;n  <b>Nueva</b> de la ventana "Editar m&aacute;scara" o "Editor de filtros".
-Puedes modificar una regla, usando el bot&oacute;n <b>Editar</b>.
-Las reglas que has creado o modificado se almacenan en el repositorio de reglas, que es autom&aacute;ticamente guardado en tus preferencias.
-De esta manera estar&aacute;n disponibles la pr&oacute;xima vez que ejecutes GrandPerspective.</p>
+Cuando  <a href="EditingMasksAndFilters.html">editas una m&aacute;scara o filtro</a>, puedes crear nuevas reglas o modificar las existentes. Puedes hacerlo desde la &quot;Ventana editar reglas de filtros&quot;. Para las reglas que crees desde cero, puedes especificar un nombre para ayudar a distinguirla de las otras reglas.</p>
+<p>Puedes escoger si la regla se debe aplicar a los archivos, carpetas, o ambos. Cuando la regla es aplicada a las carpetas, no podr&aacute;s a&ntilde;adir las comprobaci&oacute;nes a la regla que puedan ser aplicados solo a archivos.</p>
+<p>Una regla debe consistir de una o m&aacute;s comprobaciones, que se habilitan con las cajas de selecci&oacute;n (checkboxes) a la izquierda y pueden se configuradas entonces. Cuando la regla consiste de varias comprobaciones, todas deben mantenerse para coincidir con una regla para archivo o carpeta. Puedes escoger entre las siguientes comprobaciones:</p>
+<ul>
+<li><b>Nombre</b>: 
+Comprueba si el nombre de un archivo o carpeta concuerda con alg&uacute;n objetivo. Por ejemplo, el nombre solo necesita coincidir con un objetivo para que la comprobaci&oacute;n sea v&aacute;lida.</li>
 
-<p>
-Puedes eliminar reglas que creadas por ti, usando el bot&oacute;n <b>Borrar</b>.
-Tambi&eacute;n puedes usar este bot&oacute;n para deshacer cambios hechos a las reglas por defecto que vienen con el programa. 
-Las reglas ser&aacute;n remplazadas con las reglas originales cuyo nombre sea el mismo.</p>
+<li><b>Ruta</b>: 
+Comprueba si la ruta de un archivo o carpeta coincide con alguno de los objetivos. Las rutas son absolutas. Comienza con la ra&iacute;z del sistema e incluye el nombre del elemento. Para las carpetas, la ruta siempre termina con un separador de ruta, por ejemplo una barra (&quot;/&quot;).</li>
+
+<li><b>Tipo</b>: Comprueba si el tipo de archivo es igual o se ajusta a cualquiera de los objetivos.</li>
+
+<li><b>Hard-linked</b>:
+Comprueba si el archivo o la carpeta son guardados en el sistema de archivos como  <a href="HardLinks.html">hard link (enlace duro).</a></li>
+
+<li><b>Paquete</b>: Comprueba si el archivo o carpeta es un paquete. Dependiendo de si el contenido del paquete se muestra o no, el paquete es tratado como un archivo o como una carpeta.</li>
+
+<li><b>Tamaño</b>:
+Comprueba si el tama&ntilde;o del archivo es superior o inferior al l&iacute;mite dado.</li>
+</ul>
+</p>
 
 </body>
 </html>

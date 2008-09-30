@@ -1,0 +1,69 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Como analizar las copias de seguridad de la M&aacute;quina del tiempo (Time Machine)</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Como analizar las copias de seguridad de la M&aacute;quina del tiempo (Time Machine)">
+<meta name="keywords" content="Time Machine, M&aacute;quina del tiempo, copia de seguridad, analizar, como, enlace duro, hard link">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Como analizar las copias de seguridad de la M&aacute;quina del tiempo (Time Machine)</h1>
+</div>
+
+<p>GrandPerspective puede ser usado para analizar las copias de seguridad hechas por la M&aacute;quina del tiempo (Time Machine). Esto te puede ayudar a optimizar tu esquema de coias de seguridad de tu M&aacute;quina del tiempo, por ejemplo, identificando archivos y carpetas que no deban ser copiados.</p>
+<p>Antes que nada, es importante como son guardadas las copias de seguridad de la M&aacute;quina del tiempo. La m&aacute;quina del tiempo hace un unso extensivo de los <a href="HardLinks.html">hard links (enlaces duros)</a>. Cada copia de seguridad parece guardar una copia entera del dispositivo del que se realiza la copia de seguridad. La cantidad de espacio requerido para una copia de seguridad est&aacute; limitada por los archivos que son cambiados desde la copia anterior. Todos los archivos y carpetas que no han sido cambiados, son represntados mediante enlaces duros a esos elementos de la copia de seguridad anterior.</p>
+<p>Debajo hay algunas maneras de como puedes usar GrandPerspective para analizar tu copia de seguridad de la M&aacute;quina del Tiempo. Son solo para darte una idea de lo que puedes hacer. Por supuesto, eres libre de experimentar otras formas.</p>
+<h2>Comparando copias de seguridad</h2>
+
+<p>
+Compara dos copias de seguridad para ver que ha cambiado en tu disco duro. Primero, ejecuta <b>Escanear carpeta</b> en una copia de seguridad antigua, por ejemplo <em>&quot;Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>&quot;. Despu&eacute;s, puedes escanear el contenido de la &uacute;ltima copia de seguridad, por ejemplo "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest". Teniendo ambas vistas abiertas, una al lado de la otra, te permitir&aacute; hechar de un vistazo r&aacute;pido las mayores diferencias.</p>
+<p>Nota: En vez de escanear la &uacute;ltima copia de seguridad, puedes escanear los contenidos actuales de tu disco duro. La parte negatica es que la vista resultante contendr&aacute; archivos que ser&aacute;n excluidos de las copias de seguridad de la M&aacute;quina del tiempo, lo que har&aacute; que sea m&aacute;s dificil seguir los cambios.</p>
+<h2>Escaneando todas las copias de seguridad</h2>
+
+<p>
+Ejecuta  <b>Escanear carpeta</b> en la carpeta  "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>". Esto se tomar&aacute; su tiempo. Cuando el escaneo est&aacute; completado, la  <a href="Views.html">vista</a> mostrar&aacute; todas las copias de seguridad. En el  <a href="ViewDisplayPanel.html">Panel de visualizaci&oacute;n</a>, selecciona colorear por  "Carpeta superior". Todos los archivos pertenecientes a la misma copia de seguridad, estar&aacute;n ahora del mismo color.</p>
+<p>Provablemente ver&aacute;s que una copia es mucho m&aacute;s grande que el resto. Esta es la carpeta de la copia de seguridad que fu&eacute; escaneada primero (no necesariamente la m&aacute;s actual). Todos los archivos en esta carpeta no han sido encontrados antes durante el escaneo, y por eso han sido incluidos. Cuando escaneas las otras carpetas de copias de seguridad, la mayor&iacute;a de los archivos hard-linked ya habr&aacute;n sido encontrados antes en la primera carpeta que fu&eacute; escaneada. y por tanto son excluidos ahora.</p>
+<p>La carpeta que fu&eacute; escaneada primero es la menos interesante. Ella simplemente muestra los contenidos de tu disco duro en el momento del escaneo (menos los archiovs de copia de seguridad que se hayan elegido para excluir en la M&aacute;quina del Tiempo). A si que la excluiremos de la vista. Empieza editando la vista de la <a href="MasksAndFilters.html">mascara</a>. Necesitas <a href="EditingMaskAndFilterRules.html">crear una nueva regla</a>. Nombra la regla como &quot;Main back-up&quot;, aplica el filtro a &quot;archivos y carpetas&quot;, y permite la inclusi&oacute;n de comprovaci&oacute;n de la Ruta, coincidiendo las rutas que empiezan con &quot;/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". Las partes en cursiva pueden ser diferentes en tu caso. Puedes conseguir la cadena de texto que necesitas del <a href="ViewFocusPanel.html">Panel de foco</a>. Primero en la vista seleccione un archivo de la carpeta de copia de seguridad m&aacute;s grande, vaya un paso &quot;Abajo&quot;, copie la ruta desde la caja de texto de la &quot;Carpeta en la vista&quot; y vuelve &quot;Arriba&quot; en la vista otra vez.</p>
+<p>
+After having created the "Main back-up" rule, set the mask as follows: "Do not show: Main back-up".
+You should see that the main back-up is now masked. 
+If this is not the case, you did not specify the mask correctly.
+Edit it again until it works.
+</p>
+
+<p>
+When the mask works correctly, you should filter the view.
+Use the <b>Filter</b> command. 
+It should by default be configured the same as the mask, so simply click "OK".
+A new view window is created, only showing the other back-ups.
+This new view gives a much better idea of the size required by each incremental back-up.
+<a href="NavigatingViews.html">Navigate and explore</a> this view to get a better idea of what is backed up.
+If you spot files that should not be backed up, update your Time Machine preferences.
+</p>
+
+
+<h2>Check which files have been backed up during the latest back-up</h2>
+
+<p>
+Initiate a <b>Filtered Scan</b>.
+As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
+Apply the following filter: "Do not show: hard-linked items".
+The result is a view showing the files that are new in the latest back-up.
+The view excludes all files that appeared in the earlier back-ups.
+</p>
+
+<p>
+Note: You can apply the same filter to other back-up folders.
+However, you should then interpret the data in the view differently.
+In this case, each file that is shown does not appear in earlier back-ups <em>and the contents of the folder that the file appears in has not changed in later back-ups for as long as the file has existed (unchanged)</em>. 
+Indeed, that's a bit harder to get your head around, and slightly less useful as a result.
+<p>
+
+</body>
+</html>
+

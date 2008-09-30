@@ -1,0 +1,32 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>Hard links (Enlaces duros)</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Describe que son los hard links (enlaces duros) y como son tratados.">
+<meta name="keywords" content="hard link, enlaces duros, link, enlace, Time Machine">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Hard link (Enlaces duros)</h1>
+</div>
+
+<p>
+Los Sistemas Operativos basados en Unix, incluyendo Mac OS X, soportan el concepto de enlaces duro (hard links). Los enlaces duros pueden ser suados para colocar un archivo en varias localizaciones (por ejemplo dentro de distintas carpetas) o bajo m&uacute;ltiples nombres diferentes en el sistema de archivos. Cada uno de estos enlaces duros referencia a los mismos datos en el sistema de archivos, tomando espacio una sola vez. Esto, por ejemplo, implica que cuando modificas un archivo de enlace-duro, todas las copias &quot;enlace-duro&quot; de este archivo ser&aacute;n modificadas tambi&eacute;n.</p>
+<p>Los Enlaces duros necesitan entonces ser manejados especialmente para de otra manera no sobre-estimar la cantidad de espacio del disco que ocupar&aacute;n. GrandPerspective entonces maneja los enlaces-duros como se indica a continuaci&oacute;n. Cuando un archivo o carpeta de enlace-duro es encontrada por primera vez durante un <a href="CreatingViews.html">escaneo</a>, es incluida. Las subsecuentes veces, si el mismo archivo o carpeta es encontrado una vez m&aacute;s (en una carpeta diferente) es ignorado. Con esto, dentro de una &uacute;nica  <a href="Views.html">ventana de vista</a>, un elemento de enlace-duro aparece como mucho una vez, as&iacute; el tama&ntilde;o que ocupa actualmente en el disco, es correctamente reflejado. Sin embargo, donde aparece un elemento de enlace-duro  en la vista es simplemente arbitrario. Puede se en cualquiera de las carpetas donde aparezca. En cual de ellas depender&aacute; de la carpeta en el orden en que son escaneadas las carpetas.</p>
+<p>Cuando eliminas un archivo o carpeta de enlace-duro, es eliminado de la carpeta indicada. Sin embargo, la cantidad de espacio libre no se incrementar&aacute;, el elemento tomar&aacute; espacio en el disco hasta que todos sus enlaces-duros hayan sido borrados.</p>
+<p>Nota de traducci&oacute;n: Como el concepto &quot;Hard Link&quot; no tiene un termino adecuado para su traducci&oacute;n, se a optado por su uso sin traducir o en ciertas ocasiones mediante su traducci&oacute;n literal, enlace-duro.</p>
+<h2>Ver tambi&eacute;n</h2>
+<p>
+<ul>
+<li><a href="HowToAnalyseTimeMachineBackups.html">Como analizar las copias de seguridad de la M&aacute;quina del Tiempo (Time Machine)</a> - La M&aacute;quina del Tiempo (Time Machine) hace un uso extensivo de enlaces-duros.</li>
+</ul>
+</p>
+
+
+</body>
+</html>
