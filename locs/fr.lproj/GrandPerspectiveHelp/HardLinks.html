@@ -1,10 +1,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>Liens matÃ©riel</title>
+<title>Liens matériel</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<meta name="description" content="DÃ©crit ce qu'est un lien matÃ©riel et comment ils sont gÃ©rÃ©s.">
-<meta name="keywords" content="lien matÃ©riel, lien, Time Machine">
+<meta name="description" content="Décrit ce qu'est un lien matériel et comment ils sont gérés.">
+<meta name="keywords" content="lien matériel, lien, Time Machine">
 </head>
 <body>
 
@@ -12,30 +12,30 @@
 <img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
 </div>
 <div id="pagetitle">
-<h1>Lien matÃ©riel</h1>
+<h1>Lien matériel</h1>
 </div>
 
 <p>
-Les SystÃ¨mes d'Exploitation basÃ©s sur Unix, incluant Mac OS X supportent le concept des liens matÃ©riels.
-Un lien matÃ©riel peut Ãªtre utilisÃ© pour placer un fichier Ã  diffÃ©rents endroits (i.e. dans diffÃ©rents dossiers) ou sous diffÃ©rents noms dans le mÃªme systÃ¨me de fichiers.
-Chacun de ces liens matÃ©riels rÃ©fÃ¨re aux mÃªmes donnÃ©es dans le systÃ¨me de fichiers ce qui ne prend de la place qu'une seule fois.
-Cela implique par exemple une modification de tous les liens matÃ©riels lorsque vous modifiez un fichier qui en est l'origine.
+Les Systèmes d'Exploitation basés sur Unix, incluant Mac OS X supportent le concept des liens matériels.
+Un lien matériel peut être utilisé pour placer un fichier à différents endroits (i.e. dans différents dossiers) ou sous différents noms dans le même système de fichiers.
+Chacun de ces liens matériels réfère aux mêmes données dans le système de fichiers ce qui ne prend de la place qu'une seule fois.
+Cela implique par exemple une modification de tous les liens matériels lorsque vous modifiez un fichier qui en est l'origine.
 </p>
 
 <p>
-Les liens matÃ©riels doivent Ãªtre gÃ©rÃ©s de maniÃ¨re spÃ©ciale afin de ne pas surestimer l'espace du disque dur qu'ils occupent.
-GrandPerspective gÃ¨re les liens matÃ©riels comme suit.
-Quand un lien matÃ©riel (fichier ou dossier) est rencontrÃ© lors d'une <a href="CreatingViews.html">analyse</a>, il est inclus.
-UltÃ©rieurement, si le mÃªme fichier ou dossier est rencontrÃ© une fois de plus (dans un dossier diffÃ©rent) il est ignorÃ©.
-De ce fait, Ã  l'intÃ©rieur d'une seule <a href="Views.html">vue</a>, un lien matÃ©riel apparaÃ®t au plus une fois, ce qui reflÃ¨te correctement la taille qui est actuellement prise sur le disque.
-Toutefois, la question de la localisation d'un lien matÃ©riel apparait dans la vue est assez arbitraire.
-Il peut Ãªtre dans n'importe quel dossier oÃ¹ il apparaÃ®t.
-Cela dÃ©pend du premier dossier qui aura Ã©tÃ© analysÃ©.
+Les liens matériels doivent être gérés de manière spéciale afin de ne pas surestimer l'espace du disque dur qu'ils occupent.
+GrandPerspective gère les liens matériels comme suit.
+Quand un lien matériel (fichier ou dossier) est rencontré lors d'une <a href="CreatingViews.html">analyse</a>, il est inclus.
+Ultérieurement, si le même fichier ou dossier est rencontré une fois de plus (dans un dossier différent) il est ignoré.
+De ce fait, à l'intérieur d'une seule <a href="Views.html">vue</a>, un lien matériel apparaît au plus une fois, ce qui reflète correctement la taille qui est actuellement prise sur le disque.
+Toutefois, la question de la localisation d'un lien matériel apparait dans la vue est assez arbitraire.
+Il peut être dans n'importe quel dossier où il apparaît.
+Cela dépend du premier dossier qui aura été analysé.
 </p>
 
 <p>
-Quand vous supprimez un fichier ou dossier qui est un lien matÃ©riel, il est supprimÃ© du dossier donnÃ©.
-Toutefois, l'espace libre n'augmentera pas car l'objet prend de l'espace sur le disque tant que tous les liens matÃ©riels pointant vers ce dernier n'ont pas Ã©tÃ© supprimÃ©s.
+Quand vous supprimez un fichier ou dossier qui est un lien matériel, il est supprimé du dossier donné.
+Toutefois, l'espace libre n'augmentera pas car l'objet prend de l'espace sur le disque tant que tous les liens matériels pointant vers ce dernier n'ont pas été supprimés.
 </p>
 
 
@@ -43,7 +43,7 @@ Toutefois, l'espace libre n'augmentera pas car l'objet prend de l'espace sur le 
 
 <p>
 <ul>
-<li><a href="HowToAnalyseTimeMachineBackups.html">Comment analyser les sauvegardes de Time Machine</a> - Time Machine fait un usage intensif des liens matÃ©riels.</li>
+<li><a href="HowToAnalyseTimeMachineBackups.html">Comment analyser les sauvegardes de Time Machine</a> - Time Machine fait un usage intensif des liens matériels.</li>
 </ul>
 </p>
 
