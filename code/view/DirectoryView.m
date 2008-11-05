@@ -39,6 +39,9 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 - (void) visibleTreeChanged: (NSNotification *)notification;
 - (void) visiblePathLockingChanged: (NSNotification *)notification;
 - (void) windowMainStatusChanged: (NSNotification *) notification;
+- (void) windowKeyStatusChanged: (NSNotification *) notification;
+
+- (void) updateAcceptMouseMovedEvents;
 
 - (void) observeColorMapping;
 - (void) colorMappingChanged: (NSNotification *) notification;
@@ -102,12 +105,16 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   [nc addObserver: self selector: @selector(visiblePathLockingChanged:)
         name: VisiblePathLockingChangedEvent 
         object: [pathModelView pathModel]];
-          
+
   [nc addObserver: self selector: @selector(windowMainStatusChanged:)
         name: NSWindowDidBecomeMainNotification object: [self window]];
   [nc addObserver: self selector: @selector(windowMainStatusChanged:)
         name: NSWindowDidResignMainNotification object: [self window]];
-  
+  [nc addObserver: self selector: @selector(windowKeyStatusChanged:)
+        name: NSWindowDidBecomeKeyNotification object: [self window]];
+  [nc addObserver: self selector: @selector(windowKeyStatusChanged:)
+        name: NSWindowDidResignKeyNotification object: [self window]];
+          
   [self visiblePathLockingChanged: nil];
   [self setNeedsDisplay: YES];
 }
@@ -295,12 +302,33 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 
 - (void) mouseDown: (NSEvent *)theEvent {
+  ItemPathModel  *pathModel = [pathModelView pathModel];
+
+  if ([[self window] acceptsMouseMovedEvents] &&
+      [pathModel lastFileItem] == [pathModel visibleTree]) {
+    // Although the visible path is following the mouse, the visible path is 
+    // empty. This can either mean that the view only shows a single file item
+    // or, more likely, the view did not yet receive the mouse moved events
+    // that are required to update the visible path because it was not yet
+    // the first responder.
+    
+    // Force building (and drawing) of the visible path.
+    [self mouseMoved: theEvent];
+    
+    if ( [pathModel lastFileItem] != [pathModel visibleTree] ) {
+      // The path changed. Do not toggle the locking. This mouse click was
+      // used to make the view the first responder, ensuring that the visible 
+      // path is following the mouse pointer.  
+      return;
+    }
+  }
+
   // Toggle the path locking.
 
-  BOOL  wasLocked = [[pathModelView pathModel] isVisiblePathLocked];
+  BOOL  wasLocked = [pathModel isVisiblePathLocked];
   if (wasLocked) {
     // Unlock first, then build new path.
-    [[pathModelView pathModel] setVisiblePathLocking: NO];
+    [pathModel setVisiblePathLocking: NO];
   }
 
   NSPoint  loc = [theEvent locationInWindow];
@@ -312,7 +340,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     if ([pathModelView isSelectedFileItemVisible]) {
       // Only lock the path if it contains the selected item, i.e. if the 
       // mouse click was inside the visible tree.
-      [[pathModelView pathModel] setVisiblePathLocking: YES];
+      [pathModel setVisiblePathLocking: YES];
     }
   }
 }
@@ -320,12 +348,17 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 - (void) mouseMoved: (NSEvent *)theEvent {
   if ([[pathModelView pathModel] isVisiblePathLocked]) {
-    // Ignore mouseMoved events the the item path is locked.
+    // Ignore mouseMoved events when the item path is locked.
     //
     // Note: Although this view stops accepting mouse moved events when the
     // path becomes locked, these may be generated later on anyway, requested
     // by other components. In particular, mousing over the NSTextViews in the
     // drawer triggers mouse moved events again.
+    return;
+  }
+  
+  if (! ([[self window] isMainWindow] && [[self window] isKeyWindow])) {
+    // Only handle mouseMoved events when the window is main and key. 
     return;
   }
   
@@ -413,16 +446,35 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   // integrated with this view, there is no harm in updating it directly.
   [pathDrawer setHighlightPathEndPoint: locked];
  
-  [[self window] setAcceptsMouseMovedEvents: 
-                   !locked && [[self window] isMainWindow]];
+  [self updateAcceptMouseMovedEvents];
   
   [self setNeedsDisplay: YES];
 }
 
 - (void) windowMainStatusChanged: (NSNotification *)notification {
-  [[self window] setAcceptsMouseMovedEvents: 
-                   ![[pathModelView pathModel] isVisiblePathLocked] && 
-                   [[self window] isMainWindow]];
+  [self updateAcceptMouseMovedEvents];
+}
+
+- (void) windowKeyStatusChanged: (NSNotification *)notification {
+  [self updateAcceptMouseMovedEvents];
+}
+
+- (void) updateAcceptMouseMovedEvents {
+  NSLog(@"locked=%d, main=%d, key=%d", 
+           [[pathModelView pathModel] isVisiblePathLocked],
+           [[self window] isMainWindow], [[self window] isKeyWindow]);
+           
+  BOOL  letPathFollowMouse = 
+    ( ![[pathModelView pathModel] isVisiblePathLocked] 
+      && [[self window] isMainWindow] 
+      && [[self window] isKeyWindow] );
+      
+  [[self window] setAcceptsMouseMovedEvents: letPathFollowMouse];
+
+  if (letPathFollowMouse) {
+    // Ensures that the view also receives the mouse moved events.
+    [[self window] makeFirstResponder: self];
+  }
 }
 
 
