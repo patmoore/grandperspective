@@ -30,4 +30,6 @@
 
 - (IBAction) editPreferences: (id) sender;
 
+- (IBAction) openWebsite: (id) sender;
+
 @end

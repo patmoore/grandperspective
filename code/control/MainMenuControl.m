@@ -401,6 +401,15 @@ static int  nextFilterId = 1;
   [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
 
+- (IBAction) openWebsite: (id) sender {
+  NSBundle  *bundle = [NSBundle mainBundle];
+
+  NSURL  *url = [NSURL URLWithString: 
+                   [bundle objectForInfoDictionaryKey: @"GPWebsiteURL"]];
+
+  [[NSWorkspace sharedWorkspace] openURL: url];
+}
+
 @end // @implementation MainMenuControl
 
 

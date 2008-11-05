@@ -30,6 +30,8 @@
     <string>GrandPerspectiveHelp</string>
     <key>CFBundleHelpBookName</key>
     <string>GrandPerspective Help</string>
+    <key>GPWebsiteURL</key>
+    <string>http://grandperspectiv.sourceforge.net</string>
     <key>GPApplicationDefaults</key>
     <dict>
         <key>fileDeletionTargets</key>

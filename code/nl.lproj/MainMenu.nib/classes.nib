@@ -23,6 +23,8 @@
 				<string>id</string>
 				<key>loadScanData</key>
 				<string>id</string>
+				<key>openWebsite</key>
+				<string>id</string>
 				<key>rescanDirectoryView</key>
 				<string>id</string>
 				<key>saveDirectoryViewImage</key>
