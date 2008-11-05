@@ -10,15 +10,19 @@
 
   return 
     [self initWithColorMappingKey:
-                [userDefaults stringForKey: DefaultColorMappingKey]
+              [userDefaults stringForKey: DefaultColorMappingKey]
             colorPaletteKey: 
-                [userDefaults stringForKey: DefaultColorPaletteKey] 
+              [userDefaults stringForKey: DefaultColorPaletteKey] 
             mask: nil 
             maskEnabled: NO 
             showEntireVolume: NO 
             showPackageContents: 
-                [[userDefaults objectForKey: ShowPackageContentsByDefaultKey] 
-                    boolValue] ];
+              [[userDefaults objectForKey: ShowPackageContentsByDefaultKey] 
+                  boolValue] 
+            unzoomedViewSize:
+              NSMakeSize([userDefaults floatForKey: DefaultViewWindowWidth],
+                         [userDefaults floatForKey: DefaultViewWindowHeight]) 
+            ];
 }
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKeyVal 
@@ -26,7 +30,8 @@
          mask: (NSObject <FileItemTest> *)maskVal
          maskEnabled: (BOOL) maskEnabledVal 
          showEntireVolume: (BOOL) showEntireVolumeVal
-         showPackageContents: (BOOL) showPackageContentsVal {
+         showPackageContents: (BOOL) showPackageContentsVal
+         unzoomedViewSize: (NSSize) unzoomedViewSizeVal {
   if (self = [super init]) {
     colorMappingKey = [colorMappingKeyVal retain];
     colorPaletteKey = [colorPaletteKeyVal retain];
@@ -34,6 +39,7 @@
     maskEnabled = maskEnabledVal;
     showEntireVolume = showEntireVolumeVal;
     showPackageContents = showPackageContentsVal;
+    unzoomedViewSize = unzoomedViewSizeVal;
   }
   
   return self;
@@ -107,6 +113,15 @@
 
 - (void) setShowPackageContents: (BOOL)flag {
   showPackageContents = flag;
+}
+
+
+- (NSSize) unzoomedViewSize {
+  return unzoomedViewSize;
+}
+
+- (void) setunzoomedViewSize: (NSSize) size {
+  unzoomedViewSize = size;
 }
 
 @end

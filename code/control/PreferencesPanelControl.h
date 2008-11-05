@@ -9,6 +9,8 @@ extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
 extern NSString  *ShowPackageContentsByDefaultKey;
 extern NSString  *ProgressPanelRefreshRateKey;
+extern NSString  *DefaultViewWindowWidth;
+extern NSString  *DefaultViewWindowHeight;
 
 
 @class EditUniformTypeRankingWindowControl;

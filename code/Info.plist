@@ -76,6 +76,10 @@
         </array>
         <key>showPackageContentsByDefault</key>
         <false/>
+        <key>defaultViewWindowWidth</key>
+        <real>640</real>
+        <key>defaultViewWindowHeight</key>
+        <real>480</real>
     </dict>
     <key>GPDefaultFileItemTests</key>
     <array>

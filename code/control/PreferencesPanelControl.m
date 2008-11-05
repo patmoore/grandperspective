@@ -24,6 +24,8 @@ NSString  *ShowPackageContentsByDefaultKey = @"showPackageContentsByDefault";
  */
 NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
 NSString  *ProgressPanelRefreshRateKey = @"progressPanelRefreshRate";
+NSString  *DefaultViewWindowWidth = @"defaultViewWindowWidth";
+NSString  *DefaultViewWindowHeight = @"defaultViewWindowHeight";
 
 
 @interface PreferencesPanelControl (PrivateMethods)

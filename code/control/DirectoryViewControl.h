@@ -92,6 +92,9 @@ extern NSString  *DeleteFilesAndFolders;
   
   // The part of the (absolute) path that is outside the visible tree.
   NSString  *invisiblePathName;
+  
+  // The size of the view when it is not zoomed.
+  NSSize  unzoomedViewSize;
 }
 
 - (IBAction) upAction: (id) sender;
@@ -118,10 +121,10 @@ extern NSString  *DeleteFilesAndFolders;
 
 - (DirectoryView*) directoryView;
 
-- (TreeContext*) treeContext;
-
 // Returns the current settings of the view.
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
+
+- (TreeContext*) treeContext;
 
 + (NSArray *) fileDeletionTargetNames;
 

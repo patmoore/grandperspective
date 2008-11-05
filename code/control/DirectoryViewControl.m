@@ -204,7 +204,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
            mask: fileItemMask
            maskEnabled: [maskCheckBox state]==NSOnState
            showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState
-           showPackageContents: [showPackageContentsCheckBox state]==NSOnState]
+           showPackageContents: [showPackageContentsCheckBox state]==NSOnState
+           unzoomedViewSize: unzoomedViewSize]
          autorelease];
 }
 
@@ -256,9 +257,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
      ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ];  
   [showPackageContentsCheckBox setState: 
      ( [initialSettings showPackageContents] ? NSOnState : NSOffState ) ];
-  
-  [initialSettings release];
-  initialSettings = nil;
   
   //---------------------------------------------------------------- 
   // Configure the "Info" panel
@@ -361,8 +359,17 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   [self visibleTreeChanged: nil];
 
+  // Set the window's initial size
+  unzoomedViewSize = [initialSettings unzoomedViewSize];
+  NSRect  frame = [[self window] frame];
+  frame.size = unzoomedViewSize;
+  [[self window] setFrame: frame display: NO];
+  
   [[self window] makeFirstResponder:mainView];
-  [[self window] makeKeyAndOrderFront:self];  
+  [[self window] makeKeyAndOrderFront:self];
+  
+  [initialSettings release];
+  initialSettings = nil;
 }
 
 // Invoked because the controller is the delegate for the window.
@@ -377,6 +384,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) windowWillClose:(NSNotification*)notification {
   [self autorelease];
 }
+
+// Invoked because the controller is the delegate for the window.
+- (void) windowDidResize:(NSNotification*)notification {
+  if (! [[self window] isZoomed]) {
+    // Keep track of the user-state size of the window, as this will be uses as
+    // the initial size of derived views.
+    unzoomedViewSize = [[self window] frame].size;
+  }
+}
+
 
 - (void) observeValueForKeyPath: (NSString *)keyPath ofObject: (id) object 
            change: (NSDictionary *)change context: (void *)context {
