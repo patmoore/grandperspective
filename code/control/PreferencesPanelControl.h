@@ -7,6 +7,7 @@ extern NSString  *ConfirmFolderDeletionKey;
 extern NSString  *FileSizeMeasureKey;
 extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
+extern NSString  *DefaultColorGradient;
 extern NSString  *ShowPackageContentsByDefaultKey;
 extern NSString  *ProgressPanelRefreshRateKey;
 extern NSString  *DefaultViewWindowWidth;

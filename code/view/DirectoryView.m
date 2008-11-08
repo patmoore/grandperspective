@@ -89,11 +89,11 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   pathModelView = [pathModelViewVal retain];
   
   DrawTaskExecutor  *drawTaskExecutor = 
-    [[DrawTaskExecutor alloc] initWithTreeContext: 
-       [[pathModelView pathModel] treeContext]];
+    [[[DrawTaskExecutor alloc] initWithTreeContext: 
+        [[pathModelView pathModel] treeContext]] autorelease];
   drawTaskManager = 
     [[AsynchronousTaskManager alloc] initWithTaskExecutor: drawTaskExecutor];
-  [drawTaskExecutor release];
+
   [self observeColorMapping];
   
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];

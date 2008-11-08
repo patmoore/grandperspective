@@ -9,8 +9,9 @@
  * facilitate use in multi-threading context. 
  */
 @interface TreeDrawerSettings : NSObject {
-  NSColorList  *colorPalette;
   NSObject <FileItemMapping>  *colorMapper;
+  NSColorList  *colorPalette;
+  float  colorGradient;
   NSObject <FileItemTest>  *fileItemMask;
   BOOL  showPackageContents;
 }
@@ -20,16 +21,19 @@
 
 - (id) initWithColorMapper: (NSObject <FileItemMapping> *)colorMapper
          colorPalette: (NSColorList *)colorPalette
+         colorGradient: (float) colorGradient
          fileItemMask: (NSObject <FileItemTest> *)fileItemMask
-         showPackageContents: (BOOL)showPackageContents;
+         showPackageContents: (BOOL) showPackageContents;
 
-- (id) copyWithColorPalette: (NSColorList *)colorPalette;
 - (id) copyWithColorMapper: (NSObject <FileItemMapping> *)colorMapper;
+- (id) copyWithColorPalette: (NSColorList *)colorPalette;
+- (id) copyWithColorGradient: (float) colorGradient;
 - (id) copyWithFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
 - (id) copyWithShowPackageContents: (BOOL) showPackageContents;
 
-- (NSColorList *)colorPalette;
 - (NSObject <FileItemMapping> *)colorMapper;
+- (NSColorList *)colorPalette;
+- (float) colorGradient;
 - (NSObject <FileItemTest> *)fileItemMask;
 - (BOOL) showPackageContents;
 

@@ -1,6 +1,7 @@
 #import "TreeDrawerSettings.h"
 
 #import "StatelessFileItemMapping.h"
+#import "PreferencesPanelControl.h"
 
 
 @interface TreeDrawerSettings (PrivateMethods)
@@ -14,10 +15,13 @@
 
 // Creates default settings.
 - (id) init {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  
   return 
     [self initWithColorMapper: 
                           [[[StatelessFileItemMapping alloc] init] autorelease]
             colorPalette: [TreeDrawerSettings defaultColorPalette]
+            colorGradient: [userDefaults floatForKey: DefaultColorGradient] 
             fileItemMask: nil
             showPackageContents: YES];
 }
@@ -25,11 +29,13 @@
 
 - (id) initWithColorMapper: (NSObject <FileItemMapping> *)colorMapperVal
          colorPalette: (NSColorList *)colorPaletteVal
+         colorGradient: (float) colorGradientVal
          fileItemMask: (NSObject <FileItemTest> *)fileItemMaskVal
          showPackageContents: (BOOL) showPackageContentsVal {
   if (self = [super init]) {
     colorMapper = [colorMapperVal retain];
     colorPalette = [colorPaletteVal retain];
+    colorGradient = colorGradientVal;
     fileItemMask = [fileItemMaskVal retain];
     showPackageContents = showPackageContentsVal;
   }
@@ -50,6 +56,7 @@
   return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
+              colorGradient: colorGradient
               fileItemMask: fileItemMask
               showPackageContents: showPackageContents] autorelease];
 }
@@ -58,6 +65,16 @@
   return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPaletteVal
+              colorGradient: colorGradient
+              fileItemMask: fileItemMask
+              showPackageContents: showPackageContents] autorelease];
+}
+
+- (id) copyWithColorGradient: (float) colorGradientVal {
+  return [[[TreeDrawerSettings alloc]
+              initWithColorMapper: colorMapper
+              colorPalette: colorPalette
+              colorGradient: colorGradientVal
               fileItemMask: fileItemMask
               showPackageContents: showPackageContents] autorelease];
 }
@@ -66,6 +83,7 @@
   return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
+              colorGradient: colorGradient
               fileItemMask: fileItemMaskVal
               showPackageContents: showPackageContents] autorelease];
 }
@@ -74,6 +92,7 @@
   return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
+              colorGradient: colorGradient
               fileItemMask: fileItemMask
               showPackageContents: showPackageContentsVal] autorelease];
 }
@@ -84,6 +103,10 @@
 
 - (NSColorList *) colorPalette {
   return colorPalette;
+}
+
+- (float) colorGradient {
+  return colorGradient;
 }
 
 - (NSObject <FileItemTest> *) fileItemMask {

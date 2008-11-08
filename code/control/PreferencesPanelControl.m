@@ -19,10 +19,11 @@ NSString  *ShowPackageContentsByDefaultKey = @"showPackageContentsByDefault";
 
 
 /* Note: The preferences below cannot currently be changed from the 
- * preferences panel; they can only be controlled by way of the application 
- * defaults.
+ * preferences panel; they are set by the application defaults and can be
+ * changed by manually editing the user preferences file.
  */
 NSString  *ConfirmFolderDeletionKey = @"confirmFolderDeletion";
+NSString  *DefaultColorGradient = @"defaultColorGradient";
 NSString  *ProgressPanelRefreshRateKey = @"progressPanelRefreshRate";
 NSString  *DefaultViewWindowWidth = @"defaultViewWindowWidth";
 NSString  *DefaultViewWindowHeight = @"defaultViewWindowHeight";

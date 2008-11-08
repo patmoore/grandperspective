@@ -4,6 +4,7 @@
 @interface GradientRectangleDrawer : NSObject {
 
   NSColorList  *colorPalette;
+  float  colorGradient;
   
   BOOL  initGradientColors;
   UInt32  *gradientColors;
@@ -18,6 +19,13 @@
 
 - (void) setColorPalette: (NSColorList *)colorPalette;
 - (NSColorList *) colorPalette;
+
+/* Sets the color gradient, which determines how much the color of each
+ * rectangle varies. The value should be between 0 (uniform color) and 1 
+ * (maximum color difference).
+ */
+- (void) setColorGradient: (float) gradient;
+- (float) colorGradient;
 
 - (NSImage *) drawImageOfGradientRectangleWithColor: (int) colorIndex
                 inRect: (NSRect) bounds;

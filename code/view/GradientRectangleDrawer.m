@@ -17,6 +17,7 @@
 - (id) initWithColorPalette: (NSColorList *)colorPaletteVal {
   if (self = [super init]) {
     [self setColorPalette: colorPaletteVal];
+    [self setColorGradient: 0.5f];
   }
   
   return self;
@@ -57,6 +58,21 @@
 
 - (NSColorList *) colorPalette {
   return colorPalette;
+}
+
+
+- (void) setColorGradient: (float) gradient {
+  NSAssert(gradient >= 0 && gradient <= 1, @"Invalid gradient value.");
+  
+  if (gradient != colorGradient) {
+    colorGradient = gradient;
+
+    initGradientColors = YES;
+  }
+}
+
+- (float) colorGradient {
+  return colorGradient;
 }
 
 @end // @implementation GradientRectangleDrawer
@@ -219,11 +235,11 @@
 
     // Darker colors
     for (j=0; j<128; j++) {
-      float  adjust = 0.5f * (float)(128-j) / 128;
-      modColor = [NSColor colorWithDeviceHue:hue
-                            saturation:saturation
-                            brightness:brightness * ( 1 - adjust)
-                            alpha:alpha];
+      float  adjust = colorGradient * (float)(128-j) / 128;
+      modColor = [NSColor colorWithDeviceHue: hue
+                            saturation: saturation
+                            brightness: brightness * ( 1 - adjust)
+                            alpha: alpha];
                    
       *pos++ = CFSwapInt32BigToHost(
                  ((UInt32)([modColor redComponent] * 255) & 0xFF) << 24 |
@@ -233,17 +249,17 @@
     
     // Lighter colors
     for (j=0; j<128; j++) {
-      float  adjust = 0.5f * (float)j / 128;
+      float  adjust = colorGradient * (float)j / 128;
       
       // First ramp up brightness, then decrease saturation  
       float dif = 1 - brightness;
       float absAdjust = (dif + saturation) * adjust;
 
       if (absAdjust < dif) {
-        modColor = [NSColor colorWithDeviceHue:hue
-                              saturation:saturation
-                              brightness:brightness + absAdjust
-                              alpha:alpha];
+        modColor = [NSColor colorWithDeviceHue: hue
+                              saturation: saturation
+                              brightness: brightness + absAdjust
+                              alpha: alpha];
       }
       else {
         modColor = [NSColor colorWithDeviceHue:hue

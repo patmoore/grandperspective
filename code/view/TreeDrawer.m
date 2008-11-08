@@ -91,6 +91,7 @@
 - (void) updateSettings: (TreeDrawerSettings *)settings {
   [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
+  [self setColorGradient: [settings colorGradient]];
   [self setFileItemMask: [settings fileItemMask]];
   [self setShowPackageContents: [settings showPackageContents]];
 }

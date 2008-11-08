@@ -44,6 +44,8 @@
         <real>0.25</real>
         <key>defaultColorPalette</key>
         <string>CoffeeBeans</string>
+        <key>defaultColorGradient</key>
+        <real>0.5</real>
         <key>defaultColorMapping</key>
         <string>folder</string>
         <key>fileSizeMeasure</key>
