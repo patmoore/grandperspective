@@ -34,11 +34,12 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 - (void) postFileItemDeleted;
 - (void) fileItemDeletedHandled: (NSNotification *)notification;
 
-// Recursively calculates the total size of all plain files inside the given
-// item. It excludes "special" file item so that already freed space is not
-// taken into account. This is required to accurately keep track of the total
-// freed space.
-- (ITEM_SIZE) totalPlainFileSize: (Item *)item;
+/* Recursively calculates the total size of all physical files inside the given
+ * item. It excludes all "special" file items, including those representing
+ * already freed space. This is required to accurately keep track of the total
+ * freed space.
+ */
+- (ITEM_SIZE) totalPhysicalFileSize: (Item *)item;
 
 @end
 
@@ -74,7 +75,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     volumeTree = [[DirectoryItem alloc] initWithName: volumePath parent: nil];
     usedSpaceItem = [[DirectoryItem alloc] initWithName: UsedSpace 
                                              parent: volumeTree
-                                             flags: FILE_IS_SPECIAL];
+                                             flags: FILE_IS_NOT_PHYSICAL];
                                              
     fileSizeMeasure = [fileSizeMeasureVal retain];
     volumeSize = volumeSizeVal;
@@ -155,7 +156,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     [[[FileItem alloc] initWithName: FreeSpace 
                          parent: volumeTree 
                          size: freeSpace
-                         flags: FILE_IS_SPECIAL] autorelease];
+                         flags: FILE_IS_NOT_PHYSICAL] autorelease];
                  
   ITEM_SIZE  miscUnusedSize = volumeSize;
   if ([scanTree itemSize] <= volumeSize) {
@@ -178,7 +179,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     [[[FileItem alloc] initWithName: MiscUsedSpace 
                          parent: usedSpaceItem
                          size: miscUnusedSize
-                         flags: FILE_IS_SPECIAL] autorelease];
+                         flags: FILE_IS_NOT_PHYSICAL] autorelease];
 
   [usedSpaceItem setDirectoryContents: 
                    [CompoundItem compoundItemWithFirst: miscUnusedSpaceItem
@@ -258,7 +259,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
                                       ? MiscUsedSpace : FreedSpace )
                         parent: [replacedItem parentDirectory] 
                         size: [replacedItem itemSize]
-                        flags: FILE_IS_SPECIAL];
+                        flags: FILE_IS_NOT_PHYSICAL];
                                       
   Item  *containingItem = [self itemContainingSelectedFileItem: pathModelView];
   
@@ -288,7 +289,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   [self releaseWriteLock];
   
   if (! [replacedItem isHardLinked]) {
-    freedSpace += [self totalPlainFileSize: replacedItem];
+    freedSpace += [self totalPhysicalFileSize: replacedItem];
   }
   else {
     // void. Do not increase the freed space. The item was hard-linked, which
@@ -456,16 +457,16 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   replacingItem = nil;  
 }
 
-- (ITEM_SIZE) totalPlainFileSize: (Item *)item {
+- (ITEM_SIZE) totalPhysicalFileSize: (Item *)item {
   if ( [item isVirtual] ) {
-    return ( [self totalPlainFileSize: [((CompoundItem *)item) getFirst]] +
-             [self totalPlainFileSize: [((CompoundItem *)item) getSecond]] );
+    return ( [self totalPhysicalFileSize: [((CompoundItem *)item) getFirst]] +
+             [self totalPhysicalFileSize: [((CompoundItem *)item) getSecond]] );
   }
   else if ( [((FileItem *)item) isDirectory] ) {
-    return [self totalPlainFileSize: [((DirectoryItem *)item) getContents]];
+    return [self totalPhysicalFileSize: [((DirectoryItem *)item) getContents]];
   }
   else {
-    return [((FileItem *)item) isSpecial] ? 0 : [item itemSize];
+    return [((FileItem *)item) isPhysical] ? [item itemSize] : 0;
   }
 }
 

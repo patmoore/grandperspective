@@ -4,7 +4,9 @@
 
 /* Bitmasks used for the flags field of the FileItem
  */
-#define FILE_IS_SPECIAL 0x01
+// Note: Using "NOT_PHYSICAL" as a mask as opposed to "PHYSICAL" so that a set
+// bit signals an exceptional setting. 
+#define FILE_IS_NOT_PHYSICAL 0x01
 #define FILE_IS_HARDLINKED 0x02
 #define FILE_IS_PACKAGE 0x04
 
@@ -46,16 +48,16 @@
 - (BOOL) isDirectory;
 
 
-/* Bit-mask flags. Lower-level representation for the file's special, 
+/* Bit-mask flags. Lower-level representation for the file's physical, 
  * hard-linked, and package status.
  */
 - (UInt8) fileItemFlags;
 
-/* Returns YES iff the file item is special. An item is special if it does not 
- * represent an actual file.  E.g. a special file item may represent the free 
- * space on a volume. 
+/* Returns YES iff the file item is physical, i.e. it is an actual file on the
+ * file system. A file item that is not physical may for example represent the
+ * free space on a volume. 
  */
-- (BOOL) isSpecial;
+- (BOOL) isPhysical;
 
 /* Returns YES iff the file item is hardlinked.
  */
@@ -72,7 +74,7 @@
 
 
 /* Returns the path component that the item contributes to the path. The path
- * component is nil if the item is special (see -isSpecial).
+ * component is nil if the item is not physical.
  */
 - (NSString *) pathComponent;
 

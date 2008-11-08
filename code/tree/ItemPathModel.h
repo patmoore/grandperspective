@@ -119,8 +119,8 @@ extern NSString  *VisiblePathLockingChangedEvent;
 - (BOOL) extendVisiblePathToFileItem: (FileItem *)item;
 
 /* Attemps to extend the path with a file item similar to the specified one.
- * A file item is similar if it has the same name, and the "isSpecial" 
- * attribute matches.
+ * A file item is similar if it has the same name, and the "isPhysical" and 
+ * "isDirectory" attributes match.
  *
  * Note: The path is extended with at most one file item. I.e. it does not
  * recurse into subdirectories.

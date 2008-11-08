@@ -162,7 +162,7 @@
     // descend towards the visible tree. 
   
     if ( [file isDirectory] ) {
-      if ( [file isSpecial] && [[file name] isEqualToString: UsedSpace] ) {
+      if ( ![file isPhysical] && [[file name] isEqualToString: UsedSpace] ) {
         [self drawBasicFilledRect: rect intColor: usedSpaceColor];
       }
       
@@ -175,7 +175,7 @@
       }
     }
     else {
-      if ( [file isSpecial] && [[file name] isEqualToString: FreeSpace] ) {
+      if ( ![file isPhysical] && [[file name] isEqualToString: FreeSpace] ) {
         [self drawBasicFilledRect: rect intColor: freeSpaceColor];
       }
       
@@ -202,12 +202,7 @@
   }
 
   // It's a plain file
-  if ( [file isSpecial] ) {
-    if ( [[file name] isEqualToString: FreedSpace] ) {
-      [self drawBasicFilledRect: rect intColor: freeSpaceColor];
-    }
-  }
-  else {
+  if ( [file isPhysical] ) {
     int  colorIndex = [colorMapper hashForFileItem: (PlainFileItem *)file 
                                      atDepth: depth];
     if ( [colorMapper canProvideLegend] ) {
@@ -219,6 +214,11 @@
     }
 
     [self drawGradientFilledRect: rect colorIndex: colorIndex];
+  }
+  else {
+    if ( [[file name] isEqualToString: FreedSpace] ) {
+      [self drawBasicFilledRect: rect intColor: freeSpaceColor];
+    }
   }
 
   if (item == visibleTree) {

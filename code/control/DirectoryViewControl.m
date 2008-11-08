@@ -634,8 +634,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @implementation DirectoryViewControl (PrivateMethods)
 
 - (BOOL) canRevealSelectedFile {
-  return ([[pathModelView pathModel] isVisiblePathLocked] &&
-          ![[pathModelView selectedFileItem] isSpecial]);
+  return ( [[pathModelView pathModel] isVisiblePathLocked]
+           && [[pathModelView selectedFileItem] isPhysical] );
 }
 
 - (BOOL) canDeleteSelectedFile {
@@ -644,8 +644,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   return 
     ( [[pathModelView pathModel] isVisiblePathLocked] 
 
-      // Special files cannot be deleted, as these are not actual files
-      && ! [selectedFile isSpecial] 
+      // Can only delete actual files.
+      && [selectedFile isPhysical] 
 
       // Can this type of item be deleted (according to the preferences)?
       && ( (canDeleteFiles && ![selectedFile isDirectory])
@@ -767,7 +767,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     NSString  *itemPath;
     NSString  *relativeItemPath;
 
-    if ([selectedItem isSpecial]) {
+    if (! [selectedItem isPhysical]) {
       relativeItemPath = 
         [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
                                  value: nil table: @"Names"];
@@ -818,7 +818,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   
   // Update the file type fields in the Focus panel
   if ( selectedItem != nil && 
-       ![selectedItem isSpecial] &&
+       [selectedItem isPhysical] &&
        ![selectedItem isDirectory] ) {
     UniformType  *type = [ ((PlainFileItem *)selectedItem) uniformType];
     
@@ -946,10 +946,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) showFileItem: (FileItem *)item {
   NSString  *sizeString = [FileItem stringForFileItemSize: [item itemSize]];
   NSString  *itemPath = 
-    ( [item isSpecial] 
-      ? [[NSBundle mainBundle] localizedStringForKey: [item name] 
-                                 value: nil table: @"Names"]
-      : [item path] );
+    ( [item isPhysical]
+      ? [item path] 
+      : [[NSBundle mainBundle] localizedStringForKey: [item name] 
+                                 value: nil table: @"Names"] );
     
   [self showFileItem: item itemPath: itemPath sizeString: sizeString];
 }
@@ -983,7 +983,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @implementation FolderInViewFocusControls
 
 - (NSString *) titleForFileItem: (FileItem *)item {
-  if ( [item isSpecial] ) {
+  if ( ! [item isPhysical] ) {
     return NSLocalizedString( @"Area in view:", "Label in Focus panel" );
   }
   else if ( [item isPackage] ) {
@@ -1003,7 +1003,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @implementation SelectedItemFocusControls
 
 - (NSString *) titleForFileItem: (FileItem *)item {
-  if ( [item isSpecial] ) {
+  if ( ! [item isPhysical] ) {
     return NSLocalizedString( @"Selected area:", "Label in Focus panel" );
   }
   else if ( [item isPackage] ) {

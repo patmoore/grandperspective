@@ -214,7 +214,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
   BOOL  rowSelected = NO;
 
   if ( selectedItem != nil && 
-       ![selectedItem isSpecial] &&
+       [selectedItem isPhysical] &&
        ![selectedItem isDirectory] ) {
     NSObject <FileItemMapping>  *colorMapper =
       [[dirView treeDrawerSettings] colorMapper];   

@@ -91,8 +91,8 @@
   return flags;
 }
 
-- (BOOL) isSpecial {
-  return (flags & FILE_IS_SPECIAL) != 0;
+- (BOOL) isPhysical {
+  return (flags & FILE_IS_NOT_PHYSICAL) == 0;
 }
 
 - (BOOL) isHardLinked {
@@ -105,8 +105,8 @@
 
 
 - (NSString *) pathComponent {
-  // Special items do not contribute to the path.
-  return [self isSpecial] ? nil : name;
+  // Only physical items contribute to the path.
+  return [self isPhysical] ? name : nil;
 }
 
 - (NSString *) path {

@@ -257,10 +257,9 @@ NSString *escapedAttributeValue(NSString *s) {
   else {
     FileItem  *fileItem = (FileItem *)item;
     
-    if ([fileItem isSpecial]) {
-      // Skip all special items
-    }
-    else {
+    if ([fileItem isPhysical]) {
+      // Only include actual files.
+
       if ([fileItem isDirectory]) {
         [self appendFolderElement: (DirectoryItem *)fileItem];
       }
