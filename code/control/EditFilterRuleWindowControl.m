@@ -20,6 +20,8 @@
 #import "UniformType.h"
 #import "UniformTypeInventory.h"
 
+#import "UtilityFunctions.h"
+
 #import "EditFilterWindowControl.h"
 
 
@@ -145,11 +147,6 @@
 - (ItemTypeTest *) itemTypeTestBasedOnState;
 
 @end
-
-
-int stringCompare(id s1, id s2, void *context) {
-  return [s1 compare: s2];
-}
 
 
 @implementation EditFilterRuleWindowControl

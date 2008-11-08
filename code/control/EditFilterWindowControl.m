@@ -2,6 +2,7 @@
 
 #import "ControlConstants.h"
 #import "NotifyingDictionary.h"
+#import "UtilityFunctions.h"
 
 #import "FileItemTestRepository.h"
 #import "CompoundOrItemTest.h"
@@ -95,11 +96,12 @@ NSString  *OkPerformedEvent = @"okPerformed";
     filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity:8];
             
     filterTests = [[NSMutableArray alloc] initWithCapacity:8];
+
     availableTests = [[NSMutableArray alloc] 
-      initWithCapacity:[((NSDictionary*)repositoryTestsByName) count] + 8];
-                         
+      initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];                         
     [availableTests
-       addObjectsFromArray:[((NSDictionary*)repositoryTestsByName) allKeys]];
+       addObjectsFromArray: [((NSDictionary *)repositoryTestsByName) allKeys]];
+    [availableTests sortUsingFunction: stringCompare context: nil];
        
     allowEmptyFilter = NO; // Default
   }
@@ -571,18 +573,26 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
 - (void) testAddedToRepository:(NSNotification*)notification {        
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+  NSString  *selectedName = [self selectedAvailableTestName];
 
-  [availableTests addObject:testName];
+  [availableTests addObject: testName];
+  // Ensure that the tests remain sorted.
+  [availableTests sortUsingFunction: stringCompare context: nil];
   [availableTestsView reloadData];
         
-  if ([testNameToSelect isEqualToString:testName]) { 
+  if ([testNameToSelect isEqualToString: testName]) { 
     // Select the newly added test.
-    [availableTestsView selectRow: [availableTests indexOfObject:testName]
+    [availableTestsView selectRow: [availableTests indexOfObject: testName]
                           byExtendingSelection: NO];
     [[self window] makeFirstResponder: availableTestsView];
 
     [testNameToSelect release];
     testNameToSelect = nil;
+  }
+  else if (selectedName != nil) {
+    // Make sure that the same test is still selected.
+    [availableTestsView selectRow: [availableTests indexOfObject: selectedName]
+                          byExtendingSelection: NO];
   }
                 
   [self updateWindowState:nil];
@@ -591,12 +601,23 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
 - (void) testRemovedFromRepository:(NSNotification*)notification {
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
+  NSString  *selectedName = [self selectedAvailableTestName];
 
   int  index = [availableTests indexOfObject:testName];
   NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
   [availableTests removeObjectAtIndex:index];
   [availableTestsView reloadData];
+  
+  if ([testName isEqualToString: selectedName]) {
+    // The removed test was selected. Clear the selection.
+    [availableTestsView deselectAll: self];
+  }
+  else if (selectedName != nil) {
+    // Make sure that the same test is still selected. 
+    [availableTestsView selectRow: [availableTests indexOfObject: selectedName]
+                          byExtendingSelection: NO];
+  }
 
   [self updateWindowState:nil];
 }
@@ -622,14 +643,21 @@ NSString  *OkPerformedEvent = @"okPerformed";
   int  index = [availableTests indexOfObject: oldTestName];
   NSAssert(index != NSNotFound, @"Test not found in available tests.");
 
-  NSString  *oldSelectedName = [self selectedAvailableTestName];
+  NSString  *selectedName = [self selectedAvailableTestName];
 
-  [availableTests replaceObjectAtIndex: index withObject: newTestName];    
+  [availableTests replaceObjectAtIndex: index withObject: newTestName];
+  // Ensure that the tests remain sorted.
+  [availableTests sortUsingFunction: stringCompare context: nil];
   [availableTestsView reloadData];
     
-  if ([oldSelectedName isEqualToString: oldTestName]) {
+  if ([selectedName isEqualToString: oldTestName]) {
     // It was selected, so make sure it still is.
-    [availableTestsView selectRow: index byExtendingSelection: NO];
+    selectedName = newTestName;
+  }
+  if (selectedName != nil) {
+    // Make sure that the same test is still selected. 
+    [availableTestsView selectRow: [availableTests indexOfObject: selectedName]
+                          byExtendingSelection: NO];
   }
 }
 

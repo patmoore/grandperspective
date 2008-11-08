@@ -67,6 +67,7 @@
 		AA7DEDB60D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */; };
 		AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA7DEF4A0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib */; };
 		AA7DF3240D79BEA80057F5F8 /* GradientRectangleDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */; };
+		AA8357C70EC5FD1C00FFCC18 /* UtilityFunctions.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8357C60EC5FD1C00FFCC18 /* UtilityFunctions.m */; };
 		AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837DBE0E29ECE5005384E0 /* TreeWriter.m */; };
 		AA837E740E2D171D005384E0 /* TreeReader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837E730E2D171D005384E0 /* TreeReader.m */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
@@ -233,6 +234,8 @@
 		AA7DEF480D7175D50057F5F8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
 		AA7DF3210D79BEA80057F5F8 /* GradientRectangleDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientRectangleDrawer.h; path = view/GradientRectangleDrawer.h; sourceTree = "<group>"; };
 		AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GradientRectangleDrawer.m; path = view/GradientRectangleDrawer.m; sourceTree = "<group>"; };
+		AA8357C50EC5FD1C00FFCC18 /* UtilityFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UtilityFunctions.h; path = util/UtilityFunctions.h; sourceTree = "<group>"; };
+		AA8357C60EC5FD1C00FFCC18 /* UtilityFunctions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UtilityFunctions.m; path = util/UtilityFunctions.m; sourceTree = "<group>"; };
 		AA837DBD0E29ECE5005384E0 /* TreeWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeWriter.h; path = tree/TreeWriter.h; sourceTree = "<group>"; };
 		AA837DBE0E29ECE5005384E0 /* TreeWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeWriter.m; path = tree/TreeWriter.m; sourceTree = "<group>"; };
 		AA837E720E2D171D005384E0 /* TreeReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeReader.h; path = tree/TreeReader.h; sourceTree = "<group>"; };
@@ -571,6 +574,8 @@
 				AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */,
 				AAB52EC10E520E7A00BF7B20 /* MutableArrayPool.h */,
 				AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */,
+				AA8357C50EC5FD1C00FFCC18 /* UtilityFunctions.h */,
+				AA8357C60EC5FD1C00FFCC18 /* UtilityFunctions.m */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -864,6 +869,7 @@
 				AA7A7FE40E4F724300EB366E /* AutoreleaseProgressTracker.m in Sources */,
 				AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */,
 				AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */,
+				AA8357C70EC5FD1C00FFCC18 /* UtilityFunctions.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
