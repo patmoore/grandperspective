@@ -489,7 +489,7 @@ typedef struct  {
   // benefit is that the scanning order becomes deterministic.
   [dirs sortUsingSelector: @selector(compareByCreationDate:)];
 
-  for (i = [dirs count]; --i >= 0; ) {
+  for (i = [dirs count]; --i >= 0 && !abort; ) {
     TmpDirInfo  *tmpDirInfo = [dirs objectAtIndex: i];
     DirectoryItem  *dirChildItem = [tmpDirInfo directoryItem];
 
