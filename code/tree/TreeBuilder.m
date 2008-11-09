@@ -31,7 +31,8 @@ NSString  *CouldNotEstablishSystemPath = @"CouldNotEstablishSystemPath";
                                                      sizeof(HFSUniStr255) ) )
 #define CATALOG_INFO_BITMAP  ( kFSCatInfoNodeFlags | \
                                kFSCatInfoDataSizes | \
-                               kFSCatInfoRsrcSizes )
+                               kFSCatInfoRsrcSizes | \
+                               kFSCatInfoCreateDate )
 
 typedef struct  {
   FSCatalogInfo  catalogInfoArray[BULK_CATALOG_REQUEST_SIZE];
@@ -54,32 +55,84 @@ typedef struct  {
 @end // @interface TreeBuilder (PrivateMethods)
 
 
-@interface FSRefObject : NSObject {
+/* Helper class that is used to temporarily store additional info for child 
+ * directories. It stores the info that is not maintained by the DirectoryItem 
+ * class yet is needed while the child directory contents have not yet been
+ * scanned.
+ */
+@interface TmpDirInfo : NSObject {
+  DirectoryItem  *dirItem;
+  UTCDateTime  creationDate;
 @public
   FSRef  ref;
 }
 
-- (id) initWithFileRef: (FSRef *)ref;
+- (id) initWithDirectoryItem: (DirectoryItem *)dirItem
+         fileRef: (FSRef *)ref creationDate: (UTCDateTime) creationDate;
 
-@end // @interface FSRefObject
+- (DirectoryItem *) directoryItem;
+
+- (NSComparisonResult) compareByCreationDate: (TmpDirInfo *)other;
+
+@end // @interface TmpDirInfo
 
 
-@implementation FSRefObject
+@implementation TmpDirInfo
 
 // Overrides super's designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use initWithFileRef instead.");
+  NSAssert(NO, @"Use initWithDirectoryItem:fileRef:creationDate: instead.");
 }
 
-- (id) initWithFileRef: (FSRef *)refVal {
+- (id) initWithDirectoryItem: (DirectoryItem *)dirItemVal
+         fileRef: (FSRef *)refVal 
+         creationDate: (UTCDateTime) creationDateVal {
   if (self = [super init]) {
+    dirItem = [dirItemVal retain];
     ref = *refVal;
+    creationDate = creationDateVal;
   }
 
   return self;
 }
 
-@end // @implementation FSRefObject
+- (void) dealloc {
+  [super dealloc];
+  
+  [dirItem release];
+}
+
+- (DirectoryItem *) directoryItem {
+  return dirItem;
+}
+
+/* Note: The ordering is from most recent to the oldest. This is done so that
+ * iteration starts with the oldest item when starting from the back of the
+ * array.
+ */
+- (NSComparisonResult) compareByCreationDate: (TmpDirInfo *)other {
+  if (creationDate.highSeconds == other->creationDate.highSeconds) {
+    if (creationDate.lowSeconds == other->creationDate.lowSeconds) {
+      if (creationDate.fraction == other->creationDate.fraction) {
+        return NSOrderedSame;
+      }
+      else {
+        return ( (creationDate.fraction < other->creationDate.fraction) 
+                 ? NSOrderedDescending : NSOrderedAscending );
+      }
+    }
+    else {
+      return ( (creationDate.lowSeconds < other->creationDate.lowSeconds) 
+               ? NSOrderedDescending : NSOrderedAscending );
+    }
+  }
+  else {
+    return ( (creationDate.highSeconds < other->creationDate.highSeconds) 
+             ? NSOrderedDescending : NSOrderedAscending );
+  }
+}
+
+@end // @implementation TmpDirInfo
 
 
 @implementation TreeBuilder
@@ -296,8 +349,6 @@ typedef struct  {
     [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
   NSMutableArray  *dirs = 
     [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
-  NSMutableArray  *dirFileRefs = 
-    [[NSMutableArray alloc] initWithCapacity: INITIAL_DIRS_CAPACITY];
 
   NSAutoreleasePool  *localAutoreleasePool = nil;
   
@@ -381,13 +432,13 @@ typedef struct  {
           // Only add directories that should be scanned (this does not
           // necessarily mean that it has passed the filter test already) 
           if ( [treeGuide shouldDescendIntoDirectory: dirChildItem] ) {
-            [dirs addObject: dirChildItem];
+            TmpDirInfo  *tmpDirInfo = 
+              [[TmpDirInfo alloc] initWithDirectoryItem: dirChildItem
+                                    fileRef: childRef 
+                                    creationDate: catalogInfo->createDate];
 
-            FSRefObject  *refObject = 
-              [[FSRefObject alloc] initWithFileRef: childRef];
-
-            [dirFileRefs addObject: refObject];
-            [refObject release];
+            [dirs addObject: tmpDirInfo];
+            [tmpDirInfo release];
           }
           
           [dirChildItem release];
@@ -430,15 +481,36 @@ typedef struct  {
     }
   }
   
-  for (i = [dirs count]; --i >= 0 && !abort; ) {
-    DirectoryItem  *dirChildItem = [dirs objectAtIndex: i];
+  // Sort the child directories by creation date, so that the oldest 
+  // directories are scanned first. This affects the folder in which a 
+  // hard-linked item will appear. This scanning order is particularly useful 
+  // when a whole TimeMachine backup collection is scanned, as a file will be
+  // shown in the earliest backup where it appeared. More generally though, the 
+  // benefit is that the scanning order becomes deterministic.
+  [dirs sortUsingSelector: @selector(compareByCreationDate:)];
+
+  for (i = [dirs count]; --i >= 0; ) {
+    TmpDirInfo  *tmpDirInfo = [dirs objectAtIndex: i];
+    DirectoryItem  *dirChildItem = [tmpDirInfo directoryItem];
 
     [self buildTreeForDirectory: dirChildItem
-            fileRef: &( ((FSRefObject *)[dirFileRefs objectAtIndex: i])->ref )
+            fileRef: &( tmpDirInfo->ref )
             parentPath: path];
 
-    if ( ! [treeGuide includeFileItem: dirChildItem] ) {
-      // The directory did not pass the test. So exclude it.
+    if ( [treeGuide includeFileItem: dirChildItem] ) {
+      // The directory passed the test. So include it.
+      
+      // Temporarily boost retain count to ensure that the implicit release of
+      // the tmpDirInfo object does not trigger deallocation of dirChildItem.
+      [dirChildItem retain]; 
+      
+      // Replace the tmpDirInfo object with the actual DirectoryItem object.
+      [dirs replaceObjectAtIndex: i withObject: dirChildItem];
+
+      [dirChildItem release];
+    }
+    else {
+      // The directory did not pass the test, so exclude it.
       [dirs removeObjectAtIndex: i];
     }
   }
@@ -450,7 +522,6 @@ typedef struct  {
 
   [files release];
   [dirs release];
-  [dirFileRefs release];
 
   [localAutoreleasePool release];
   
