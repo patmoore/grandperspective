@@ -490,6 +490,13 @@ typedef struct  {
       [fileManager fileAttributesAtPath: *systemPath traverseLink: NO];
     NSNumber  *fileNumber = 
       [fileAttributes objectForKey: NSFileSystemFileNumber];
+
+    if (fileNumber == nil) {
+      // Workaround for bug #2243134
+      NSLog(@"Failed to get file number for the hard-linked file: %@\n Cannot establish if the file nas been included already, but including it anyway (possibly overestimating the amount of used disk space).", 
+              *systemPath);
+      return YES; 
+    }
             
     if ([hardLinkedFileNumbers containsObject: fileNumber]) {
       // The item has already been encountered. So ignore it this
