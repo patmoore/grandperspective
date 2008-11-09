@@ -20,8 +20,6 @@
 #import "UniformType.h"
 #import "UniformTypeInventory.h"
 
-#import "UtilityFunctions.h"
-
 #import "EditFilterWindowControl.h"
 
 
@@ -1069,8 +1067,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     }
     
     NSArray  *sortedTypes =
-      [unsortedTypes sortedArrayUsingFunction: stringCompare context: NULL];
-      
+               [unsortedTypes sortedArrayUsingSelector: @selector(compare:)]; 
     [((NSPopUpButton *)addButton) addItemsWithTitles: sortedTypes];
   }
   

@@ -2,7 +2,6 @@
 
 #import "ControlConstants.h"
 #import "NotifyingDictionary.h"
-#import "UtilityFunctions.h"
 
 #import "FileItemTestRepository.h"
 #import "CompoundOrItemTest.h"
@@ -101,7 +100,7 @@ NSString  *OkPerformedEvent = @"okPerformed";
       initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];                         
     [availableTests
        addObjectsFromArray: [((NSDictionary *)repositoryTestsByName) allKeys]];
-    [availableTests sortUsingFunction: stringCompare context: nil];
+    [availableTests sortUsingSelector: @selector(compare:)];
        
     allowEmptyFilter = NO; // Default
   }
@@ -577,7 +576,7 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
   [availableTests addObject: testName];
   // Ensure that the tests remain sorted.
-  [availableTests sortUsingFunction: stringCompare context: nil];
+  [availableTests sortUsingSelector: @selector(compare:)];
   [availableTestsView reloadData];
         
   if ([testNameToSelect isEqualToString: testName]) { 
@@ -647,7 +646,7 @@ NSString  *OkPerformedEvent = @"okPerformed";
 
   [availableTests replaceObjectAtIndex: index withObject: newTestName];
   // Ensure that the tests remain sorted.
-  [availableTests sortUsingFunction: stringCompare context: nil];
+  [availableTests sortUsingSelector: @selector(compare:)];
   [availableTestsView reloadData];
     
   if ([selectedName isEqualToString: oldTestName]) {
