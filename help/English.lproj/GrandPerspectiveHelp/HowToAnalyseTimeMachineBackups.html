@@ -61,9 +61,11 @@ All files belonging to the same back-up now have the same color.
 
 <p>
 You will probably see that one back-up is much larger than the rest.
-This is the back-up folder that was scanned first (it is not neccessarily the earliest back-up).
-All files in this folder had not yet been encountered during scanning, and have therefore been included.
-When scanning the other back-up folders, most hard-linked files will have been encountered already in the first folder that was scanned, and so are now exluded.
+This is likely the earliest back-up folder.
+The back-ups are scanned in the order they have been created.
+So the folder containing the earliest back-up is scanned first. 
+All files in it are encountered for the first time and are therefore included.
+When scanning the other back-up folders, most hard-linked files will have been encountered already (in older back-ups) and so are now exluded.
 </p>
 
 <p>
