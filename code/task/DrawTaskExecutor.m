@@ -31,8 +31,6 @@
     treeDrawerSettings = [settings retain];
     
     settingsLock = [[NSLock alloc] init];
-    
-    enabled = YES;
   }
   return self;
 }
@@ -64,42 +62,30 @@
 
 
 - (id) runTaskWithInput: (id)input {
-  if (enabled) {
-    [settingsLock lock];
-    // Even though the settings are immutable, obtaining the settingsLock
-    // ensures that it is not de-allocated while it is being used. 
-    [treeDrawer updateSettings: treeDrawerSettings];
-    [settingsLock unlock];
+  [settingsLock lock];
+  // Even though the settings are immutable, obtaining the settingsLock
+  // ensures that it is not de-allocated while it is being used. 
+  [treeDrawer updateSettings: treeDrawerSettings];
+  [settingsLock unlock];
 
-    DrawTaskInput  *drawingInput = input;
+  DrawTaskInput  *drawingInput = input;
     
-    [treeContext obtainReadLock];
+  [treeContext obtainReadLock];
     
-    NSImage  *image = 
-      [treeDrawer drawImageOfVisibleTree: [drawingInput visibleTree] 
-                    startingAtTree: [drawingInput treeInView]
-                    usingLayoutBuilder: [drawingInput layoutBuilder]
-                    inRect: [drawingInput bounds]];
+  NSImage  *image = 
+    [treeDrawer drawImageOfVisibleTree: [drawingInput visibleTree] 
+                  startingAtTree: [drawingInput treeInView]
+                  usingLayoutBuilder: [drawingInput layoutBuilder]
+                  inRect: [drawingInput bounds]];
                          
-    [treeContext releaseReadLock];
+  [treeContext releaseReadLock];
     
-    return image;
-  }
-  else {
-    return nil;
-  }
+  return image;
 }
 
 
-- (void) disable {
-  if (enabled) {
-    enabled = NO;
-    [treeDrawer abortDrawing];
-  }
-}
-
-- (void) enable {
-  enabled = YES;
+- (void) abortTask {
+  [treeDrawer abortDrawing];
 }
 
 @end

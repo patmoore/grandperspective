@@ -15,8 +15,6 @@
   
   TreeDrawerSettings  *treeDrawerSettings;
   NSLock  *settingsLock;
-  
-  BOOL  enabled;
 }
 
 - (id) initWithTreeContext: (TreeContext *)treeContext;

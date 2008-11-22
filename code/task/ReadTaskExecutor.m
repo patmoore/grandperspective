@@ -10,8 +10,6 @@
   if (self = [super init]) {
     taskLock = [[NSLock alloc] init];
     treeReader = nil;
-
-    enabled = YES;    
   }
   return self;
 }
@@ -26,10 +24,6 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  if (!enabled) {
-    return nil;
-  }
-  
   NSAssert( treeReader==nil, @"treeReader already set.");
 
   ReadTaskInput  *myInput = input;
@@ -53,14 +47,8 @@
 }
 
 
-- (void) disable {
-  enabled = NO;
-
+- (void) abortTask {
   [treeReader abort];
-}
-
-- (void) enable {
-  enabled = YES;
 }
 
 

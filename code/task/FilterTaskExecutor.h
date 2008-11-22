@@ -6,7 +6,6 @@
 
 
 @interface FilterTaskExecutor : NSObject <TaskExecutor> {
-  BOOL  enabled;
   TreeFilter  *treeFilter;
   
   NSLock  *taskLock;

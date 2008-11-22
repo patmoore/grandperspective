@@ -21,18 +21,11 @@ extern NSString  *SuccessfulVoidResult;
  */
 - (id) runTaskWithInput: (id) input;
 
-/* Aborts the currently running task, if any. As long as the executor is
- * disabled, it should not accept any new tasks (but instead let 
- * runTaskWithInput: return nil immediately).
+/**
+ * Aborts the task that is currently running.
  *
  * Invoked from the main thread.
  */
-- (void) disable;
-
-/* Enables the executor again.
- *
- * Invoked from a thread other than the main one.
- */
-- (void) enable;
+- (void) abortTask;
 
 @end

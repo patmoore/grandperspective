@@ -5,7 +5,6 @@
 @class TreeBuilder;
 
 @interface ScanTaskExecutor : NSObject <TaskExecutor> {
-  BOOL  enabled;  
   TreeBuilder  *treeBuilder;
   
   NSLock  *taskLock;

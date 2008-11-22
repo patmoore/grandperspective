@@ -10,8 +10,6 @@
   if (self = [super init]) {
     taskLock = [[NSLock alloc] init];
     treeWriter = nil;
-
-    enabled = YES;    
   }
   return self;
 }
@@ -26,10 +24,6 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  if (!enabled) {
-    return nil;
-  }
-  
   NSAssert( treeWriter==nil, @"treeWriter already set.");
 
   WriteTaskInput  *myInput = input;
@@ -56,14 +50,8 @@
 }
 
 
-- (void) disable {
-  enabled = NO;
-
+- (void) abortTask {
   [treeWriter abort];
-}
-
-- (void) enable {
-  enabled = YES;
 }
 
 

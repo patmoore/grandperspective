@@ -5,7 +5,6 @@
 @class TreeWriter;
 
 @interface WriteTaskExecutor : NSObject {
-  BOOL  enabled;  
   TreeWriter  *treeWriter;
   
   NSLock  *taskLock;

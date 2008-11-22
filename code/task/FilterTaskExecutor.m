@@ -12,8 +12,6 @@
   if (self = [super init]) {
     taskLock = [[NSLock alloc] init];
     treeFilter = nil;
-    
-    enabled = YES;
   }
   return self;
 }
@@ -26,10 +24,6 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  if (!enabled) {
-    return nil;
-  }
-  
   NSAssert( treeFilter==nil, @"treeFilter already set.");
   
   FilterTaskInput  *filterInput = input;
@@ -58,14 +52,8 @@
 }
 
 
-- (void) disable {
-  enabled = NO;
-
+- (void) abortTask {
   [treeFilter abort];
-}
-
-- (void) enable {
-  enabled = YES;
 }
 
 

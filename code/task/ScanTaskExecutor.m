@@ -13,8 +13,6 @@
   if (self = [super init]) {
     taskLock = [[NSLock alloc] init];
     treeBuilder = nil;
-
-    enabled = YES;    
   }
   return self;
 }
@@ -29,10 +27,6 @@
 
 
 - (id) runTaskWithInput: (id) input {
-  if (!enabled) {
-    return nil;
-  }
-  
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
 
   ScanTaskInput  *myInput = input;
@@ -72,14 +66,8 @@
 }
 
 
-- (void) disable {
-  enabled = NO;
-
+- (void) abortTask {
   [treeBuilder abort];
-}
-
-- (void) enable {
-  enabled = YES;
 }
 
 

@@ -5,7 +5,6 @@
 @class TreeReader;
 
 @interface ReadTaskExecutor : NSObject {
-  BOOL  enabled;  
   TreeReader  *treeReader;
   
   NSLock  *taskLock;
