@@ -489,13 +489,15 @@ typedef struct  {
   // benefit is that the scanning order becomes deterministic.
   [dirs sortUsingSelector: @selector(compareByCreationDate:)];
 
-  for (i = [dirs count]; --i >= 0 && !abort; ) {
+  for (i = [dirs count]; --i >= 0; ) {
     TmpDirInfo  *tmpDirInfo = [dirs objectAtIndex: i];
     DirectoryItem  *dirChildItem = [tmpDirInfo directoryItem];
 
-    [self buildTreeForDirectory: dirChildItem
-            fileRef: &( tmpDirInfo->ref )
-            parentPath: path];
+    if (!abort) {
+      [self buildTreeForDirectory: dirChildItem
+              fileRef: &( tmpDirInfo->ref )
+              parentPath: path];
+    }
 
     if ( [treeGuide includeFileItem: dirChildItem] ) {
       // The directory passed the test. So include it.
