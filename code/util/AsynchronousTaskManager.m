@@ -70,8 +70,8 @@ enum {
   alive = NO;
 
   if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
-    // Abort running task
-    [executor disable];
+    // Abort task
+    [executor abortTask];
   }
   else {
     // Notify the blocked thread (waiting on the BUSY condition)
@@ -93,7 +93,7 @@ enum {
 
   if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
     // Abort task
-    [executor disable];
+    [executor abortTask];
   }
 
   [settingsLock unlock];
@@ -117,8 +117,8 @@ enum {
   nextTaskCallbackSelector = selector;
 
   if ([workLock condition] == BACKGROUND_THREAD_BUSY) {
-    // Abort task 
-    [executor disable];
+    // Abort task
+    [executor abortTask];
   }
   else if ([workLock tryLockWhenCondition: BACKGROUND_THREAD_IDLE]) {
     // Notify the blocked thread (waiting on the BUSY condition)
@@ -152,12 +152,9 @@ enum {
       nextTaskInput = nil;
       nextTaskCallback = nil;
       
-      // The previous task may have been aborted. Make sure that the executor
-      // is enabled again (it may be aborted again of course).
-      //
-      // Note: This should happen in a "settingsLock" block, and can therefore
-      // not be done by the executor in its runTaskWithInput: method.
-      [executor enable];
+      // Ensure that the executor will not immediately terminate when it did
+      // not handle the last request to abort the task. 
+      [executor prepareToRunTask];
 
       [settingsLock unlock]; // Don't lock settings while running the task.
       id  taskOutput = [executor runTaskWithInput:taskInput];

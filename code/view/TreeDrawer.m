@@ -114,12 +114,10 @@
   [visibleTree release];
   visibleTree = nil;
 
-  if (!abort) {
+  if (! abort) {
     return [self createImageFromBitmap];
   }
   else {
-    abort = NO; // Enable drawer again for next time.
-
     [drawBitmap release];
     drawBitmap = nil;
     
@@ -127,6 +125,10 @@
   }
 }
 
+
+- (void) clearAbortFlag {
+  abort = NO;
+}
 
 - (void) abortDrawing {
   abort = YES;

@@ -26,6 +26,10 @@
 }
 
 
+- (void) prepareToRunTask {
+  // Can be ignored because a one-shot object is used for running the task.
+}
+
 - (id) runTaskWithInput: (id) input {
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
 
@@ -64,7 +68,6 @@
 
   return scanResult;
 }
-
 
 - (void) abortTask {
   [treeBuilder abort];

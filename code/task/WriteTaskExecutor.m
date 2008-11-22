@@ -23,6 +23,10 @@
 }
 
 
+- (void) prepareToRunTask {
+  // Can be ignored because a one-shot object is used for running the task.
+}
+
 - (id) runTaskWithInput: (id) input {
   NSAssert( treeWriter==nil, @"treeWriter already set.");
 
@@ -48,7 +52,6 @@
 
   return result;
 }
-
 
 - (void) abortTask {
   [treeWriter abort];

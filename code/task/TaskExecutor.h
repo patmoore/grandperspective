@@ -13,6 +13,14 @@ extern NSString  *SuccessfulVoidResult;
  */
 @protocol TaskExecutor
 
+/* Called just before -runTaskWithInput is invoked. Any outstanding request
+ * to abort execution of the task (which may happen when the previous task
+ * completed just while -abortTask was invoked) should be cleared.
+ *
+ * Invoked from the same thread as the subsequent call to -runTaskWithInput:.
+ */
+- (void) prepareToRunTask;
+
 /* Run task with the given input and return the result. It should return "nil" 
  * iff the task has been aborted. It should return SuccessfulVoidResult when 
  * the task with a void result completes successfully.
@@ -22,7 +30,8 @@ extern NSString  *SuccessfulVoidResult;
 - (id) runTaskWithInput: (id) input;
 
 /**
- * Aborts the task that is currently running.
+ * Aborts the task that is currently running. Invoking -abortTask multiple
+ * times for the same task is allowed, and should not cause problems.
  *
  * Invoked from the main thread.
  */

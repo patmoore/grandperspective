@@ -49,6 +49,15 @@
                 usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
                 inRect: (NSRect) bounds;
 
+/* Any outstanding request to abort Drawing is cancelled.
+ */
+- (void) clearAbortFlag;
+
+/* Cancels any ongoing drawing task. Note: It is possible that the ongoing
+ * task is just finishing, in which case it may still finish normally. 
+ * Therefore, -clearAbortFlag should be invoked before initiating a new 
+ * drawing task, otherwise the next drawing task will be aborted immediately.
+ */
 - (void) abortDrawing;
 
 @end

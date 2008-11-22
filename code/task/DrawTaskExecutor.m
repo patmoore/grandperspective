@@ -61,6 +61,10 @@
 }
 
 
+- (void) prepareToRunTask {
+  [treeDrawer clearAbortFlag];
+}
+
 - (id) runTaskWithInput: (id)input {
   [settingsLock lock];
   // Even though the settings are immutable, obtaining the settingsLock
@@ -82,7 +86,6 @@
     
   return image;
 }
-
 
 - (void) abortTask {
   [treeDrawer abortDrawing];

@@ -12,6 +12,8 @@
 
   NSConditionLock  *workLock;
   NSLock  *settingsLock;
+
+  // "NO" iff the manager has not been disposed of.
   BOOL  alive;
 
   // Settings for the next task to run
