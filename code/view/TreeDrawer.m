@@ -114,7 +114,7 @@
   [visibleTree release];
   visibleTree = nil;
 
-  if (! abort) {
+  if ( !abort ) {
     return [self createImageFromBitmap];
   }
   else {
@@ -233,7 +233,7 @@
   // Note: This is not just an optimisation but needs to be done. Even though 
   // the item is seen as a file by the TreeDrawer, it may actually be a 
   // package whose contents are hidden. The TreeLayoutBuilder should not 
-  // descend into the directoy in this case.
+  // descend into the directory in this case.
   return NO;
 }
 
