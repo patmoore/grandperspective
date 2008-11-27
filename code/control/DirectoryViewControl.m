@@ -9,6 +9,7 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
+#import "DirectoryViewToolbarControl.h"
 #import "FileItemTest.h"
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
@@ -29,8 +30,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 @interface DirectoryViewControl (PrivateMethods)
 
 - (BOOL) canRevealSelectedFile;
-
 - (BOOL) canDeleteSelectedFile;
+- (BOOL) canNavigateUp;
+- (BOOL) canNavigateDown;
+
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
 - (void) deleteSelectedFile;
@@ -142,6 +145,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       [[FileItemMappingCollection defaultFileItemMappingCollection] retain];
     colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
+      
+    toolbarControl = 
+      [[DirectoryViewToolbarControl alloc] initWithDirectoryView: self];
   }
 
   return self;
@@ -172,6 +178,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   [scanPathName release];
   [invisiblePathName release];
+  
+  [toolbarControl release];
   
   [super dealloc];
 }
@@ -548,6 +556,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
+- (IBAction) toggleDrawer: (id) sender {
+  [drawer toggle: sender];
+}
+
+
 - (IBAction) maskCheckBoxChanged:(id)sender {
   [self updateMask];
 }
@@ -658,6 +671,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     );
 }
 
+- (BOOL) canNavigateUp {
+  return [pathModelView canMoveVisibleTreeUp];
+}
+
+- (BOOL) canNavigateDown {
+  return ( [[pathModelView pathModel] isVisiblePathLocked] 
+           && [pathModelView canMoveVisibleTreeDown] );
+}
+
+
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo {
   // Let the alert disappear, so that it is gone before the file is being
@@ -749,12 +772,34 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
+- (BOOL)validateToolbarItem: (NSToolbarItem *)item {
+  NSString  *identifier = [item itemIdentifier];
+
+  if ([identifier isEqualToString: ToolbarOpenItem]) {
+    return [self canRevealSelectedFile];
+  }
+  else if ([identifier isEqualToString: ToolbarDeleteItem]) {
+    return [self canDeleteSelectedFile];
+  }
+  else if ([identifier isEqualToString: ToolbarNavigateUp]) {
+    return [self canNavigateUp];
+  }
+  else if ([identifier isEqualToString: ToolbarNavigateDown]) {
+    return [self canNavigateDown];
+  }
+  else {
+    return YES;
+  }
+}
+
+
 - (void) updateButtonState:(NSNotification*)notification {
-  [upButton setEnabled: [pathModelView canMoveVisibleTreeUp]];
-  [downButton setEnabled: [[pathModelView pathModel] isVisiblePathLocked] &&
-                          [pathModelView canMoveVisibleTreeDown]];
+  [upButton setEnabled: [self canNavigateUp]];
+  [downButton setEnabled: [self canNavigateDown]];
   [openButton setEnabled: [self canRevealSelectedFile] ];
   [deleteButton setEnabled: [self canDeleteSelectedFile] ];
+  
+  [[[self window] toolbar] validateVisibleItems];
   
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 

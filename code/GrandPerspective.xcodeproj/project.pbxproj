@@ -114,6 +114,12 @@
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
+		AAF951A80EDED7A800844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF951A70EDED7A800844FD5 /* Delete.tiff */; };
+		AAF951AA0EDED7BA00844FD5 /* FinderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951A90EDED7BA00844FD5 /* FinderIcon.png */; };
+		AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AB0EDED7EF00844FD5 /* Down.png */; };
+		AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AC0EDED7EF00844FD5 /* Up.png */; };
+		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
+		AAF951BD0EDEF9BE00844FD5 /* Info.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF951BC0EDEF9BE00844FD5 /* Info.tiff */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
 /* End PBXBuildFile section */
 
@@ -336,6 +342,13 @@
 		AAEF604E0B028DD800C7134A /* ColorListCollection.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ColorListCollection.h; path = control/ColorListCollection.h; sourceTree = "<group>"; };
 		AAEF604F0B028DD800C7134A /* ColorListCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ColorListCollection.m; path = control/ColorListCollection.m; sourceTree = "<group>"; };
 		AAF56B1C097441C700A89601 /* GrandPerspective_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GrandPerspective_Prefix.pch; sourceTree = "<group>"; };
+		AAF951A70EDED7A800844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Delete.tiff; sourceTree = "<group>"; };
+		AAF951A90EDED7BA00844FD5 /* FinderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FinderIcon.png; sourceTree = "<group>"; };
+		AAF951AB0EDED7EF00844FD5 /* Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Down.png; sourceTree = "<group>"; };
+		AAF951AC0EDED7EF00844FD5 /* Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Up.png; sourceTree = "<group>"; };
+		AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewToolbarControl.h; path = control/DirectoryViewToolbarControl.h; sourceTree = "<group>"; };
+		AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewToolbarControl.m; path = control/DirectoryViewToolbarControl.m; sourceTree = "<group>"; };
+		AAF951BC0EDEF9BE00844FD5 /* Info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Info.tiff; sourceTree = "<group>"; };
 		AAF9F7D30B30118C00FA4C51 /* ControlConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControlConstants.h; path = control/ControlConstants.h; sourceTree = "<group>"; };
 		AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleAsynchronousTaskManager.h; path = control/VisibleAsynchronousTaskManager.h; sourceTree = "<group>"; };
 		AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VisibleAsynchronousTaskManager.m; path = control/VisibleAsynchronousTaskManager.m; sourceTree = "<group>"; };
@@ -416,6 +429,11 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AAF951AB0EDED7EF00844FD5 /* Down.png */,
+				AAF951AC0EDED7EF00844FD5 /* Up.png */,
+				AAF951A90EDED7BA00844FD5 /* FinderIcon.png */,
+				AAF951A70EDED7A800844FD5 /* Delete.tiff */,
+				AAF951BC0EDEF9BE00844FD5 /* Info.tiff */,
 				AA6351350972DDC40024C9D0 /* GrandPerspective.icns */,
 				AAD6855008D9FE600096C6C1 /* Credits.rtf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -641,6 +659,8 @@
 				AA402FF10A5B01A6004EAAF3 /* DirectoryViewControl.m */,
 				AA1115C10A84CA320023C5CD /* DirectoryViewControlSettings.h */,
 				AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */,
+				AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */,
+				AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */,
 				AAD8DFB00B077EB90060DADA /* PreferencesPanelControl.h */,
 				AAD8DFB20B077ED20060DADA /* PreferencesPanelControl.m */,
 				AA402FEA0A5B01A6004EAAF3 /* SaveImageDialogControl.h */,
@@ -764,6 +784,11 @@
 				AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */,
 				AADD34930B8B902000AC2C97 /* Tests.strings in Resources */,
 				AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */,
+				AAF951A80EDED7A800844FD5 /* Delete.tiff in Resources */,
+				AAF951AA0EDED7BA00844FD5 /* FinderIcon.png in Resources */,
+				AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */,
+				AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */,
+				AAF951BD0EDEF9BE00844FD5 /* Info.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -864,6 +889,7 @@
 				AA7A7FE40E4F724300EB366E /* AutoreleaseProgressTracker.m in Sources */,
 				AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */,
 				AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */,
+				AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

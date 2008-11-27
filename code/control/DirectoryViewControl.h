@@ -14,6 +14,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class ColorListCollection;
 @class EditFilterWindowControl;
 @class ColorLegendTableViewControl;
+@class DirectoryViewToolbarControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
 @class ItemInFocusControls;
@@ -86,6 +87,8 @@ extern NSString  *DeleteFilesAndFolders;
   ColorLegendTableViewControl  *colorLegendControl;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
+  
+  DirectoryViewToolbarControl  *toolbarControl;
 
   // The (absolute) path of the scan tree.
   NSString  *scanPathName;
@@ -101,6 +104,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (IBAction) downAction: (id) sender;
 - (IBAction) openFileInFinder: (id) sender;
 - (IBAction) deleteFile: (id) sender;
+- (IBAction) toggleDrawer: (id) sender;
 
 - (IBAction) maskCheckBoxChanged: (id) sender;
 - (IBAction) editMask: (id) sender;
