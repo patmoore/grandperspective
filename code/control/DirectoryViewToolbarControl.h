@@ -12,10 +12,14 @@ extern NSString  *ToolbarToggleInfoDrawer;
 
 @interface DirectoryViewToolbarControl : NSObject {
 
+  IBOutlet NSWindow  *dirViewWindow;
+  IBOutlet NSView  *navigationView;
+  IBOutlet NSSegmentedControl  *navigationControls;
+
   DirectoryViewControl  *dirView;
 
 }
 
-- (id) initWithDirectoryView: (DirectoryViewControl *)dirView;
+- (IBAction) navigationAction: (id) sender;
 
 @end

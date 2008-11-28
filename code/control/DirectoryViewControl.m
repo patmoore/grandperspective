@@ -31,8 +31,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (BOOL) canRevealSelectedFile;
 - (BOOL) canDeleteSelectedFile;
-- (BOOL) canNavigateUp;
-- (BOOL) canNavigateDown;
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
@@ -145,9 +143,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       [[FileItemMappingCollection defaultFileItemMappingCollection] retain];
     colorPalettes = 
       [[ColorListCollection defaultColorListCollection] retain];
-      
-    toolbarControl = 
-      [[DirectoryViewToolbarControl alloc] initWithDirectoryView: self];
   }
 
   return self;
@@ -178,8 +173,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   [scanPathName release];
   [invisiblePathName release];
-  
-  [toolbarControl release];
   
   [super dealloc];
 }
@@ -629,6 +622,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
+- (BOOL) canNavigateUp {
+  return [pathModelView canMoveVisibleTreeUp];
+}
+
+- (BOOL) canNavigateDown {
+  return ( [[pathModelView pathModel] isVisiblePathLocked] 
+           && [pathModelView canMoveVisibleTreeDown] );
+}
+
+
 + (NSArray *) fileDeletionTargetNames {
   static NSArray  *fileDeletionTargetNames = nil;
   
@@ -669,15 +672,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       && ! ( (selectedFile == [pathModelView scanTree])
              && [[[pathModelView scanTree] name] isEqualToString: @""])
     );
-}
-
-- (BOOL) canNavigateUp {
-  return [pathModelView canMoveVisibleTreeUp];
-}
-
-- (BOOL) canNavigateDown {
-  return ( [[pathModelView pathModel] isVisiblePathLocked] 
-           && [pathModelView canMoveVisibleTreeDown] );
 }
 
 

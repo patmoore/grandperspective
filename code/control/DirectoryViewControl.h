@@ -88,8 +88,6 @@ extern NSString  *DeleteFilesAndFolders;
   
   EditFilterWindowControl  *editMaskFilterWindowControl;
   
-  DirectoryViewToolbarControl  *toolbarControl;
-
   // The (absolute) path of the scan tree.
   NSString  *scanPathName;
   
@@ -129,6 +127,9 @@ extern NSString  *DeleteFilesAndFolders;
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
 
 - (TreeContext*) treeContext;
+
+- (BOOL) canNavigateUp;
+- (BOOL) canNavigateDown;
 
 + (NSArray *) fileDeletionTargetNames;
 
