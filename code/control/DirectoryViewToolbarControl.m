@@ -1,11 +1,13 @@
 #import "DirectoryViewToolbarControl.h"
 
 #import "DirectoryViewControl.h"
+#import "ItemPathModelView.h"
 
 
 NSString  *ToolbarNavigateUp = @"NavigateUp";
 NSString  *ToolbarNavigateDown = @"NavigateDown"; 
 NSString  *ToolbarNavigation = @"Navigation"; 
+NSString  *ToolbarSelection = @"Selection"; 
 NSString  *ToolbarOpenItem = @"OpenItem";
 NSString  *ToolbarDeleteItem = @"DeleteItem";
 NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
@@ -22,11 +24,13 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (NSToolbarItem *) navigateUpToolbarItem;
 - (NSToolbarItem *) navigateDownToolbarItem;
 - (NSToolbarItem *) navigationToolbarItem;
+- (NSToolbarItem *) selectionToolbarItem;
 - (NSToolbarItem *) openItemToolbarItem;
 - (NSToolbarItem *) deleteItemToolbarItem;
 - (NSToolbarItem *) toggleInfoDrawerToolbarItem;
 
 - (void) validateNavigationControls;
+- (void) validateSelectionControls;
 
 @end
 
@@ -41,12 +45,14 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 @end
 
 
-@interface NavigationToolbarItem : NSToolbarItem {
-  DirectoryViewToolbarControl  *toolbarControl;
+@interface ValidatingToolbarItem : NSToolbarItem {
+  NSObject  *validator;
+  SEL  validationSelector;
 }
 
 - (id) initWithItemIdentifier: (NSString *)identifier
-         toolbarControl: (DirectoryViewToolbarControl *)toolbarControl;
+         validator: (NSObject *)validator 
+         validationSelector: (SEL) validationSelector;
 
 @end
 
@@ -101,6 +107,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
             usingSelector: @selector(navigateDownToolbarItem)];
     [self createToolbarItem: ToolbarNavigation
             usingSelector: @selector(navigationToolbarItem)];
+    [self createToolbarItem: ToolbarSelection
+            usingSelector: @selector(selectionToolbarItem)];
     [self createToolbarItem: ToolbarOpenItem 
             usingSelector: @selector(openItemToolbarItem)];
     [self createToolbarItem: ToolbarDeleteItem 
@@ -114,8 +122,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   
   NSToolbarItem  *item = [self performSelector: selector];
 
-  if (flag) {
-    [item setTarget: dirView];
+  if (! flag) {
+    [item setTarget: nil];
   }
 
   return item;
@@ -134,9 +142,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     return [NSArray arrayWithObjects:
                       ToolbarNavigateUp, ToolbarNavigateDown, 
                       ToolbarNavigation,
+                      ToolbarSelection,
                       ToolbarOpenItem, ToolbarDeleteItem,
                       ToolbarToggleInfoDrawer, 
                       NSToolbarSeparatorItemIdentifier, 
+                      NSToolbarSpaceItemIdentifier, 
                       NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
@@ -147,6 +157,27 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   }
   else if ([sender selectedSegment] == 1) {
     [dirView downAction: sender];
+  }
+}
+
+
+- (IBAction) selectionAction: (id) sender {
+  ItemPathModelView  *pathModelView = [dirView pathModelView]; 
+
+  if ([sender selectedSegment] == 0) {
+    if ([pathModelView canMoveSelectionUp]) {
+      [pathModelView moveSelectionUp];
+    }
+  }
+  else if ([sender selectedSegment] == 1) {
+    if (! [pathModelView selectionSticksToEndPoint]) {
+      if ([pathModelView canMoveSelectionDown]) {
+        [pathModelView moveSelectionDown];
+      }
+      else {
+        [pathModelView setSelectionSticksToEndPoint: YES];
+      }
+    }
   }
 }
 
@@ -174,6 +205,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Navigate up", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"Up.png"]];
   [item setAction: @selector(upAction:) ];
+  [item setTarget: dirView];
   
   return item;
 }
@@ -189,22 +221,41 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Navigate down", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"Down.png"]];
   [item setAction: @selector(downAction:) ];
+  [item setTarget: dirView];
 
   return item;
 }
 
 - (NSToolbarItem *) navigationToolbarItem {
   NSToolbarItem  *item = 
-    [[[NavigationToolbarItem alloc] 
-         initWithItemIdentifier: ToolbarNavigation toolbarControl: self] 
-           autorelease];
+    [[[ValidatingToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarNavigation validator: self
+           validationSelector: @selector(validateNavigationControls)]
+             autorelease];
 
-  [item setLabel: NSLocalizedString( @"Up/Down", 
+  [item setLabel: NSLocalizedString( @"Zoom", 
                                      @"Toolbar label for Navigation controls" )];
   [item setPaletteLabel: [item label]];
   [item setView: navigationView];
   [item setMinSize: [navigationControls bounds].size];
   [item setMaxSize: [navigationControls bounds].size];
+
+  return item;
+}
+
+- (NSToolbarItem *) selectionToolbarItem {
+  NSToolbarItem  *item = 
+    [[[ValidatingToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarSelection validator: self
+           validationSelector: @selector(validateSelectionControls)]
+             autorelease];
+
+  [item setLabel: NSLocalizedString( @"Select", 
+                                     @"Toolbar label for Selection controls" )];
+  [item setPaletteLabel: [item label]];
+  [item setView: selectionView];
+  [item setMinSize: [selectionControls bounds].size];
+  [item setMaxSize: [selectionControls bounds].size];
 
   return item;
 }
@@ -220,6 +271,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Open in Finder", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"FinderIcon.png"]];
   [item setAction: @selector(openFileInFinder:) ];
+  [item setTarget: dirView];
 
   return item;
 }
@@ -235,6 +287,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Move to trash", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"Delete.tiff"]];
   [item setAction: @selector(deleteFile:) ];
+  [item setTarget: dirView];
 
   return item;
 }
@@ -251,6 +304,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   // TODO (eventually): Use "NSImageNameInfo" (Only available since 10.5)
   [item setImage: [NSImage imageNamed: @"Info.tiff"]];
   [item setAction: @selector(toggleDrawer:) ];
+  [item setTarget: dirView];
 
   return item;
 }
@@ -261,31 +315,42 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [navigationControls setEnabled: [dirView canNavigateDown] forSegment: 1];
 }
 
+- (void) validateSelectionControls {
+  ItemPathModelView  *pathModelView = [dirView pathModelView]; 
+
+  [selectionControls setEnabled: [pathModelView canMoveSelectionUp] 
+                       forSegment: 0];
+  [selectionControls setEnabled: ! [pathModelView selectionSticksToEndPoint] 
+                       forSegment: 1];
+}
+
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)
 
 
-@implementation NavigationToolbarItem
+@implementation ValidatingToolbarItem
 
 - (id) initWithItemIdentifier: (NSString *)identifier
-         toolbarControl: (DirectoryViewToolbarControl *)toolbarControlVal {
+         validator: (NSObject *)validatorVal 
+         validationSelector: (SEL) validationSelectorVal {
   if (self = [super initWithItemIdentifier: identifier]) {
-    toolbarControl = [toolbarControlVal retain];
+    validator = [validatorVal retain];
+    validationSelector = validationSelectorVal;
   }
   return self;
 }
 
 - (void) dealloc {
-  [toolbarControl release];
+  [validator release];
   
   [super dealloc];
 }
 
 
 - (void) validate {
-  [toolbarControl validateNavigationControls];
+  [validator performSelector: validationSelector];
 }
 
-@end // @implementation NavigationToolbarItem
+@end // @implementation ValidatingToolbarItem
 
 
 @implementation SelectorObject

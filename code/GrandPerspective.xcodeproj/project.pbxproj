@@ -114,12 +114,16 @@
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
-		AAF951A80EDED7A800844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF951A70EDED7A800844FD5 /* Delete.tiff */; };
-		AAF951AA0EDED7BA00844FD5 /* FinderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951A90EDED7BA00844FD5 /* FinderIcon.png */; };
 		AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AB0EDED7EF00844FD5 /* Down.png */; };
 		AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AC0EDED7EF00844FD5 /* Up.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
-		AAF951BD0EDEF9BE00844FD5 /* Info.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF951BC0EDEF9BE00844FD5 /* Info.tiff */; };
+		AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CB0EE043C900844FD5 /* ZoomOut.png */; };
+		AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CC0EE043C900844FD5 /* ZoomIn.png */; };
+		AAF952D10EE0463800844FD5 /* LeftArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CF0EE0463800844FD5 /* LeftArrow.png */; };
+		AAF952D20EE0463800844FD5 /* RightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952D00EE0463800844FD5 /* RightArrow.png */; };
+		AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E50EE04F3700844FD5 /* Delete.tiff */; };
+		AAF952E90EE04F3700844FD5 /* FinderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E60EE04F3700844FD5 /* FinderIcon.png */; };
+		AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E70EE04F3700844FD5 /* Info.tiff */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
 /* End PBXBuildFile section */
 
@@ -342,13 +346,17 @@
 		AAEF604E0B028DD800C7134A /* ColorListCollection.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ColorListCollection.h; path = control/ColorListCollection.h; sourceTree = "<group>"; };
 		AAEF604F0B028DD800C7134A /* ColorListCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ColorListCollection.m; path = control/ColorListCollection.m; sourceTree = "<group>"; };
 		AAF56B1C097441C700A89601 /* GrandPerspective_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GrandPerspective_Prefix.pch; sourceTree = "<group>"; };
-		AAF951A70EDED7A800844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Delete.tiff; sourceTree = "<group>"; };
-		AAF951A90EDED7BA00844FD5 /* FinderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = FinderIcon.png; sourceTree = "<group>"; };
 		AAF951AB0EDED7EF00844FD5 /* Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Down.png; sourceTree = "<group>"; };
 		AAF951AC0EDED7EF00844FD5 /* Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Up.png; sourceTree = "<group>"; };
 		AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewToolbarControl.h; path = control/DirectoryViewToolbarControl.h; sourceTree = "<group>"; };
 		AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewToolbarControl.m; path = control/DirectoryViewToolbarControl.m; sourceTree = "<group>"; };
-		AAF951BC0EDEF9BE00844FD5 /* Info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Info.tiff; sourceTree = "<group>"; };
+		AAF952CB0EE043C900844FD5 /* ZoomOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomOut.png; path = Images/ZoomOut.png; sourceTree = "<group>"; };
+		AAF952CC0EE043C900844FD5 /* ZoomIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomIn.png; path = Images/ZoomIn.png; sourceTree = "<group>"; };
+		AAF952CF0EE0463800844FD5 /* LeftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LeftArrow.png; path = Images/LeftArrow.png; sourceTree = "<group>"; };
+		AAF952D00EE0463800844FD5 /* RightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RightArrow.png; path = Images/RightArrow.png; sourceTree = "<group>"; };
+		AAF952E50EE04F3700844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
+		AAF952E60EE04F3700844FD5 /* FinderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FinderIcon.png; path = Images/FinderIcon.png; sourceTree = "<group>"; };
+		AAF952E70EE04F3700844FD5 /* Info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Info.tiff; path = Images/Info.tiff; sourceTree = "<group>"; };
 		AAF9F7D30B30118C00FA4C51 /* ControlConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControlConstants.h; path = control/ControlConstants.h; sourceTree = "<group>"; };
 		AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleAsynchronousTaskManager.h; path = control/VisibleAsynchronousTaskManager.h; sourceTree = "<group>"; };
 		AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VisibleAsynchronousTaskManager.m; path = control/VisibleAsynchronousTaskManager.m; sourceTree = "<group>"; };
@@ -429,11 +437,9 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				AAF952C50EE043A400844FD5 /* Images */,
 				AAF951AB0EDED7EF00844FD5 /* Down.png */,
 				AAF951AC0EDED7EF00844FD5 /* Up.png */,
-				AAF951A90EDED7BA00844FD5 /* FinderIcon.png */,
-				AAF951A70EDED7A800844FD5 /* Delete.tiff */,
-				AAF951BC0EDEF9BE00844FD5 /* Info.tiff */,
 				AA6351350972DDC40024C9D0 /* GrandPerspective.icns */,
 				AAD6855008D9FE600096C6C1 /* Credits.rtf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -683,6 +689,20 @@
 			name = control;
 			sourceTree = "<group>";
 		};
+		AAF952C50EE043A400844FD5 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				AAF952CB0EE043C900844FD5 /* ZoomOut.png */,
+				AAF952CC0EE043C900844FD5 /* ZoomIn.png */,
+				AAF952CF0EE0463800844FD5 /* LeftArrow.png */,
+				AAF952D00EE0463800844FD5 /* RightArrow.png */,
+				AAF952E50EE04F3700844FD5 /* Delete.tiff */,
+				AAF952E60EE04F3700844FD5 /* FinderIcon.png */,
+				AAF952E70EE04F3700844FD5 /* Info.tiff */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
 		AAFDC5FF0A8BD6F800DB84D7 /* task */ = {
 			isa = PBXGroup;
 			children = (
@@ -784,11 +804,15 @@
 				AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */,
 				AADD34930B8B902000AC2C97 /* Tests.strings in Resources */,
 				AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */,
-				AAF951A80EDED7A800844FD5 /* Delete.tiff in Resources */,
-				AAF951AA0EDED7BA00844FD5 /* FinderIcon.png in Resources */,
 				AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */,
 				AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */,
-				AAF951BD0EDEF9BE00844FD5 /* Info.tiff in Resources */,
+				AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */,
+				AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */,
+				AAF952D10EE0463800844FD5 /* LeftArrow.png in Resources */,
+				AAF952D20EE0463800844FD5 /* RightArrow.png in Resources */,
+				AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */,
+				AAF952E90EE04F3700844FD5 /* FinderIcon.png in Resources */,
+				AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
