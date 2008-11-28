@@ -119,10 +119,6 @@
 - (BOOL) isSelectedFileItemVisible;
 
 
-//- (BOOL) isVisiblePathLocked;
-//- (void) setVisiblePathLocking: (BOOL)value;
-
-
 /* Returns YES iff the visible tree can be moved up a level. The constraints 
  * on up movement are the same as that of the underlying path model. 
  */
