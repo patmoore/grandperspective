@@ -4,8 +4,6 @@
 #import "ItemPathModelView.h"
 
 
-NSString  *ToolbarNavigateUp = @"NavigateUp";
-NSString  *ToolbarNavigateDown = @"NavigateDown"; 
 NSString  *ToolbarNavigation = @"Navigation"; 
 NSString  *ToolbarSelection = @"Selection"; 
 NSString  *ToolbarOpenItem = @"OpenItem";
@@ -21,8 +19,6 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (void) createToolbarItem: (NSString *)identifier 
             usingSelector: (SEL)selector;
 
-- (NSToolbarItem *) navigateUpToolbarItem;
-- (NSToolbarItem *) navigateDownToolbarItem;
 - (NSToolbarItem *) navigationToolbarItem;
 - (NSToolbarItem *) selectionToolbarItem;
 - (NSToolbarItem *) openItemToolbarItem;
@@ -101,10 +97,6 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   if (createToolbarItemLookup == nil) {
     createToolbarItemLookup = [[NSMutableDictionary alloc] initWithCapacity: 8];
 
-    [self createToolbarItem: ToolbarNavigateUp 
-            usingSelector: @selector(navigateUpToolbarItem)];
-    [self createToolbarItem: ToolbarNavigateDown 
-            usingSelector: @selector(navigateDownToolbarItem)];
     [self createToolbarItem: ToolbarNavigation
             usingSelector: @selector(navigationToolbarItem)];
     [self createToolbarItem: ToolbarSelection
@@ -131,7 +123,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
-                      ToolbarNavigation,
+                      ToolbarNavigation, ToolbarSelection,
                       NSToolbarFlexibleSpaceItemIdentifier,  
                       ToolbarOpenItem, ToolbarDeleteItem, 
                       NSToolbarFlexibleSpaceItemIdentifier, 
@@ -140,7 +132,6 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
-                      ToolbarNavigateUp, ToolbarNavigateDown, 
                       ToolbarNavigation,
                       ToolbarSelection,
                       ToolbarOpenItem, ToolbarDeleteItem,
@@ -194,38 +185,6 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (NSToolbarItem *) navigateUpToolbarItem {
-  NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarNavigateUp] 
-         autorelease];
-
-  [item setLabel: NSLocalizedString( @"Up", 
-                                     @"Toolbar label for navigating up" )];
-  [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Navigate up", "Tooltip" ) ];
-  [item setImage: [NSImage imageNamed: @"Up.png"]];
-  [item setAction: @selector(upAction:) ];
-  [item setTarget: dirView];
-  
-  return item;
-}
-
-- (NSToolbarItem *) navigateDownToolbarItem {
-  NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarNavigateDown] 
-         autorelease];
-
-  [item setLabel: NSLocalizedString( @"Down", 
-                                     @"Toolbar label for navigating down" )];
-  [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Navigate down", "Tooltip" ) ];
-  [item setImage: [NSImage imageNamed: @"Down.png"]];
-  [item setAction: @selector(downAction:) ];
-  [item setTarget: dirView];
-
-  return item;
-}
-
 - (NSToolbarItem *) navigationToolbarItem {
   NSToolbarItem  *item = 
     [[[ValidatingToolbarItem alloc] 
@@ -234,11 +193,22 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
              autorelease];
 
   [item setLabel: NSLocalizedString( @"Zoom", 
-                                     @"Toolbar label for Navigation controls" )];
+                                     @"Toolbar label for zooming controls" )];
   [item setPaletteLabel: [item label]];
   [item setView: navigationView];
   [item setMinSize: [navigationControls bounds].size];
   [item setMaxSize: [navigationControls bounds].size];
+  
+  // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
+  // related text is in the same file, to facilitate localization.
+  [[navigationControls cell] 
+      setToolTip: NSLocalizedString( @"Zoom out", 
+                                     @"Toolbar tip for zooming" )
+      forSegment: 0];
+  [[navigationControls cell] 
+      setToolTip: NSLocalizedString( @"Zoom in", 
+                                     @"Toolbar tip for zooming" )
+      forSegment: 1];
 
   return item;
 }
@@ -251,11 +221,22 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
              autorelease];
 
   [item setLabel: NSLocalizedString( @"Select", 
-                                     @"Toolbar label for Selection controls" )];
+                                     @"Toolbar label for selection controls" )];
   [item setPaletteLabel: [item label]];
   [item setView: selectionView];
   [item setMinSize: [selectionControls bounds].size];
   [item setMaxSize: [selectionControls bounds].size];
+
+  // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
+  // related text is in the same file, to facilitate localization.
+  [[selectionControls cell] 
+      setToolTip: NSLocalizedString( @"Move focus up", 
+                                     @"Toolbar tip for changing selection" )
+      forSegment: 0];
+  [[selectionControls cell] 
+      setToolTip: NSLocalizedString( @"Move focus down", 
+                                     @"Toolbar tip for changing selection" )
+      forSegment: 1];
 
   return item;
 }

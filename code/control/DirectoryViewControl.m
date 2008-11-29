@@ -775,12 +775,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   else if ([identifier isEqualToString: ToolbarDeleteItem]) {
     return [self canDeleteSelectedFile];
   }
-  else if ([identifier isEqualToString: ToolbarNavigateUp]) {
-    return [self canNavigateUp];
-  }
-  else if ([identifier isEqualToString: ToolbarNavigateDown]) {
-    return [self canNavigateDown];
-  }
   else {
     return YES;
   }

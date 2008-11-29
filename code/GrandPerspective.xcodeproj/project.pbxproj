@@ -13,6 +13,8 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA1115C40A84CA320023C5CD /* DirectoryViewControlSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */; };
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
+		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
+		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
@@ -114,13 +116,9 @@
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
-		AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AB0EDED7EF00844FD5 /* Down.png */; };
-		AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF951AC0EDED7EF00844FD5 /* Up.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
 		AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CB0EE043C900844FD5 /* ZoomOut.png */; };
 		AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CC0EE043C900844FD5 /* ZoomIn.png */; };
-		AAF952D10EE0463800844FD5 /* LeftArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CF0EE0463800844FD5 /* LeftArrow.png */; };
-		AAF952D20EE0463800844FD5 /* RightArrow.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952D00EE0463800844FD5 /* RightArrow.png */; };
 		AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E50EE04F3700844FD5 /* Delete.tiff */; };
 		AAF952E90EE04F3700844FD5 /* FinderIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E60EE04F3700844FD5 /* FinderIcon.png */; };
 		AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E70EE04F3700844FD5 /* Info.tiff */; };
@@ -139,6 +137,8 @@
 		AA1115C10A84CA320023C5CD /* DirectoryViewControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewControlSettings.h; path = control/DirectoryViewControlSettings.h; sourceTree = "<group>"; };
 		AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewControlSettings.m; path = control/DirectoryViewControlSettings.m; sourceTree = "<group>"; };
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
+		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
+		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
 		AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotifyingPanel.m; path = util/NotifyingPanel.m; sourceTree = "<group>"; };
 		AA21849D0A25FDDB000E1C8C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
@@ -346,14 +346,10 @@
 		AAEF604E0B028DD800C7134A /* ColorListCollection.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ColorListCollection.h; path = control/ColorListCollection.h; sourceTree = "<group>"; };
 		AAEF604F0B028DD800C7134A /* ColorListCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ColorListCollection.m; path = control/ColorListCollection.m; sourceTree = "<group>"; };
 		AAF56B1C097441C700A89601 /* GrandPerspective_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GrandPerspective_Prefix.pch; sourceTree = "<group>"; };
-		AAF951AB0EDED7EF00844FD5 /* Down.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Down.png; sourceTree = "<group>"; };
-		AAF951AC0EDED7EF00844FD5 /* Up.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Up.png; sourceTree = "<group>"; };
 		AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewToolbarControl.h; path = control/DirectoryViewToolbarControl.h; sourceTree = "<group>"; };
 		AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewToolbarControl.m; path = control/DirectoryViewToolbarControl.m; sourceTree = "<group>"; };
 		AAF952CB0EE043C900844FD5 /* ZoomOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomOut.png; path = Images/ZoomOut.png; sourceTree = "<group>"; };
 		AAF952CC0EE043C900844FD5 /* ZoomIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomIn.png; path = Images/ZoomIn.png; sourceTree = "<group>"; };
-		AAF952CF0EE0463800844FD5 /* LeftArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = LeftArrow.png; path = Images/LeftArrow.png; sourceTree = "<group>"; };
-		AAF952D00EE0463800844FD5 /* RightArrow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RightArrow.png; path = Images/RightArrow.png; sourceTree = "<group>"; };
 		AAF952E50EE04F3700844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
 		AAF952E60EE04F3700844FD5 /* FinderIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FinderIcon.png; path = Images/FinderIcon.png; sourceTree = "<group>"; };
 		AAF952E70EE04F3700844FD5 /* Info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Info.tiff; path = Images/Info.tiff; sourceTree = "<group>"; };
@@ -438,8 +434,6 @@
 			isa = PBXGroup;
 			children = (
 				AAF952C50EE043A400844FD5 /* Images */,
-				AAF951AB0EDED7EF00844FD5 /* Down.png */,
-				AAF951AC0EDED7EF00844FD5 /* Up.png */,
 				AA6351350972DDC40024C9D0 /* GrandPerspective.icns */,
 				AAD6855008D9FE600096C6C1 /* Credits.rtf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
@@ -694,8 +688,8 @@
 			children = (
 				AAF952CB0EE043C900844FD5 /* ZoomOut.png */,
 				AAF952CC0EE043C900844FD5 /* ZoomIn.png */,
-				AAF952CF0EE0463800844FD5 /* LeftArrow.png */,
-				AAF952D00EE0463800844FD5 /* RightArrow.png */,
+				AA14A8600EE1401E009CBD3E /* FocusDown.png */,
+				AA14A8610EE1401E009CBD3E /* FocusUp.png */,
 				AAF952E50EE04F3700844FD5 /* Delete.tiff */,
 				AAF952E60EE04F3700844FD5 /* FinderIcon.png */,
 				AAF952E70EE04F3700844FD5 /* Info.tiff */,
@@ -804,15 +798,13 @@
 				AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */,
 				AADD34930B8B902000AC2C97 /* Tests.strings in Resources */,
 				AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */,
-				AAF951AD0EDED7EF00844FD5 /* Down.png in Resources */,
-				AAF951AE0EDED7EF00844FD5 /* Up.png in Resources */,
 				AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */,
 				AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */,
-				AAF952D10EE0463800844FD5 /* LeftArrow.png in Resources */,
-				AAF952D20EE0463800844FD5 /* RightArrow.png in Resources */,
 				AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */,
 				AAF952E90EE04F3700844FD5 /* FinderIcon.png in Resources */,
 				AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */,
+				AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */,
+				AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
