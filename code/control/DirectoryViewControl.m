@@ -821,28 +821,41 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         // root of the scanned tree is excluded from the path, and the part 
         // that is inside the visible tree is marked using different
         // attributes.
-    
+
+        NSMutableAttributedString  *attributedPath = 
+          [[[NSMutableAttributedString alloc] 
+               initWithString: relativeItemPath] autorelease];
+
+        // Underline the entire path.
+        [attributedPath 
+           addAttribute: NSUnderlineStyleAttributeName
+             value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
+             range: NSMakeRange(0, [relativeItemPath length]) ];
+
         int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
         
         if (visibleLen > 0) {
-          NSMutableAttributedString  *attributedPath = 
-            [[[NSMutableAttributedString alloc] 
-                 initWithString: relativeItemPath] autorelease];
+          // Part of the path is visible. Underline it with a different color
+          // than is used for the invisible part, which uses the default 
+          // color. As these colors are quite distinct, the distinction between
+          // the visible and invisible part will be clear irrespective of the
+          // background color (which can depends on the window's main status)
+          
           int  selectedLen = [[selectedItem pathComponent] length];
 
           [attributedPath 
-             addAttribute: NSForegroundColorAttributeName
+             addAttribute: NSUnderlineColorAttributeName
                value: [NSColor secondarySelectedControlColor] 
                range: NSMakeRange([relativeItemPath length] - visibleLen, 
                                   visibleLen - selectedLen) ];
           [attributedPath 
-             addAttribute: NSForegroundColorAttributeName
+             addAttribute: NSUnderlineColorAttributeName
                value: [NSColor selectedControlColor] 
                range: NSMakeRange([relativeItemPath length] - selectedLen, 
                                   selectedLen) ];
-
-          relativeItemPath = (NSString *)attributedPath;
         }
+        
+        relativeItemPath = (NSString *)attributedPath;
       }
     }
 
