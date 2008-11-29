@@ -246,7 +246,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
                                      @"Toolbar label for Open in Finder" )];
   [item setPaletteLabel: [item label]];
   [item setToolTip: NSLocalizedString( @"Open in Finder", "Tooltip" ) ];
-  [item setImage: [NSImage imageNamed: @"FinderIcon.png"]];
+  [item setImage: [NSImage imageNamed: @"OpenInFinder.png"]];
   [item setAction: @selector(openFileInFinder:) ];
   [item setTarget: dirView];
 
