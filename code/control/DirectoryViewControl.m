@@ -822,18 +822,27 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         // that is inside the visible tree is marked using different
         // attributes.
     
-        int  visLen = [itemPath length] - [invisiblePathName length] - 1;
-        NSMutableAttributedString  *attributedPath = 
-          [[[NSMutableAttributedString alloc] 
-               initWithString: relativeItemPath] autorelease];
-        if (visLen > 0) {
-          [attributedPath addAttribute: NSForegroundColorAttributeName
-                            value: [NSColor darkGrayColor] 
-                            range: NSMakeRange([relativeItemPath length]-visLen, 
-                                               visLen) ];
-        }
+        int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
+        
+        if (visibleLen > 0) {
+          NSMutableAttributedString  *attributedPath = 
+            [[[NSMutableAttributedString alloc] 
+                 initWithString: relativeItemPath] autorelease];
+          int  selectedLen = [[selectedItem pathComponent] length];
 
-        relativeItemPath = (NSString *)attributedPath;
+          [attributedPath 
+             addAttribute: NSForegroundColorAttributeName
+               value: [NSColor secondarySelectedControlColor] 
+               range: NSMakeRange([relativeItemPath length] - visibleLen, 
+                                  visibleLen - selectedLen) ];
+          [attributedPath 
+             addAttribute: NSForegroundColorAttributeName
+               value: [NSColor selectedControlColor] 
+               range: NSMakeRange([relativeItemPath length] - selectedLen, 
+                                  selectedLen) ];
+
+          relativeItemPath = (NSString *)attributedPath;
+        }
       }
     }
 
