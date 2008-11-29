@@ -12,8 +12,6 @@ extern NSString  *ToolbarToggleInfoDrawer;
 
   IBOutlet NSWindow  *dirViewWindow;
 
-  IBOutlet NSView  *navigationView;
-  IBOutlet NSView  *selectionView;
   IBOutlet NSSegmentedControl  *navigationControls;
   IBOutlet NSSegmentedControl  *selectionControls;
 

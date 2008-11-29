@@ -22,12 +22,8 @@
 				<string>NSWindow</string>
 				<key>navigationControls</key>
 				<string>NSSegmentedControl</string>
-				<key>navigationView</key>
-				<string>NSView</string>
 				<key>selectionControls</key>
 				<string>NSSegmentedControl</string>
-				<key>selectionView</key>
-				<string>NSView</string>
 			</dict>
 			<key>SUPERCLASS</key>
 			<string>NSObject</string>

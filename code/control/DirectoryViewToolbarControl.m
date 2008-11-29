@@ -195,7 +195,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setLabel: NSLocalizedString( @"Zoom", 
                                      @"Toolbar label for zooming controls" )];
   [item setPaletteLabel: [item label]];
-  [item setView: navigationView];
+  [item setView: navigationControls];
   [item setMinSize: [navigationControls bounds].size];
   [item setMaxSize: [navigationControls bounds].size];
   
@@ -223,7 +223,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setLabel: NSLocalizedString( @"Select", 
                                      @"Toolbar label for selection controls" )];
   [item setPaletteLabel: [item label]];
-  [item setView: selectionView];
+  [item setView: selectionControls];
   [item setMinSize: [selectionControls bounds].size];
   [item setMaxSize: [selectionControls bounds].size];
 
