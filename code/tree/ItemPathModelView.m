@@ -54,6 +54,7 @@
     invisibleSelectedItem = nil;
     showPackageContents = YES;
     preferredSelectionDepth = STICK_TO_ENDPOINT;
+    automaticallyStickToEndPoint = YES;
     
     [self updatePath];
     
@@ -211,10 +212,10 @@
 }
 
 
+
 - (BOOL) selectionSticksToEndPoint {
   return (preferredSelectionDepth == STICK_TO_ENDPOINT);
 }
-
 
 - (void) setSelectionSticksToEndPoint: (BOOL)value {  
   if (value) {
@@ -228,6 +229,16 @@
     preferredSelectionDepth = selectedItemIndex - visibleTreeIndex;
   }
 }
+
+
+- (BOOL) selectionSticksAutomaticallyToEndPoint {
+  return automaticallyStickToEndPoint;
+}
+
+- (void) setSelectionSticksAutomaticallyToEndPoint: (BOOL)flag {
+  automaticallyStickToEndPoint = flag;
+}
+
 
 - (BOOL) canMoveSelectionUp {
   return (selectedItemIndex > visibleTreeIndex);
@@ -250,10 +261,16 @@
 - (void) moveSelectionDown {
   NSAssert([self canMoveSelectionDown], @"Cannot move selection down.");
   
-  preferredSelectionDepth = selectedItemIndex + 1 - visibleTreeIndex;
-  
   [pathModel selectFileItem: 
     [fileItemPath objectAtIndex: selectedItemIndex + 1]];
+    
+  if (automaticallyStickToEndPoint && ![self canMoveSelectionDown]) {
+    // End-point reached. Make depth stick to end-point automatically 
+    preferredSelectionDepth = STICK_TO_ENDPOINT;
+  }
+  else {
+    preferredSelectionDepth = selectedItemIndex + 1 - visibleTreeIndex;  
+  }
 }
 
 @end

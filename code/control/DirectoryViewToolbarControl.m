@@ -156,18 +156,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   ItemPathModelView  *pathModelView = [dirView pathModelView]; 
 
   if ([sender selectedSegment] == 0) {
-    if ([pathModelView canMoveSelectionUp]) {
-      [pathModelView moveSelectionUp];
-    }
+    [pathModelView moveSelectionUp];
   }
   else if ([sender selectedSegment] == 1) {
-    if (! [pathModelView selectionSticksToEndPoint]) {
-      if ([pathModelView canMoveSelectionDown]) {
-        [pathModelView moveSelectionDown];
-      }
-      else {
-        [pathModelView setSelectionSticksToEndPoint: YES];
-      }
+    if ([pathModelView canMoveSelectionDown]) {
+      [pathModelView moveSelectionDown];
+    }
+    else {
+      [pathModelView setSelectionSticksToEndPoint: YES];
     }
   }
 }

@@ -50,8 +50,12 @@
   
   
   // Relative to the visible tree root.
-  // unsigned  selectionDepth;
   unsigned  preferredSelectionDepth;  
+
+  // Controls if the selection should be made to automatically stick to the
+  // end point, when the end-point is reached when explicitly moving the
+  // selection down.
+  BOOL  automaticallyStickToEndPoint;
 }
 
 - (id) initWithPathModel: (ItemPathModel *)pathModel;
@@ -138,6 +142,9 @@
 
 - (BOOL) selectionSticksToEndPoint;
 - (void) setSelectionSticksToEndPoint: (BOOL)value;
+
+- (BOOL) selectionSticksAutomaticallyToEndPoint;
+- (void) setSelectionSticksAutomaticallyToEndPoint: (BOOL)value;
 
 - (BOOL) canMoveSelectionUp;
 - (BOOL) canMoveSelectionDown;
