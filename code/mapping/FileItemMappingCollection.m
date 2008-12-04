@@ -34,14 +34,21 @@
 
 - (int) hashForFileItem: (PlainFileItem *)item inTree: (FileItem *)treeRoot {
   // Establish the depth of the file item in the tree.
-  FileItem  *fileItem = item;
+
+  // Matching parent directories as a stop-criterion, as opposed to matching
+  // the file items directly. The reason is that when the item is at depth 0, 
+  // it does not necessarily equal the treeRoot; When package contents are 
+  // hidden, a stand-in item is used for directory items that are packages.
+  
+  FileItem  *fileItem = [item parentDirectory];
+  FileItem  *itemToMatch = [treeRoot parentDirectory];
   int  depth = 0;
   
-  while (fileItem != treeRoot) {
+  while (fileItem != itemToMatch) {
     fileItem = [fileItem parentDirectory];
     depth++;
     
-    NSAssert(item != nil, @"Failed to encounter treeRoot");
+    NSAssert(fileItem != nil, @"Failed to encounter treeRoot");
   }
   
   return depth;
