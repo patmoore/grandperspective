@@ -25,8 +25,10 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (NSToolbarItem *) deleteItemToolbarItem;
 - (NSToolbarItem *) toggleInfoDrawerToolbarItem;
 
-- (void) validateNavigationControls;
-- (void) validateSelectionControls;
+- (id) validateNavigationControls;
+- (id) validateSelectionControls;
+- (id) validateOpenItem;
+- (id) validateDeleteItem;
 
 @end
 
@@ -238,9 +240,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 - (NSToolbarItem *) openItemToolbarItem {
+  // Note: Not using default mechanism (using validateToolbarItem: on target)
+  // for validating image-based toolbar items. Using ValidatingToolbarItem
+  // instead in order to keep all toolbar-related code together.
   NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarOpenItem] 
-         autorelease];
+    [[[ValidatingToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarOpenItem validator: self
+           validationSelector: @selector(validateOpenItem)]
+             autorelease];
 
   [item setLabel: NSLocalizedString( @"Open", 
                                      @"Toolbar label for Open in Finder" )];
@@ -255,8 +262,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (NSToolbarItem *) deleteItemToolbarItem {
   NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarDeleteItem] 
-         autorelease];
+    [[[ValidatingToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarDeleteItem validator: self
+           validationSelector: @selector(validateDeleteItem)]
+             autorelease];
 
   [item setLabel: NSLocalizedString( @"Delete", 
                                      @"Toolbar label for deleting item" )];
@@ -287,18 +296,29 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (void) validateNavigationControls {
+- (id) validateNavigationControls {
   [navigationControls setEnabled: [dirView canNavigateUp] forSegment: 0];
   [navigationControls setEnabled: [dirView canNavigateDown] forSegment: 1];
+
+  return self; // Always enable the overall control
 }
 
-- (void) validateSelectionControls {
+- (id) validateSelectionControls {
   ItemPathModelView  *pathModelView = [dirView pathModelView]; 
 
   [selectionControls setEnabled: [pathModelView canMoveSelectionUp] 
                        forSegment: 0];
   [selectionControls setEnabled: ! [pathModelView selectionSticksToEndPoint] 
                        forSegment: 1];
+  return self; // Always enable the overall control
+}
+
+- (id) validateOpenItem {
+  return [dirView canRevealSelectedFile] ? self : nil;
+}
+
+- (id) validateDeleteItem {
+  return [dirView canDeleteSelectedFile] ? self : nil;
 }
 
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)
@@ -324,7 +344,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (void) validate {
-  [validator performSelector: validationSelector];
+  // Any non-nil value means that the control should be enabled.
+  [self setEnabled: [validator performSelector: validationSelector] != nil];
 }
 
 @end // @implementation ValidatingToolbarItem

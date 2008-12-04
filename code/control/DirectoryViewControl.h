@@ -14,7 +14,6 @@ extern NSString  *DeleteFilesAndFolders;
 @class ColorListCollection;
 @class EditFilterWindowControl;
 @class ColorLegendTableViewControl;
-@class DirectoryViewToolbarControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
 @class ItemInFocusControls;
@@ -130,6 +129,9 @@ extern NSString  *DeleteFilesAndFolders;
 
 - (BOOL) canNavigateUp;
 - (BOOL) canNavigateDown;
+
+- (BOOL) canRevealSelectedFile;
+- (BOOL) canDeleteSelectedFile;
 
 + (NSArray *) fileDeletionTargetNames;
 

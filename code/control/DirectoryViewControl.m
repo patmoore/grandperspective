@@ -9,7 +9,6 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
-#import "DirectoryViewToolbarControl.h"
 #import "FileItemTest.h"
 #import "TreeContext.h"
 #import "EditFilterWindowControl.h"
@@ -28,9 +27,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 @interface DirectoryViewControl (PrivateMethods)
-
-- (BOOL) canRevealSelectedFile;
-- (BOOL) canDeleteSelectedFile;
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
@@ -632,27 +628,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-+ (NSArray *) fileDeletionTargetNames {
-  static NSArray  *fileDeletionTargetNames = nil;
-  
-  if (fileDeletionTargetNames == nil) {
-    fileDeletionTargetNames = 
-      [[NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
-                                    DeleteFilesAndFolders, nil] retain];
-  }
-  
-  return fileDeletionTargetNames;
-}
-
-@end // @implementation DirectoryViewControl
-
-
-@implementation DirectoryViewControl (PrivateMethods)
 
 - (BOOL) canRevealSelectedFile {
   return ( [[pathModelView pathModel] isVisiblePathLocked]
            && [[pathModelView selectedFileItem] isPhysical] );
 }
+
 
 - (BOOL) canDeleteSelectedFile {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
@@ -674,6 +655,23 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     );
 }
 
+
++ (NSArray *) fileDeletionTargetNames {
+  static NSArray  *fileDeletionTargetNames = nil;
+  
+  if (fileDeletionTargetNames == nil) {
+    fileDeletionTargetNames = 
+      [[NSArray arrayWithObjects: DeleteNothing, OnlyDeleteFiles, 
+                                    DeleteFilesAndFolders, nil] retain];
+  }
+  
+  return fileDeletionTargetNames;
+}
+
+@end // @implementation DirectoryViewControl
+
+
+@implementation DirectoryViewControl (PrivateMethods)
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo {
@@ -763,21 +761,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [visibleFolderFocusControls showFileItem: visibleTree];
 
   [self updateButtonState: notification];
-}
-
-
-- (BOOL)validateToolbarItem: (NSToolbarItem *)item {
-  NSString  *identifier = [item itemIdentifier];
-
-  if ([identifier isEqualToString: ToolbarOpenItem]) {
-    return [self canRevealSelectedFile];
-  }
-  else if ([identifier isEqualToString: ToolbarDeleteItem]) {
-    return [self canDeleteSelectedFile];
-  }
-  else {
-    return YES;
-  }
 }
 
 
