@@ -652,6 +652,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       // within the volume. You cannot delete the root folder.
       && ! ( (selectedFile == [pathModelView scanTree])
              && [[[pathModelView scanTree] name] isEqualToString: @""])
+
+      // Don't enable Click-through for deletion. The window needs to be 
+      // active for the file deletion controls to be enabled.
+      && [[self window] isKeyWindow]
     );
 }
 
