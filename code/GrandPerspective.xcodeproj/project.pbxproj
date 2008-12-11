@@ -12,6 +12,7 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA1115C40A84CA320023C5CD /* DirectoryViewControlSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */; };
+		AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */ = {isa = PBXBuildFile; fileRef = AA12217F0EF17A41002A178F /* ToggleDrawer.png */; };
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
@@ -121,7 +122,6 @@
 		AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CB0EE043C900844FD5 /* ZoomOut.png */; };
 		AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CC0EE043C900844FD5 /* ZoomIn.png */; };
 		AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E50EE04F3700844FD5 /* Delete.tiff */; };
-		AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E70EE04F3700844FD5 /* Info.tiff */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
 /* End PBXBuildFile section */
 
@@ -136,6 +136,7 @@
 		8D1107320486CEB800E47090 /* GrandPerspective.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandPerspective.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA1115C10A84CA320023C5CD /* DirectoryViewControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewControlSettings.h; path = control/DirectoryViewControlSettings.h; sourceTree = "<group>"; };
 		AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewControlSettings.m; path = control/DirectoryViewControlSettings.m; sourceTree = "<group>"; };
+		AA12217F0EF17A41002A178F /* ToggleDrawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToggleDrawer.png; path = Images/ToggleDrawer.png; sourceTree = "<group>"; };
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
@@ -352,7 +353,6 @@
 		AAF952CB0EE043C900844FD5 /* ZoomOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomOut.png; path = Images/ZoomOut.png; sourceTree = "<group>"; };
 		AAF952CC0EE043C900844FD5 /* ZoomIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomIn.png; path = Images/ZoomIn.png; sourceTree = "<group>"; };
 		AAF952E50EE04F3700844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
-		AAF952E70EE04F3700844FD5 /* Info.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Info.tiff; path = Images/Info.tiff; sourceTree = "<group>"; };
 		AAF9F7D30B30118C00FA4C51 /* ControlConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControlConstants.h; path = control/ControlConstants.h; sourceTree = "<group>"; };
 		AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleAsynchronousTaskManager.h; path = control/VisibleAsynchronousTaskManager.h; sourceTree = "<group>"; };
 		AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VisibleAsynchronousTaskManager.m; path = control/VisibleAsynchronousTaskManager.m; sourceTree = "<group>"; };
@@ -692,7 +692,7 @@
 				AA14A8610EE1401E009CBD3E /* FocusUp.png */,
 				AAF952E50EE04F3700844FD5 /* Delete.tiff */,
 				AA14A8E80EE18B2C009CBD3E /* OpenInFinder.png */,
-				AAF952E70EE04F3700844FD5 /* Info.tiff */,
+				AA12217F0EF17A41002A178F /* ToggleDrawer.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -801,10 +801,10 @@
 				AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */,
 				AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */,
 				AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */,
-				AAF952EA0EE04F3700844FD5 /* Info.tiff in Resources */,
 				AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */,
 				AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */,
 				AA14A8E90EE18B2C009CBD3E /* OpenInFinder.png in Resources */,
+				AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

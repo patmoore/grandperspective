@@ -283,12 +283,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarToggleInfoDrawer] 
          autorelease];
 
-  [item setLabel: NSLocalizedString( @"Info", 
+  [item setLabel: NSLocalizedString( @"Drawer", 
                                      @"Toolbar label for toggling Info drawer" )];
   [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Show/hide drawer", "Tooltip" ) ];
-  // TODO (eventually): Use "NSImageNameInfo" (Only available since 10.5)
-  [item setImage: [NSImage imageNamed: @"Info.tiff"]];
+  [item setToolTip: NSLocalizedString( @"Open/close drawer", "Tooltip" ) ];
+  [item setImage: [NSImage imageNamed: @"ToggleDrawer.png"]];
   [item setAction: @selector(toggleDrawer:) ];
   [item setTarget: dirView];
 
