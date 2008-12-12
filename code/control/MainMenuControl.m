@@ -227,14 +227,16 @@ static int  nextFilterId = 1;
   [self release];
 }
 
-- (BOOL) validateMenuItem:(NSMenuItem *)anItem {
-  if ( [anItem action]==@selector(toggleToolbarShown:) ) {
+- (BOOL) validateMenuItem:(NSMenuItem *)item {
+  SEL  action = [item action];
+
+  if ( action == @selector(toggleToolbarShown:) ) {
     NSWindow  *window = [[NSApplication sharedApplication] mainWindow];
 
     if (window == nil) {
       return NO;
     }
-    [anItem setTitle:
+    [item setTitle:
        [[window toolbar] isVisible]
        ? NSLocalizedString(@"Hide Toolbar", @"Menu item")
        : NSLocalizedString(@"Show Toolbar", @"Menu item")];
@@ -242,16 +244,15 @@ static int  nextFilterId = 1;
     return YES;
   }
 
+  if ( action == @selector(duplicateDirectoryView:) ||
+       action == @selector(twinDirectoryView:)  ||
 
-  if ( [anItem action]==@selector(duplicateDirectoryView:) ||
-       [anItem action]==@selector(twinDirectoryView:)  ||
-
-       [anItem action]==@selector(customizeToolbar:) || 
+       action == @selector(customizeToolbar:) || 
        
-       [anItem action]==@selector(saveScanData:) ||
-       [anItem action]==@selector(saveDirectoryViewImage:) ||
-       [anItem action]==@selector(rescanDirectoryView:) ||
-       [anItem action]==@selector(filterDirectoryView:) ) {
+       action == @selector(saveScanData:) ||
+       action == @selector(saveDirectoryViewImage:) ||
+       action == @selector(rescanDirectoryView:) ||
+       action == @selector(filterDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
   
