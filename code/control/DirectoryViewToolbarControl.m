@@ -27,8 +27,26 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 
 - (id) validateNavigationControls;
 - (id) validateSelectionControls;
-- (id) validateOpenItem;
-- (id) validateDeleteItem;
+
+- (BOOL) validateAction: (SEL)action;
+
+- (void) zoomOut: (id) sender;
+- (void) zoomIn: (id) sender;
+
+- (void) moveFocusUp: (id) sender;
+- (void) moveFocusDown: (id) sender;
+
+- (void) openFileInFinder: (id) sender;
+- (void) deleteFile: (id) sender;
+
+@end
+
+
+@interface ToolbarItemMenu : NSMenuItem {
+}
+
+- (id) initWithTitle: (NSString *)title target: (id) target;
+- (void) addAction: (SEL) action withTitle: (NSString *)title;
 
 @end
 
@@ -146,27 +164,20 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (IBAction) navigationAction: (id) sender {
   if ([sender selectedSegment] == 0) {
-    [dirView upAction: sender];
+    [self zoomOut: sender];
   }
   else if ([sender selectedSegment] == 1) {
-    [dirView downAction: sender];
+    [self zoomIn: sender];
   }
 }
 
 
 - (IBAction) selectionAction: (id) sender {
-  ItemPathModelView  *pathModelView = [dirView pathModelView]; 
-
   if ([sender selectedSegment] == 0) {
-    [pathModelView moveSelectionUp];
+    [self moveFocusUp: sender];
   }
   else if ([sender selectedSegment] == 1) {
-    if ([pathModelView canMoveSelectionDown]) {
-      [pathModelView moveSelectionDown];
-    }
-    else {
-      [pathModelView setSelectionSticksToEndPoint: YES];
-    }
+    [self moveFocusDown: sender];
   }
 }
 
@@ -189,9 +200,15 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
          initWithItemIdentifier: ToolbarNavigation validator: self
            validationSelector: @selector(validateNavigationControls)]
              autorelease];
+             
+  NSString  *title = 
+    NSLocalizedString( @"Zoom", @"Toolbar label for zooming controls" );
+  NSString  *zoomOutTitle = 
+    NSLocalizedString( @"Zoom out", @"Toolbar action" );
+  NSString  *zoomInTitle = 
+    NSLocalizedString( @"Zoom in", @"Toolbar action" );
 
-  [item setLabel: NSLocalizedString( @"Zoom", 
-                                     @"Toolbar label for zooming controls" )];
+  [item setLabel: title];
   [item setPaletteLabel: [item label]];
   [item setView: navigationControls];
   [item setMinSize: [navigationControls bounds].size];
@@ -199,14 +216,15 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   
   // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
   // related text is in the same file, to facilitate localization.
-  [[navigationControls cell] 
-      setToolTip: NSLocalizedString( @"Zoom out", 
-                                     @"Toolbar tip for zooming" )
-      forSegment: 0];
-  [[navigationControls cell] 
-      setToolTip: NSLocalizedString( @"Zoom in", 
-                                     @"Toolbar tip for zooming" )
-      forSegment: 1];
+  [[navigationControls cell] setToolTip: zoomOutTitle forSegment: 0];
+  [[navigationControls cell] setToolTip: zoomInTitle  forSegment: 1];
+
+  ToolbarItemMenu  *menu = 
+    [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
+  [menu addAction: @selector(zoomOut:) withTitle: zoomOutTitle];
+  [menu addAction: @selector(zoomIn:) withTitle: zoomInTitle];
+
+  [item setMenuFormRepresentation: menu];
 
   return item;
 }
@@ -217,9 +235,15 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
          initWithItemIdentifier: ToolbarSelection validator: self
            validationSelector: @selector(validateSelectionControls)]
              autorelease];
+             
+  NSString  *title = 
+    NSLocalizedString( @"Select", @"Toolbar label for selection controls" );
+  NSString  *moveUpTitle =
+    NSLocalizedString( @"Move focus up", @"Toolbar action" );
+  NSString  *moveDownTitle =
+    NSLocalizedString( @"Move focus down", @"Toolbar action" );
 
-  [item setLabel: NSLocalizedString( @"Select", 
-                                     @"Toolbar label for selection controls" )];
+  [item setLabel: title];
   [item setPaletteLabel: [item label]];
   [item setView: selectionControls];
   [item setMinSize: [selectionControls bounds].size];
@@ -227,27 +251,23 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
   // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
   // related text is in the same file, to facilitate localization.
-  [[selectionControls cell] 
-      setToolTip: NSLocalizedString( @"Move focus up", 
-                                     @"Toolbar tip for changing selection" )
-      forSegment: 0];
-  [[selectionControls cell] 
-      setToolTip: NSLocalizedString( @"Move focus down", 
-                                     @"Toolbar tip for changing selection" )
-      forSegment: 1];
+  [[selectionControls cell] setToolTip: moveUpTitle forSegment: 0];
+  [[selectionControls cell] setToolTip: moveDownTitle forSegment: 1];
+
+  ToolbarItemMenu  *menu = 
+    [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
+  [menu addAction: @selector(moveFocusUp:) withTitle: moveUpTitle];
+  [menu addAction: @selector(moveFocusDown:) withTitle: moveDownTitle];
+
+  [item setMenuFormRepresentation: menu];
 
   return item;
 }
 
 - (NSToolbarItem *) openItemToolbarItem {
-  // Note: Not using default mechanism (using validateToolbarItem: on target)
-  // for validating image-based toolbar items. Using ValidatingToolbarItem
-  // instead in order to keep all toolbar-related code together.
   NSToolbarItem  *item = 
-    [[[ValidatingToolbarItem alloc] 
-         initWithItemIdentifier: ToolbarOpenItem validator: self
-           validationSelector: @selector(validateOpenItem)]
-             autorelease];
+    [[[NSToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarOpenItem] autorelease];
 
   [item setLabel: NSLocalizedString( @"Open", 
                                      @"Toolbar label for Open in Finder" )];
@@ -255,17 +275,15 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Open in Finder", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"OpenInFinder.png"]];
   [item setAction: @selector(openFileInFinder:) ];
-  [item setTarget: dirView];
+  [item setTarget: self];
 
   return item;
 }
 
 - (NSToolbarItem *) deleteItemToolbarItem {
   NSToolbarItem  *item = 
-    [[[ValidatingToolbarItem alloc] 
-         initWithItemIdentifier: ToolbarDeleteItem validator: self
-           validationSelector: @selector(validateDeleteItem)]
-             autorelease];
+    [[[NSToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarDeleteItem] autorelease];
 
   [item setLabel: NSLocalizedString( @"Delete", 
                                      @"Toolbar label for deleting item" )];
@@ -273,7 +291,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setToolTip: NSLocalizedString( @"Move to trash", "Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"Delete.tiff"]];
   [item setAction: @selector(deleteFile:) ];
-  [item setTarget: dirView];
+  [item setTarget: self];
 
   return item;
 }
@@ -312,15 +330,111 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   return self; // Always enable the overall control
 }
 
-- (id) validateOpenItem {
-  return [dirView canRevealSelectedFile] ? self : nil;
+
+- (BOOL) validateToolbarItem: (NSToolbarItem *)item {
+  // NSLog(@"validateToolbarItem: %@", [item label] );
+
+  return [self validateAction: [item action]];
 }
 
-- (id) validateDeleteItem {
-  return [dirView canDeleteSelectedFile] ? self : nil;
+- (BOOL) validateMenuItem: (NSMenuItem *)item {
+  // NSLog(@"validateMenuItem: %@", [item title] );
+  
+  return [self validateAction: [item action]];
+}
+  
+
+- (BOOL) validateAction: (SEL)action {
+  if ( action == @selector(zoomOut:) ) {
+    return [dirView canNavigateUp];
+  }
+  else if ( action == @selector(zoomIn:) ) {
+    return [dirView canNavigateDown];
+  }
+  if ( action == @selector(moveFocusUp:) ) {
+    return [[dirView pathModelView] canMoveSelectionUp];
+  }
+  else if ( action == @selector(moveFocusDown:) ) {
+    return ! [[dirView pathModelView] selectionSticksToEndPoint];
+  }
+  else if ( action == @selector(openFileInFinder:) ) {
+    return [dirView canRevealSelectedFile];
+  }
+  else if ( action == @selector(deleteFile:) ) {
+    return [dirView canDeleteSelectedFile];
+  }
+  else {
+    return NO;
+  }
+}
+
+
+- (void) zoomOut: (id) sender {
+  [dirView upAction: sender];
+}
+
+- (void) zoomIn: (id) sender {
+  [dirView downAction: sender];
+}
+
+
+- (void) moveFocusUp: (id) sender {
+  [[dirView pathModelView] moveSelectionUp];
+}
+
+- (void) moveFocusDown: (id) sender {
+  ItemPathModelView  *pathModelView = [dirView pathModelView];
+  
+  if ([pathModelView canMoveSelectionDown]) {
+    [pathModelView moveSelectionDown];
+  }
+  else {
+    [pathModelView setSelectionSticksToEndPoint: YES];
+  }
+}
+
+
+- (void) openFileInFinder: (id) sender {
+  [dirView openFileInFinder: sender];
+}
+
+- (void) deleteFile: (id) sender {
+  [dirView deleteFile: sender];
 }
 
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)
+
+
+@implementation ToolbarItemMenu
+
+- (id) initWithTitle: (NSString *)title {
+  return [self initWithTitle: title target: nil];
+}
+
+- (id) initWithTitle: (NSString *)title target: (id) target {
+  if (self = [super init]) {
+    [self setTitle: title];
+    [self setTarget: target]; // Using target for setting target of subitems.
+    
+    NSMenu  *submenu = [[[NSMenu alloc] initWithTitle: title] autorelease];
+    [submenu setAutoenablesItems: YES];
+
+    [self setSubmenu: submenu];
+  }
+  
+  return self;
+}
+
+
+- (void) addAction: (SEL) action withTitle: (NSString *)title {
+  NSMenuItem  *item =
+    [[[NSMenuItem alloc] 
+        initWithTitle: title action: action keyEquivalent: @""] autorelease];
+  [item setTarget: [self target]];
+  [[self submenu] addItem: item];
+}
+
+@end // @implementation ToolbarItemMenu
 
 
 @implementation ValidatingToolbarItem
