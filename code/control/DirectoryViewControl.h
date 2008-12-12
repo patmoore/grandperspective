@@ -62,7 +62,6 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *selectedItemSizeField;
 
   IBOutlet NSTextField  *selectedItemTypeIdentifierField;
-  IBOutlet NSTextField  *selectedItemTypeDescriptionField;
   ItemInFocusControls  *visibleFolderFocusControls;
   ItemInFocusControls  *selectedItemFocusControls;
 

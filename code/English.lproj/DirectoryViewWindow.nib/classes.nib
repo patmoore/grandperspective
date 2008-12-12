@@ -82,10 +82,6 @@
 				<string>NSPopUpButton</string>
 				<key>colorPalettePopUp</key>
 				<string>NSPopUpButton</string>
-				<key>deleteButton</key>
-				<string>NSButton</string>
-				<key>downButton</key>
-				<string>NSButton</string>
 				<key>drawer</key>
 				<string>NSDrawer</string>
 				<key>fileSizeMeasureField</key>
@@ -108,8 +104,6 @@
 				<string>NSButton</string>
 				<key>miscUsedSpaceField</key>
 				<string>NSTextField</string>
-				<key>openButton</key>
-				<string>NSButton</string>
 				<key>scanPathTextView</key>
 				<string>NSTextView</string>
 				<key>scanTimeField</key>
@@ -122,8 +116,6 @@
 				<string>NSTextField</string>
 				<key>selectedItemTitleField</key>
 				<string>NSTextField</string>
-				<key>selectedItemTypeDescriptionField</key>
-				<string>NSTextField</string>
 				<key>selectedItemTypeIdentifierField</key>
 				<string>NSTextField</string>
 				<key>showEntireVolumeCheckBox</key>
@@ -132,8 +124,6 @@
 				<string>NSButton</string>
 				<key>treeSizeField</key>
 				<string>NSTextField</string>
-				<key>upButton</key>
-				<string>NSButton</string>
 				<key>visibleFolderExactSizeField</key>
 				<string>NSTextField</string>
 				<key>visibleFolderPathTextView</key>

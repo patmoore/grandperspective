@@ -868,13 +868,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     
     [selectedItemTypeIdentifierField 
        setStringValue: [type uniformTypeIdentifier]];
-       
-    [selectedItemTypeDescriptionField 
-       setStringValue: ([type description] != nil ? [type description] : @"")];
+    [selectedItemTypeIdentifierField
+       setToolTip: ( [type description] != nil 
+                     ? [type description] : [type uniformTypeIdentifier] )];
   }
   else {
     [selectedItemTypeIdentifierField setStringValue: @""];
-    [selectedItemTypeDescriptionField setStringValue: @""];
+    [selectedItemTypeIdentifierField setToolTip: nil];
   }
   
   if ([[pathModelView pathModel] isVisiblePathLocked]) {
