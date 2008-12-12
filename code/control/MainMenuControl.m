@@ -228,12 +228,27 @@ static int  nextFilterId = 1;
 }
 
 - (BOOL) validateMenuItem:(NSMenuItem *)anItem {
-  if ( [anItem action]==@selector(duplicateDirectoryView:) ||
-       [anItem action]==@selector(twinDirectoryView:) ) {
-    return ([[NSApplication sharedApplication] mainWindow] != nil);
+  if ( [anItem action]==@selector(toggleToolbarShown:) ) {
+    NSWindow  *window = [[NSApplication sharedApplication] mainWindow];
+
+    if (window == nil) {
+      return NO;
+    }
+    [anItem setTitle:
+       [[window toolbar] isVisible]
+       ? NSLocalizedString(@"Hide Toolbar", @"Menu item")
+       : NSLocalizedString(@"Show Toolbar", @"Menu item")];
+
+    return YES;
   }
-  
-  if ( [anItem action]==@selector(saveScanData:) ||
+
+
+  if ( [anItem action]==@selector(duplicateDirectoryView:) ||
+       [anItem action]==@selector(twinDirectoryView:)  ||
+
+       [anItem action]==@selector(customizeToolbar:) || 
+       
+       [anItem action]==@selector(saveScanData:) ||
        [anItem action]==@selector(saveDirectoryViewImage:) ||
        [anItem action]==@selector(rescanDirectoryView:) ||
        [anItem action]==@selector(filterDirectoryView:) ) {
@@ -400,6 +415,17 @@ static int  nextFilterId = 1;
 
   [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
+
+
+- (IBAction) toggleToolbarShown: (id) sender {
+  [[[NSApplication sharedApplication] mainWindow] toggleToolbarShown: sender];
+}
+
+- (IBAction) customizeToolbar: (id) sender {
+  [[[NSApplication sharedApplication] mainWindow] 
+       runToolbarCustomizationPalette: sender];
+}
+
 
 - (IBAction) openWebsite: (id) sender {
   NSBundle  *bundle = [NSBundle mainBundle];

@@ -30,6 +30,9 @@
 
 - (IBAction) editPreferences: (id) sender;
 
+- (IBAction) toggleToolbarShown: (id) sender;
+- (IBAction) customizeToolbar: (id) sender;
+
 - (IBAction) openWebsite: (id) sender;
 
 @end
