@@ -202,11 +202,12 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
              autorelease];
              
   NSString  *title = 
-    NSLocalizedString( @"Zoom", @"Toolbar label for zooming controls" );
+    NSLocalizedStringFromTable( @"Zoom", @"Toolbar", 
+                                @"Label for zooming controls" );
   NSString  *zoomOutTitle = 
-    NSLocalizedString( @"Zoom out", @"Toolbar action" );
+    NSLocalizedStringFromTable( @"Zoom out", @"Toolbar", @"Toolbar action" );
   NSString  *zoomInTitle = 
-    NSLocalizedString( @"Zoom in", @"Toolbar action" );
+    NSLocalizedStringFromTable( @"Zoom in", @"Toolbar", @"Toolbar action" );
 
   [item setLabel: title];
   [item setPaletteLabel: [item label]];
@@ -237,11 +238,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
              autorelease];
              
   NSString  *title = 
-    NSLocalizedString( @"Select", @"Toolbar label for selection controls" );
+    NSLocalizedStringFromTable( @"Select", @"Toolbar", 
+                                @"Label for selection controls" );
   NSString  *moveUpTitle =
-    NSLocalizedString( @"Move focus up", @"Toolbar action" );
+    NSLocalizedStringFromTable( @"Move focus up", @"Toolbar", 
+                                @"Toolbar action" );
   NSString  *moveDownTitle =
-    NSLocalizedString( @"Move focus down", @"Toolbar action" );
+    NSLocalizedStringFromTable( @"Move focus down", @"Toolbar", 
+                                @"Toolbar action" );
 
   [item setLabel: title];
   [item setPaletteLabel: [item label]];
@@ -269,10 +273,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     [[[NSToolbarItem alloc] 
          initWithItemIdentifier: ToolbarOpenItem] autorelease];
 
-  [item setLabel: NSLocalizedString( @"Open", 
-                                     @"Toolbar label for Open in Finder" )];
+  [item setLabel: NSLocalizedStringFromTable( @"Open", @"Toolbar", 
+                                              @"Toolbar action" )];
   [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Open in Finder", "Tooltip" ) ];
+  [item setToolTip: NSLocalizedStringFromTable( @"Open in Finder", @"Toolbar", 
+                                                @"Tooltip" )];
   [item setImage: [NSImage imageNamed: @"OpenInFinder.png"]];
   [item setAction: @selector(openFileInFinder:) ];
   [item setTarget: self];
@@ -285,10 +290,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     [[[NSToolbarItem alloc] 
          initWithItemIdentifier: ToolbarDeleteItem] autorelease];
 
-  [item setLabel: NSLocalizedString( @"Delete", 
-                                     @"Toolbar label for deleting item" )];
+  [item setLabel: NSLocalizedStringFromTable( @"Delete", @"Toolbar",
+                                              @"Toolbar action" )];
   [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Move to trash", "Tooltip" ) ];
+  [item setToolTip: NSLocalizedStringFromTable( @"Move to trash", @"Toolbar", 
+                                                @"Tooltip" ) ];
   [item setImage: [NSImage imageNamed: @"Delete.tiff"]];
   [item setAction: @selector(deleteFile:) ];
   [item setTarget: self];
@@ -301,10 +307,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarToggleInfoDrawer] 
          autorelease];
 
-  [item setLabel: NSLocalizedString( @"Drawer", 
-                                     @"Toolbar label for toggling Info drawer" )];
+  [item setLabel: NSLocalizedStringFromTable( @"Drawer", @"Toolbar",
+                                              @"Toolbar action" )];
   [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedString( @"Open/close drawer", "Tooltip" ) ];
+  [item setToolTip: NSLocalizedStringFromTable( @"Open/close drawer", 
+                                                @"Toolbar", "Tooltip" )];
   [item setImage: [NSImage imageNamed: @"ToggleDrawer.png"]];
   [item setAction: @selector(toggleDrawer:) ];
   [item setTarget: dirView];

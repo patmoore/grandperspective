@@ -238,8 +238,8 @@ static int  nextFilterId = 1;
     }
     [item setTitle:
        [[window toolbar] isVisible]
-       ? NSLocalizedString(@"Hide Toolbar", @"Menu item")
-       : NSLocalizedString(@"Show Toolbar", @"Menu item")];
+       ? NSLocalizedStringFromTable(@"Hide Toolbar", @"Toolbar", @"Menu item")
+       : NSLocalizedStringFromTable(@"Show Toolbar", @"Toolbar", @"Menu item")];
 
     return YES;
   }

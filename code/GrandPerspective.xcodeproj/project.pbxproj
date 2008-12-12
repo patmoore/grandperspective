@@ -13,6 +13,7 @@
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		AA1115C40A84CA320023C5CD /* DirectoryViewControlSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */; };
 		AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */ = {isa = PBXBuildFile; fileRef = AA12217F0EF17A41002A178F /* ToggleDrawer.png */; };
+		AA12225A0EF2A822002A178F /* Toolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA1222580EF2A822002A178F /* Toolbar.strings */; };
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
@@ -137,6 +138,7 @@
 		AA1115C10A84CA320023C5CD /* DirectoryViewControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewControlSettings.h; path = control/DirectoryViewControlSettings.h; sourceTree = "<group>"; };
 		AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewControlSettings.m; path = control/DirectoryViewControlSettings.m; sourceTree = "<group>"; };
 		AA12217F0EF17A41002A178F /* ToggleDrawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToggleDrawer.png; path = Images/ToggleDrawer.png; sourceTree = "<group>"; };
+		AA1222590EF2A822002A178F /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Toolbar.strings; sourceTree = "<group>"; };
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
@@ -441,6 +443,7 @@
 				AA8FEB290B6CC2D80049FF42 /* Names.strings */,
 				AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */,
 				AADD34910B8B902000AC2C97 /* Tests.strings */,
+				AA1222580EF2A822002A178F /* Toolbar.strings */,
 				AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */,
 				AAB35D840A330BE8006535FF /* EditFilterRuleWindow.nib */,
 				AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */,
@@ -805,6 +808,7 @@
 				AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */,
 				AA14A8E90EE18B2C009CBD3E /* OpenInFinder.png in Resources */,
 				AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */,
+				AA12225A0EF2A822002A178F /* Toolbar.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -928,6 +932,14 @@
 				AA7C64F90AFE75DE007B8CD2 /* nl */,
 			);
 			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+		AA1222580EF2A822002A178F /* Toolbar.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA1222590EF2A822002A178F /* English */,
+			);
+			name = Toolbar.strings;
 			sourceTree = "<group>";
 		};
 		AA49218108DC10C9003E1652 /* DirectoryViewWindow.nib */ = {
