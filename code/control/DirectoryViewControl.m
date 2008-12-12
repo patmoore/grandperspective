@@ -35,8 +35,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (void) createEditMaskFilterWindow;
 
-- (void) updateButtonState:(NSNotification*)notification;
-- (void) visibleTreeChanged:(NSNotification*)notification;
+- (void) selectedItemChanged: (NSNotification *)notification;
+- (void) visibleTreeChanged: (NSNotification *)notification;
+- (void) visiblePathLockingChanged: (NSNotification *)notification;
+
+- (void) validateControls;
+
 - (void) maskChanged;
 - (void) updateMask;
 
@@ -339,11 +343,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
-  [nc addObserver:self selector: @selector(updateButtonState:)
+  [nc addObserver:self selector: @selector(selectedItemChanged:)
         name: SelectedItemChangedEvent object: pathModelView];
   [nc addObserver:self selector: @selector(visibleTreeChanged:)
         name: VisibleTreeChangedEvent object: pathModelView];
-  [nc addObserver:self selector: @selector(updateButtonState:)
+  [nc addObserver:self selector: @selector(visiblePathLockingChanged:)
         name: VisiblePathLockingChangedEvent object: [pathModelView pathModel]];
         
   [userDefaults addObserver: self forKeyPath: FileDeletionTargetsKey
@@ -614,7 +618,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [[mainView pathModelView] setShowPackageContents: showPackageContents];
 
   // If the selected item is a package, its info will have changed.
-  [self updateButtonState: nil];
+  [self selectedItemChanged: nil];
 }
 
 
@@ -756,6 +760,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       NSLocalizedString( @"Edit mask", @"Window title" ) ];
 }
 
+
 - (void) visibleTreeChanged:(NSNotification*)notification {
   FileItem  *visibleTree = [pathModelView visibleTree];
   
@@ -764,18 +769,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   [visibleFolderFocusControls showFileItem: visibleTree];
 
-  [self updateButtonState: notification];
+  [self validateControls];
+}
+
+- (void) visiblePathLockingChanged: (NSNotification *)notification {
+  [self validateControls];
 }
 
 
-- (void) updateButtonState:(NSNotification*)notification {
-  [upButton setEnabled: [self canNavigateUp]];
-  [downButton setEnabled: [self canNavigateDown]];
-  [openButton setEnabled: [self canRevealSelectedFile] ];
-  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
-  
-  [[[self window] toolbar] validateVisibleItems];
-  
+- (void) selectedItemChanged: (NSNotification *)notification {
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem != nil ) {
@@ -874,6 +876,25 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [selectedItemTypeIdentifierField setStringValue: @""];
     [selectedItemTypeDescriptionField setStringValue: @""];
   }
+  
+  if ([[pathModelView pathModel] isVisiblePathLocked]) {
+    // Only when the visible path is locked can a change of selected item
+    // affect the state of the controls.
+    [self validateControls];
+  }
+}
+
+
+- (void) validateControls {
+  [upButton setEnabled: [self canNavigateUp]];
+  [downButton setEnabled: [self canNavigateDown]];
+  [openButton setEnabled: [self canRevealSelectedFile] ];
+  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
+
+  // Note: Maybe not strictly necessary, as toolbar seems to frequently auto- 
+  // update its visible items (unnecessarily often it seems). Nevertheless, 
+  // it's good to do so explicitly, in response to relevant events.
+  [[[self window] toolbar] validateVisibleItems];
 }
 
 
@@ -1060,5 +1081,3 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 @end // @implementation SelectedItemFocusControls
-
-
