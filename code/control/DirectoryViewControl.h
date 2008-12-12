@@ -25,10 +25,6 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *itemPathField;
   IBOutlet NSTextField  *itemSizeField;
   IBOutlet DirectoryView  *mainView;
-  IBOutlet NSButton  *upButton;
-  IBOutlet NSButton  *downButton;
-  IBOutlet NSButton  *openButton;
-  IBOutlet NSButton  *deleteButton;
   
   IBOutlet NSDrawer  *drawer;
   

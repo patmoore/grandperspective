@@ -886,11 +886,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) validateControls {
-  [upButton setEnabled: [self canNavigateUp]];
-  [downButton setEnabled: [self canNavigateDown]];
-  [openButton setEnabled: [self canRevealSelectedFile] ];
-  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
-
   // Note: Maybe not strictly necessary, as toolbar seems to frequently auto- 
   // update its visible items (unnecessarily often it seems). Nevertheless, 
   // it's good to do so explicitly, in response to relevant events.
@@ -935,7 +930,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   confirmFolderDeletion = 
     [[userDefaults objectForKey: ConfirmFolderDeletionKey] boolValue];
 
-  [deleteButton setEnabled: [self canDeleteSelectedFile] ];
+  [self validateControls];
 }
 
 
