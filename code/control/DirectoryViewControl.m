@@ -44,6 +44,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) visibleTreeChanged: (NSNotification *)notification;
 - (void) visiblePathLockingChanged: (NSNotification *)notification;
 
+- (NSString *) updateSelectionInStatusbar;
+- (void) updateSelectionInFocusPanel: (NSString *)itemSizeString;
 - (void) validateControls;
 
 - (void) maskChanged;
@@ -808,7 +810,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) visibleTreeChanged:(NSNotification*)notification {
+- (void) visibleTreeChanged: (NSNotification *)notification {
   FileItem  *visibleTree = [pathModelView visibleTree];
   
   [invisiblePathName release];
@@ -817,6 +819,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [visibleFolderFocusControls showFileItem: visibleTree];
 
   [self validateControls];
+
+  // Also update the status bar, as visible part is marked differently
+  [self updateSelectionInStatusbar];
 }
 
 - (void) visiblePathLockingChanged: (NSNotification *)notification {
@@ -825,90 +830,126 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) selectedItemChanged: (NSNotification *)notification {
+  NSString  *itemSizeString = [self updateSelectionInStatusbar];
+  [self updateSelectionInFocusPanel: itemSizeString];
+  
+  if ([[pathModelView pathModel] isVisiblePathLocked]) {
+    // Only when the visible path is locked can a change of selected item
+    // affect the state of the controls.
+    [self validateControls];
+  }
+
+}
+
+
+- (NSString *) updateSelectionInStatusbar {
+  FileItem  *selectedItem = [pathModelView selectedFileItem];
+
+  if ( selectedItem == nil ) {
+    [itemSizeField setStringValue: @""];
+    [itemPathField setStringValue: @""];
+  
+    return nil;
+  }
+  
+  NSString  *itemSizeString = 
+    [FileItem stringForFileItemSize: [selectedItem itemSize]];
+  [itemSizeField setStringValue: itemSizeString];
+
+  NSString  *itemPath;
+  NSString  *relativeItemPath;
+
+  if (! [selectedItem isPhysical]) {
+    itemPath = 
+      [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
+                               value: nil table: @"Names"];
+    relativeItemPath = itemPath;
+  }
+  else {
+    itemPath = [selectedItem path];
+      
+    NSAssert([itemPath hasPrefix: scanPathName], @"Invalid path prefix.");
+    relativeItemPath = [itemPath substringFromIndex: [scanPathName length]];
+    if ([relativeItemPath isAbsolutePath]) {
+      // Strip leading slash.
+      relativeItemPath = [relativeItemPath substringFromIndex: 1];
+    }
+      
+    if ([itemPath hasPrefix: invisiblePathName]) {
+      // Create attributed string for the path of the selected item. The
+      // root of the scanned tree is excluded from the path, and the part 
+      // that is inside the visible tree is marked using different
+      // attributes.
+
+      NSMutableAttributedString  *attributedPath = 
+        [[[NSMutableAttributedString alloc] 
+             initWithString: relativeItemPath] autorelease];
+
+      // Underline the entire path.
+      [attributedPath 
+         addAttribute: NSUnderlineStyleAttributeName
+           value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
+           range: NSMakeRange(0, [relativeItemPath length]) ];
+
+      int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
+        
+      if (visibleLen > 0) {
+        // Part of the path is visible. Underline it with a different color
+        // than is used for the invisible part, which uses the default 
+        // color. As these colors are quite distinct, the distinction between
+        // the visible and invisible part will be clear irrespective of the
+        // background color (which can depends on the window's main status)
+          
+        int  selectedLen = [[selectedItem pathComponent] length];
+
+        [attributedPath 
+           addAttribute: NSUnderlineColorAttributeName
+             value: [NSColor secondarySelectedControlColor] 
+             range: NSMakeRange([relativeItemPath length] - visibleLen, 
+                                visibleLen - selectedLen) ];
+        [attributedPath 
+           addAttribute: NSUnderlineColorAttributeName
+             value: [NSColor selectedControlColor] 
+             range: NSMakeRange([relativeItemPath length] - selectedLen, 
+                                selectedLen) ];
+      }
+        
+      relativeItemPath = (NSString *)attributedPath;
+    }
+  }
+
+  [itemPathField setStringValue: relativeItemPath];
+  
+  return itemSizeString;
+}
+
+
+// Note: For efficiency taking already constructed itemSizeString from 
+// elsewhere, as opposed to constructing it again. 
+- (void) updateSelectionInFocusPanel: (NSString *)itemSizeString {
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem != nil ) {
-    ITEM_SIZE  itemSize = [selectedItem itemSize];
-    NSString  *itemSizeString = [FileItem stringForFileItemSize: itemSize];
-
-    [itemSizeField setStringValue: itemSizeString];
-
     NSString  *itemPath;
-    NSString  *relativeItemPath;
-
+    
     if (! [selectedItem isPhysical]) {
-      relativeItemPath = 
+      itemPath = 
         [[NSBundle mainBundle] localizedStringForKey: [selectedItem name] 
                                  value: nil table: @"Names"];
-      itemPath = relativeItemPath;
     }
     else {
       itemPath = [selectedItem path];
-      
-      NSAssert([itemPath hasPrefix: scanPathName], @"Invalid path prefix.");
-      relativeItemPath = [itemPath substringFromIndex: [scanPathName length]];
-      if ([relativeItemPath isAbsolutePath]) {
-        // Strip leading slash.
-        relativeItemPath = [relativeItemPath substringFromIndex: 1];
-      }
-      
-      if ([itemPath hasPrefix: invisiblePathName]) {
-        // Create attributed string for the path of the selected item. The
-        // root of the scanned tree is excluded from the path, and the part 
-        // that is inside the visible tree is marked using different
-        // attributes.
-
-        NSMutableAttributedString  *attributedPath = 
-          [[[NSMutableAttributedString alloc] 
-               initWithString: relativeItemPath] autorelease];
-
-        // Underline the entire path.
-        [attributedPath 
-           addAttribute: NSUnderlineStyleAttributeName
-             value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
-             range: NSMakeRange(0, [relativeItemPath length]) ];
-
-        int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
-        
-        if (visibleLen > 0) {
-          // Part of the path is visible. Underline it with a different color
-          // than is used for the invisible part, which uses the default 
-          // color. As these colors are quite distinct, the distinction between
-          // the visible and invisible part will be clear irrespective of the
-          // background color (which can depends on the window's main status)
-          
-          int  selectedLen = [[selectedItem pathComponent] length];
-
-          [attributedPath 
-             addAttribute: NSUnderlineColorAttributeName
-               value: [NSColor secondarySelectedControlColor] 
-               range: NSMakeRange([relativeItemPath length] - visibleLen, 
-                                  visibleLen - selectedLen) ];
-          [attributedPath 
-             addAttribute: NSUnderlineColorAttributeName
-               value: [NSColor selectedControlColor] 
-               range: NSMakeRange([relativeItemPath length] - selectedLen, 
-                                  selectedLen) ];
-        }
-        
-        relativeItemPath = (NSString *)attributedPath;
-      }
     }
 
-    [itemPathField setStringValue: relativeItemPath];
-    [selectedItemFocusControls 
-       showFileItem: selectedItem itemPath: itemPath 
-       sizeString: itemSizeString];
+    [selectedItemFocusControls showFileItem: selectedItem itemPath: itemPath 
+                                 sizeString: itemSizeString];
   }
   else {
-    // There's no selected item
-    [itemSizeField setStringValue: @""];
-    [itemPathField setStringValue: @""];
-    [selectedItemFocusControls clear];
+    [selectedItemFocusControls clear];    
   }
-  
+
   // Update the file type fields in the Focus panel
-  if ( selectedItem != nil && 
+  if ( selectedItem != nil &&
        [selectedItem isPhysical] &&
        ![selectedItem isDirectory] ) {
     UniformType  *type = [ ((PlainFileItem *)selectedItem) uniformType];
@@ -921,13 +962,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
   else {
     [selectedItemTypeIdentifierField setStringValue: @""];
-    [selectedItemTypeIdentifierField setToolTip: nil];
-  }
-  
-  if ([[pathModelView pathModel] isVisiblePathLocked]) {
-    // Only when the visible path is locked can a change of selected item
-    // affect the state of the controls.
-    [self validateControls];
+    [selectedItemTypeIdentifierField setToolTip: nil];  
   }
 }
 
