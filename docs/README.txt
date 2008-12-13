@@ -19,19 +19,8 @@ rectangles as square as possible.
 
 * SYSTEM REQUIREMENTS
 
-- PowerPC/Intel processor
-
-  This version of the application has been released as a Universal 
-  Binary. It took a while, but I can now build Universal Binaries 
-  from my own machine. Thanks to everyone that has shown support by
-  making donations, as these have been used to fund the required 
-  upgrade to Leopard. 
-
-  Also thanks to Martin Kahr who made Universal Binaries available
-  for earlier releases of GrandPerspective, and to Craig Hughes who
-  helped me early on to make the source code Intel-compatible.
-
-- Mac OS X, 10.3 or higher
+  - Mac OS X, 10.3 or higher
+  - PowerPC or Intel processor
 
 
 * CONTENTS
@@ -76,8 +65,36 @@ under the GNU General Public License. See COPYING.txt for details.
 For more information about the application, please visit the website
 at http://grandperspectiv.sourceforge.net. From there, you can 
 download the latest release of the software. It is also possible to
-report bugs, make a donation, request additional features, provide 
+report bugs, make a donation, suggest additional features, provide 
 more general feedback, etc.
+
+
+* CREDITS
+
+Special thanks to all that have provided localizations of the 
+application: Chris Li, Javier Alfonso, Maxime Hadjinlian and Helge 
+Baumann.
+
+Many thanks to everyone that has shown support by making donations. 
+They have been used to fund the required upgrade to Leopard, which has 
+enabled me to build Universal Binaries.
+
+Also thanks to Martin Kahr who made Universal Binaries available for
+early releases of GrandPerspective, and to Craig Hughes who helped me
+early on to make the source code Intel-compatible.
+
+Thanks to Miles Ponson (iTweek) for providing the free set of "knobs"
+icons, two of which I used for the toolbar (the images for the Reveal
+and Delete actions to be precise; the Open icon is my own concoction).
+
+Thanks to the many users that have reported bugs and suggested
+improvements, many of which have been taken into account. This has
+definitely made the application better than it would otherwise have
+been.
+
+Finally thanks to all that have been getting the word out about the
+application. Developing the application may be fun, but having actual
+users makes it worthwhile.
 
 
 * CONTACT DETAILS
