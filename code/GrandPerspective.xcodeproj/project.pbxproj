@@ -317,7 +317,7 @@
 		AA9881B70DF57C6B00A6EA33 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = test/strings/StringTest.h; sourceTree = "<group>"; };
 		AA9882BD0DF71B8900A6EA33 /* ItemSizeTestFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTestFinder.h; path = test/ItemSizeTestFinder.h; sourceTree = "<group>"; };
 		AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTestFinder.m; path = test/ItemSizeTestFinder.m; sourceTree = "<group>"; };
-		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
+		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
 		AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RevealInFinder.png; path = Images/RevealInFinder.png; sourceTree = "<group>"; };
 		AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OpenWithFinder.png; path = Images/OpenWithFinder.png; sourceTree = "<group>"; };
 		AAB35D7D0A330BB3006535FF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };

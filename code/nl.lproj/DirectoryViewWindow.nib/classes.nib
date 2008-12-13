@@ -5,6 +5,30 @@
 	<key>IBClasses</key>
 	<array>
 		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>navigationAction</key>
+				<string>id</string>
+				<key>selectionAction</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DirectoryViewToolbarControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>dirViewWindow</key>
+				<string>NSWindow</string>
+				<key>navigationControls</key>
+				<string>NSSegmentedControl</string>
+				<key>selectionControls</key>
+				<string>NSSegmentedControl</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
 			<key>CLASS</key>
 			<string>DirectoryView</string>
 			<key>LANGUAGE</key>
@@ -40,6 +64,8 @@
 				<key>showEntireVolumeCheckBoxChanged</key>
 				<string>id</string>
 				<key>showPackageContentsCheckBoxChanged</key>
+				<string>id</string>
+				<key>toggleDrawer</key>
 				<string>id</string>
 				<key>upAction</key>
 				<string>id</string>
