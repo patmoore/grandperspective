@@ -7,6 +7,7 @@
 NSString  *ToolbarNavigation = @"Navigation"; 
 NSString  *ToolbarSelection = @"Selection"; 
 NSString  *ToolbarOpenItem = @"OpenItem";
+NSString  *ToolbarRevealItem = @"RevealItem";
 NSString  *ToolbarDeleteItem = @"DeleteItem";
 NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 
@@ -22,6 +23,7 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (NSToolbarItem *) navigationToolbarItem;
 - (NSToolbarItem *) selectionToolbarItem;
 - (NSToolbarItem *) openItemToolbarItem;
+- (NSToolbarItem *) revealItemToolbarItem;
 - (NSToolbarItem *) deleteItemToolbarItem;
 - (NSToolbarItem *) toggleInfoDrawerToolbarItem;
 
@@ -36,7 +38,8 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (void) moveFocusUp: (id) sender;
 - (void) moveFocusDown: (id) sender;
 
-- (void) openFileInFinder: (id) sender;
+- (void) openFile: (id) sender;
+- (void) revealFile: (id) sender;
 - (void) deleteFile: (id) sender;
 
 @end
@@ -123,6 +126,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
             usingSelector: @selector(selectionToolbarItem)];
     [self createToolbarItem: ToolbarOpenItem 
             usingSelector: @selector(openItemToolbarItem)];
+    [self createToolbarItem: ToolbarRevealItem 
+            usingSelector: @selector(revealItemToolbarItem)];
     [self createToolbarItem: ToolbarDeleteItem 
             usingSelector: @selector(deleteItemToolbarItem)];
     [self createToolbarItem: ToolbarToggleInfoDrawer
@@ -144,8 +149,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
                       ToolbarNavigation, ToolbarSelection,
-                      NSToolbarFlexibleSpaceItemIdentifier,  
-                      ToolbarOpenItem, ToolbarDeleteItem, 
+                      NSToolbarSpaceItemIdentifier,  
+                      ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem, 
                       NSToolbarFlexibleSpaceItemIdentifier, 
                       ToolbarToggleInfoDrawer, nil];
 }
@@ -154,7 +159,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     return [NSArray arrayWithObjects:
                       ToolbarNavigation,
                       ToolbarSelection,
-                      ToolbarOpenItem, ToolbarDeleteItem,
+                      ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem,
                       ToolbarToggleInfoDrawer, 
                       NSToolbarSeparatorItemIdentifier, 
                       NSToolbarSpaceItemIdentifier, 
@@ -276,10 +281,27 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setLabel: NSLocalizedStringFromTable( @"Open", @"Toolbar", 
                                               @"Toolbar action" )];
   [item setPaletteLabel: [item label]];
-  [item setToolTip: NSLocalizedStringFromTable( @"Open in Finder", @"Toolbar", 
-                                                @"Tooltip" )];
-  [item setImage: [NSImage imageNamed: @"OpenInFinder.png"]];
-  [item setAction: @selector(openFileInFinder:) ];
+  [item setToolTip: NSLocalizedStringFromTable( @"Open with Finder", 
+                                                @"Toolbar", @"Tooltip" )];
+  [item setImage: [NSImage imageNamed: @"OpenWithFinder"]];
+  [item setAction: @selector(openFile:) ];
+  [item setTarget: self];
+
+  return item;
+}
+
+- (NSToolbarItem *) revealItemToolbarItem {
+  NSToolbarItem  *item = 
+    [[[NSToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarRevealItem] autorelease];
+
+  [item setLabel: NSLocalizedStringFromTable( @"Reveal", @"Toolbar", 
+                                              @"Toolbar action" )];
+  [item setPaletteLabel: [item label]];
+  [item setToolTip: NSLocalizedStringFromTable( @"Reveal in Finder", 
+                                                @"Toolbar", @"Tooltip" )];
+  [item setImage: [NSImage imageNamed: @"RevealInFinder"]];
+  [item setAction: @selector(revealFile:) ];
   [item setTarget: self];
 
   return item;
@@ -295,7 +317,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setPaletteLabel: [item label]];
   [item setToolTip: NSLocalizedStringFromTable( @"Move to trash", @"Toolbar", 
                                                 @"Tooltip" ) ];
-  [item setImage: [NSImage imageNamed: @"Delete.tiff"]];
+  [item setImage: [NSImage imageNamed: @"Delete"]];
   [item setAction: @selector(deleteFile:) ];
   [item setTarget: self];
 
@@ -312,7 +334,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setPaletteLabel: [item label]];
   [item setToolTip: NSLocalizedStringFromTable( @"Open/close drawer", 
                                                 @"Toolbar", "Tooltip" )];
-  [item setImage: [NSImage imageNamed: @"ToggleDrawer.png"]];
+  [item setImage: [NSImage imageNamed: @"ToggleDrawer"]];
   [item setAction: @selector(toggleDrawer:) ];
   [item setTarget: dirView];
 
@@ -364,14 +386,17 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   else if ( action == @selector(moveFocusDown:) ) {
     return ! [[dirView pathModelView] selectionSticksToEndPoint];
   }
-  else if ( action == @selector(openFileInFinder:) ) {
+  else if ( action == @selector(openFile:) ) {
+    return [dirView canOpenSelectedFile];
+  }
+  else if ( action == @selector(revealFile:) ) {
     return [dirView canRevealSelectedFile];
   }
   else if ( action == @selector(deleteFile:) ) {
     return [dirView canDeleteSelectedFile];
   }
   else {
-    return NO;
+    NSLog(@"Unrecognized action %@", NSStringFromSelector(action));
   }
 }
 
@@ -401,8 +426,12 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (void) openFileInFinder: (id) sender {
-  [dirView openFileInFinder: sender];
+- (void) openFile: (id) sender {
+  [dirView openFile: sender];
+}
+
+- (void) revealFile: (id) sender {
+  [dirView revealFileInFinder: sender];
 }
 
 - (void) deleteFile: (id) sender {

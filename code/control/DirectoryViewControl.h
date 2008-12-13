@@ -94,7 +94,8 @@ extern NSString  *DeleteFilesAndFolders;
 
 - (IBAction) upAction: (id) sender;
 - (IBAction) downAction: (id) sender;
-- (IBAction) openFileInFinder: (id) sender;
+- (IBAction) openFile: (id) sender;
+- (IBAction) revealFileInFinder: (id) sender;
 - (IBAction) deleteFile: (id) sender;
 - (IBAction) toggleDrawer: (id) sender;
 
@@ -125,6 +126,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (BOOL) canNavigateUp;
 - (BOOL) canNavigateDown;
 
+- (BOOL) canOpenSelectedFile;
 - (BOOL) canRevealSelectedFile;
 - (BOOL) canDeleteSelectedFile;
 

@@ -17,7 +17,6 @@
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
-		AA14A8E90EE18B2C009CBD3E /* OpenInFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8E80EE18B2C009CBD3E /* OpenInFinder.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
@@ -104,6 +103,8 @@
 		AA9881BC0DF57C6B00A6EA33 /* StringPrefixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B40DF57C6B00A6EA33 /* StringPrefixTest.m */; };
 		AA9881BD0DF57C6B00A6EA33 /* StringSuffixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B60DF57C6B00A6EA33 /* StringSuffixTest.m */; };
 		AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */; };
+		AAAB9A700EF3D38F00B3C482 /* RevealInFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */; };
+		AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
 		AAB35D850A330BE8006535FF /* EditFilterRuleWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D840A330BE8006535FF /* EditFilterRuleWindow.nib */; };
 		AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */ = {isa = PBXBuildFile; fileRef = AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */; };
@@ -119,10 +120,10 @@
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
+		AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF3C75A0EF3FA42004CF446 /* Delete.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
 		AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CB0EE043C900844FD5 /* ZoomOut.png */; };
 		AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF952CC0EE043C900844FD5 /* ZoomIn.png */; };
-		AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */ = {isa = PBXBuildFile; fileRef = AAF952E50EE04F3700844FD5 /* Delete.tiff */; };
 		AAFDC49C0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */; };
 /* End PBXBuildFile section */
 
@@ -142,7 +143,6 @@
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
-		AA14A8E80EE18B2C009CBD3E /* OpenInFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OpenInFinder.png; path = Images/OpenInFinder.png; sourceTree = "<group>"; };
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
 		AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotifyingPanel.m; path = util/NotifyingPanel.m; sourceTree = "<group>"; };
 		AA21849D0A25FDDB000E1C8C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
@@ -317,6 +317,9 @@
 		AA9881B70DF57C6B00A6EA33 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = test/strings/StringTest.h; sourceTree = "<group>"; };
 		AA9882BD0DF71B8900A6EA33 /* ItemSizeTestFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTestFinder.h; path = test/ItemSizeTestFinder.h; sourceTree = "<group>"; };
 		AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTestFinder.m; path = test/ItemSizeTestFinder.m; sourceTree = "<group>"; };
+		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
+		AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RevealInFinder.png; path = Images/RevealInFinder.png; sourceTree = "<group>"; };
+		AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OpenWithFinder.png; path = Images/OpenWithFinder.png; sourceTree = "<group>"; };
 		AAB35D7D0A330BB3006535FF /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };
 		AAB52EB90E4F8DFE00BF7B20 /* ObjectPool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjectPool.h; path = util/ObjectPool.h; sourceTree = "<group>"; };
 		AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ObjectPool.m; path = util/ObjectPool.m; sourceTree = "<group>"; };
@@ -349,12 +352,12 @@
 		AAEF5E340AFE7D9900C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditFilterRuleWindow.nib; sourceTree = "<group>"; };
 		AAEF604E0B028DD800C7134A /* ColorListCollection.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ColorListCollection.h; path = control/ColorListCollection.h; sourceTree = "<group>"; };
 		AAEF604F0B028DD800C7134A /* ColorListCollection.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = ColorListCollection.m; path = control/ColorListCollection.m; sourceTree = "<group>"; };
+		AAF3C75A0EF3FA42004CF446 /* Delete.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Delete.png; path = Images/Delete.png; sourceTree = "<group>"; };
 		AAF56B1C097441C700A89601 /* GrandPerspective_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = GrandPerspective_Prefix.pch; sourceTree = "<group>"; };
 		AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewToolbarControl.h; path = control/DirectoryViewToolbarControl.h; sourceTree = "<group>"; };
 		AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewToolbarControl.m; path = control/DirectoryViewToolbarControl.m; sourceTree = "<group>"; };
 		AAF952CB0EE043C900844FD5 /* ZoomOut.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomOut.png; path = Images/ZoomOut.png; sourceTree = "<group>"; };
 		AAF952CC0EE043C900844FD5 /* ZoomIn.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ZoomIn.png; path = Images/ZoomIn.png; sourceTree = "<group>"; };
-		AAF952E50EE04F3700844FD5 /* Delete.tiff */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; name = Delete.tiff; path = Images/Delete.tiff; sourceTree = "<group>"; };
 		AAF9F7D30B30118C00FA4C51 /* ControlConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ControlConstants.h; path = control/ControlConstants.h; sourceTree = "<group>"; };
 		AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleAsynchronousTaskManager.h; path = control/VisibleAsynchronousTaskManager.h; sourceTree = "<group>"; };
 		AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = VisibleAsynchronousTaskManager.m; path = control/VisibleAsynchronousTaskManager.m; sourceTree = "<group>"; };
@@ -693,8 +696,9 @@
 				AAF952CC0EE043C900844FD5 /* ZoomIn.png */,
 				AA14A8600EE1401E009CBD3E /* FocusDown.png */,
 				AA14A8610EE1401E009CBD3E /* FocusUp.png */,
-				AAF952E50EE04F3700844FD5 /* Delete.tiff */,
-				AA14A8E80EE18B2C009CBD3E /* OpenInFinder.png */,
+				AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */,
+				AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */,
+				AAF3C75A0EF3FA42004CF446 /* Delete.png */,
 				AA12217F0EF17A41002A178F /* ToggleDrawer.png */,
 			);
 			name = Images;
@@ -803,12 +807,13 @@
 				AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */,
 				AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */,
 				AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */,
-				AAF952E80EE04F3700844FD5 /* Delete.tiff in Resources */,
 				AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */,
 				AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */,
-				AA14A8E90EE18B2C009CBD3E /* OpenInFinder.png in Resources */,
 				AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */,
 				AA12225A0EF2A822002A178F /* Toolbar.strings in Resources */,
+				AAAB9A700EF3D38F00B3C482 /* RevealInFinder.png in Resources */,
+				AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */,
+				AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -938,6 +943,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				AA1222590EF2A822002A178F /* English */,
+				AAAB9A3E0EF3C25A00B3C482 /* nl */,
 			);
 			name = Toolbar.strings;
 			sourceTree = "<group>";

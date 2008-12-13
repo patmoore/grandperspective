@@ -26,6 +26,11 @@ NSString  *OnlyDeleteFiles = @"only delete files";
 NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
+#define NOTE_IT_MAY_NOT_EXIST_ANYMORE \
+  NSLocalizedString(@"A possible reason is that it does not exist anymore.", \
+                    @"Alert message (Note: 'it' can refer to a file or a folder)")
+
+
 @interface DirectoryViewControl (PrivateMethods)
 
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
@@ -418,29 +423,60 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) openFileInFinder: (id) sender {
-  FileItem  *fileToOpen = [pathModelView selectedFileItem];
+- (IBAction) openFile: (id) sender {
+  FileItem  *file = [pathModelView selectedFileItem];
+
+  if ( [[NSWorkspace sharedWorkspace] openFile: [file path]] ) {
+    // All went okay
+    return;
+  }
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  NSString  *msgFmt = 
+    ( [file isPackage]
+      ? NSLocalizedString(@"Failed to open the package \"%@\"", 
+                          @"Alert message")
+      : ( [file isDirectory] 
+          // Opening directories should not be enabled, but handle it anyway
+          // here, just for robustness...
+          ? NSLocalizedString(@"Failed to open the folder \"%@\"", 
+                              @"Alert message")
+          : NSLocalizedString(@"Failed to open the file \"%@\"", 
+                              @"Alert message") ) );
+  NSString  *msg = [NSString stringWithFormat: msgFmt, [file name]];
+         
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert setMessageText: msg];
+  [alert setInformativeText: NOTE_IT_MAY_NOT_EXIST_ANYMORE];
+
+  // TODO: Use a sheet instead?
+  [alert runModal];
+}
+
+
+- (IBAction) revealFileInFinder: (id) sender {
+  FileItem  *file = [pathModelView selectedFileItem];
   DirectoryItem  *package = nil;
   
   // Work-around for bug/limitation of NSWorkSpace. It apparently cannot 
   // select files that are inside a package, unless the package is the root
   // path. So check if the selected file is inside a package. If so, use it
   // as a root path.
-  DirectoryItem  *ancestor = [fileToOpen parentDirectory];
+  DirectoryItem  *ancestor = [file parentDirectory];
   while (ancestor != nil) {
     if ( [ancestor isPackage] ) {
       if (package != nil) {
         // The package in which the selected item resides is inside a package
         // itself. Open this inner package instead (as opening the selected
         // file will not succeed).
-        fileToOpen = package;
+        file = package;
       }
       package = ancestor;
     }
     ancestor = [ancestor parentDirectory];
   }
   
-  NSString  *filePath = [fileToOpen path];
+  NSString  *filePath = [file path];
   NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
 
   if ( [[NSWorkspace sharedWorkspace] 
@@ -453,22 +489,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
   NSString  *msgFmt = 
-    ( [fileToOpen isPackage]
+    ( [file isPackage]
       ? NSLocalizedString(@"Failed to reveal the package \"%@\"", 
                           @"Alert message")
-      : ( [fileToOpen isDirectory] 
+      : ( [file isDirectory] 
           ? NSLocalizedString(@"Failed to reveal the folder \"%@\"", 
                               @"Alert message")
           : NSLocalizedString(@"Failed to reveal the file \"%@\"", 
                               @"Alert message") ) );
-  NSString  *msg = [NSString stringWithFormat: msgFmt, [fileToOpen name]];
-  NSString  *info =
-    NSLocalizedString(@"A possible reason is that it does not exist anymore.", 
-                      @"Alert message (Note: the item can refer to a file or a folder)"); 
+  NSString  *msg = [NSString stringWithFormat: msgFmt, [file name]];
          
   [alert addButtonWithTitle: OK_BUTTON_TITLE];
   [alert setMessageText: msg];
-  [alert setInformativeText: info];
+  [alert setInformativeText: NOTE_IT_MAY_NOT_EXIST_ANYMORE];
 
   // TODO: Use a sheet instead?
   [alert runModal];
@@ -633,11 +666,25 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 
+- (BOOL) canOpenSelectedFile {
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
+
+  return
+    ( [[pathModelView pathModel] isVisiblePathLocked] 
+    
+      // Can only open actual files
+      && [selectedFile isPhysical]
+      
+      // Can only open plain files and packages
+      && ( ! [selectedFile isDirectory]
+           || [selectedFile isPackage] )
+    );
+}
+
 - (BOOL) canRevealSelectedFile {
   return ( [[pathModelView pathModel] isVisiblePathLocked]
            && [[pathModelView selectedFileItem] isPhysical] );
 }
-
 
 - (BOOL) canDeleteSelectedFile {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
