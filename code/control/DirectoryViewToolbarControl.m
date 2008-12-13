@@ -4,12 +4,20 @@
 #import "ItemPathModelView.h"
 
 
-NSString  *ToolbarNavigation = @"Navigation"; 
-NSString  *ToolbarSelection = @"Selection"; 
+NSString  *ToolbarZoom = @"Zoom"; 
+NSString  *ToolbarFocus = @"Focus"; 
 NSString  *ToolbarOpenItem = @"OpenItem";
 NSString  *ToolbarRevealItem = @"RevealItem";
 NSString  *ToolbarDeleteItem = @"DeleteItem";
-NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
+NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
+
+
+// Tags for each of the segments in the Zoom and Focus controls, so that the 
+// order can be changed in the nib file.
+#define  ZOOM_IN_TAG     100
+#define  ZOOM_OUT_TAG    101
+#define  FOCUS_UP_TAG    102
+#define  FOCUS_DOWN_TAG  103
 
 
 @interface DirectoryViewToolbarControl (PrivateMethods)
@@ -20,15 +28,15 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (void) createToolbarItem: (NSString *)identifier 
             usingSelector: (SEL)selector;
 
-- (NSToolbarItem *) navigationToolbarItem;
-- (NSToolbarItem *) selectionToolbarItem;
+- (NSToolbarItem *) zoomToolbarItem;
+- (NSToolbarItem *) focusToolbarItem;
 - (NSToolbarItem *) openItemToolbarItem;
 - (NSToolbarItem *) revealItemToolbarItem;
 - (NSToolbarItem *) deleteItemToolbarItem;
-- (NSToolbarItem *) toggleInfoDrawerToolbarItem;
+- (NSToolbarItem *) toggleDrawerToolbarItem;
 
-- (id) validateNavigationControls;
-- (id) validateSelectionControls;
+- (id) validateZoomControls;
+- (id) validateFocusControls;
 
 - (BOOL) validateAction: (SEL)action;
 
@@ -81,6 +89,12 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (id) init {
   if (self = [super init]) {
     dirView = nil; // Will be set when loaded from nib.
+    
+    // Set defaults (can be overridden when segments are tagged)
+    zoomInSegment = 1;
+    zoomOutSegment = 0;
+    focusUpSegment = 0;
+    focusDownSegment = 1;
   }
   return self;
 }
@@ -96,6 +110,32 @@ NSString  *ToolbarToggleInfoDrawer = @"ToggleInfoDrawer";
 - (void) awakeFromNib {
   // Not retaining it. It needs to be deallocated when the window is closed.
   dirView = [dirViewWindow windowController];
+  
+  signed int  i;
+  
+  // Check if tags have been used to change default segment ordering 
+  i = [zoomControls segmentCount];
+  while (--i >= 0) {
+    int  tag = [[zoomControls cell] tagForSegment: i];
+    switch (tag) {
+      case ZOOM_IN_TAG:
+        zoomInSegment = i; break;
+      case ZOOM_OUT_TAG:
+        zoomOutSegment = i; break;
+    }
+  }
+
+  i = [focusControls segmentCount];
+  while (--i >= 0) {
+    int  tag = [[focusControls cell] tagForSegment: i];
+    switch (tag) {
+      case FOCUS_UP_TAG:
+        focusUpSegment = i; break;
+      case FOCUS_DOWN_TAG:
+        focusDownSegment = i; break;
+    }
+  }
+
   
   NSToolbar  *toolbar = 
     [[[NSToolbar alloc] initWithIdentifier: @"DirectoryViewToolbar"] 
@@ -120,24 +160,29 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   if (createToolbarItemLookup == nil) {
     createToolbarItemLookup = [[NSMutableDictionary alloc] initWithCapacity: 8];
 
-    [self createToolbarItem: ToolbarNavigation
-            usingSelector: @selector(navigationToolbarItem)];
-    [self createToolbarItem: ToolbarSelection
-            usingSelector: @selector(selectionToolbarItem)];
+    [self createToolbarItem: ToolbarZoom
+            usingSelector: @selector(zoomToolbarItem)];
+    [self createToolbarItem: ToolbarFocus
+            usingSelector: @selector(focusToolbarItem)];
     [self createToolbarItem: ToolbarOpenItem 
             usingSelector: @selector(openItemToolbarItem)];
     [self createToolbarItem: ToolbarRevealItem 
             usingSelector: @selector(revealItemToolbarItem)];
     [self createToolbarItem: ToolbarDeleteItem 
             usingSelector: @selector(deleteItemToolbarItem)];
-    [self createToolbarItem: ToolbarToggleInfoDrawer
-            usingSelector: @selector(toggleInfoDrawerToolbarItem)];
+    [self createToolbarItem: ToolbarToggleDrawer
+            usingSelector: @selector(toggleDrawerToolbarItem)];
   }
   
-  SEL  selector = 
-    [[createToolbarItemLookup objectForKey: itemIdentifier] selector];
+  SelectorObject  *selObj = 
+    [createToolbarItemLookup objectForKey: itemIdentifier];
+  if (selObj == nil) {
+    // May happen when user preferences refers to old/outdated toolbar items
+    NSLog(@"Unrecognized toolbar item: %@", itemIdentifier);
+    return nil;
+  }
   
-  NSToolbarItem  *item = [self performSelector: selector];
+  NSToolbarItem  *item = [self performSelector: [selObj selector]];
 
   if (! flag) {
     [item setTarget: nil];
@@ -148,41 +193,50 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
-                      ToolbarNavigation, ToolbarSelection,
+                      ToolbarZoom, ToolbarFocus,
                       NSToolbarSpaceItemIdentifier,  
                       ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem, 
                       NSToolbarFlexibleSpaceItemIdentifier, 
-                      ToolbarToggleInfoDrawer, nil];
+                      ToolbarToggleDrawer, nil];
 }
 
 - (NSArray *)toolbarAllowedItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
-                      ToolbarNavigation,
-                      ToolbarSelection,
+                      ToolbarZoom, ToolbarFocus,
                       ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem,
-                      ToolbarToggleInfoDrawer, 
+                      ToolbarToggleDrawer, 
                       NSToolbarSeparatorItemIdentifier, 
                       NSToolbarSpaceItemIdentifier, 
                       NSToolbarFlexibleSpaceItemIdentifier, nil];
 }
 
 
-- (IBAction) navigationAction: (id) sender {
-  if ([sender selectedSegment] == 0) {
+- (IBAction) zoomAction: (id) sender {
+  int  selected = [sender selectedSegment];
+
+  if (selected == zoomInSegment) {
+    [self zoomIn: sender];
+  }
+  else if (selected == zoomOutSegment) {
     [self zoomOut: sender];
   }
-  else if ([sender selectedSegment] == 1) {
-    [self zoomIn: sender];
+  else {
+    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
   }
 }
 
 
-- (IBAction) selectionAction: (id) sender {
-  if ([sender selectedSegment] == 0) {
+- (IBAction) focusAction: (id) sender {
+  int  selected = [sender selectedSegment];
+  
+  if ([sender selectedSegment] == focusDownSegment) {
+    [self moveFocusDown: sender];
+  }
+  else if ([sender selectedSegment] == focusUpSegment) {
     [self moveFocusUp: sender];
   }
-  else if ([sender selectedSegment] == 1) {
-    [self moveFocusDown: sender];
+  else {
+    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
   }
 }
 
@@ -199,11 +253,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (NSToolbarItem *) navigationToolbarItem {
+- (NSToolbarItem *) zoomToolbarItem {
   NSToolbarItem  *item = 
     [[[ValidatingToolbarItem alloc] 
-         initWithItemIdentifier: ToolbarNavigation validator: self
-           validationSelector: @selector(validateNavigationControls)]
+         initWithItemIdentifier: ToolbarZoom validator: self
+           validationSelector: @selector(validateZoomControls)]
              autorelease];
              
   NSString  *title = 
@@ -216,14 +270,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
   [item setLabel: title];
   [item setPaletteLabel: [item label]];
-  [item setView: navigationControls];
-  [item setMinSize: [navigationControls bounds].size];
-  [item setMaxSize: [navigationControls bounds].size];
+  [item setView: zoomControls];
+  [item setMinSize: [zoomControls bounds].size];
+  [item setMaxSize: [zoomControls bounds].size];
   
   // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
   // related text is in the same file, to facilitate localization.
-  [[navigationControls cell] setToolTip: zoomOutTitle forSegment: 0];
-  [[navigationControls cell] setToolTip: zoomInTitle  forSegment: 1];
+  [[zoomControls cell] setToolTip: zoomInTitle  forSegment: zoomInSegment];
+  [[zoomControls cell] setToolTip: zoomOutTitle forSegment: zoomOutSegment];
 
   ToolbarItemMenu  *menu = 
     [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
@@ -235,16 +289,16 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   return item;
 }
 
-- (NSToolbarItem *) selectionToolbarItem {
+- (NSToolbarItem *) focusToolbarItem {
   NSToolbarItem  *item = 
     [[[ValidatingToolbarItem alloc] 
-         initWithItemIdentifier: ToolbarSelection validator: self
-           validationSelector: @selector(validateSelectionControls)]
+         initWithItemIdentifier: ToolbarFocus validator: self
+           validationSelector: @selector(validateFocusControls)]
              autorelease];
              
   NSString  *title = 
-    NSLocalizedStringFromTable( @"Select", @"Toolbar", 
-                                @"Label for selection controls" );
+    NSLocalizedStringFromTable( @"Focus", @"Toolbar", 
+                                @"Label for focus controls" );
   NSString  *moveUpTitle =
     NSLocalizedStringFromTable( @"Move focus up", @"Toolbar", 
                                 @"Toolbar action" );
@@ -254,14 +308,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
   [item setLabel: title];
   [item setPaletteLabel: [item label]];
-  [item setView: selectionControls];
-  [item setMinSize: [selectionControls bounds].size];
-  [item setMaxSize: [selectionControls bounds].size];
+  [item setView: focusControls];
+  [item setMinSize: [focusControls bounds].size];
+  [item setMaxSize: [focusControls bounds].size];
 
   // Tool tips set here (as opposed to Interface Builder) so that all toolbar-
   // related text is in the same file, to facilitate localization.
-  [[selectionControls cell] setToolTip: moveUpTitle forSegment: 0];
-  [[selectionControls cell] setToolTip: moveDownTitle forSegment: 1];
+  [[focusControls cell] setToolTip: moveDownTitle forSegment: focusDownSegment];
+  [[focusControls cell] setToolTip: moveUpTitle   forSegment: focusUpSegment];
 
   ToolbarItemMenu  *menu = 
     [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
@@ -324,9 +378,9 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   return item;
 }
 
-- (NSToolbarItem *) toggleInfoDrawerToolbarItem {
+- (NSToolbarItem *) toggleDrawerToolbarItem {
   NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarToggleInfoDrawer] 
+    [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarToggleDrawer] 
          autorelease];
 
   [item setLabel: NSLocalizedStringFromTable( @"Drawer", @"Toolbar",
@@ -342,20 +396,22 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (id) validateNavigationControls {
-  [navigationControls setEnabled: [dirView canNavigateUp] forSegment: 0];
-  [navigationControls setEnabled: [dirView canNavigateDown] forSegment: 1];
+- (id) validateZoomControls {
+  [zoomControls setEnabled: [dirView canNavigateUp]
+                  forSegment: zoomOutSegment];
+  [zoomControls setEnabled: [dirView canNavigateDown] 
+                  forSegment: zoomInSegment];
 
   return self; // Always enable the overall control
 }
 
-- (id) validateSelectionControls {
+- (id) validateFocusControls {
   ItemPathModelView  *pathModelView = [dirView pathModelView]; 
 
-  [selectionControls setEnabled: [pathModelView canMoveSelectionUp] 
-                       forSegment: 0];
-  [selectionControls setEnabled: ! [pathModelView selectionSticksToEndPoint] 
-                       forSegment: 1];
+  [focusControls setEnabled: [pathModelView canMoveSelectionUp] 
+                   forSegment: focusUpSegment];
+  [focusControls setEnabled: ! [pathModelView selectionSticksToEndPoint] 
+                   forSegment: focusDownSegment];
   return self; // Always enable the overall control
 }
 

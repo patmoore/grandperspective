@@ -7,9 +7,9 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
-				<key>navigationAction</key>
+				<key>focusAction</key>
 				<string>id</string>
-				<key>selectionAction</key>
+				<key>zoomAction</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
@@ -20,9 +20,9 @@
 			<dict>
 				<key>dirViewWindow</key>
 				<string>NSWindow</string>
-				<key>navigationControls</key>
+				<key>focusControls</key>
 				<string>NSSegmentedControl</string>
-				<key>selectionControls</key>
+				<key>zoomControls</key>
 				<string>NSSegmentedControl</string>
 			</dict>
 			<key>SUPERCLASS</key>
@@ -59,7 +59,11 @@
 				<string>id</string>
 				<key>maskCheckBoxChanged</key>
 				<string>id</string>
+				<key>openFile</key>
+				<string>id</string>
 				<key>openFileInFinder</key>
+				<string>id</string>
+				<key>revealFileInFinder</key>
 				<string>id</string>
 				<key>showEntireVolumeCheckBoxChanged</key>
 				<string>id</string>

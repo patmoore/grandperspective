@@ -7,14 +7,19 @@
 
   IBOutlet NSWindow  *dirViewWindow;
 
-  IBOutlet NSSegmentedControl  *navigationControls;
-  IBOutlet NSSegmentedControl  *selectionControls;
+  IBOutlet NSSegmentedControl  *zoomControls;
+  IBOutlet NSSegmentedControl  *focusControls;
+  
+  int  zoomInSegment;
+  int  zoomOutSegment;
+  int  focusUpSegment;
+  int  focusDownSegment;
 
   DirectoryViewControl  *dirView;
 
 }
 
-- (IBAction) navigationAction: (id) sender;
-- (IBAction) selectionAction: (id) sender;
+- (IBAction) zoomAction: (id) sender;
+- (IBAction) focusAction: (id) sender;
 
 @end
