@@ -5,6 +5,30 @@
 	<key>IBClasses</key>
 	<array>
 		<dict>
+			<key>ACTIONS</key>
+			<dict>
+				<key>focusAction</key>
+				<string>id</string>
+				<key>zoomAction</key>
+				<string>id</string>
+			</dict>
+			<key>CLASS</key>
+			<string>DirectoryViewToolbarControl</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>OUTLETS</key>
+			<dict>
+				<key>dirViewWindow</key>
+				<string>NSWindow</string>
+				<key>focusControls</key>
+				<string>NSSegmentedControl</string>
+				<key>zoomControls</key>
+				<string>NSSegmentedControl</string>
+			</dict>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
+		</dict>
+		<dict>
 			<key>CLASS</key>
 			<string>DirectoryView</string>
 			<key>LANGUAGE</key>
@@ -35,11 +59,15 @@
 				<string>id</string>
 				<key>maskCheckBoxChanged</key>
 				<string>id</string>
-				<key>openFileInFinder</key>
+				<key>openFile</key>
+				<string>id</string>
+				<key>revealFileInFinder</key>
 				<string>id</string>
 				<key>showEntireVolumeCheckBoxChanged</key>
 				<string>id</string>
 				<key>showPackageContentsCheckBoxChanged</key>
+				<string>id</string>
+				<key>toggleDrawer</key>
 				<string>id</string>
 				<key>upAction</key>
 				<string>id</string>
@@ -56,10 +84,6 @@
 				<string>NSPopUpButton</string>
 				<key>colorPalettePopUp</key>
 				<string>NSPopUpButton</string>
-				<key>deleteButton</key>
-				<string>NSButton</string>
-				<key>downButton</key>
-				<string>NSButton</string>
 				<key>drawer</key>
 				<string>NSDrawer</string>
 				<key>fileSizeMeasureField</key>
@@ -82,8 +106,6 @@
 				<string>NSButton</string>
 				<key>miscUsedSpaceField</key>
 				<string>NSTextField</string>
-				<key>openButton</key>
-				<string>NSButton</string>
 				<key>scanPathTextView</key>
 				<string>NSTextView</string>
 				<key>scanTimeField</key>
@@ -96,8 +118,6 @@
 				<string>NSTextField</string>
 				<key>selectedItemTitleField</key>
 				<string>NSTextField</string>
-				<key>selectedItemTypeDescriptionField</key>
-				<string>NSTextField</string>
 				<key>selectedItemTypeIdentifierField</key>
 				<string>NSTextField</string>
 				<key>showEntireVolumeCheckBox</key>
@@ -106,8 +126,6 @@
 				<string>NSButton</string>
 				<key>treeSizeField</key>
 				<string>NSTextField</string>
-				<key>upButton</key>
-				<string>NSButton</string>
 				<key>visibleFolderExactSizeField</key>
 				<string>NSTextField</string>
 				<key>visibleFolderPathTextView</key>

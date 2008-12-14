@@ -15,6 +15,8 @@
 		<dict>
 			<key>ACTIONS</key>
 			<dict>
+				<key>customizeToolbar</key>
+				<string>id</string>
 				<key>duplicateDirectoryView</key>
 				<string>id</string>
 				<key>editPreferences</key>
@@ -22,6 +24,8 @@
 				<key>filterDirectoryView</key>
 				<string>id</string>
 				<key>loadScanData</key>
+				<string>id</string>
+				<key>openWebsite</key>
 				<string>id</string>
 				<key>rescanDirectoryView</key>
 				<string>id</string>
@@ -32,6 +36,8 @@
 				<key>scanDirectoryView</key>
 				<string>id</string>
 				<key>scanFilteredDirectoryView</key>
+				<string>id</string>
+				<key>toggleToolbarShown</key>
 				<string>id</string>
 				<key>twinDirectoryView</key>
 				<string>id</string>

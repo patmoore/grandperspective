@@ -5,13 +5,11 @@
 	<key>IBFramework Version</key>
 	<string>629</string>
 	<key>IBOldestOS</key>
-	<integer>5</integer>
+	<integer>3</integer>
 	<key>IBOpenObjects</key>
-	<array>
-		<integer>94</integer>
-	</array>
+	<array/>
 	<key>IBSystem Version</key>
-	<string>9E17</string>
+	<string>9F33</string>
 	<key>targetFramework</key>
 	<string>IBCocoaFramework</string>
 </dict>
