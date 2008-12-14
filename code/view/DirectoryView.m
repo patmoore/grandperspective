@@ -460,10 +460,6 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 - (void) updateAcceptMouseMovedEvents {
-  NSLog(@"locked=%d, main=%d, key=%d", 
-           [[pathModelView pathModel] isVisiblePathLocked],
-           [[self window] isMainWindow], [[self window] isKeyWindow]);
-           
   BOOL  letPathFollowMouse = 
     ( ![[pathModelView pathModel] isVisiblePathLocked] 
       && [[self window] isMainWindow] 

@@ -155,8 +155,6 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 - (NSToolbarItem *)toolbar:(NSToolbar *)toolbar 
                      itemForItemIdentifier: (NSString *)itemIdentifier
                      willBeInsertedIntoToolbar: (BOOL)flag {
-  NSLog(@"new toolbar item: %@", itemIdentifier);
-  
   if (createToolbarItemLookup == nil) {
     createToolbarItemLookup = [[NSMutableDictionary alloc] initWithCapacity: 8];
 
@@ -411,14 +409,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (BOOL) validateToolbarItem: (NSToolbarItem *)item {
-  // NSLog(@"validateToolbarItem: %@", [item label] );
-
   return [self validateAction: [item action]];
 }
 
 - (BOOL) validateMenuItem: (NSMenuItem *)item {
-  // NSLog(@"validateMenuItem: %@", [item title] );
-  
   return [self validateAction: [item action]];
 }
   
