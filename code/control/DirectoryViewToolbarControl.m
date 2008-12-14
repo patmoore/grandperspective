@@ -182,13 +182,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     return nil;
   }
   
-  NSToolbarItem  *item = [self performSelector: [selObj selector]];
-
-  if (! flag) {
-    [item setTarget: nil];
-  }
-
-  return item;
+  return [self performSelector: [selObj selector]];
 }
 
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar {
