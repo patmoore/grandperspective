@@ -18,9 +18,6 @@ Minor improvements:
 - Positioning newly opened view windows so they cascade.
 - When creating a derived view window its size matches that of the 
   original window.
-- The initial size of windows is now taken from user defaults.
-- The color gradient for drawing the rectangles in the view is now 
-  taken from the user defaults.
 - Sorted the available tests in the "Edit Filter" window by name.
 - Sibling directories are scanned depending on their creation date 
   (oldest first). This deterministic ordering is particularly helpful
@@ -29,10 +26,16 @@ Minor improvements:
 - Made selection automatically stick to end-point when reaching a
   file after moving selection down a level.
 - Improvements to implementation of selection following mouse.
+- The initial size of windows and the color gradient for drawing
+  rectangles in the view are now taken from the user defaults.
+- Moved description of file type in Focus panel from separate text
+  field to tooltip of the file type identifier.
 
 Bug fixes:
 - Included workaround for bug #2243134 (crash while scanning NTFS 
   mounted filesystem)
+- Coloring by Level would end up in endless loop for packages at 
+  level zero when package contents were hidden. Not anymore.
 - Aborting a drawing task that was just about to complete could 
   result in premature aborting of next task. Not anymore.
 
