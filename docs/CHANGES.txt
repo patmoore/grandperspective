@@ -3,6 +3,52 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.00, ??-??-????
+----------------------------------------------------------------------
+
+New functionality:
+- Added a customizable toolbar, including new controls:
+  - Added control for changing the focus (which previously could only 
+    be done using the keyboard or scrollwheel).
+  - Added new "Open with Finder" action (not to be confused with
+    existing "Reveal in Finder" action).
+
+Minor improvements:
+- Added menu item for visiting the GrandPerspective website.
+- Positioning newly opened view windows so they cascade.
+- When creating a derived view window its size matches that of the 
+  original window.
+- The initial size of windows is now taken from user defaults.
+- The color gradient for drawing the rectangles in the view is now 
+  taken from the user defaults.
+- Sorted the available tests in the "Edit Filter" window by name.
+- Sibling directories are scanned depending on their creation date 
+  (oldest first). This deterministic ordering is particularly helpful
+  when scanning an entire TimeMachine backup as hard-linked files 
+  will be included in the backup where they first appeared.
+- Made selection automatically stick to end-point when reaching a
+  file after moving selection down a level.
+- Improvements to implementation of selection following mouse.
+
+Bug fixes:
+- Included workaround for bug #2243134 (crash while scanning NTFS 
+  mounted filesystem)
+- Aborting a drawing task that was just about to complete could 
+  result in premature aborting of next task. Not anymore.
+
+Code clean-up:
+- Renamed FileItem -isSpecial to -isPhysical (and inverted meaning)
+- Simplified abortion of background tasks (removed enabled state 
+  from TaskExecutor).
+
+Updated localizations:
+- Japanese, by Chris Li
+- Spanish, by Javier Alfonso
+- French, by Maxime Hadjinlian
+- Dutch, by Erwin Bonsma
+
+
+----------------------------------------------------------------------
   Version 0.9.13.1 (localized), 01-10-2008
 ----------------------------------------------------------------------
 
