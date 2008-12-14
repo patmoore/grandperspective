@@ -39,7 +39,9 @@ rm -rf $OUTER_DIR_PATH/src
 
 echo "Copying application"
 mkdir $OUTER_DIR_PATH/GrandPerspective.app
-tar cf - -C ${APP_PATH} --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
+#TEMP: tar cf - -C ${APP_PATH} --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
+tar cf - -C ${APP_PATH} --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
+
 
 # Create application DMG file.
 #

@@ -5,10 +5,10 @@
 # it copies the application directly from it. Release text files and the
 # localized resources are taken from the SVN repository.
 
-VERSION="0.9.13.1"
-VERSION_ID="0_9_13_1"
-REV=955
-NL_REV=955
+VERSION="1.00-rc1"
+VERSION_ID="1_00-rc1"
+REV=1018
+NL_REV=1018
 
 if [ $# -ne "1" ]
 then
@@ -71,9 +71,9 @@ echo "Updating es help index."
 ./update-help-index.sh $RESOURCES_PATH/es.lproj/$HELP_FOLDER European
 
 # Remove unneeded nib files.
-find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
+#TEMP: find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
 
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $DEST_PATH -volSize 3 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $DEST_PATH -volSize 4 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
 
 rm -rf $TEMP_PUBLISH_DIR
 
