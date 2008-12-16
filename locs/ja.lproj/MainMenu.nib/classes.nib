@@ -1,56 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>IBClasses</key>
-	<array>
-		<dict>
-			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>ACTIONS</key>
-			<dict>
-				<key>customizeToolbar</key>
-				<string>id</string>
-				<key>duplicateDirectoryView</key>
-				<string>id</string>
-				<key>editPreferences</key>
-				<string>id</string>
-				<key>filterDirectoryView</key>
-				<string>id</string>
-				<key>loadScanData</key>
-				<string>id</string>
-				<key>openWebsite</key>
-				<string>id</string>
-				<key>rescanDirectoryView</key>
-				<string>id</string>
-				<key>saveDirectoryViewImage</key>
-				<string>id</string>
-				<key>saveScanData</key>
-				<string>id</string>
-				<key>scanDirectoryView</key>
-				<string>id</string>
-				<key>scanFilteredDirectoryView</key>
-				<string>id</string>
-				<key>toggleToolbarShown</key>
-				<string>id</string>
-				<key>twinDirectoryView</key>
-				<string>id</string>
-			</dict>
-			<key>CLASS</key>
-			<string>MainMenuControl</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-	</array>
-	<key>IBVersion</key>
-	<string>1</string>
-</dict>
-</plist>
+{
+    IBClasses =     (
+                {
+            CLASS = FirstResponder;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        },
+                {
+            ACTIONS =             {
+                customizeToolbar = id;
+                duplicateDirectoryView = id;
+                editPreferences = id;
+                filterDirectoryView = id;
+                loadScanData = id;
+                openWebsite = id;
+                rescanDirectoryView = id;
+                saveDirectoryViewImage = id;
+                saveScanData = id;
+                scanDirectoryView = id;
+                scanFilteredDirectoryView = id;
+                toggleToolbarShown = id;
+                twinDirectoryView = id;
+            };
+            CLASS = MainMenuControl;
+            LANGUAGE = ObjC;
+            SUPERCLASS = NSObject;
+        }
+    );
+    IBVersion = 1;
+}
