@@ -1,10 +1,10 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>How to analyse Time Machine back-ups</title>
+<title>Comment analyser les sauvegardes de Time Machine</title>
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<meta name="description" content="How to analyse Time Machine back-ups.">
-<meta name="keywords" content="Time Machine, back-up, back up, analyse, how, to, howto, hard link">
+<meta name="description" content="Comment analyser les sauvegardes de Time Machine">
+<meta name="keywords" content="Time Machine, sauvegarde, analyser, comment, lien matériel">
 </head>
 <body>
 
@@ -12,108 +12,109 @@
 <img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
 </div>
 <div id="pagetitle">
-<h1>How to analyse Time Machine back-ups</h1>
+<h1>Comment analyser les sauvegardes de Time Machine</h1>
 </div>
 
 <p>
-GrandPerspective can be used to analyse back-ups made by Time Machine.
-This can help you to optimise your Time Machine back-up scheme, for example, by identifying files and folders that should not be backed up.
+GrandPerspective peut être utilisé pour analyser les sauvegardes faites par Time Machine.
+Cela peut vous aider à optimiser vos méthodes de sauvegardes Time Machine, par exemple, en identifiant les fichiers et les dossiers qui ne devraient pas être sauvegardés.
 </p>
 
 <p>
-First of all, it is important to understand how Time Machine back-ups are stored.
-Time Machine makes extensive use of <a href="HardLinks.html">hard links</a>.
-Each back-up appears to store a copy of the entire drive that is backed up.
-Yet the amount of disk space needed for a back-up is limited the files that have changed since the preceding back-up.
-All files and folders that have not changed, are represented by hard links to these items in the preceding back-up.
+Premièrement, il est très important de comprendre comment sont stockées les sauvegardes Time Machine.
+Time Machine fait un usage intensif des <a href="HardLinks.html">liens matériels</a>.
+Chaque sauvegarde semble stocker une copie entière du disque qui est sauvegardé.
+Pourtant la quantité d'espace disque nécéssaire à une sauvegarde est limitée par les fichiers qui ont changé depuis la dernière sauvegarde.
+Tous les fichiers et dossiers qui n'ont pas changé sont representés par un lien matériel vers ces mêmes objets dans la précédente sauvegarde.
 </p>
 
 <p>
-Below are some ways in which you can use GrandPerspective to analyse your Time Machine back-up.
-They are simply meant to give you an idea of what you can do.
-You are of course free to experiment with other approaches.
+Ci-dessous, quelques exemples d'utilisation de GrandPerspective pour analyser vos sauvegardes Time Machine.
+Ces exemples sont juste là pour vous donner une idée de tout ce que vous pouvez faire.
+Vous êtes bien sûr libres d'expérimenter avec d'autres approches.
 </p>
 
-<h2>Comparing back-ups</h2>
+<h2>Comparaisons de sauvegardes</h2>
 
 <p>
-You compare two back-ups to see what has changed on your hard drive.
-Doing so is very straightforward.
-First, you execute <b>Scan Folder</b> on an old back-up, e.g. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>".
-Next, you can scan in the contents of the latest back-up, i.e. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
-Having both views open alongside each other will hopefully let you quickly spot the biggest differences.
-</p>
-
-<p>
-Note: Instead of scanning in the latest back-up you can scan in the current contents of your hard drive.
-The drawback of the latter approach is that the resulting view will include files that are excluded from Time Machine back-ups, which will make it more difficult to spot actual changes.
-</p>
-
-<h2>Scanning all back-ups</h2>
-
-<p>
-Execute <b>Scan Folder</b> on the folder "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
-This may take a while.
-When scanning is complete, a <a href="Views.html">view</a> is shown showing all back-ups.
-In the <a href="ViewDisplayPanel.html">Display panel</a>, select coloring by "Top folder".
-All files belonging to the same back-up now have the same color.
+Vous souhaitez comparer deux sauvegardes pour voir ce qui a changé sur votre disque dur.
+C'est très simple.
+Premièrement, vous exécutez <b>Analyse dossier...</b> sur une ancienne sauvegarde, e.g. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>".
+Ensuite, vous pouvez analyser le contenu de la dernière sauvegarde, i.e. "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
+En ayant les deux vues ouvertes l'une à côté de l'autre, vous devriez pouvoir repérer rapidement les grandes différences.
 </p>
 
 <p>
-You will probably see that one back-up is much larger than the rest.
-This is the back-up folder that was scanned first (it is not neccessarily the earliest back-up).
-All files in this folder had not yet been encountered during scanning, and have therefore been included.
-When scanning the other back-up folders, most hard-linked files will have been encountered already in the first folder that was scanned, and so are now exluded.
+Note: Au lieu d'analyser la dernière sauvegarde, vous pouvez analyser le contenu actuel de votre disque dur.
+L'inconvénient de cette approche est que vos résultats contiendront les fichiers qui sont exclus de vos sauvegardes Time Machine, ce qui vous rendra la tâche plus difficile pour trouver des changements éventuels.
+</p>
+
+<h2>Analyser toutes les sauvegardes</h2>
+
+<p>
+Executez <b>Analyse dossier...</b> sur le dossier "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>".
+Cela peut prendre du temps.
+Quand l'analyse est terminée, une <a href="Views.html">vue</a> apparaît avec toutes les sauvegardes.
+Dans <a href="ViewDisplayPanel.html">l'onglet Affichage</a>, choisissez la coloration par "Top dossier".
+Tous les fichiers appartenant à la même sauvegarde auront alors la même couleur.
 </p>
 
 <p>
-The folder that was scanned first is actually the least interesting.
-It simply shows the contents of your hard-drive at the time of the scan (minus the files that you have chosen to exclude from your Time Machine back-ups).
-So let's exclude it from the view.
-Start by editing the view's <a href="MasksAndFilters.html">mask</a>.
-You need to <a href="EditingMaskAndFilterRules.html">create a new rule</a>.
-Name the rule "Main back-up", apply it to "files and folders", and let it include the Path test, matching paths that start with "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
-The parts in italics will be different in your case. 
-You can get the path string you need from the <a href="ViewFocusPanel.html">Focus panel</a>.
-First in the view select any file from the largest back-up folder, 
-go one step "Down", copy the path from the "Folder in view" text box, and go "Up" again in the view.
+Vous allez sûrement voir qu'une sauvegarde est plus importante que les autres.
+C'est la sauvegarde qui a été analysée en premier (ce n'est pas nécéssairement la sauvegarde la plus récente).
+Tous les fichiers dans ce dossier n'avaient pas encore été rencontrés durant l'analyse et ont de ce fait été inclus.
+Quand l'analyse des autres dossiers de sauvegarde a été faites, la plupart des liens matériels auront déjà été rencontrés dans le premier dossier qui a été analysé et sont de ce fait, exclus.
 </p>
 
 <p>
-After having created the "Main back-up" rule, set the mask as follows: "Do not show: Main back-up".
-You should see that the main back-up is now masked. 
-If this is not the case, you did not specify the mask correctly.
-Edit it again until it works.
+Le dossier qui a été analysé en premier est actuellement le moins intéréssant.
+Il montre simplement le contenu de votre disque dur au moment de l'analyse (moins les fichiers que vous avez choisi d'exclure de vos sauvegardes Time Machine).
+Excluons le alors de notre vue.
+Commencez par éditer les <a href="MasksAndFilters.html">masques</a> de la vue.
+Vous devez <a href="EditingMaskAndFilterRules.html">créer une nouvelle règle</a>.
+Nommez la "Sauvegarde principale", appliquez là à "fichiers et dossers" et rajoutez-y le chemin à tester, les chemins qui nous intéréssent sont ceux qui commencent par "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
+La partie en italique sera différente selon votre cas.
+Vous pouvez avoir les chemins dont vous avez besoin depuis <a href="ViewFocusPanel.html">l'onglet Focus</a>.
+D'abord, dans la vue choisissez n'importe quel fichier à partir du plus grand dossier de sauvegarde, <a href="NavigatingViews.html">zoomé en avant</a> d'un niveau, copier le chemin depuis la boîte de texte "Dossier en vue" et zoomé en arrière.
 </p>
 
 <p>
-When the mask works correctly, you should filter the view.
-Use the <b>Filter</b> command. 
-It should by default be configured the same as the mask, so simply click "OK".
-A new view window is created, only showing the other back-ups.
-This new view gives a much better idea of the size required by each incremental back-up.
-<a href="NavigatingViews.html">Navigate and explore</a> this view to get a better idea of what is backed up.
-If you spot files that should not be backed up, update your Time Machine preferences.
-</p>
-
-
-<h2>Check which files have been backed up during the latest back-up</h2>
-
-<p>
-Initiate a <b>Filtered Scan</b>.
-As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
-Apply the following filter: "Do not show: hard-linked items".
-The result is a view showing the files that are new in the latest back-up.
-The view excludes all files that appeared in the earlier back-ups.
+Après avoir créé la règle "Sauvegarde principale", marquez comme suit : "Ne pas montrer: Sauvegarde principale".
+Vous devriez alors voir que la sauvegarde principale est désormais masquée.
+Si ce n'est pas le cas, vous n'avez pas spécifié le masque correctement.
+Editez le encore jusqu'à ce que cela marche.
 </p>
 
 <p>
-Note: You can apply the same filter to other back-up folders.
-However, you should then interpret the data in the view differently.
-In this case, each file that is shown does not appear in earlier back-ups <em>and the contents of the folder that the file appears in has not changed in later back-ups for as long as the file has existed (unchanged)</em>. 
-Indeed, that's a bit harder to get your head around, and slightly less useful as a result.
+Quand le masque marche correctement, vous pouvez filtrer la vue.
+Utilisez la commande <b>Filtre</b>.
+Il devrait être configuré par défaut comme le masque, donc cliquez simplement sur "OK".
+Une nouvelle fenêtre est créée, contenant seulement les autres sauvegardes.
+Cette nouvelle vue donne une bien meilleure idée de la taille requise par chaque sauvegarde incrémentale.
+<a href="NavigatingViews.html">Naviguer et explorer</a> cette vue pour avoir une meilleure idée de ce qui est sauvegardé.
+Si vous repérez des fichiers qui ne devraient pas être sauvegardés, mettez à jour vos préférences Time Machine.
+</p>
+
+
+<h2>Contrôler quels fichiers ont été sauvegardés durant la dernière sauvegarde</h2>
+
+<p>
+Executez <b>Filtrez l'analyse...</b>.
+Le dossier à scanner sera "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
+Appliquez les filtres suivants : "Ne pas montrer: les objets liens matériels".
+Le résultat de cette vue montre les fichiers qui sont nouveaux dans la dernière sauvegarde.
+Cette vue exclut tous les fichiers qui apparaissent dans la dernière sauvegarde.
+</p>
+
+<p>
+Note: Vous pouvez appliquez le même filtre à d'autres dossiers de sauvegardes.
+Toutefois, vous devez alors interpréter les données de la vue différement.
+Dans ce cas, chaque fichier qui est visible n'apparaît pas dans la dernière sauvegarde <em>et le contenu du dossier qui contient le fichier n'a pas changé dans les sauvegardes suivantes aussi longtemps que le fichier a existé (sans changement)</em>.
+En effet, c'est un peu plus dur à comprendre et légèrement moins utile en tant que résultat.
 <p>
 
 </body>
 </html>
 
+
+ 	  	 

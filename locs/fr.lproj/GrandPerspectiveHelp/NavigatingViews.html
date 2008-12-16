@@ -22,45 +22,70 @@ Les dossiers où se trouvent le fichier sont marqués de la même manière.
 Le nom et la taille du fichier séléctionné sont affichés en dessous de la vue principale.
 </p>
 
+<h2>Changer le focus</h2>
+
 <p>
 Vous pouvez changer la séléction du fichier pour l'un des dossiers dans lequels il se situe (de cette manière, vous pouvez par exemple rapidement trouver la taille d'un dossier spécifique).
-Vous pouvez faire cela soit en utilisant votre <b>molette</b> de souris soit en utilisant les touches "<b>[</b>" et "<b>]</b>" de votre clavier.
+Vous pouvez changer le focus de différente manière :
+</p>
+<ul>
+<li>le contrôle du <b>Focus</b> dans la barre d'outils,</li>
+<li>la <b>molette</b> de votre souris, ou bien</li>
+<li>en utilisant les touches "<b>[</b>" et "<b>]</b>" de votre claiver.</li>
+</ul>
+<p>
 Après avoir bougé la séléction d'un niveau dans la hiérarchie des fichiers, il va rester à ce niveau jusqu'à ce que vous le fassiez monter ou descendre explicitement.
 Si vous ramenez la séléction en arrière (vers un fichier) et que vous allez un peu au-delà de cela, la sélection restera fidèle aux dossiers comme c'était le cas à l'origine.
 </p>
+
+<h2>Vérouiller et dévérouiller la séléction</h2>
 
 <p>
 Cliquer sur un fichier verouille le focus sur ce dernier afin que les informations ne changent pas quand vous déplacez votre souris,
 Cliquer une fois de plus, n'importe où dans l'interface pour retirer ce verrou.
 </p>
 
+<h2>Zoom avant et arrière</h2>
+
 <p>
-Quand le focus est verrouillé, vous pouvez changer le dossier qui est affiché dans l'interface.
-En cliquant sur le boutton <b>Bas</b>, vous descendez dans le premier sous dossier qui est dans le chemin du fichier séléctionné.
+Quand la séléction est vérouillé, vous pouvez zoomé en avant et en arrière en utilisant les contrôles de <b>Zoom</b> présent dans la barre d'outils.
+Cela changera le dossier qui est affiché dans la fenêtre principale.
+En zoomant en avant, vous descendez dans le premier sous dossier qui est dans le chemin du fichier séléctionné.
 Vous pouvez continuer à cliquer sur ce bouton tant que vous n'avez pas atteint le fichier lui même.
-En cliquant sur <b>Haut</b> vous reviendrez à l'étape précédente, niveau par niveau.
+En zoomant en arrière, vous reviendrez à l'étape précédente, niveau par niveau.
 </p>
 
-<p>
-Quand le focus est verouillé, vous pouvez voir le fichier séléctionné dans le Finder en utilisant le bouton <b>Révéler</b>.
-Une fois cela fait, vous pouvez renommer, supprimer le fichier, etc. (Toutes les actions qui sont possible dans le Finder.)
-</p>
+<h2>Actions</h2>
 
 <p>
-Quand la séléction est verrouillée, vous pouvez également supprimer le fichier ou dossier séléctionné en utilisant le bouton <b>Supprimer</b>.
-Les objets supprimés seront déplacés vers la Corbeille et la vue sera mise à jour pour vous montrer l'espace ainsi libéré.
+Quand la séléction est vérouillé, vous pouvez utiliser la barre d'outils pour appliquer les actions suivantes à vos fichiers (ou dossiers) séléctionnés :
+</p>
+
+<ul>
+<li><p>
+<b>Ouvrir</b> ouvre les fichiers séléctionnés en utilisant l'applicatino par défaut qui y est associé dans le Finder.
+</p></li>
+
+<li><p>
+<b>Révéler</b> affiche le fichier (ou dossier) séléctionné dans le Finder.
+Vous pouvez l'examminez, voir plus d'informations, le renommer, le déplacer, etc.
+</p></li>
+
+<li><p>
+<b>Supprimer</b> déplace les fichiers (ou dossiers) séléctionnés vers la Corbeille.
+La vue sera mise à jour pour vous montrer l'espace ainsi libéré.
 Par défaut, le bouton est désactivé pour réduire les risques d'un geste maladroit.
 La suppression peut être activée depuis les <a href="Preferences.html">Préférences</a>.
 </p>
 
-<!-- Note: warning repeated in Preferences.html -->
 <p>
+<!-- Note: warning repeated in Preferences.html -->
 <em>Attention : La suppression de dossier déplacera le dossier entier vers la Corbeille, cela inclut tous les fichiers présent dans le dossier qui ne sont pas visible dans la vue.
 Un fichier peut ne pas être visible car il est <a href="MasksAndFilters.html">masqué ou filtré</a>, il n'a pas pu être analysé pour cause de permissions insuffisantes ou il est apparu dans le dossier après l'analyse de ce dernier.
 En bref, vous devez faire très attention quand vous supprimez un dossier.
 </em>
-</p>
+</p></li>
+</ul>
 
 </body>
 </html>
-
