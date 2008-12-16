@@ -220,7 +220,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   if (treeImage!=nil) {
     [treeImage compositeToPoint: NSZeroPoint operation: NSCompositeCopy];
 
-    if ([pathModelView isSelectedFileItemVisible]) {
+    if ([pathModelView isSelectedFileItemVisible] && !treeImageIsScaled) {
       [pathDrawer drawVisiblePath: pathModelView
                     startingAtTree: [self treeInView]
                     usingLayoutBuilder: layoutBuilder
