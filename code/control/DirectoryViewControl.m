@@ -879,39 +879,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       // Create attributed string for the path of the selected item. The
       // root of the scanned tree is excluded from the path, and the part 
       // that is inside the visible tree is marked using different
-      // attributes.
+      // attributes. This indicates which folder is shown in the view.
 
       NSMutableAttributedString  *attributedPath = 
         [[[NSMutableAttributedString alloc] 
              initWithString: relativeItemPath] autorelease];
 
-      // Underline the entire path.
-      [attributedPath 
-         addAttribute: NSUnderlineStyleAttributeName
-           value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
-           range: NSMakeRange(0, [relativeItemPath length]) ];
-
       int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
         
-      if (visibleLen > 0) {
-        // Part of the path is visible. Underline it with a different color
-        // than is used for the invisible part, which uses the default 
-        // color. As these colors are quite distinct, the distinction between
-        // the visible and invisible part will be clear irrespective of the
-        // background color (which can depends on the window's main status)
-          
-        int  selectedLen = [[selectedItem pathComponent] length];
-
+      if ([relativeItemPath length] > visibleLen) {
         [attributedPath 
-           addAttribute: NSUnderlineColorAttributeName
-             value: [NSColor secondarySelectedControlColor] 
-             range: NSMakeRange([relativeItemPath length] - visibleLen, 
-                                visibleLen - selectedLen) ];
-        [attributedPath 
-           addAttribute: NSUnderlineColorAttributeName
-             value: [NSColor selectedControlColor] 
-             range: NSMakeRange([relativeItemPath length] - selectedLen, 
-                                selectedLen) ];
+           addAttribute: NSUnderlineStyleAttributeName
+             value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
+             range: NSMakeRange(0, [relativeItemPath length] - visibleLen) ];
       }
         
       relativeItemPath = (NSString *)attributedPath;
