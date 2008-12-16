@@ -194,15 +194,15 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   }
   
   if (treeImage!=nil && !NSEqualSizes([treeImage size], [self bounds].size)) {
-    // Discard the existing image.
-    [treeImage release];
-    treeImage = nil;
+    // Scale the existing image for the new size
+    [treeImage setSize: [self bounds].size];
     
-    [[NSColor blackColor] set];	 
-    NSRectFill([self bounds]);
+    // Indicate that the scaling has taken place, so that a new image will be
+    // created.
+    treeImageIsScaled = YES;
   }
 
-  if (treeImage==nil) {
+  if (treeImage==nil || treeImageIsScaled) {
     NSAssert([self bounds].origin.x == 0 &&
              [self bounds].origin.y == 0, @"Bounds not at (0, 0)");
 
@@ -216,8 +216,9 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
                        selector: @selector(itemTreeImageReady:)];
     [drawInput release];
   }
-  else {
-    [treeImage compositeToPoint:NSZeroPoint operation:NSCompositeCopy];
+  
+  if (treeImage!=nil) {
+    [treeImage compositeToPoint: NSZeroPoint operation: NSCompositeCopy];
 
     if ([pathModelView isSelectedFileItemVisible]) {
       [pathDrawer drawVisiblePath: pathModelView
@@ -410,6 +411,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     // directly is okay.
     [treeImage release];
     treeImage = [image retain];
+    treeImageIsScaled = NO;
   
     [self setNeedsDisplay: YES];
   }

@@ -40,6 +40,12 @@ extern NSString  *ColorMappingChangedEvent;
   
   NSImage  *treeImage;
   
+  // Indicates if the image has been resized to fit inside the current view.
+  // This is only a temporary measure. A new image is already being constructed
+  // for the new size, but as long as that's not yet ready, the scaled image 
+  // can be used.
+  BOOL  treeImageIsScaled;
+  
   float  scrollWheelDelta;
 }
 
