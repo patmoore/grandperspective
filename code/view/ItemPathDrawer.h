@@ -22,9 +22,11 @@
   
   FileItem  *visibleTree;
   BOOL  insideVisibleTree;
-  
-  NSBezierPath*  firstBezierPath;
-  NSBezierPath*  lastBezierPath;
+
+  // The rectangle of the previous item on the visible selected path. When the
+  // width is negative, it is still unset (i.e. the previous selected item is
+  // not yet on the visible path).
+  NSRect  prevRect;
 }
 
 - (void) setHighlightPathEndPoint:(BOOL)option;

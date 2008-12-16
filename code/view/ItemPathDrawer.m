@@ -36,15 +36,16 @@
   visibleTree = [pathModelView visibleTree]; 
   insideVisibleTree = NO;
 
-  firstBezierPath = nil;
-  lastBezierPath = nil;
+  prevRect.size.width = -1; // Indicate that it is not yet valid
   
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
   
-  if (lastBezierPath != nil) {
+  if (prevRect.size.width > 0) {
     [[NSColor selectedControlColor] set];
-    [lastBezierPath setLineWidth: (highlightPathEndPoint ? 3 : 2)];
-    [lastBezierPath stroke];
+
+    NSBezierPath  *path = [NSBezierPath bezierPathWithRect: prevRect];
+    [path setLineWidth: (highlightPathEndPoint ? 3 : 2)];
+    [path stroke];
   }
 
   drawPath = nil;
@@ -67,20 +68,28 @@
     }
   
     if (insideVisibleTree) {
-      if (lastBezierPath != nil) {
-        // This is not the end-point, so give it the secondary color.
-        //   (Also, should this be the outer rectangle, as it is not the
-        //    end-point, it may also be drawn).    
+      if (prevRect.size.width > 0) {
+        // This is not the end-point, so give it the secondary color and 
+        // expand it slightly (this way, edges that border the view are not
+        // shown, which is visually more attractive; it may happen that the
+        // entire bezier path falls outside the view and is invisible, but
+        // that is okay, because it is not the endpoint. The endpoint 
+        // definitely needs to be shown to provide the user with visual
+        // feedback needed to move the focus and to lock and unlock the 
+        // selection)
         [[NSColor secondarySelectedControlColor] set];
-        [lastBezierPath setLineWidth: 2];
-        [lastBezierPath stroke];
-      }
-  
-      lastBezierPath = [NSBezierPath bezierPathWithRect: rect];
 
-      if (firstBezierPath == nil) {
-        firstBezierPath = lastBezierPath;
+        NSRect  drawRect = NSMakeRect(prevRect.origin.x - 1,
+                                      prevRect.origin.y - 1,
+                                      prevRect.size.width + 2,
+                                      prevRect.size.height + 2);
+        NSBezierPath  *path = [NSBezierPath bezierPathWithRect: drawRect];
+
+        [path setLineWidth: 2];
+        [path stroke];
       }
+
+      prevRect = rect;
     }
   }
 
