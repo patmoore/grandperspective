@@ -382,7 +382,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 // Invoked because the controller is the delegate for the window.
 - (void) windowDidBecomeMain:(NSNotification*)notification {
-  if (editMaskFilterWindowControl != nil) {
+  if (editMaskFilterWindowControl != nil &&
+      [[editMaskFilterWindowControl window] isVisible]) {
     [[editMaskFilterWindowControl window] 
         orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
   }
