@@ -864,7 +864,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         [[[NSMutableAttributedString alloc] 
              initWithString: relativeItemPath] autorelease];
 
-      int  visibleLen = [itemPath length] - [invisiblePathName length] - 1;
+      int  visibleLen = [itemPath length] - [invisiblePathName length];
+      if (visibleLen > 0) {
+        // Let the path separator also be part of the invisible path.
+        visibleLen--;
+      }
         
       if ([relativeItemPath length] > visibleLen) {
         [attributedPath 
