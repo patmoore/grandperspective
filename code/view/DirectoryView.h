@@ -64,4 +64,10 @@ extern NSString  *ColorMappingChangedEvent;
 
 - (TreeLayoutBuilder*) layoutBuilder;
 
+- (BOOL) canZoomIn;
+- (BOOL) canZoomOut;
+
+- (void) zoomIn;
+- (void) zoomOut;
+
 @end

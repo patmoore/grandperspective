@@ -92,8 +92,6 @@ extern NSString  *DeleteFilesAndFolders;
   NSSize  unzoomedViewSize;
 }
 
-- (IBAction) upAction: (id) sender;
-- (IBAction) downAction: (id) sender;
 - (IBAction) openFile: (id) sender;
 - (IBAction) revealFileInFinder: (id) sender;
 - (IBAction) deleteFile: (id) sender;
@@ -122,9 +120,6 @@ extern NSString  *DeleteFilesAndFolders;
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
 
 - (TreeContext*) treeContext;
-
-- (BOOL) canNavigateUp;
-- (BOOL) canNavigateDown;
 
 - (BOOL) canOpenSelectedFile;
 - (BOOL) canRevealSelectedFile;

@@ -414,17 +414,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 }
 
-- (IBAction) upAction: (id) sender {
-  [pathModelView moveVisibleTreeUp];
-  
-  // Automatically lock path as well.
-  [[pathModelView pathModel] setVisiblePathLocking: YES];
-}
-
-- (IBAction) downAction: (id) sender {
-  [pathModelView moveVisibleTreeDown];
-}
-
 
 - (IBAction) openFile: (id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
@@ -656,17 +645,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   // If the selected item is a package, its info will have changed.
   [self selectedItemChanged: nil];
 }
-
-
-- (BOOL) canNavigateUp {
-  return [pathModelView canMoveVisibleTreeUp];
-}
-
-- (BOOL) canNavigateDown {
-  return ( [[pathModelView pathModel] isVisiblePathLocked] 
-           && [pathModelView canMoveVisibleTreeDown] );
-}
-
 
 
 - (BOOL) canOpenSelectedFile {

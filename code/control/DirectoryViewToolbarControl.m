@@ -1,6 +1,7 @@
 #import "DirectoryViewToolbarControl.h"
 
 #import "DirectoryViewControl.h"
+#import "DirectoryView.h"
 #import "ItemPathModelView.h"
 
 
@@ -57,7 +58,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 }
 
 - (id) initWithTitle: (NSString *)title target: (id) target;
-- (void) addAction: (SEL) action withTitle: (NSString *)title;
+- (NSMenuItem *) addAction: (SEL) action withTitle: (NSString *)title;
 
 @end
 
@@ -273,8 +274,20 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
   ToolbarItemMenu  *menu = 
     [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
-  [menu addAction: @selector(zoomOut:) withTitle: zoomOutTitle];
-  [menu addAction: @selector(zoomIn:) withTitle: zoomInTitle];
+  NSMenuItem  *zoomOutItem =
+    [menu addAction: @selector(zoomOut:) withTitle: zoomOutTitle];
+  NSMenuItem  *zoomInItem =
+    [menu addAction: @selector(zoomIn:) withTitle: zoomInTitle];
+
+  // Set the key equivalents so that they show up in the menu (which may
+  // help to make the user aware of them or remind the user of them). They do
+  // not actually have an effect. Handling these key equivalents is handled in
+  // the DirectoryView class. 
+  [zoomInItem setKeyEquivalent: @"-"];
+  [zoomInItem setKeyEquivalentModifierMask: NSCommandKeyMask];
+  
+  [zoomInItem setKeyEquivalent: @"+"];
+  [zoomInItem setKeyEquivalentModifierMask: NSCommandKeyMask];
 
   [item setMenuFormRepresentation: menu];
 
@@ -389,9 +402,9 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (id) validateZoomControls {
-  [zoomControls setEnabled: [dirView canNavigateUp]
+  [zoomControls setEnabled: [[dirView directoryView] canZoomOut]
                   forSegment: zoomOutSegment];
-  [zoomControls setEnabled: [dirView canNavigateDown] 
+  [zoomControls setEnabled: [[dirView directoryView] canZoomIn] 
                   forSegment: zoomInSegment];
 
   return self; // Always enable the overall control
@@ -419,10 +432,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (BOOL) validateAction: (SEL)action {
   if ( action == @selector(zoomOut:) ) {
-    return [dirView canNavigateUp];
+    return [[dirView directoryView] canZoomOut];
   }
   else if ( action == @selector(zoomIn:) ) {
-    return [dirView canNavigateDown];
+    return [[dirView directoryView] canZoomIn];
   }
   if ( action == @selector(moveFocusUp:) ) {
     return [[dirView pathModelView] canMoveSelectionUp];
@@ -446,11 +459,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (void) zoomOut: (id) sender {
-  [dirView upAction: sender];
+  [[dirView directoryView] zoomOut];
 }
 
 - (void) zoomIn: (id) sender {
-  [dirView downAction: sender];
+  [[dirView directoryView] zoomIn];
 }
 
 
@@ -506,12 +519,14 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (void) addAction: (SEL) action withTitle: (NSString *)title {
+- (NSMenuItem *) addAction: (SEL) action withTitle: (NSString *)title {
   NSMenuItem  *item =
     [[[NSMenuItem alloc] 
         initWithTitle: title action: action keyEquivalent: @""] autorelease];
   [item setTarget: [self target]];
   [[self submenu] addItem: item];
+
+  return item;
 }
 
 @end // @implementation ToolbarItemMenu

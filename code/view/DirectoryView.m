@@ -188,6 +188,28 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 
+- (BOOL) canZoomIn {
+  return ( [[pathModelView pathModel] isVisiblePathLocked] 
+           && [pathModelView canMoveVisibleTreeDown] );
+}
+
+- (BOOL) canZoomOut {
+  return [pathModelView canMoveVisibleTreeUp];
+}
+
+
+- (void) zoomIn {
+  [pathModelView moveVisibleTreeDown];
+}
+
+- (void) zoomOut {
+  [pathModelView moveVisibleTreeUp];
+  
+  // Automatically lock path as well.
+  [[pathModelView pathModel] setVisiblePathLocking: YES];
+}
+
+
 - (void) drawRect:(NSRect)rect {
   if (pathModelView==nil) {
     return;
@@ -264,6 +286,31 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
       [pathModelView moveSelectionUp];
     }
   }
+}
+
+
+- (BOOL)performKeyEquivalent: (NSEvent *)theEvent {
+  int  flags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
+  NSString  *chars = [theEvent characters];
+  
+  if ([chars isEqualToString: @"="]) {
+    if (flags == (NSCommandKeyMask | NSShiftKeyMask)) {
+      if ([self canZoomIn]) {
+        [self zoomIn];
+      }
+      return YES;
+    }
+  }
+  else if ([chars isEqualToString: @"-"]) {
+    if (flags == NSCommandKeyMask) {
+      if ([self canZoomOut]) {
+        [self zoomOut];
+      }
+      return YES;
+    }
+  }
+  
+  return NO;
 }
 
 
