@@ -892,6 +892,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
            addAttribute: NSUnderlineStyleAttributeName
              value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
              range: NSMakeRange(0, [relativeItemPath length] - visibleLen) ];
+        [attributedPath 
+           addAttribute: NSUnderlineColorAttributeName
+             value: [NSColor darkGrayColor] 
+             range: NSMakeRange(0, [relativeItemPath length] - visibleLen) ];
       }
         
       relativeItemPath = (NSString *)attributedPath;
