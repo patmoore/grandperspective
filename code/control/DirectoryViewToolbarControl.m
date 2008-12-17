@@ -89,7 +89,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 
 - (id) init {
   if (self = [super init]) {
-    dirView = nil; // Will be set when loaded from nib.
+    dirViewControl = nil; // Will be set when loaded from nib.
     
     // Set defaults (can be overridden when segments are tagged)
     zoomInSegment = 1;
@@ -102,7 +102,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 
 - (void) dealloc {
   // We were not retaining it, so should not call -release  
-  dirView = nil;
+  dirViewControl = nil;
 
   [super dealloc];
 }
@@ -110,7 +110,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 
 - (void) awakeFromNib {
   // Not retaining it. It needs to be deallocated when the window is closed.
-  dirView = [dirViewWindow windowController];
+  dirViewControl = [dirViewWindow windowController];
   
   signed int  i;
   
@@ -147,7 +147,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
   [toolbar setDisplayMode: NSToolbarDisplayModeIconAndLabel];
 
   [toolbar setDelegate: self];
-  [[dirView window] setToolbar: toolbar];
+  [[dirViewControl window] setToolbar: toolbar];
 }
 
 
@@ -395,23 +395,23 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
                                                 @"Toolbar", "Tooltip" )];
   [item setImage: [NSImage imageNamed: @"ToggleDrawer"]];
   [item setAction: @selector(toggleDrawer:) ];
-  [item setTarget: dirView];
+  [item setTarget: dirViewControl];
 
   return item;
 }
 
 
 - (id) validateZoomControls {
-  [zoomControls setEnabled: [[dirView directoryView] canZoomOut]
+  [zoomControls setEnabled: [[dirViewControl directoryView] canZoomOut]
                   forSegment: zoomOutSegment];
-  [zoomControls setEnabled: [[dirView directoryView] canZoomIn] 
+  [zoomControls setEnabled: [[dirViewControl directoryView] canZoomIn] 
                   forSegment: zoomInSegment];
 
   return self; // Always enable the overall control
 }
 
 - (id) validateFocusControls {
-  ItemPathModelView  *pathModelView = [dirView pathModelView]; 
+  ItemPathModelView  *pathModelView = [dirViewControl pathModelView]; 
 
   [focusControls setEnabled: [pathModelView canMoveSelectionUp] 
                    forSegment: focusUpSegment];
@@ -432,25 +432,25 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (BOOL) validateAction: (SEL)action {
   if ( action == @selector(zoomOut:) ) {
-    return [[dirView directoryView] canZoomOut];
+    return [[dirViewControl directoryView] canZoomOut];
   }
   else if ( action == @selector(zoomIn:) ) {
-    return [[dirView directoryView] canZoomIn];
+    return [[dirViewControl directoryView] canZoomIn];
   }
   if ( action == @selector(moveFocusUp:) ) {
-    return [[dirView pathModelView] canMoveSelectionUp];
+    return [[dirViewControl pathModelView] canMoveSelectionUp];
   }
   else if ( action == @selector(moveFocusDown:) ) {
-    return ! [[dirView pathModelView] selectionSticksToEndPoint];
+    return ! [[dirViewControl pathModelView] selectionSticksToEndPoint];
   }
   else if ( action == @selector(openFile:) ) {
-    return [dirView canOpenSelectedFile];
+    return [dirViewControl canOpenSelectedFile];
   }
   else if ( action == @selector(revealFile:) ) {
-    return [dirView canRevealSelectedFile];
+    return [dirViewControl canRevealSelectedFile];
   }
   else if ( action == @selector(deleteFile:) ) {
-    return [dirView canDeleteSelectedFile];
+    return [dirViewControl canDeleteSelectedFile];
   }
   else {
     NSLog(@"Unrecognized action %@", NSStringFromSelector(action));
@@ -459,20 +459,20 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (void) zoomOut: (id) sender {
-  [[dirView directoryView] zoomOut];
+  [[dirViewControl directoryView] zoomOut];
 }
 
 - (void) zoomIn: (id) sender {
-  [[dirView directoryView] zoomIn];
+  [[dirViewControl directoryView] zoomIn];
 }
 
 
 - (void) moveFocusUp: (id) sender {
-  [[dirView pathModelView] moveSelectionUp];
+  [[dirViewControl pathModelView] moveSelectionUp];
 }
 
 - (void) moveFocusDown: (id) sender {
-  ItemPathModelView  *pathModelView = [dirView pathModelView];
+  ItemPathModelView  *pathModelView = [dirViewControl pathModelView];
   
   if ([pathModelView canMoveSelectionDown]) {
     [pathModelView moveSelectionDown];
@@ -484,15 +484,15 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (void) openFile: (id) sender {
-  [dirView openFile: sender];
+  [dirViewControl openFile: sender];
 }
 
 - (void) revealFile: (id) sender {
-  [dirView revealFileInFinder: sender];
+  [dirViewControl revealFileInFinder: sender];
 }
 
 - (void) deleteFile: (id) sender {
-  [dirView deleteFile: sender];
+  [dirViewControl deleteFile: sender];
 }
 
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)

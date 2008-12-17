@@ -15,7 +15,7 @@
   int  focusUpSegment;
   int  focusDownSegment;
 
-  DirectoryViewControl  *dirView;
+  DirectoryViewControl  *dirViewControl;
 
 }
 
