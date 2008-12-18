@@ -339,6 +339,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   //---------------------------------------------------------------- 
   // Miscellaneous initialisation
+  
+  // Change window's background color (which should only affect the statusbar)
+  [[self window] setBackgroundColor: [NSColor lightGrayColor]];
 
   [super windowDidLoad];
   
