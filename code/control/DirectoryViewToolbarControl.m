@@ -282,8 +282,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   // help to make the user aware of them or remind the user of them). They do
   // not actually have an effect. Handling these key equivalents is handled in
   // the DirectoryView class. 
-  [zoomInItem setKeyEquivalent: @"-"];
-  [zoomInItem setKeyEquivalentModifierMask: NSCommandKeyMask];
+  [zoomOutItem setKeyEquivalent: @"-"];
+  [zoomOutItem setKeyEquivalentModifierMask: NSCommandKeyMask];
   
   [zoomInItem setKeyEquivalent: @"+"];
   [zoomInItem setKeyEquivalentModifierMask: NSCommandKeyMask];
@@ -323,8 +323,20 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
   ToolbarItemMenu  *menu = 
     [[[ToolbarItemMenu alloc] initWithTitle: title target: self] autorelease];
-  [menu addAction: @selector(moveFocusUp:) withTitle: moveUpTitle];
-  [menu addAction: @selector(moveFocusDown:) withTitle: moveDownTitle];
+  NSMenuItem  *focusUpItem = 
+    [menu addAction: @selector(moveFocusUp:) withTitle: moveUpTitle];
+  NSMenuItem  *focusDownItem =
+    [menu addAction: @selector(moveFocusDown:) withTitle: moveDownTitle];
+  
+  // Set the key equivalents so that they show up in the menu (which may
+  // help to make the user aware of them or remind the user of them). They do
+  // not actually have an effect. Handling these key equivalents is handled in
+  // the DirectoryView class. 
+  [focusUpItem setKeyEquivalent: @"["];
+  [focusUpItem setKeyEquivalentModifierMask: NSCommandKeyMask];
+  
+  [focusDownItem setKeyEquivalent: @"]"];
+  [focusDownItem setKeyEquivalentModifierMask: NSCommandKeyMask];
 
   [item setMenuFormRepresentation: menu];
 

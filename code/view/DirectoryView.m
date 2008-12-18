@@ -292,27 +292,28 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 
-- (void) keyDown: (NSEvent *)theEvent {
-  NSString*  chars = [theEvent characters];
-  if ([chars isEqualToString: @"]"]) {
-    if ([self canMoveFocusDown]) {
-      [self moveFocusDown];
-    }
-  }
-  else if ([chars isEqualToString: @"["]) {
-    if ([self canMoveFocusUp]) {
-      [self moveFocusUp];
-    }
-  }
-}
-
-
 - (BOOL)performKeyEquivalent: (NSEvent *)theEvent {
   int  flags = [theEvent modifierFlags] & NSDeviceIndependentModifierFlagsMask;
   NSString  *chars = [theEvent characters];
   
-  if ([chars isEqualToString: @"="]) {
-    if (flags == (NSCommandKeyMask | NSShiftKeyMask)) {
+  if ([chars isEqualToString: @"]"]) {
+    if (flags == NSCommandKeyMask) {
+      if ([self canMoveFocusDown]) {
+        [self moveFocusDown];
+      }
+    }
+  }
+  else if ([chars isEqualToString: @"["]) {
+    if (flags == NSCommandKeyMask) {
+      if ([self canMoveFocusUp]) {
+        [self moveFocusUp];
+      }
+    }
+  }
+  else if ([chars isEqualToString: @"="]) {
+    // Accepting this with or without the Shift key-pressed, as having to use 
+    // the Shift key is a bit of a pain.
+    if ((flags | NSShiftKeyMask) == (NSCommandKeyMask | NSShiftKeyMask)) {
       if ([self canZoomIn]) {
         [self zoomIn];
       }
