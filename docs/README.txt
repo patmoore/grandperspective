@@ -92,7 +92,7 @@ improvements, many of which have been taken into account. This has
 definitely made the application better than it would otherwise have
 been.
 
-Finally thanks to all that have been getting the word out about the
+Finally thanks to all that have helped to get the word out about the
 application. Developing the application may be fun, but having actual
 users makes it worthwhile.
 
