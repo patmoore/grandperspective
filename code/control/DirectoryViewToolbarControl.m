@@ -2,7 +2,6 @@
 
 #import "DirectoryViewControl.h"
 #import "DirectoryView.h"
-#import "ItemPathModelView.h"
 
 
 NSString  *ToolbarZoom = @"Zoom"; 
@@ -402,21 +401,22 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (id) validateZoomControls {
-  [zoomControls setEnabled: [[dirViewControl directoryView] canZoomOut]
-                  forSegment: zoomOutSegment];
-  [zoomControls setEnabled: [[dirViewControl directoryView] canZoomIn] 
-                  forSegment: zoomInSegment];
+  DirectoryView  *dirView = [dirViewControl directoryView];
+
+  [zoomControls setEnabled: [dirView canZoomOut] forSegment: zoomOutSegment];
+  [zoomControls setEnabled: [dirView canZoomIn]  forSegment: zoomInSegment];
 
   return self; // Always enable the overall control
 }
 
 - (id) validateFocusControls {
-  ItemPathModelView  *pathModelView = [dirViewControl pathModelView]; 
+  DirectoryView  *dirView = [dirViewControl directoryView];
 
-  [focusControls setEnabled: [pathModelView canMoveSelectionUp] 
+  [focusControls setEnabled: [dirView canMoveFocusUp]
                    forSegment: focusUpSegment];
-  [focusControls setEnabled: ! [pathModelView selectionSticksToEndPoint] 
+  [focusControls setEnabled: [dirView canMoveFocusDown]
                    forSegment: focusDownSegment];
+
   return self; // Always enable the overall control
 }
 
@@ -438,10 +438,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     return [[dirViewControl directoryView] canZoomIn];
   }
   if ( action == @selector(moveFocusUp:) ) {
-    return [[dirViewControl pathModelView] canMoveSelectionUp];
+    return [[dirViewControl directoryView] canMoveFocusUp];
   }
   else if ( action == @selector(moveFocusDown:) ) {
-    return ! [[dirViewControl pathModelView] selectionSticksToEndPoint];
+    return [[dirViewControl directoryView] canMoveFocusDown];
   }
   else if ( action == @selector(openFile:) ) {
     return [dirViewControl canOpenSelectedFile];
@@ -468,18 +468,11 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 
 - (void) moveFocusUp: (id) sender {
-  [[dirViewControl pathModelView] moveSelectionUp];
+  [[dirViewControl directoryView] moveFocusUp];
 }
 
 - (void) moveFocusDown: (id) sender {
-  ItemPathModelView  *pathModelView = [dirViewControl pathModelView];
-  
-  if ([pathModelView canMoveSelectionDown]) {
-    [pathModelView moveSelectionDown];
-  }
-  else {
-    [pathModelView setSelectionSticksToEndPoint: YES];
-  }
+  [[dirViewControl directoryView] moveFocusDown];
 }
 
 

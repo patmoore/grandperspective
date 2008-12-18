@@ -210,6 +210,29 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 }
 
 
+- (BOOL) canMoveFocusUp {
+  return [pathModelView canMoveSelectionUp];
+}
+
+- (BOOL) canMoveFocusDown {
+  return ! [pathModelView selectionSticksToEndPoint];
+}
+
+
+- (void) moveFocusUp {
+  [pathModelView moveSelectionUp];  
+}
+
+- (void) moveFocusDown {
+  if ([pathModelView canMoveSelectionDown]) {
+    [pathModelView moveSelectionDown];
+  }
+  else {
+    [pathModelView setSelectionSticksToEndPoint: YES];
+  }
+}
+
+
 - (void) drawRect:(NSRect)rect {
   if (pathModelView==nil) {
     return;
@@ -272,18 +295,13 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 - (void) keyDown: (NSEvent *)theEvent {
   NSString*  chars = [theEvent characters];
   if ([chars isEqualToString: @"]"]) {
-    if (! [pathModelView selectionSticksToEndPoint]) {
-      if ([pathModelView canMoveSelectionDown]) {
-        [pathModelView moveSelectionDown];
-      }
-      else {
-        [pathModelView setSelectionSticksToEndPoint: YES];
-      }
+    if ([self canMoveFocusDown]) {
+      [self moveFocusDown];
     }
   }
   else if ([chars isEqualToString: @"["]) {
-    if ([pathModelView canMoveSelectionUp]) {
-      [pathModelView moveSelectionUp];
+    if ([self canMoveFocusUp]) {
+      [self moveFocusUp];
     }
   }
 }
@@ -318,29 +336,24 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   scrollWheelDelta += [theEvent deltaY];
   
   if (scrollWheelDelta > 0) {
-    if ([pathModelView selectionSticksToEndPoint]) {
+    if (! [self canMoveFocusDown]) {
       // Keep it at zero, to make moving up not unnecessarily cumbersome.
       scrollWheelDelta = 0;
     }
     else if (scrollWheelDelta > SCROLL_WHEEL_SENSITIVITY + 0.5f) {
-      if ([pathModelView canMoveSelectionDown]) {
-        [pathModelView moveSelectionDown];
-      }
-      else {
-        [pathModelView setSelectionSticksToEndPoint: YES];
-      }
+      [self moveFocusDown];
 
       // Make it easy to move up down again.
       scrollWheelDelta = - SCROLL_WHEEL_SENSITIVITY;
     }
   }
   else {
-    if (! [pathModelView canMoveSelectionUp]) {
+    if (! [self canMoveFocusUp]) {
       // Keep it at zero, to make moving up not unnecessarily cumbersome.
       scrollWheelDelta = 0;
     }
     else if (scrollWheelDelta < - (SCROLL_WHEEL_SENSITIVITY + 0.5f)) {
-      [pathModelView moveSelectionUp];
+      [self moveFocusUp];
 
       // Make it easy to move back down again.
       scrollWheelDelta = SCROLL_WHEEL_SENSITIVITY;

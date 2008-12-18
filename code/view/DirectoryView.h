@@ -70,4 +70,10 @@ extern NSString  *ColorMappingChangedEvent;
 - (void) zoomIn;
 - (void) zoomOut;
 
+- (BOOL) canMoveFocusUp;
+- (BOOL) canMoveFocusDown;
+
+- (void) moveFocusUp;
+- (void) moveFocusDown;
+
 @end
