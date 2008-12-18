@@ -25,6 +25,8 @@ Minor improvements:
   will be included in the backup where they first appeared.
 - Made selection automatically stick to end-point when reaching a
   file after moving selection down a level.
+- When resizing the window the view is still being shown.
+- Added keyboard shortcuts for zooming.
 - Improvements to implementation of selection following mouse.
 - The initial size of windows and the color gradient for drawing
   rectangles in the view are now taken from the user defaults.
@@ -38,11 +40,14 @@ Bug fixes:
   level zero when package contents were hidden. Not anymore.
 - Aborting a drawing task that was just about to complete could 
   result in premature aborting of next task. Not anymore.
+- Closed Edit Mask windows would reappear when the application 
+  got activated again after reactivation. They now remain hidden.
 
 Code clean-up:
 - Renamed FileItem -isSpecial to -isPhysical (and inverted meaning)
 - Simplified abortion of background tasks (removed enabled state 
   from TaskExecutor).
+- Moved zoom and focus functionality to DirectoryView.
 
 Updated localizations:
 - Japanese, by Chris Li
