@@ -50,6 +50,7 @@ typedef struct  {
            catalogInfo: (FSCatalogInfo *)catalogInfo
            systemPath: (NSString **)systemPath;
 
+- (UInt8) flagsForFileRef: (FSRef *)fileRef;
 - (NSString *) systemPathStringForFileRef: (FSRef *)fileRef;
 
 @end // @interface TreeBuilder (PrivateMethods)
@@ -295,8 +296,7 @@ typedef struct  {
     [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
          initWithName: relativePath 
          parent: [scanResult scanTreeParent]
-         flags: 0] autorelease];
-  // TODO: Correctly set flags
+         flags: [self flagsForFileRef: &pathRef]] autorelease];
 
   [progressTracker startingTask];
         
@@ -583,6 +583,33 @@ typedef struct  {
   }
 
   return YES;
+}
+
+
+/* Gets the flags (as used by FileItem) for the given file.
+ */
+- (UInt8) flagsForFileRef: (FSRef *)fileRef {
+  UInt8  flags = 0;
+  
+  // It's physical per definition (otherwise it would not have an FSRef).
+
+  // Is it hard-linked?  
+  FSCatalogInfo  *catalogInfo = catalogInfoArray; // Use first entry in array
+  OSStatus  result = FSGetCatalogInfo( fileRef, kFSCatInfoNodeFlags, 
+                                       catalogInfo, NULL, NULL, NULL );
+  if (catalogInfo->nodeFlags & kFSNodeHardLinkMask) {
+    flags |= FILE_IS_HARDLINKED;
+  }
+  
+  // Is it a package?
+  NSString  *systemPath = [self systemPathStringForFileRef: fileRef];
+  if (systemPath != CouldNotEstablishSystemPath) {
+    if ([[NSWorkspace sharedWorkspace] isFilePackageAtPath: systemPath]) {
+      flags |= FILE_IS_PACKAGE;
+    }
+  }
+  
+  return flags;
 }
 
 
