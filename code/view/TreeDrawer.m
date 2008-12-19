@@ -107,8 +107,6 @@
   NSAssert(visibleTree == nil, @"visibleTree should be nil.");
   visibleTree = [visibleTreeVal retain]; 
 
-  // TODO: cope with fact when bounds not start at (0, 0)? Would this every be
-  // useful/occur?
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
 
   [visibleTree release];
