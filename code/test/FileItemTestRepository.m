@@ -46,7 +46,7 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 - (id) init {
   if (self = [super init]) {
     NSMutableDictionary*  initialTestDictionary = 
-                             [[NSMutableDictionary alloc] initWithCapacity: 16];    
+                            [NSMutableDictionary dictionaryWithCapacity: 16]; 
     
     // Load application-provided tests from the information properties file.
     NSBundle  *bundle = [NSBundle mainBundle];
@@ -65,8 +65,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 
     // Store tests in a NotifyingDictionary
     testsByName = [[NotifyingDictionary alloc] 
-                    initWithCapacity: 16 
-                    initialContents: initialTestDictionary];
+                      initWithCapacity: 16 
+                      initialContents: initialTestDictionary];
   }
   
   return self;
