@@ -224,14 +224,15 @@
     NSColor  *color = 
       [colorPalette colorWithKey: [colorKeys objectAtIndex: i]];
     
-    // TODO: needed?
-    // color = [color colorUsingColorSpaceName:NSDeviceRGBColorSpace];
+    // Maybe not needed, but there is no harm. It guarantees that 
+    // getHue:saturation:brightness:alpha can be invoked.
+    color = [color colorUsingColorSpaceName:NSDeviceRGBColorSpace];
     
+    float  hue, saturation, brightness, alpha;
+    [color getHue: &hue saturation: &saturation brightness: &brightness 
+             alpha: &alpha];
+
     NSColor  *modColor;
-    float  hue = [color hueComponent];
-    float  saturation = [color saturationComponent];
-    float  brightness = [color brightnessComponent];
-    float  alpha = [color alphaComponent];
 
     // Darker colors
     for (j=0; j<128; j++) {
