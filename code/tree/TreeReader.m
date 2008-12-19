@@ -118,7 +118,7 @@ NSString  *AttributeNameKey = @"name";
 @interface ElementHandler (PrivateMethods) 
 
 - (ITEM_SIZE) parseItemSizeAttribute: (NSString *)name value: (NSString *)value;
-- (NSDate *) parseDateValue: (NSString *)stringValue;
+- (NSDate *) parseDateAttribute: (NSString *)name value: (NSString *)value;
 - (int) parseIntegerAttribute: (NSString *)name value: (NSString *)value; 
 
 @end // @interface ElementHandler (PrivateMethods) 
@@ -581,8 +581,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (NSDate *) getDateAttributeValue: (NSString *)name 
                from: (NSDictionary *)attribs {
-  return [self parseDateValue:
-                 [self getStringAttributeValue: name from: attribs]];
+  return [self parseDateAttribute: name
+                 value: [self getStringAttributeValue: name from: attribs]];
 }
 
 - (NSDate *) getDateAttributeValue: (NSString *)name 
@@ -591,7 +591,7 @@ NSString  *AttributeNameKey = @"name";
   NSString  *stringValue = [attribs objectForKey: name];
 
   return ( (stringValue != nil) 
-           ? [self parseDateValue: stringValue] : defVal );
+           ? [self parseDateAttribute: name value: stringValue] : defVal );
 }
 
 
@@ -643,9 +643,17 @@ NSString  *AttributeNameKey = @"name";
   return size;
 }
 
-- (NSDate *) parseDateValue: (NSString *)stringValue {
+- (NSDate *) parseDateAttribute: (NSString *)name 
+               value: (NSString *)stringValue {
   NSDate  *dateValue = [NSDate dateWithString: stringValue];
-  // TODO: Check what happens if format is incorrect.
+  
+  if (dateValue == nil) {
+    NSString  *reason = 
+      NSLocalizedString(@"Expected date value.", @"Parse error");
+    NSException  *ex = [AttributeParseException 
+                          exceptionWithAttributeName: name reason: reason];
+    @throw ex;
+  }
 
   return dateValue;
 }
