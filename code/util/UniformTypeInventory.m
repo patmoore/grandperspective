@@ -255,7 +255,7 @@ NSString  *UnknownTypeUTI = @"unknown";
     UniformType  *parentType = 
       [self uniformTypeForIdentifier: (NSString *)conforms];
     parents = (parentType != nil) 
-                 ? [NSArray arrayWithObject: parentType] : [NSArray array];                                  
+                 ? [NSArray arrayWithObject: parentType] : [NSArray array];
   }
   else {
     parents = [NSArray array];

@@ -57,7 +57,8 @@
     UniformType  *current = [toVisit lastObject];
     [toVisit removeLastObject];
   
-    // Add parents that have not yet been encountered to list of nodes to visit. 
+    // Add parents that have not yet been encountered to list of nodes to 
+    // visit.
     NSEnumerator  *parentsEnum = [[current parentTypes] objectEnumerator];
     UniformType  *parentType;
     while (parentType = [parentsEnum nextObject]) {

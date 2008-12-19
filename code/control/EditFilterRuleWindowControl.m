@@ -681,7 +681,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
                   autorelease];
     }
     else {
-      return [[[ItemSizeTest alloc] initWithLowerBound:lowerBound] autorelease];    
+      return [[[ItemSizeTest alloc] initWithLowerBound:lowerBound] autorelease];
     }
   }
   else {

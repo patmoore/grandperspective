@@ -92,12 +92,12 @@ NSString  *OkPerformedEvent = @"okPerformed";
     [nc addObserver:self selector: @selector(testRenamedInRepository:) 
           name: ObjectRenamedEvent object: repositoryTestsByName];
           
-    filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity:8];
+    filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity: 8];
             
-    filterTests = [[NSMutableArray alloc] initWithCapacity:8];
+    filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
 
     availableTests = [[NSMutableArray alloc] 
-      initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];                         
+      initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];
     [availableTests
        addObjectsFromArray: [((NSDictionary *)repositoryTestsByName) allKeys]];
     [availableTests sortUsingSelector: @selector(compare:)];

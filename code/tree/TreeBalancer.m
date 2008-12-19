@@ -69,7 +69,8 @@ int compareBySize(id item1, id item2, void* context) {
   }
   
   NSMutableArray*  sortedBranches = tmpArray;
-  NSAssert(tmpArray!=nil && [tmpArray count]==0, @"Temporary array not valid."); 
+  NSAssert( tmpArray!=nil && [tmpArray count]==0, 
+            @"Temporary array not valid." );
   
   int  branchesGetIndex = 0;
   int  numBranches = 0;
