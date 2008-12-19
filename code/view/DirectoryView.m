@@ -301,6 +301,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
       if ([self canMoveFocusDown]) {
         [self moveFocusDown];
       }
+      return YES;
     }
   }
   else if ([chars isEqualToString: @"["]) {
@@ -308,6 +309,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
       if ([self canMoveFocusUp]) {
         [self moveFocusUp];
       }
+      return YES;
     }
   }
   else if ([chars isEqualToString: @"="]) {
