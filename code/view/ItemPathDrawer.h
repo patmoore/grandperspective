@@ -27,6 +27,7 @@
   // width is negative, it is still unset (i.e. the previous selected item is
   // not yet on the visible path).
   NSRect  prevRect;
+  NSRect  outerRect;
 }
 
 - (void) setHighlightPathEndPoint:(BOOL)option;

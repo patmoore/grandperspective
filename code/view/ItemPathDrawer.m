@@ -37,13 +37,24 @@
   insideVisibleTree = NO;
 
   prevRect.size.width = -1; // Indicate that it is not yet valid
+  outerRect.size.width = -1; // Indicate that it is not yet valid
+
   
   [layoutBuilder layoutItemTree: treeRoot inRect: bounds traverser: self];
   
-  if (prevRect.size.width > 0) {
+  // Draw the end-point rectangle, except when there isn't one, or it is equal
+  // to the outermost rectangle and it is not highlighted. This way, there is
+  // not unnecessarily a border around the view, which is visually more 
+  // appealing, especially in the case where the mouse is outside the view and
+  // the selection is actually cleared. When highlighted, the endpoint is 
+  // always drawn and clearly visible, even when some/all borders align with 
+  // the view's bounds, given that the bounds are not expanded.
+  if ( prevRect.size.width > 0 &&
+       (! NSEqualRects(prevRect, outerRect) || highlightPathEndPoint) ) {
     [[NSColor selectedControlColor] set];
 
     NSBezierPath  *path = [NSBezierPath bezierPathWithRect: prevRect];
+    
     [path setLineWidth: (highlightPathEndPoint ? 3 : 2)];
     [path stroke];
   }
@@ -56,6 +67,10 @@
 
 - (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
            depth: (int) depth {
+  if (outerRect.size.width < 0) {
+    outerRect = rect;
+  }
+           
   if (drawPathIndex >= [drawPath count] 
       || [drawPath objectAtIndex: drawPathIndex] != item) {
     return NO;
