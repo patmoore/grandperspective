@@ -5,15 +5,19 @@
 
 @interface MultiMatchStringTest (PrivateMethods) 
 
-// Not implemented. Needs to be provided by subclass.
-- (BOOL) testString:(NSString*)string matches:(NSString*)match;
+/* Not implemented. Needs to be provided by subclass.
+ */
+- (BOOL) testString: (NSString *)string matches: (NSString *)match;
 
-// Not implemented. Needs to be provided by subclass.
-//
-// It should return a string with two "%@" arguments. The first for the
-// subject of the test and the second for the description of the match
-// targets.
-- (NSString*) descriptionFormat;
+/* Not implemented. Needs to be provided by subclass.
+ *
+ * It should return a string with two "%@" arguments. The first for the
+ * subject of the test and the second for the description of the match targets.
+ *
+ * Furthermore, the descriptionFormat should somehow indicate whether or not 
+ * the matching is case-sensitive.
+ */
+- (NSString *) descriptionFormat;
 
 @end
 
@@ -82,7 +86,7 @@
 }
 
 
-- (NSArray*) matchTargets {
+- (NSArray *) matchTargets {
   return matches;
 }
 
@@ -103,8 +107,9 @@
 }
 
 
-- (NSString*) descriptionWithSubject: (NSString*)subject {
-  // TODO: Indicate in description if matching is case-sensitive
+- (NSString *) descriptionWithSubject: (NSString *)subject {
+  // Note: Whether or not the matching is case-sensitive is not indicated here.
+  // This is the responsibility of the descriptionFormat method. 
 
   NSString  *matchesDescr = descriptionForMatches( matches );
   NSString  *format = [self descriptionFormat];
