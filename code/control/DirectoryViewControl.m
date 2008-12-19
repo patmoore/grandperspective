@@ -33,6 +33,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @interface DirectoryViewControl (PrivateMethods)
 
+- (void) informativeAlertDidEnd: (NSAlert *)alert 
+           returnCode: (int) returnCode contextInfo: (void *)contextInfo;
+
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo;
 - (void) deleteSelectedFile;
@@ -440,6 +443,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     // All went okay
     return;
   }
+  
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
   NSString  *msgFmt = 
@@ -459,8 +463,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [alert setMessageText: msg];
   [alert setInformativeText: NOTE_IT_MAY_NOT_EXIST_ANYMORE];
 
-  // TODO: Use a sheet instead?
-  [alert runModal];
+  [alert beginSheetModalForWindow: [self window] modalDelegate: self
+           didEndSelector: @selector(informativeAlertDidEnd: 
+                                       returnCode:contextInfo:) 
+           contextInfo: nil];
 }
 
 
@@ -513,8 +519,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [alert setMessageText: msg];
   [alert setInformativeText: NOTE_IT_MAY_NOT_EXIST_ANYMORE];
 
-  // TODO: Use a sheet instead?
-  [alert runModal];
+  [alert beginSheetModalForWindow: [self window] modalDelegate: self
+           didEndSelector: @selector(informativeAlertDidEnd: 
+                                       returnCode:contextInfo:) 
+           contextInfo: nil];
 }
 
 
@@ -727,6 +735,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation DirectoryViewControl (PrivateMethods)
 
+- (void) informativeAlertDidEnd: (NSAlert *)alert 
+           returnCode: (int) returnCode contextInfo: (void *)contextInfo {
+  [[alert window] orderOut: self];
+}
+
+
 - (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
            returnCode: (int) returnCode contextInfo: (void *)contextInfo {
   // Let the alert disappear, so that it is gone before the file is being
@@ -748,6 +762,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     // Note: Can always obtain the encompassing directory this way. The 
     // volume tree cannot be deleted so there is always a valid parent
     // directory.
+
   int  tag;
   if ([workspace performFileOperation: NSWorkspaceRecycleOperation
                    source: sourceDir
@@ -755,27 +770,31 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                    files: [NSArray arrayWithObject: [selectedFile name]]
                    tag: &tag]) {
     [treeContext deleteSelectedFileItem: pathModelView];
+    
+    return; // All went okay
   }
-  else {
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
-    NSString  *msgFmt = 
-      ( [selectedFile isDirectory] 
-        ? NSLocalizedString( @"Failed to delete the folder \"%@\"", 
-                             @"Alert message")
-        : NSLocalizedString( @"Failed to delete the file \"%@\"", 
-                             @"Alert message") );
-    NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
-    NSString  *info =
-      NSLocalizedString(@"Possible reasons are that it does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
-                        @"Alert message"); 
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  NSString  *msgFmt = 
+    ( [selectedFile isDirectory] 
+      ? NSLocalizedString( @"Failed to delete the folder \"%@\"", 
+                           @"Alert message")
+      : NSLocalizedString( @"Failed to delete the file \"%@\"", 
+                           @"Alert message") );
+  NSString  *msg = [NSString stringWithFormat: msgFmt, [selectedFile name]];
+  NSString  *info =
+    NSLocalizedString(@"Possible reasons are that it does not exist anymore (it may have been moved, renamed, or deleted by other means) or that you lack the required permissions.", 
+                      @"Alert message"); 
          
-    [alert addButtonWithTitle: OK_BUTTON_TITLE];
-    [alert setMessageText: msg];
-    [alert setInformativeText: info];
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert setMessageText: msg];
+  [alert setInformativeText: info];
 
-    [alert runModal];
-  }
+  [alert beginSheetModalForWindow: [self window] modalDelegate: self
+           didEndSelector: @selector(informativeAlertDidEnd: 
+                                       returnCode:contextInfo:) 
+           contextInfo: nil];
 }
 
 - (void) fileItemDeleted: (NSNotification *)notification {
