@@ -339,9 +339,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   //---------------------------------------------------------------- 
   // Miscellaneous initialisation
-  
-  // Change window's background color (which should only affect the statusbar)
-  [[self window] setBackgroundColor: [NSColor lightGrayColor]];
 
   [super windowDidLoad];
   
@@ -369,7 +366,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         name: FileItemDeletedEvent object: treeContext];
 
   [self visibleTreeChanged: nil];
-
+  
   // Set the window's initial size
   unzoomedViewSize = [initialSettings unzoomedViewSize];
   NSRect  frame = [[self window] frame];
@@ -384,13 +381,31 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 // Invoked because the controller is the delegate for the window.
-- (void) windowDidBecomeMain:(NSNotification*)notification {
+- (void) windowDidBecomeMain: (NSNotification *)notification {
   if (editMaskFilterWindowControl != nil &&
       [[editMaskFilterWindowControl window] isVisible]) {
     [[editMaskFilterWindowControl window] 
         orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
   }
+  
+  // Change window's background color (which should only affect the statusbar)
+  [[self window] setBackgroundColor: [NSColor lightGrayColor]];  
 }
+
+- (void) windowDidResignMain: (NSNotification *)notification {
+  float  h, s, b, a;
+  
+  [[[[self window] backgroundColor] 
+        colorUsingColorSpaceName: NSDeviceRGBColorSpace]
+          getHue: &h saturation: &s brightness: &b alpha: &a];
+            
+  NSColor  *inactiveBackgroundColor = 
+    [NSColor colorWithDeviceHue: h saturation: s 
+               brightness: 1 - 0.5 * (1-b) alpha: a];
+
+  [[self window] setBackgroundColor: inactiveBackgroundColor];  
+}
+
 
 // Invoked because the controller is the delegate for the window.
 - (void) windowWillClose:(NSNotification*)notification {
@@ -875,11 +890,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
         
       if ([relativeItemPath length] > visibleLen) {
         [attributedPath 
-           addAttribute: NSUnderlineStyleAttributeName
-             value: [NSNumber numberWithInt: NSUnderlineStyleSingle]
-             range: NSMakeRange(0, [relativeItemPath length] - visibleLen) ];
-        [attributedPath 
-           addAttribute: NSUnderlineColorAttributeName
+           addAttribute: NSForegroundColorAttributeName
              value: [NSColor darkGrayColor] 
              range: NSMakeRange(0, [relativeItemPath length] - visibleLen) ];
       }
