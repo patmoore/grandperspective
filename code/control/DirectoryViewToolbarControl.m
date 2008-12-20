@@ -41,6 +41,10 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 
 - (BOOL) validateAction: (SEL)action;
 
+
+- (void) zoom: (id) sender;
+- (void) focus: (id) sender;
+
 - (void) zoomOut: (id) sender;
 - (void) zoomIn: (id) sender;
 
@@ -116,14 +120,17 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
   [zoomControls setCell: 
      [[[ToolbarSegmentedCell alloc] 
           initWithSegmentedCell: [zoomControls cell]] autorelease]];
-  [zoomControls setTarget: self];
-  [zoomControls setAction: @selector(zoomAction:)];
-  
   [focusControls setCell: 
      [[[ToolbarSegmentedCell alloc] 
           initWithSegmentedCell: [focusControls cell]] autorelease]];
+
+  // Set the actions for the controls. This is not done in Interface Builder 
+  // as changing the cells resets it again. Furthermore, might as well do it
+  // here once, as opposed to in all (localized) versions of the NIB file.
+  [zoomControls setTarget: self];
+  [zoomControls setAction: @selector(zoom:)];  
   [focusControls setTarget: self];
-  [focusControls setAction: @selector(focusAction:)];
+  [focusControls setAction: @selector(focus:)];
   
   signed int  i;
   
@@ -214,36 +221,6 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
                       NSToolbarSeparatorItemIdentifier, 
                       NSToolbarSpaceItemIdentifier, 
                       NSToolbarFlexibleSpaceItemIdentifier, nil];
-}
-
-
-- (IBAction) zoomAction: (id) sender {
-  int  selected = [sender selectedSegment];
-
-  if (selected == zoomInSegment) {
-    [self zoomIn: sender];
-  }
-  else if (selected == zoomOutSegment) {
-    [self zoomOut: sender];
-  }
-  else {
-    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
-  }
-}
-
-
-- (IBAction) focusAction: (id) sender {
-  int  selected = [sender selectedSegment];
-  
-  if ([sender selectedSegment] == focusDownSegment) {
-    [self moveFocusDown: sender];
-  }
-  else if ([sender selectedSegment] == focusUpSegment) {
-    [self moveFocusUp: sender];
-  }
-  else {
-    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
-  }
 }
 
 @end
@@ -480,6 +457,36 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   }
   else {
     NSLog(@"Unrecognized action %@", NSStringFromSelector(action));
+  }
+}
+
+
+- (void) zoom: (id) sender {
+  int  selected = [sender selectedSegment];
+
+  if (selected == zoomInSegment) {
+    [self zoomIn: sender];
+  }
+  else if (selected == zoomOutSegment) {
+    [self zoomOut: sender];
+  }
+  else {
+    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
+  }
+}
+
+
+- (void) focus: (id) sender {
+  int  selected = [sender selectedSegment];
+  
+  if ([sender selectedSegment] == focusDownSegment) {
+    [self moveFocusDown: sender];
+  }
+  else if ([sender selectedSegment] == focusUpSegment) {
+    [self moveFocusUp: sender];
+  }
+  else {
+    NSAssert1(NO, @"Unexpected selected segment: %d", selected);
   }
 }
 

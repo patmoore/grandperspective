@@ -19,7 +19,4 @@
 
 }
 
-- (IBAction) zoomAction: (id) sender;
-- (IBAction) focusAction: (id) sender;
-
 @end
