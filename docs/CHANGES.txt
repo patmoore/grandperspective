@@ -14,7 +14,11 @@ New functionality:
     existing "Reveal in Finder" action).
 
 Minor improvements:
-- Added menu item for visiting the GrandPerspective website.
+- Improvements to look of main window:
+  - Moved info about selected item to statusbar.
+  - Removed borders around view.
+  - Not showing rectangle around outermost item in the selected path
+    unless necessary.
 - Positioning newly opened view windows so they cascade.
 - When creating a derived view window its size matches that of the 
   original window.
@@ -27,7 +31,13 @@ Minor improvements:
   file after moving selection down a level.
 - When resizing the window the view is still being shown.
 - Added keyboard shortcuts for zooming.
+- Added menu item for visiting the GrandPerspective website.
 - Improvements to implementation of selection following mouse.
+- Now also setting hardlink and package status for root of scan tree.
+- Showing an alert when an invalid date value is encountered when
+  loading scan data.
+- Alerts created by a view window are now all shown as sheets of that
+  window.
 - The initial size of windows and the color gradient for drawing
   rectangles in the view are now taken from the user defaults.
 - Moved description of file type in Focus panel from separate text
