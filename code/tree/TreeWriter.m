@@ -118,7 +118,7 @@ NSString *escapedAttributeValue(NSString *s) {
 
   [progressTracker startingTask];
   
-  file = fopen( [filename cString], "w");
+  file = fopen( [filename UTF8String], "w");
   if (file == NULL) {
     return NO;
   }
