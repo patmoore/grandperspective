@@ -1,8 +1,8 @@
 #!/bin/bash
 
-VERSION="1.00-rc2"
-VERSION_ID="1_00-rc2"
-REV=1044
+VERSION="1.00-rc3"
+VERSION_ID="1_00-rc3"
+REV=1058
 
 if [ $# -ne "1" ]
 then
