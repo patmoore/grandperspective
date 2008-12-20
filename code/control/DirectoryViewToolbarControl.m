@@ -2,6 +2,7 @@
 
 #import "DirectoryViewControl.h"
 #import "DirectoryView.h"
+#import "ToolbarSegmentedCell.h"
 
 
 NSString  *ToolbarZoom = @"Zoom"; 
@@ -35,8 +36,8 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 - (NSToolbarItem *) deleteItemToolbarItem;
 - (NSToolbarItem *) toggleDrawerToolbarItem;
 
-- (id) validateZoomControls;
-- (id) validateFocusControls;
+- (id) validateZoomControls: (NSToolbarItem *)toolbarItem;
+- (id) validateFocusControls: (NSToolbarItem *)toolbarItem;
 
 - (BOOL) validateAction: (SEL)action;
 
@@ -91,8 +92,8 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
     dirViewControl = nil; // Will be set when loaded from nib.
     
     // Set defaults (can be overridden when segments are tagged)
-    zoomInSegment = 1;
-    zoomOutSegment = 0;
+    zoomInSegment = 0;
+    zoomOutSegment = 1;
     focusUpSegment = 0;
     focusDownSegment = 1;
   }
@@ -110,6 +111,19 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 - (void) awakeFromNib {
   // Not retaining it. It needs to be deallocated when the window is closed.
   dirViewControl = [dirViewWindow windowController];
+  
+  // Replace the cells, so that they always remain at normal size.
+  [zoomControls setCell: 
+     [[[ToolbarSegmentedCell alloc] 
+          initWithSegmentedCell: [zoomControls cell]] autorelease]];
+  [zoomControls setTarget: self];
+  [zoomControls setAction: @selector(zoomAction:)];
+  
+  [focusControls setCell: 
+     [[[ToolbarSegmentedCell alloc] 
+          initWithSegmentedCell: [focusControls cell]] autorelease]];
+  [focusControls setTarget: self];
+  [focusControls setAction: @selector(focusAction:)];
   
   signed int  i;
   
@@ -249,7 +263,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   NSToolbarItem  *item = 
     [[[ValidatingToolbarItem alloc] 
          initWithItemIdentifier: ToolbarZoom validator: self
-           validationSelector: @selector(validateZoomControls)]
+           validationSelector: @selector(validateZoomControls:)]
              autorelease];
              
   NSString  *title = 
@@ -297,7 +311,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   NSToolbarItem  *item = 
     [[[ValidatingToolbarItem alloc] 
          initWithItemIdentifier: ToolbarFocus validator: self
-           validationSelector: @selector(validateFocusControls)]
+           validationSelector: @selector(validateFocusControls:)]
              autorelease];
              
   NSString  *title = 
@@ -412,22 +426,22 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 
-- (id) validateZoomControls {
+- (id) validateZoomControls: (NSToolbarItem *)toolbarItem {
+  NSSegmentedControl  *control = (NSSegmentedControl *)[toolbarItem view];
   DirectoryView  *dirView = [dirViewControl directoryView];
 
-  [zoomControls setEnabled: [dirView canZoomOut] forSegment: zoomOutSegment];
-  [zoomControls setEnabled: [dirView canZoomIn]  forSegment: zoomInSegment];
+  [control setEnabled: [dirView canZoomOut] forSegment: zoomOutSegment];
+  [control setEnabled: [dirView canZoomIn]  forSegment: zoomInSegment];
 
   return self; // Always enable the overall control
 }
 
-- (id) validateFocusControls {
+- (id) validateFocusControls: (NSToolbarItem *)toolbarItem {
+  NSSegmentedControl  *control = (NSSegmentedControl *)[toolbarItem view];
   DirectoryView  *dirView = [dirViewControl directoryView];
 
-  [focusControls setEnabled: [dirView canMoveFocusUp]
-                   forSegment: focusUpSegment];
-  [focusControls setEnabled: [dirView canMoveFocusDown]
-                   forSegment: focusDownSegment];
+  [control setEnabled: [dirView canMoveFocusUp]   forSegment: focusUpSegment];
+  [control setEnabled: [dirView canMoveFocusDown] forSegment: focusDownSegment];
 
   return self; // Always enable the overall control
 }
@@ -558,7 +572,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (void) validate {
   // Any non-nil value means that the control should be enabled.
-  [self setEnabled: [validator performSelector: validationSelector] != nil];
+  [self setEnabled: [validator performSelector: validationSelector
+                                 withObject: self] != nil];
 }
 
 @end // @implementation ValidatingToolbarItem

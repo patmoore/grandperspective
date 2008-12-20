@@ -103,6 +103,7 @@
 		AA9881BC0DF57C6B00A6EA33 /* StringPrefixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B40DF57C6B00A6EA33 /* StringPrefixTest.m */; };
 		AA9881BD0DF57C6B00A6EA33 /* StringSuffixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B60DF57C6B00A6EA33 /* StringSuffixTest.m */; };
 		AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */; };
+		AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */; };
 		AAAB9A700EF3D38F00B3C482 /* RevealInFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */; };
 		AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */; };
 		AAB35D400A33057E006535FF /* EditFilterWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */; };
@@ -317,6 +318,8 @@
 		AA9881B70DF57C6B00A6EA33 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = test/strings/StringTest.h; sourceTree = "<group>"; };
 		AA9882BD0DF71B8900A6EA33 /* ItemSizeTestFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTestFinder.h; path = test/ItemSizeTestFinder.h; sourceTree = "<group>"; };
 		AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTestFinder.m; path = test/ItemSizeTestFinder.m; sourceTree = "<group>"; };
+		AAA6E72B0EFD29CB00B4E71E /* ToolbarSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ToolbarSegmentedCell.h; path = util/ToolbarSegmentedCell.h; sourceTree = "<group>"; };
+		AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ToolbarSegmentedCell.m; path = util/ToolbarSegmentedCell.m; sourceTree = "<group>"; };
 		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
 		AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = RevealInFinder.png; path = Images/RevealInFinder.png; sourceTree = "<group>"; };
 		AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = OpenWithFinder.png; path = Images/OpenWithFinder.png; sourceTree = "<group>"; };
@@ -595,6 +598,8 @@
 				AAB52EBA0E4F8DFE00BF7B20 /* ObjectPool.m */,
 				AAB52EC10E520E7A00BF7B20 /* MutableArrayPool.h */,
 				AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */,
+				AAA6E72B0EFD29CB00B4E71E /* ToolbarSegmentedCell.h */,
+				AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -915,6 +920,7 @@
 				AAB52EBB0E4F8DFE00BF7B20 /* ObjectPool.m in Sources */,
 				AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */,
 				AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */,
+				AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
