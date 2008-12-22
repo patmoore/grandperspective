@@ -72,7 +72,7 @@ more general feedback, etc.
 * CREDITS
 
 Special thanks to all that have provided localizations of the 
-application: Chris Li, Javier Alfonso, Maxime Hadjinlian and Helge 
+application: Chris Li, Maxime Hadjinlian, Javier Alfonso and Helge 
 Baumann.
 
 Many thanks to everyone that has shown support by making donations. 
@@ -88,9 +88,9 @@ icons, two of which I used for the toolbar (the images for the Reveal
 and Delete actions to be precise; the Open icon is my own concoction).
 
 Thanks to the many users that have reported bugs and suggested
-improvements, many of which have been taken into account. This has
-definitely made the application better than it would otherwise have
-been.
+improvements. This has definitely made the application better than it
+would otherwise have been. Lucky0 deserves a special mention for the 
+amount of useful feedback given. 
 
 Finally thanks to all that have helped to get the word out about the
 application. Developing the application may be fun, but having actual
