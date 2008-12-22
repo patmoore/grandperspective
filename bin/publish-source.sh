@@ -1,8 +1,7 @@
 #!/bin/bash
 
-VERSION="1.00-rc3"
-VERSION_ID="1_00-rc3"
-REV=1058
+VERSION="1.0"
+REV=1073
 
 if [ $# -ne "1" ]
 then
@@ -19,8 +18,9 @@ then
 fi
 
 TEMP_PUBLISH_DIR=`mktemp -d ${TEMP_DIR}/publish-XXXXXX` || exit -1
-
 echo "Temporary output to" $TEMP_PUBLISH_DIR
+
+VERSION_ID=$( echo $VERSION | tr ". " "_-" )
 
 HELP_FOLDER=GrandPerspectiveHelp
 OUTER_DIR="GrandPerspective-${VERSION_ID}"

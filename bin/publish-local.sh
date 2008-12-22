@@ -5,10 +5,9 @@
 # it copies the application directly from it. Release text files and the
 # localized resources are taken from the SVN repository.
 
-VERSION="1.00-rc1"
-VERSION_ID="1_00-rc1"
-REV=1018
-NL_REV=1018
+VERSION="1.0"
+REV=1073
+NL_REV=1073
 
 if [ $# -ne "1" ]
 then
@@ -34,14 +33,17 @@ TEMP_PUBLISH_DIR=`mktemp -d ${TEMP_DIR}/publish-local-XXXXXX` || exit -1
 
 echo "Temporary output to" $TEMP_PUBLISH_DIR
 
+VERSION_ID=$( echo $VERSION | tr ". " "_-" )
+
 APP_FOLDER=GrandPerspective.app
 HELP_FOLDER=GrandPerspectiveHelp
 RESOURCES_PATH=$TEMP_PUBLISH_DIR/$APP_FOLDER/Contents/Resources
 
 OUT_DMG_FILE=GrandPerspective-${VERSION_ID}-local.dmg
+VOLUME_NAME="GrandPerspective ${VERSION} (Localized)"
 
 echo "Copying basic application."
-tar cf - -C /Volumes/GrandPerspective-${VERSION_ID} $APP_FOLDER | tar xf - -C $TEMP_PUBLISH_DIR
+tar cf - -C "/Volumes/GrandPerspective ${VERSION}" $APP_FOLDER | tar xf - -C $TEMP_PUBLISH_DIR
 
 echo "Exporting text files."
 ./export-docs.sh trunk/docs $REV $TEMP_PUBLISH_DIR $VERSION $VERSION_ID
@@ -71,9 +73,9 @@ echo "Updating es help index."
 ./update-help-index.sh $RESOURCES_PATH/es.lproj/$HELP_FOLDER European
 
 # Remove unneeded nib files.
-#TEMP: find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
+find $RESOURCES_PATH/ \( -name classes.nib -or -name info.nib \) -delete
 
-/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -buildDir $DEST_PATH -volSize 4 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
+/Users/Erwin/bin/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volName "${VOLUME_NAME}" -buildDir $DEST_PATH -volSize 4 -compressionLevel 9 ${TEMP_PUBLISH_DIR}/*.txt ${TEMP_PUBLISH_DIR}/${APP_FOLDER}
 
 rm -rf $TEMP_PUBLISH_DIR
 

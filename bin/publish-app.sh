@@ -24,13 +24,14 @@ TMP=${SOURCE_TGZ##*/}
 TMP=${TMP#GrandPerspective-}
 VERSION_ID=${TMP%-src.tgz}
 
-echo "Version" $VERSION_ID
+VERSION=$( echo $VERSION_ID | tr "_" "." )
 
 BIN_DIR=`pwd`
 
 OUTER_DIR=GrandPerspective-${VERSION_ID}
 OUTER_DIR_PATH=$TEMP_PUBLISH_DIR/$OUTER_DIR
 OUT_DMG_FILE=GrandPerspective-${VERSION_ID}.dmg
+VOLUME_NAME="GrandPerspective ${VERSION}"
 
 echo "Extracting source archive"
 tar xzf $SOURCE_TGZ -C $TEMP_PUBLISH_DIR
@@ -39,14 +40,13 @@ rm -rf $OUTER_DIR_PATH/src
 
 echo "Copying application"
 mkdir $OUTER_DIR_PATH/GrandPerspective.app
-#TEMP: tar cf - -C ${APP_PATH} --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
-tar cf - -C ${APP_PATH} --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
+tar cf - -C ${APP_PATH} --exclude "classes.nib" --exclude "info.nib" --exclude "nl.lproj" . | tar xf - -C $OUTER_DIR_PATH/GrandPerspective.app
 
 
 # Create application DMG file.
 #
 pushd $DEST_PATH > /dev/null
-$BIN_DIR/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volSize 2 -compressionLevel 9 $OUTER_DIR_PATH/*.txt $OUTER_DIR_PATH/GrandPerspective.app
+$BIN_DIR/buildDMG.pl -dmgName ${OUT_DMG_FILE%.dmg} -volName "${VOLUME_NAME}" -volSize 2 -compressionLevel 9 $OUTER_DIR_PATH/*.txt $OUTER_DIR_PATH/GrandPerspective.app
 popd > /dev/null
 
 rm -rf $TEMP_PUBLISH_DIR
