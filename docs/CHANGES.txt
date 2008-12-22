@@ -3,7 +3,7 @@
 ======================================================================
 
 ----------------------------------------------------------------------
-  Version 1.00, ??-??-????
+  Version 1.0, 22-12-2008
 ----------------------------------------------------------------------
 
 New functionality:
@@ -14,7 +14,7 @@ New functionality:
     existing "Reveal in Finder" action).
 
 Minor improvements:
-- Improvements to look of main window:
+- Improvements to the appearance of the view window:
   - Moved info about selected item to statusbar.
   - Removed borders around view.
   - Not showing rectangle around outermost item in the selected path
@@ -32,12 +32,14 @@ Minor improvements:
 - When resizing the window the view is still being shown.
 - Added keyboard shortcuts for zooming.
 - Added menu item for visiting the GrandPerspective website.
-- Improvements to implementation of selection following mouse.
+- The selection only follows the mouse when the view window has main
+  status.
 - Now also setting hardlink and package status for root of scan tree.
 - Showing an alert when an invalid date value is encountered when
   loading scan data.
 - Alerts created by a view window are now all shown as sheets of that
   window.
+- Moved horizontal drawers away from the window's left edge.
 - The initial size of windows and the color gradient for drawing
   rectangles in the view are now taken from the user defaults.
 - Moved description of file type in Focus panel from separate text
@@ -45,7 +47,7 @@ Minor improvements:
 
 Bug fixes:
 - Included workaround for bug #2243134 (crash while scanning NTFS 
-  mounted filesystem)
+  mounted filesystem).
 - Coloring by Level would end up in endless loop for packages at 
   level zero when package contents were hidden. Not anymore.
 - Aborting a drawing task that was just about to complete could 
@@ -61,7 +63,6 @@ Code clean-up:
 
 Updated localizations:
 - Japanese, by Chris Li
-- Spanish, by Javier Alfonso
 - French, by Maxime Hadjinlian
 - Dutch, by Erwin Bonsma
 
