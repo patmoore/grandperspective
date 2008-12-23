@@ -448,6 +448,10 @@ static int  nextFilterId = 1;
   [openPanel setCanChooseDirectories: YES];
   [openPanel setAllowsMultipleSelection: NO];
   
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  [openPanel setTreatsFilePackagesAsDirectories: 
+               [userDefaults boolForKey: ShowPackageContentsByDefaultKey]];
+  
   [openPanel setTitle: NSLocalizedString(@"Scan folder", 
                                          @"Title of open panel") ];
   [openPanel setPrompt: NSLocalizedString(@"Scan", @"Prompt in open panel") ];
