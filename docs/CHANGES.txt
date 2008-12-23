@@ -3,6 +3,16 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.0 (localized), 22-12-2008
+----------------------------------------------------------------------
+
+Updated localizations:
+- Japanese, by Chris Li
+- French, by Maxime Hadjinlian
+- Dutch, by Erwin Bonsma
+
+
+----------------------------------------------------------------------
   Version 1.0, 22-12-2008
 ----------------------------------------------------------------------
 
@@ -60,11 +70,6 @@ Code clean-up:
 - Simplified abortion of background tasks (removed enabled state 
   from TaskExecutor).
 - Moved zoom and focus functionality to DirectoryView.
-
-Updated localizations:
-- Japanese, by Chris Li
-- French, by Maxime Hadjinlian
-- Dutch, by Erwin Bonsma
 
 
 ----------------------------------------------------------------------
