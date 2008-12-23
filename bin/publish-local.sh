@@ -5,8 +5,20 @@
 # it copies the application directly from it. Release text files and the
 # localized resources are taken from the SVN repository.
 
+# The version of the main (non-localized) release
 VERSION="1.0"
-REV=1073
+
+# The sub-version of this localized release (multiple localized versions
+# may be released for a given main release, as more localizations are 
+# provided over time)
+LOCAL_VERSION="1"
+
+# The revision to use for all 3rd party localizations
+REV=1075
+
+# The revision to use for the Dutch localization (it is specified 
+# separately, as revision REV may already include updates to the Dutch
+# resources that apply to the next main release of the application)
 NL_REV=1073
 
 if [ $# -ne "1" ]
@@ -34,13 +46,14 @@ TEMP_PUBLISH_DIR=`mktemp -d ${TEMP_DIR}/publish-local-XXXXXX` || exit -1
 echo "Temporary output to" $TEMP_PUBLISH_DIR
 
 VERSION_ID=$( echo $VERSION | tr ". " "_-" )
+LOCAL_VERSION_ID=$( echo $LOCAL_VERSION | tr ". " "_-" )
 
 APP_FOLDER=GrandPerspective.app
 HELP_FOLDER=GrandPerspectiveHelp
 RESOURCES_PATH=$TEMP_PUBLISH_DIR/$APP_FOLDER/Contents/Resources
 
-OUT_DMG_FILE=GrandPerspective-${VERSION_ID}-local.dmg
-VOLUME_NAME="GrandPerspective ${VERSION} (Localized)"
+OUT_DMG_FILE=GrandPerspective-${VERSION_ID}-L${LOCAL_VERSION_ID}.dmg
+VOLUME_NAME="GrandPerspective ${VERSION} (Localized v${LOCAL_VERSION})"
 
 echo "Copying basic application."
 tar cf - -C "/Volumes/GrandPerspective ${VERSION}" $APP_FOLDER | tar xf - -C $TEMP_PUBLISH_DIR
