@@ -1,0 +1,44 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>How to analyse Time Machine back-ups</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="Het inlezen van verborgen mappen.">
+<meta name="keywords" content="hoe, inlezen, verborgen, mappen">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>Het inlezen van verborgen mappen</h1>
+</div>
+
+<p>
+Wanneer GrandPerspective een map inleest worden alle bestanden en mappen waar u toegang toe heeft in beschouwing genomen.
+Hieronder vallen ook eventuele verborgen bestanden en mappen (bijvoorbeeld bestanden wiens naam met een punt beginnen zoals <tt>.DS_Store</tt>).
+Echter, als u slechts de inhoud van een specifieke verborgen map in wilt lezen, bijvoorbeeld de <tt>.Trash</tt> map in uw Thuismap, dan is dit ietwat lastig aangezien verborgen mappen standaard niet getoond worden wanneer u een map moet selecteren om in te lezen.
+Op één van onderstaande manieren kunt u echter de inhoud van een verborgen map inlezen:
+<p>
+
+<ul>
+<li>
+De eerste optie is door middel van de
+<img src="images/ks_command.gif" hspace=1/><img src="images/ks_shift.gif" hspace=1/><b>G</b>
+toetsencombinatie in het "Map inlezen" venster.
+U kunt dan vervolgens de naam van de map intypen om naartoe te gaan, zelfs als deze verborgen is.
+Vanuit uw Thuismap kunt u bijvoorbeeld <tt>.Trash</tt> intypen om de inhoud van uw Prullenmand in te lezen.
+</li>
+
+<li>
+De tweede optie is om uw voorkeuren zo in te stellen dat verborgen bestanden en mappen altijd getoond worden wanneer u een map moet selecteren om in te lezen.
+Hiertoe moet u de waarde van <tt>AppleShowAllFiles</tt> op TRUE zetten in de GrandPerspective gebruikers voorkeuren.
+Dit kan vanuit de Terminal alsvolgt gedaan worden:
+<tt>defaults write net.sourceforge.grandperspectiv AppleShowAllFiles TRUE</tt>.
+Zorg ervoor dat GrandPerspective niet draait wanneer u dit intypt, aangezien anders de kans groot is dat de wijziging ongedaan gemaakt wordt.
+</li>
+
+</body>
+</html>
+

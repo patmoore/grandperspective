@@ -1,0 +1,44 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>How to analyse Time Machine back-ups</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="How to scan hidden folders.">
+<meta name="keywords" content="how, to, howto, scan, hidden, folders">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>How to scan hidden folders</h1>
+</div>
+
+<p>
+When GrandPerspective scans a folder, it will include all files and folders that the user is allowed to access.
+This includes hidden files and folders (e.g. files whose name start with a dot such as <tt>.DS_Store</tt> files).
+However, if you only want to scan in the contents of a single hidden folder, e.g. the <tt>.Trash</tt> folder in your home directory, this is a bit more complicated, as by default hidden files are not shown in the Scan folder dialog.
+You can do one of the following to scan a hidden folder:
+<p>
+
+<ul>
+<li>
+The first option is to use the
+<img src="images/ks_command.gif" hspace=1/><img src="images/ks_shift.gif" hspace=1/><b>G</b>
+keyboard shortcut in the Scan folder dialog.
+This will let you enter the name of the folder to go to, even if it is hidden.
+For example, when you are in your home folder, you can enter <tt>.Trash</tt> to scan the contents of your Trash.
+</li>
+
+<li>
+Alternatively, you can change the preferences so that hidden files and folders are shown in the Scan folder dialog.
+To do so, you have to set <tt>AppleShowAllFiles</tt> to TRUE in the GrandPerspective user defaults.
+This can be done in the Terminal by entering the following:
+<tt>defaults write net.sourceforge.grandperspectiv AppleShowAllFiles TRUE</tt>.
+Please make sure that GrandPerspective is not running when you do this, otherwise there is a high chance that the change will be undone by the application.
+</li>
+
+</body>
+</html>
+
