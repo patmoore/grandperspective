@@ -5,6 +5,7 @@
 @interface CompoundItem : Item {
   Item*  first;
   Item*  second;
+  FILE_COUNT  numFiles;
 }
 
 /* Both items must be non-nil.

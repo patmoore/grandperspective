@@ -30,6 +30,7 @@
                                       [secondVal itemSize])]) {
     first = [firstVal retain];
     second = [secondVal retain];
+    numFiles = [first numFiles] + [second numFiles];
   }
 
   return self;
@@ -46,6 +47,11 @@
 
 - (NSString*) description {
   return [NSString stringWithFormat:@"CompoundItem(%@, %@)", first, second];
+}
+
+
+- (FILE_COUNT) numFiles {
+  return numFiles;
 }
 
 - (BOOL) isVirtual {

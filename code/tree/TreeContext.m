@@ -79,6 +79,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     volumeSize = volumeSizeVal;
     freeSpace = freeSpaceVal;
     freedSpace = 0;
+    freedFiles = 0;
     
     scanTime = [scanTimeVal retain];
 
@@ -213,6 +214,11 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   return freedSpace;
 }
 
+- (unsigned long long) freedFiles {
+  return freedFiles;
+}
+
+
 - (NSString*) fileSizeMeasure {
   return fileSizeMeasure;
 }
@@ -253,8 +259,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   
   replacedItem = [[pathModelView selectedFileItemInTree] retain];  
   replacingItem =
-    [[FileItem alloc] initWithName: ( [replacedItem isHardLinked] 
-                                      ? MiscUsedSpace : FreedSpace )
+    [[FileItem alloc] initWithName: FreedSpace
                         parent: [replacedItem parentDirectory] 
                         size: [replacedItem itemSize]
                         flags: FILE_IS_NOT_PHYSICAL];
@@ -454,23 +459,13 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   else {
     FileItem *fileItem = (FileItem *)item;
     
-    if ( [fileItem isHardLinked] ) {
-      // Do not increase the freed space. The item was hard-linked, which
-      // means that at the time of scanning, there were multiple references to
-      // the item. The free space will only increase when all references are
-      // deleted. As each hard-linked item is only included once in the tree, 
-      // it is impossible/difficult to check if all occurences have been 
-      // deleted (even though only one instance is included, the others could
-      // be deleted implicitly when a directory is deleted that includes all 
-      // instances). So for simplicity, deleted hard-linked items do never 
-      // increase the freed space count. This may in rare cases underestimate 
-      // the amount of freed space, but that's okay. It's over-estimation of
-      // the freed space that should be avoided, as it can cause visible 
-      // anomalies (i.e. freed space that is larger than the size of the
-      // scanned files). 
-      
-      return;
-    }
+    // Note: Deletion of hard-linked items is included in the freedSpace
+    // accounting, even though the free space on the harddrive won't be 
+    // increased until all instances have been deleted. The reason is that
+    // not doing can result in strange anonalies. For example, deleting a
+    // directory that contains one or more hard-linked files increases the
+    // freedSpace count by less than the size of the "freed space" block that
+    // replaces all files that have been deleted.
 
     if ( [fileItem isDirectory] ) {
       [self updateFreedSpaceForDeletedItem:
@@ -481,6 +476,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
         // The item is physical so we freed up some space. (Non-physical items,
         // including already freed space, should not be counted)
         freedSpace += [item itemSize];
+        freedFiles++;
       }
     }
   }

@@ -32,6 +32,10 @@
   return size;
 }
 
+- (FILE_COUNT) numFiles {
+  return 0;
+}
+
 
 - (BOOL) isVirtual {
   return NO;

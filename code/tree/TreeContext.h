@@ -16,6 +16,7 @@ extern NSString  *FileItemDeletedEvent;
   unsigned long long  volumeSize;
   unsigned long long  freeSpace;
   unsigned long long  freedSpace;
+  unsigned long long  freedFiles;
 
   DirectoryItem  *volumeTree;
   DirectoryItem  *usedSpaceItem;
@@ -98,6 +99,10 @@ extern NSString  *FileItemDeletedEvent;
 /* The space that has been freed using -deleteSelectedFileItem since the scan.
  */
 - (unsigned long long) freedSpace;
+
+/* The number of freed files
+ */
+- (unsigned long long) freedFiles;
 
 - (NSString*) fileSizeMeasure;
 

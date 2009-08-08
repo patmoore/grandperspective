@@ -322,6 +322,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                             [FileItem stringForFileItemSize: freeSpace]];
   [freedSpaceField setStringValue: 
                    [FileItem stringForFileItemSize: [treeContext freedSpace]]];
+  [numScannedFilesField setStringValue: 
+                [NSString stringWithFormat: @"%qu", [scanTree numFiles]]];
+  [numDeletedFilesField setStringValue:
+                [NSString stringWithFormat: @"%qu", [treeContext freedFiles]]];
+
                    
   //---------------------------------------------------------------- 
   // Configure the "Focus" panel
@@ -802,6 +807,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) fileItemDeleted: (NSNotification *)notification {
   [freedSpaceField setStringValue: 
                    [FileItem stringForFileItemSize: [treeContext freedSpace]]];
+  [numDeletedFilesField setStringValue:
+                [NSString stringWithFormat: @"%qu", [treeContext freedFiles]]];
 }
 
 

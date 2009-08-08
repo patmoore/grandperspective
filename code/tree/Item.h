@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 #define ITEM_SIZE  unsigned long long
+#define FILE_COUNT  unsigned long long
 
 
 @interface Item : NSObject {
@@ -21,6 +22,7 @@
 - (id) initWithItemSize:(ITEM_SIZE)size;
 
 - (ITEM_SIZE) itemSize;
+- (FILE_COUNT) numFiles;
 
 // An item is virtual if it is not a file item (i.e. a file or directory).
 - (BOOL) isVirtual;

@@ -101,6 +101,10 @@
 				<string>NSButton</string>
 				<key>miscUsedSpaceField</key>
 				<string>NSTextField</string>
+				<key>numDeletedFilesField</key>
+				<string>NSTextField</string>
+				<key>numScannedFilesField</key>
+				<string>NSTextField</string>
 				<key>scanPathTextView</key>
 				<string>NSTextView</string>
 				<key>scanTimeField</key>

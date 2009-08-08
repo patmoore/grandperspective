@@ -62,6 +62,10 @@
 }
 
 
+- (FILE_COUNT) numFiles {
+  return 1;
+}
+
 - (NSString*) name {
   return name;
 }

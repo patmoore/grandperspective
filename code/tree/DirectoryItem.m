@@ -23,7 +23,9 @@
   NSAssert(contents == nil, @"Contents should only be set once.");
   
   contents = [contentsVal retain];
-  size = (contents == nil) ? 0 : [contents itemSize];
+  if (contents != nil) {
+    size = [contents itemSize];
+  }
 }
 
 
@@ -61,6 +63,10 @@
                      [contents description]];
 }
 
+
+- (FILE_COUNT) numFiles {
+  return [contents numFiles];
+}
 
 - (BOOL) isDirectory {
   return YES;
