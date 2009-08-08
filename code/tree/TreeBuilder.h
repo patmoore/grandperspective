@@ -1,5 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
+#import "FileItem.h"
 
 extern NSString  *LogicalFileSize;
 extern NSString  *PhysicalFileSize;
@@ -20,7 +21,7 @@ extern NSString  *PhysicalFileSize;
 @interface TreeBuilder : NSObject {
 
   NSString  *fileSizeMeasure;
-  BOOL  useLogicalFileSize;
+  ITEM_SIZE  (*fileSizeMeasureFunction) (FSCatalogInfo *);
   
   BOOL  abort;
   FilteredTreeGuide  *treeGuide;

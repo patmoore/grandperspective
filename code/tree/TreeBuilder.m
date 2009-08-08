@@ -41,6 +41,15 @@ typedef struct  {
 } BulkCatalogInfo;
 
 
+ITEM_SIZE getLogicalFileSize(FSCatalogInfo *catalogInfo) {
+  return (catalogInfo->dataLogicalSize + catalogInfo->rsrcLogicalSize);
+}
+
+ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
+  return (catalogInfo->dataPhysicalSize + catalogInfo->rsrcPhysicalSize);
+}
+
+
 @interface TreeBuilder (PrivateMethods)
 
 - (BOOL) buildTreeForDirectory: (DirectoryItem *)dirItem 
@@ -143,8 +152,8 @@ typedef struct  {
 
   if (fileSizeMeasureNames == nil) {
     fileSizeMeasureNames = 
-      [[NSArray arrayWithObjects: LogicalFileSize, PhysicalFileSize, nil]
-         retain];
+      [[NSArray arrayWithObjects: LogicalFileSize, PhysicalFileSize, nil] 
+          retain];
   }
   
   return fileSizeMeasureNames;
@@ -179,6 +188,7 @@ typedef struct  {
     fileRefArray =     ((BulkCatalogInfo *)bulkCatalogInfo)->fileRefArray;
     namesArray =       ((BulkCatalogInfo *)bulkCatalogInfo)->namesArray;
     
+    fileSizeMeasureFunction = NULL;
     [self setFileSizeMeasure: LogicalFileSize];
   }
   return self;
@@ -208,10 +218,10 @@ typedef struct  {
 
 - (void) setFileSizeMeasure: (NSString *)measure {
   if ([measure isEqualToString: LogicalFileSize]) {
-    useLogicalFileSize = YES;
+    fileSizeMeasureFunction = &getLogicalFileSize;
   }
   else if ([measure isEqualToString: PhysicalFileSize]) {
-    useLogicalFileSize = NO;
+    fileSizeMeasureFunction = &getPhysicalFileSize;
   }
   else {
     NSAssert(NO, @"Invalid file size measure.");
@@ -446,10 +456,7 @@ typedef struct  {
         else {
           // A file node.
             
-          ITEM_SIZE  childSize = 
-            (useLogicalFileSize ? 
-              (catalogInfo->dataLogicalSize  + catalogInfo->rsrcLogicalSize) :
-              (catalogInfo->dataPhysicalSize + catalogInfo->rsrcPhysicalSize));
+          ITEM_SIZE  childSize = fileSizeMeasureFunction(catalogInfo);
             
           UniformType  *fileType = 
             [typeInventory uniformTypeForExtension: [childName pathExtension]];
