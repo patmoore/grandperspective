@@ -34,12 +34,10 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 - (void) postFileItemDeleted;
 - (void) fileItemDeletedHandled: (NSNotification *)notification;
 
-/* Recursively calculates the total size of all physical files inside the given
- * item. It excludes all "special" file items, including those representing
- * already freed space. This is required to accurately keep track of the total
- * freed space.
+/* Recursively updates the freed space count after the given item has been
+ * deleted.
  */
-- (ITEM_SIZE) totalPhysicalFileSize: (Item *)item;
+- (void) updateFreedSpaceForDeletedItem: (Item *)item;
 
 @end
 
@@ -288,16 +286,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   }  
   [self releaseWriteLock];
   
-  if (! [replacedItem isHardLinked]) {
-    freedSpace += [self totalPhysicalFileSize: replacedItem];
-  }
-  else {
-    // void. Do not increase the freed space. The item was hard-linked, which
-    // means that at the time of scanning, there were multiple references to
-    // the item. The free space will only increase when all references are
-    // deleted. As only one is included in the tree, this cannot be done  
-    // using only this tree.
-  }
+  [self updateFreedSpaceForDeletedItem: replacedItem];
 
   [self postFileItemDeleted];
 }
@@ -457,16 +446,43 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   replacingItem = nil;  
 }
 
-- (ITEM_SIZE) totalPhysicalFileSize: (Item *)item {
+- (void) updateFreedSpaceForDeletedItem: (Item *)item; {
   if ( [item isVirtual] ) {
-    return ( [self totalPhysicalFileSize: [((CompoundItem *)item) getFirst]] +
-             [self totalPhysicalFileSize: [((CompoundItem *)item) getSecond]] );
-  }
-  else if ( [((FileItem *)item) isDirectory] ) {
-    return [self totalPhysicalFileSize: [((DirectoryItem *)item) getContents]];
+    [self updateFreedSpaceForDeletedItem: [((CompoundItem *)item) getFirst]];
+    [self updateFreedSpaceForDeletedItem: [((CompoundItem *)item) getSecond]];
   }
   else {
-    return [((FileItem *)item) isPhysical] ? [item itemSize] : 0;
+    FileItem *fileItem = (FileItem *)item;
+    
+    if ( [fileItem isHardLinked] ) {
+      // Do not increase the freed space. The item was hard-linked, which
+      // means that at the time of scanning, there were multiple references to
+      // the item. The free space will only increase when all references are
+      // deleted. As each hard-linked item is only included once in the tree, 
+      // it is impossible/difficult to check if all occurences have been 
+      // deleted (even though only one instance is included, the others could
+      // be deleted implicitly when a directory is deleted that includes all 
+      // instances). So for simplicity, deleted hard-linked items do never 
+      // increase the freed space count. This may in rare cases underestimate 
+      // the amount of freed space, but that's okay. It's over-estimation of
+      // the freed space that should be avoided, as it can cause visible 
+      // anomalies (i.e. freed space that is larger than the size of the
+      // scanned files). 
+      
+      return;
+    }
+
+    if ( [fileItem isDirectory] ) {
+      [self updateFreedSpaceForDeletedItem:
+              [((DirectoryItem *)item) getContents]];
+    }
+    else {
+      if ([fileItem isPhysical] ) {
+        // The item is physical so we freed up some space. (Non-physical items,
+        // including already freed space, should not be counted)
+        freedSpace += [item itemSize];
+      }
+    }
   }
 }
 
