@@ -59,6 +59,10 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     pathDrawer = [[ItemPathDrawer alloc] init];
     
     scrollWheelDelta = 0;
+    
+    openFileEnabled = NO;
+    revealFileEnabled = NO;
+    deleteFileEnabled = NO;
   }
 
   return self;
@@ -180,6 +184,19 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     showEntireVolume = flag;
     [self forceRedraw];
   }
+}
+
+
+- (void) setOpenFileEnabled: (BOOL) flag {
+  openFileEnabled = flag;
+}
+
+- (void) setRevealFileEnabled: (BOOL) flag {
+  revealFileEnabled = flag;
+}
+
+- (void) setDeleteFileEnabled: (BOOL) flag {
+  deleteFileEnabled = flag;
 }
 
 
@@ -439,6 +456,39 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
   else {
     [[pathModelView pathModel] clearVisiblePath];
   }
+}
+
+
+- (NSMenu *)menuForEvent:(NSEvent *)theEvent {
+  NSMenu  *popUpMenu = 
+    [[[NSMenu alloc] initWithTitle: @"Contextual Menu"] autorelease];
+  int  itemCount = 0;
+
+  if (revealFileEnabled) {
+    [popUpMenu insertItemWithTitle: 
+                   NSLocalizedStringFromTable( @"Reveal in Finder", 
+                                               @"PopUpMenu", @"Menu item" )
+                 action: @selector(revealFileInFinder:) 
+                 keyEquivalent: @"" atIndex: itemCount++];
+  }
+  
+  if (openFileEnabled) {
+    [popUpMenu insertItemWithTitle: 
+                   NSLocalizedStringFromTable( @"Open with Finder", 
+                                               @"PopUpMenu", @"Menu item" )
+                 action: @selector(openFile:) 
+                 keyEquivalent: @"" atIndex: itemCount++];
+  }
+  
+  if (deleteFileEnabled) {
+    [popUpMenu insertItemWithTitle: 
+                   NSLocalizedStringFromTable( @"Delete file", 
+                                               @"PopUpMenu", @"Menu item" )
+                 action: @selector(deleteFile:) 
+                 keyEquivalent: @"" atIndex: itemCount++];
+  }
+  
+  return (itemCount > 0) ? popUpMenu : nil;
 }
 
 @end // @implementation DirectoryView

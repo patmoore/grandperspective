@@ -37,6 +37,10 @@ extern NSString  *ColorMappingChangedEvent;
   NSObject <FileItemMappingScheme>  *observedColorMapping;
 
   BOOL  showEntireVolume;
+
+  BOOL  openFileEnabled;
+  BOOL  revealFileEnabled;
+  BOOL  deleteFileEnabled;
   
   NSImage  *treeImage;
   
@@ -61,6 +65,10 @@ extern NSString  *ColorMappingChangedEvent;
 
 - (BOOL) showEntireVolume;
 - (void) setShowEntireVolume: (BOOL) flag;
+
+- (void) setOpenFileEnabled: (BOOL) flag;
+- (void) setRevealFileEnabled: (BOOL) flag;
+- (void) setDeleteFileEnabled: (BOOL) flag;
 
 - (TreeLayoutBuilder*) layoutBuilder;
 

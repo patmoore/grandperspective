@@ -389,6 +389,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   initialSettings = nil;
 }
 
+
 // Invoked because the controller is the delegate for the window.
 - (void) windowDidBecomeMain: (NSNotification *)notification {
   if (editMaskFilterWindowControl != nil &&
@@ -981,6 +982,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   // update its visible items (unnecessarily often it seems). Nevertheless, 
   // it's good to do so explicitly, in response to relevant events.
   [[[self window] toolbar] validateVisibleItems];
+  
+  [mainView setOpenFileEnabled: [self canOpenSelectedFile]];
+  [mainView setRevealFileEnabled: [self canRevealSelectedFile]];
+  [mainView setDeleteFileEnabled: [self canDeleteSelectedFile]];
 }
 
 
