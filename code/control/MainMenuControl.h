@@ -16,6 +16,8 @@
   PreferencesPanelControl  *preferencesPanelControl;
 }
 
++ (MainMenuControl *)singletonInstance;
+
 - (IBAction) scanDirectoryView: (id) sender;
 - (IBAction) scanFilteredDirectoryView: (id) sender;
 - (IBAction) rescanDirectoryView: (id) sender;

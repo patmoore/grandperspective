@@ -150,8 +150,15 @@ static int  nextFilterId = 1;
      withObject: uniformTypeInventory waitUntilDone: NO];
 }
 
+static MainMenuControl  *singletonInstance = nil;
+
++ (MainMenuControl *)singletonInstance {
+  return singletonInstance;
+}
 
 - (id) init {
+  NSAssert(singletonInstance == nil, @"Can only create one MainMenuControl.");
+
   if (self = [super init]) {
     windowManager = [[WindowManager alloc] init];  
 
@@ -191,10 +198,15 @@ static int  nextFilterId = 1;
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: readProgressPanelControl];
   }
+  
+  singletonInstance = self;
+  
   return self;
 }
 
 - (void) dealloc {
+  singletonInstance = nil;
+
   [windowManager release];
   
   [scanTaskManager dispose];
@@ -850,7 +862,8 @@ static int  nextFilterId = 1;
   [path suppressVisibleTreeChangedNotifications: NO];
 
   return [[[DirectoryViewControl alloc] 
-             initWithTreeContext: treeContext pathModel: path 
+             initWithTreeContext: treeContext
+               pathModel: path 
                settings: settings] autorelease];
 }
 

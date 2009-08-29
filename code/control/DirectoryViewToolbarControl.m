@@ -3,6 +3,7 @@
 #import "DirectoryViewControl.h"
 #import "DirectoryView.h"
 #import "ToolbarSegmentedCell.h"
+#import "MainMenuControl.h"
 
 
 NSString  *ToolbarZoom = @"Zoom"; 
@@ -10,6 +11,7 @@ NSString  *ToolbarFocus = @"Focus";
 NSString  *ToolbarOpenItem = @"OpenItem";
 NSString  *ToolbarRevealItem = @"RevealItem";
 NSString  *ToolbarDeleteItem = @"DeleteItem";
+NSString  *ToolbarRescan = @"Rescan";
 NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 
 
@@ -34,6 +36,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 - (NSToolbarItem *) openItemToolbarItem;
 - (NSToolbarItem *) revealItemToolbarItem;
 - (NSToolbarItem *) deleteItemToolbarItem;
+- (NSToolbarItem *) rescanToolbarItem;
 - (NSToolbarItem *) toggleDrawerToolbarItem;
 
 - (id) validateZoomControls: (NSToolbarItem *)toolbarItem;
@@ -54,6 +57,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 - (void) openFile: (id) sender;
 - (void) revealFile: (id) sender;
 - (void) deleteFile: (id) sender;
+- (void) rescan: (id) sender;
 
 @end
 
@@ -189,6 +193,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
             usingSelector: @selector(revealItemToolbarItem)];
     [self createToolbarItem: ToolbarDeleteItem 
             usingSelector: @selector(deleteItemToolbarItem)];
+    [self createToolbarItem: ToolbarRescan 
+            usingSelector: @selector(rescanToolbarItem)];
     [self createToolbarItem: ToolbarToggleDrawer
             usingSelector: @selector(toggleDrawerToolbarItem)];
   }
@@ -217,6 +223,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
     return [NSArray arrayWithObjects:
                       ToolbarZoom, ToolbarFocus,
                       ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem,
+                      ToolbarRescan,
                       ToolbarToggleDrawer, 
                       NSToolbarSeparatorItemIdentifier, 
                       NSToolbarSpaceItemIdentifier, 
@@ -385,6 +392,23 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   return item;
 }
 
+- (NSToolbarItem *) rescanToolbarItem {
+  NSToolbarItem  *item = 
+    [[[NSToolbarItem alloc] 
+         initWithItemIdentifier: ToolbarRescan] autorelease];
+
+  [item setLabel: NSLocalizedStringFromTable( @"Rescan", @"Toolbar",
+                                              @"Toolbar action" )];
+  [item setPaletteLabel: [item label]];
+  [item setToolTip: NSLocalizedStringFromTable( @"Rescan view data", 
+                                                @"Toolbar", @"Tooltip" ) ];
+  [item setImage: [NSImage imageNamed: @"Rescan"]];
+  [item setAction: @selector(rescan:) ];
+  [item setTarget: self];
+
+  return item;
+}
+
 - (NSToolbarItem *) toggleDrawerToolbarItem {
   NSToolbarItem  *item = 
     [[[NSToolbarItem alloc] initWithItemIdentifier: ToolbarToggleDrawer] 
@@ -455,6 +479,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   else if ( action == @selector(deleteFile:) ) {
     return [dirViewControl canDeleteSelectedFile];
   }
+  else if ( action == @selector(rescan:) ) {
+    return ( [[[NSApplication sharedApplication] mainWindow] windowController]
+             == dirViewControl );
+  }
   else {
     NSLog(@"Unrecognized action %@", NSStringFromSelector(action));
   }
@@ -519,6 +547,10 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 
 - (void) deleteFile: (id) sender {
   [dirViewControl deleteFile: sender];
+}
+
+- (void) rescan: (id) sender {
+  [[MainMenuControl singletonInstance] rescanDirectoryView: sender];
 }
 
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)
