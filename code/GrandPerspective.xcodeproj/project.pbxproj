@@ -19,6 +19,7 @@
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
 		AA2B48B610495BDB00B10262 /* Rescan.png in Resources */ = {isa = PBXBuildFile; fileRef = AA2B48B510495BDB00B10262 /* Rescan.png */; };
+		AA2B49B8104AEF9B00B10262 /* PopUpMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA2B49B6104AEF9B00B10262 /* PopUpMenu.strings */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
 		AA3B38E40D17EEF60070E889 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DC0D17EEF60070E889 /* FileItem.m */; };
@@ -149,6 +150,8 @@
 		AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NotifyingPanel.m; path = util/NotifyingPanel.m; sourceTree = "<group>"; };
 		AA21849D0A25FDDB000E1C8C /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
 		AA2B48B510495BDB00B10262 /* Rescan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Rescan.png; path = Images/Rescan.png; sourceTree = "<group>"; };
+		AA2B49B7104AEF9B00B10262 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PopUpMenu.strings; sourceTree = "<group>"; };
+		AA2B49B9104AEFB100B10262 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PopUpMenu.strings; sourceTree = "<group>"; };
 		AA311D380B88B48900BD4132 /* nl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = nl; path = nl.lproj/GrandPerspectiveHelp; sourceTree = "<group>"; };
 		AA3B38D70D17EEF60070E889 /* CompoundItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CompoundItem.h; path = tree/CompoundItem.h; sourceTree = "<group>"; };
 		AA3B38D80D17EEF60070E889 /* CompoundItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CompoundItem.m; path = tree/CompoundItem.m; sourceTree = "<group>"; };
@@ -450,6 +453,7 @@
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
 				AA8FEB290B6CC2D80049FF42 /* Names.strings */,
 				AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */,
+				AA2B49B6104AEF9B00B10262 /* PopUpMenu.strings */,
 				AADD34910B8B902000AC2C97 /* Tests.strings */,
 				AA1222580EF2A822002A178F /* Toolbar.strings */,
 				AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */,
@@ -823,6 +827,7 @@
 				AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */,
 				AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */,
 				AA2B48B610495BDB00B10262 /* Rescan.png in Resources */,
+				AA2B49B8104AEF9B00B10262 /* PopUpMenu.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -956,6 +961,15 @@
 				AAAB9A3E0EF3C25A00B3C482 /* nl */,
 			);
 			name = Toolbar.strings;
+			sourceTree = "<group>";
+		};
+		AA2B49B6104AEF9B00B10262 /* PopUpMenu.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA2B49B7104AEF9B00B10262 /* English */,
+				AA2B49B9104AEFB100B10262 /* nl */,
+			);
+			name = PopUpMenu.strings;
 			sourceTree = "<group>";
 		};
 		AA49218108DC10C9003E1652 /* DirectoryViewWindow.nib */ = {
