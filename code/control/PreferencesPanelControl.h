@@ -13,6 +13,8 @@ extern NSString  *ShowPackageContentsByDefaultKey;
 extern NSString  *ProgressPanelRefreshRateKey;
 extern NSString  *DefaultViewWindowWidth;
 extern NSString  *DefaultViewWindowHeight;
+extern NSString  *CustomFileOpenApplication;
+extern NSString  *CustomFileRevealApplication;
 
 
 @class EditUniformTypeRankingWindowControl;

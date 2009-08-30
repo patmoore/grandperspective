@@ -446,9 +446,21 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (IBAction) openFile: (id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
 
-  if ( [[NSWorkspace sharedWorkspace] openFile: [file path]] ) {
-    // All went okay
-    return;
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSString  *customApp = 
+    [userDefaults stringForKey: CustomFileOpenApplication];
+  NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
+
+  if ([customApp length] > 0) {
+    NSLog(@"Opening using customApp");
+    if ( [workspace openFile: [file path] withApplication: customApp] ) {
+      return; // All went okay
+    }
+  }
+  else {
+    if ( [workspace openFile: [file path]] ) {
+      return; // All went okay
+    }
   }
   
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];
@@ -479,34 +491,46 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (IBAction) revealFileInFinder: (id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
-  DirectoryItem  *package = nil;
   
-  // Work-around for bug/limitation of NSWorkSpace. It apparently cannot 
-  // select files that are inside a package, unless the package is the root
-  // path. So check if the selected file is inside a package. If so, use it
-  // as a root path.
-  DirectoryItem  *ancestor = [file parentDirectory];
-  while (ancestor != nil) {
-    if ( [ancestor isPackage] ) {
-      if (package != nil) {
-        // The package in which the selected item resides is inside a package
-        // itself. Open this inner package instead (as opening the selected
-        // file will not succeed).
-        file = package;
-      }
-      package = ancestor;
-    }
-    ancestor = [ancestor parentDirectory];
-  }
-  
-  NSString  *filePath = [file path];
-  NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSString  *customApp = 
+    [userDefaults stringForKey: CustomFileRevealApplication];
+  NSWorkspace  *workspace = [NSWorkspace sharedWorkspace];
 
-  if ( [[NSWorkspace sharedWorkspace] 
-           selectFile: filePath 
-           inFileViewerRootedAtPath: rootPath] ) {
-    // All went okay
-    return;
+  if ([customApp length] > 0) {
+    NSLog(@"Revealing using customApp %@.", customApp);
+    if ( [workspace openFile: [file path] withApplication: customApp] ) {
+      return; // All went okay
+    }
+  }
+  else {  
+    // Work-around for bug/limitation of NSWorkSpace. It apparently cannot 
+    // select files that are inside a package, unless the package is the root
+    // path. So check if the selected file is inside a package. If so, use it
+    // as a root path.
+    DirectoryItem  *ancestor = [file parentDirectory];
+    DirectoryItem  *package = nil;
+ 
+    while (ancestor != nil) {
+      if ( [ancestor isPackage] ) {
+        if (package != nil) {
+          // The package in which the selected item resides is inside a package
+          // itself. Open this inner package instead (as opening the selected
+          // file will not succeed).
+          file = package;
+        }
+        package = ancestor;
+      }
+      ancestor = [ancestor parentDirectory];
+    }
+      
+    NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
+
+    if ( [[NSWorkspace sharedWorkspace] 
+             selectFile: [file path] 
+             inFileViewerRootedAtPath: rootPath] ) {
+      return; // All went okay
+    }
   }
   
   NSAlert *alert = [[[NSAlert alloc] init] autorelease];

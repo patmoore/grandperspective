@@ -29,6 +29,8 @@ NSString  *DefaultColorGradient = @"defaultColorGradient";
 NSString  *ProgressPanelRefreshRateKey = @"progressPanelRefreshRate";
 NSString  *DefaultViewWindowWidth = @"defaultViewWindowWidth";
 NSString  *DefaultViewWindowHeight = @"defaultViewWindowHeight";
+NSString  *CustomFileOpenApplication = @"customFileOpenApplication";
+NSString  *CustomFileRevealApplication = @"customFileRevealApplication";
 
 
 @interface PreferencesPanelControl (PrivateMethods)
