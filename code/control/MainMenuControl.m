@@ -40,6 +40,11 @@
 #import "UniformTypeInventory.h"
 
 
+NSString  *RescanClosesOldWindow = @"close old window";
+NSString  *RescanKeepsOldWindow = @"keep old window";
+NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
+
+
 static int  nextFilterId = 1;
 
 
@@ -155,6 +160,13 @@ static MainMenuControl  *singletonInstance = nil;
 + (MainMenuControl *)singletonInstance {
   return singletonInstance;
 }
+
+
++ (NSArray *) rescanBehaviourNames {
+  return [NSArray arrayWithObjects: RescanClosesOldWindow, 
+                                    RescanKeepsOldWindow, nil];
+}
+
 
 - (id) init {
   NSAssert(singletonInstance == nil, @"Can only create one MainMenuControl.");
@@ -289,6 +301,12 @@ static MainMenuControl  *singletonInstance = nil;
 
   if (pathModel == nil) {
     return;
+  }
+  
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSString  *rescanBehaviour = [userDefaults stringForKey: RescanBehaviourKey];
+  if ([rescanBehaviour isEqualToString: RescanClosesOldWindow]) {
+    [[oldControl window] close];
   }
   
   DerivedDirViewWindowCreator  *windowCreator =

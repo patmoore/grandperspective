@@ -1,6 +1,7 @@
 #import "PreferencesPanelControl.h"
 
 #import "DirectoryViewControl.h"
+#import "MainMenuControl.h"
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "TreeBuilder.h"
@@ -12,6 +13,7 @@
 
 NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
 NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
+NSString  *RescanBehaviourKey = @"rescanBehaviour";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";
 NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
@@ -64,6 +66,8 @@ NSString  *DefaultViewWindowHeight = @"defaultViewWindowHeight";
   // Configure all pop-up buttons.
   [self setupPopUp: fileDeletionPopUp key: FileDeletionTargetsKey
           content: [DirectoryViewControl fileDeletionTargetNames]];
+  [self setupPopUp: rescanBehaviourPopUp key: RescanBehaviourKey
+          content: [MainMenuControl rescanBehaviourNames]];
   [self setupPopUp: fileSizeMeasurePopUp key: FileSizeMeasureKey
           content: [TreeBuilder fileSizeMeasureNames]];
   [self setupPopUp: defaultColorMappingPopUp key: DefaultColorMappingKey

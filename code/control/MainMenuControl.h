@@ -18,6 +18,8 @@
 
 + (MainMenuControl *)singletonInstance;
 
++ (NSArray *) rescanBehaviourNames;
+
 - (IBAction) scanDirectoryView: (id) sender;
 - (IBAction) scanFilteredDirectoryView: (id) sender;
 - (IBAction) rescanDirectoryView: (id) sender;

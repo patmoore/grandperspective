@@ -40,6 +40,8 @@
         <true/>
         <key>confirmFolderDeletion</key>
         <true/>
+        <key>rescanBehaviour</key>
+        <string>keep old window</string>
         <key>progressPanelRefreshRate</key>
         <real>0.25</real>
         <key>defaultColorPalette</key>

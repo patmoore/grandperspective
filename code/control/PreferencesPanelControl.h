@@ -4,6 +4,7 @@
 extern NSString  *FileDeletionTargetsKey;
 extern NSString  *ConfirmFileDeletionKey;
 extern NSString  *ConfirmFolderDeletionKey;
+extern NSString  *RescanBehaviourKey;
 extern NSString  *FileSizeMeasureKey;
 extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
@@ -20,6 +21,8 @@ extern NSString  *DefaultViewWindowHeight;
 
   IBOutlet NSPopUpButton  *fileDeletionPopUp;
   IBOutlet NSButton  *fileDeletionConfirmationCheckBox;
+  
+  IBOutlet NSPopUpButton  *rescanBehaviourPopUp;
   
   IBOutlet NSPopUpButton  *fileSizeMeasurePopUp;
 
