@@ -16,6 +16,7 @@
 #import "TreeWriter.h"
 #import "TreeReader.h"
 #import "TreeContext.h"
+#import "TreeBuilder.h"
 
 #import "WindowManager.h"
 
@@ -110,6 +111,8 @@ static int  nextFilterId = 1;
 @interface MainMenuControl (PrivateMethods)
 
 - (void) scanFolderUsingFilter: (BOOL) useFilter;
+- (void) scanFolder:(NSString *)path filter:(NSObject <FileItemTest> *)filter;
+
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
 
 - (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
@@ -209,6 +212,8 @@ static MainMenuControl  *singletonInstance = nil;
     readTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: readProgressPanelControl];
+          
+    scanAfterLaunch = YES; // Default
   }
   
   singletonInstance = self;
@@ -238,8 +243,18 @@ static MainMenuControl  *singletonInstance = nil;
   [super dealloc];
 }
 
+- (BOOL) application:(NSApplication *)theApplication 
+           openFile:(NSString *)filename {
+  if ([TreeBuilder pathIsDirectory:filename]) {
+    [self scanFolder: filename filter: nil];
+    scanAfterLaunch = NO;
+  }
+}
+
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
-  [self scanDirectoryView: self];
+  if (scanAfterLaunch) {
+    [self scanDirectoryView: self];
+  }
 }
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
@@ -491,9 +506,12 @@ static MainMenuControl  *singletonInstance = nil;
   }  
 
   NSString  *pathToScan = [[openPanel filenames] objectAtIndex: 0];
-  
   NSObject <FileItemTest>  *filter = useFilter ? [self getFilter: nil] : nil;
 
+  [self scanFolder: pathToScan filter: filter];
+}
+
+- (void) scanFolder:(NSString *)path filter:(NSObject <FileItemTest> *)filter {
   NSString  *fileSizeMeasure =
     [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
 
@@ -501,7 +519,7 @@ static MainMenuControl  *singletonInstance = nil;
     [[[FreshDirViewWindowCreator alloc] initWithWindowManager: windowManager]
          autorelease];
   ScanTaskInput  *input = 
-    [[[ScanTaskInput alloc] initWithPath: pathToScan
+    [[[ScanTaskInput alloc] initWithPath: path
                               fileSizeMeasure: fileSizeMeasure 
                               filterTest: filter] 
          autorelease];

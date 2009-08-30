@@ -14,6 +14,8 @@
   VisibleAsynchronousTaskManager  *readTaskManager;
   
   PreferencesPanelControl  *preferencesPanelControl;
+  
+  BOOL  scanAfterLaunch;
 }
 
 + (MainMenuControl *)singletonInstance;

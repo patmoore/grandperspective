@@ -159,6 +159,16 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   return fileSizeMeasureNames;
 }
 
++ (BOOL) pathIsDirectory: (NSString *)path {
+  FSRef  pathRef;
+  Boolean  isDir;
+
+  FSPathMakeRef( (const UInt8 *) [path fileSystemRepresentation], 
+                 &pathRef, &isDir );
+
+  return isDir;
+}
+
 
 - (id) init {
   return [self initWithFilteredTreeGuide: nil];
@@ -240,14 +250,12 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
 
 
 - (TreeContext *)buildTreeForPath: (NSString *)path {
-  FSRef  pathRef;
-  Boolean  isDir;
+  NSAssert([TreeBuilder pathIsDirectory: path], @"Path is not a directory.");
 
-  OSStatus  status = 
-    FSPathMakeRef( (const UInt8 *) [path fileSystemRepresentation], 
-	               &pathRef, &isDir );
-  NSAssert(isDir, @"Path is not a directory.");
-  
+  FSRef  pathRef;
+  FSPathMakeRef( (const UInt8 *) [path fileSystemRepresentation], 
+                 &pathRef, NULL );
+
   NSFileManager  *manager = [NSFileManager defaultManager];
   NSDictionary  *fsattrs = [manager fileSystemAttributesAtPath: path];
   

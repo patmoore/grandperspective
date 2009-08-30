@@ -48,6 +48,8 @@ extern NSString  *PhysicalFileSize;
 
 + (NSArray *) fileSizeMeasureNames;
 
++ (BOOL) pathIsDirectory: (NSString *)path;
+
 - (id) init;
 - (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuide;
 
