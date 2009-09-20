@@ -20,6 +20,7 @@
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
 		AA2B48B610495BDB00B10262 /* Rescan.png in Resources */ = {isa = PBXBuildFile; fileRef = AA2B48B510495BDB00B10262 /* Rescan.png */; };
 		AA2B49B8104AEF9B00B10262 /* PopUpMenu.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA2B49B6104AEF9B00B10262 /* PopUpMenu.strings */; };
+		AA2B4A0A104B122900B10262 /* AnnotatedTreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2B4A09104B122900B10262 /* AnnotatedTreeContext.m */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
 		AA3B38E40D17EEF60070E889 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DC0D17EEF60070E889 /* FileItem.m */; };
@@ -152,6 +153,8 @@
 		AA2B48B510495BDB00B10262 /* Rescan.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Rescan.png; path = Images/Rescan.png; sourceTree = "<group>"; };
 		AA2B49B7104AEF9B00B10262 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/PopUpMenu.strings; sourceTree = "<group>"; };
 		AA2B49B9104AEFB100B10262 /* nl */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/PopUpMenu.strings; sourceTree = "<group>"; };
+		AA2B4A08104B122900B10262 /* AnnotatedTreeContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AnnotatedTreeContext.h; path = tree/AnnotatedTreeContext.h; sourceTree = "<group>"; };
+		AA2B4A09104B122900B10262 /* AnnotatedTreeContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AnnotatedTreeContext.m; path = tree/AnnotatedTreeContext.m; sourceTree = "<group>"; };
 		AA311D380B88B48900BD4132 /* nl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = nl; path = nl.lproj/GrandPerspectiveHelp; sourceTree = "<group>"; };
 		AA3B38D70D17EEF60070E889 /* CompoundItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CompoundItem.h; path = tree/CompoundItem.h; sourceTree = "<group>"; };
 		AA3B38D80D17EEF60070E889 /* CompoundItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CompoundItem.m; path = tree/CompoundItem.m; sourceTree = "<group>"; };
@@ -537,6 +540,8 @@
 				AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */,
 				AA8877E80D0C0E3500F52571 /* TreeContext.h */,
 				AA8877E90D0C0E3500F52571 /* TreeContext.m */,
+				AA2B4A08104B122900B10262 /* AnnotatedTreeContext.h */,
+				AA2B4A09104B122900B10262 /* AnnotatedTreeContext.m */,
 				AA4030320A5B02F1004EAAF3 /* ItemPathModel.h */,
 				AA4030310A5B02F1004EAAF3 /* ItemPathModel.m */,
 				AA7B90680DD707F000488CAA /* ItemPathModelView.h */,
@@ -930,6 +935,7 @@
 				AAB52EC30E520E7A00BF7B20 /* MutableArrayPool.m in Sources */,
 				AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */,
 				AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */,
+				AA2B4A0A104B122900B10262 /* AnnotatedTreeContext.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

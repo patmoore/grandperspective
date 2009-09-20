@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class TreeContext;
+@class AnnotatedTreeContext;
 @class TreeBalancer;
 @class ProgressTracker;
 @class ObjectPool;
@@ -20,7 +21,7 @@
 }
 
 
-- (TreeContext *) readTreeFromFile: (NSString *)path;
+- (AnnotatedTreeContext *) readTreeFromFile: (NSString *)path;
 
 /* Aborts reading (when it is carried out in a different execution thread). 
  */

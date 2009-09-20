@@ -11,6 +11,7 @@
 #import "DirectoryViewControlSettings.h"
 #import "FileItemTest.h"
 #import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 #import "EditFilterWindowControl.h"
 #import "ColorLegendTableViewControl.h"
 #import "PreferencesPanelControl.h"
@@ -120,15 +121,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation DirectoryViewControl
 
-- (id) initWithTreeContext: (TreeContext *)treeContextVal {
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)annTreeContext {
   ItemPathModel  *pathModel = 
-    [[[ItemPathModel alloc] initWithTreeContext: treeContextVal] autorelease];
+    [[[ItemPathModel alloc] initWithTreeContext: 
+                              [annTreeContext treeContext]] autorelease];
 
   // Default settings
   DirectoryViewControlSettings  *defaultSettings =
     [[[DirectoryViewControlSettings alloc] init] autorelease];
 
-  return [self initWithTreeContext: treeContextVal
+  return [self initWithAnnotatedTreeContext: annTreeContext
                  pathModel: pathModel 
                  settings: defaultSettings];
 }
@@ -136,13 +138,15 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithTreeContext: (TreeContext *)treeContextVal
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)annTreeContext
          pathModel: (ItemPathModel *)pathModel
          settings: (DirectoryViewControlSettings *)settings {
   if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
-    NSAssert([pathModel volumeTree] == [treeContextVal volumeTree], 
+    treeContext = [[annTreeContext treeContext] retain];
+    NSAssert([pathModel volumeTree] == [treeContext volumeTree], 
                @"Tree mismatch");
-    treeContext = [treeContextVal retain];
+    initialComments = [[annTreeContext comments] retain];
+    
     pathModelView = [[ItemPathModelView alloc] initWithPathModel: pathModel];
     initialSettings = [settings retain];
 
@@ -173,6 +177,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [treeContext release];
   [pathModelView release];
   [initialSettings release];
+  [initialComments release];
   
   [fileItemMask release];
   
@@ -221,10 +226,14 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
          autorelease];
 }
 
-- (TreeContext*) treeContext {
+- (TreeContext *) treeContext {
   return treeContext;
 }
 
+- (AnnotatedTreeContext *) annotatedTreeContext {
+  return [AnnotatedTreeContext annotatedTreeContext: treeContext 
+                                 comments: [commentsTextView string]];
+}
 
 - (void) windowDidLoad {
   [mainView postInitWithPathModelView: pathModelView];
@@ -290,17 +299,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
   NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
-  if (filter != nil) {
-    [filterNameField setStringValue: [filter name]];
-    [filterDescriptionTextView setString: [filter description]];
-  }
-  else {
-    [filterNameField setStringValue: 
-       NSLocalizedString( @"None", 
-                          @"The filter name when there is no filter." ) ];
-    [filterDescriptionTextView setString: @""];
-  }
+  [filterNameField setStringValue: 
+    ( (filter != nil)
+      ? [filter name]
+      : NSLocalizedString( @"None", 
+                           @"The filter name when there is no filter." ) ) ];
 
+  [commentsTextView setString: initialComments];
   
   [scanTimeField setStringValue: [treeContext stringForScanTime]];
   [fileSizeMeasureField setStringValue: 
@@ -387,6 +392,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   
   [initialSettings release];
   initialSettings = nil;
+  
+  [initialComments release];
+  initialComments = nil;
 }
 
 

@@ -55,6 +55,8 @@ extern NSString  *VisiblePathLockingChangedEvent;
   BOOL  visiblePathLocked;
 }
 
++ (id) pathWithTreeContext: (TreeContext *)treeContext;
+
 - (id) initWithTreeContext: (TreeContext *)treeContext;
 
 

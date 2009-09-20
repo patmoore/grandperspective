@@ -3,6 +3,7 @@
 #import "TreeConstants.h"
 
 #import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 #import "DirectoryItem.h"
 #import "PlainFileItem.h"
 #import "CompoundItem.h"
@@ -235,7 +236,7 @@ NSString  *AttributeNameKey = @"name";
   [super dealloc];
 }
 
-- (TreeContext *) readTreeFromFile: (NSString *)path {
+- (AnnotatedTreeContext *) readTreeFromFile: (NSString *)path {
   NSAssert(parser == nil, @"Invalid state. Already reading?");
 
   // TODO: Using NSData loads the entire file into memory. It would be nice to
@@ -266,7 +267,8 @@ NSString  *AttributeNameKey = @"name";
   [tree autorelease]; // Not releasing, as "retVal" should remain valid.
   tree = nil;
   
-  return retVal;
+  // TODO: let it read in comments.
+  return [AnnotatedTreeContext annotatedTreeContext: retVal];
 }
 
 

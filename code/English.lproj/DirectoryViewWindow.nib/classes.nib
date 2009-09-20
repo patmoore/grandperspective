@@ -79,12 +79,12 @@
 				<string>NSPopUpButton</string>
 				<key>colorPalettePopUp</key>
 				<string>NSPopUpButton</string>
+				<key>commentsTextView</key>
+				<string>NSTextView</string>
 				<key>drawer</key>
 				<string>NSDrawer</string>
 				<key>fileSizeMeasureField</key>
 				<string>NSTextField</string>
-				<key>filterDescriptionTextView</key>
-				<string>NSTextView</string>
 				<key>filterNameField</key>
 				<string>NSTextField</string>
 				<key>freeSpaceField</key>

@@ -1,7 +1,7 @@
 #import "ScanTaskExecutor.h"
 
 #import "TreeBuilder.h"
-#import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 #import "ScanTaskInput.h"
 #import "FilteredTreeGuide.h"
 #import "ProgressTracker.h"
@@ -60,13 +60,13 @@
   else {
     NSLog(@"Scanning aborted.");
   }
-
+  
   [taskLock lock];
   [treeBuilder release];
   treeBuilder = nil;
   [taskLock unlock];
 
-  return scanResult;
+  return [AnnotatedTreeContext annotatedTreeContext: scanResult];  
 }
 
 - (void) abortTask {

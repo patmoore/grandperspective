@@ -16,6 +16,7 @@
 #import "TreeWriter.h"
 #import "TreeReader.h"
 #import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 #import "TreeBuilder.h"
 
 #import "WindowManager.h"
@@ -88,10 +89,10 @@ static int  nextFilterId = 1;
 
 - (id) initWithWindowManager: (WindowManager *)windowManager;
 
-- (void) createWindowForTree: (TreeContext *)treeContext;
+- (void) createWindowForTree: (AnnotatedTreeContext *)annTreeContext;
 
 - (DirectoryViewControl *) 
-     createDirectoryViewControlForTree: (TreeContext *)treeContext;
+     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext;
 
 @end // @interface FreshDirViewWindowCreator
 
@@ -394,7 +395,7 @@ static MainMenuControl  *singletonInstance = nil;
     [[[NSApplication sharedApplication] mainWindow] windowController];
     
   NSSavePanel  *savePanel = [NSSavePanel savePanel];  
-  [savePanel setRequiredFileType: @"xml"];
+  [savePanel setRequiredFileType: @"gpscan"];
   [savePanel setTitle: 
      NSLocalizedString( @"Save scan data", @"Title of save panel") ];
   
@@ -420,8 +421,10 @@ static MainMenuControl  *singletonInstance = nil;
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
     
-  NSOpenPanel  *openPanel = [NSOpenPanel openPanel];  
-  [openPanel setRequiredFileType: @"xml"];
+  NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
+  [openPanel setAllowedFileTypes: 
+               [NSArray arrayWithObjects: @"xml", @"gpscan", nil]];
+
   [openPanel setTitle: 
      NSLocalizedString( @"Load scan data", @"Title of load panel") ];
   
@@ -543,7 +546,7 @@ static MainMenuControl  *singletonInstance = nil;
 
   DirectoryViewControl  *newControl = 
     [[DirectoryViewControl alloc] 
-        initWithTreeContext: [oldControl treeContext]
+        initWithAnnotatedTreeContext: [oldControl annotatedTreeContext]
           pathModel: pathModel
           settings: [oldControl directoryViewControlSettings]];
   // Note: The control should auto-release itself when its window closes
@@ -654,7 +657,7 @@ static MainMenuControl  *singletonInstance = nil;
   if ( result == nil ) {
     // The task was aborted. Silently ignore.
   }
-  else if ([result isKindOfClass: [TreeContext class]]) {
+  else if ([result isKindOfClass: [AnnotatedTreeContext class]]) {
     FreshDirViewWindowCreator  *windowCreator =
       [[[FreshDirViewWindowCreator alloc] 
            initWithWindowManager: windowManager] autorelease];
@@ -764,14 +767,15 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) createWindowForTree: (TreeContext *)treeContext {
-  if (treeContext == nil) {
+- (void) createWindowForTree: (AnnotatedTreeContext *)annTreeContext {
+  if (annTreeContext == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
   }
   
   // If there is a filter, ensure it has a name
-  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];    
+  NSObject <FileItemTest>  *filter = 
+    [[annTreeContext treeContext] fileItemFilter];    
   if (filter != nil && [filter name] == nil) {
     NSString  *format = NSLocalizedString( @"Filter%d", 
                                            @"Filter naming template." );
@@ -781,7 +785,7 @@ static MainMenuControl  *singletonInstance = nil;
 
   // Note: The control should auto-release itself when its window closes  
   DirectoryViewControl  *dirViewControl = 
-    [[self createDirectoryViewControlForTree: treeContext] retain];
+    [[self createDirectoryViewControlForTree: annTreeContext] retain];
   
   NSString  *title = 
     [MainMenuControl windowTitleForDirectoryView: dirViewControl];
@@ -790,10 +794,10 @@ static MainMenuControl  *singletonInstance = nil;
   [windowManager addWindow: [dirViewControl window] usingTitle: title];
 }
 
-- (DirectoryViewControl*) 
-     createDirectoryViewControlForTree: (TreeContext *)treeContext {
+- (DirectoryViewControl *) 
+     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext {
   return [[[DirectoryViewControl alloc] 
-              initWithTreeContext: treeContext] autorelease];
+              initWithAnnotatedTreeContext: annTreeContext] autorelease];
 }
 
 @end // @implementation FreshDirViewWindowCreator
@@ -831,12 +835,12 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (DirectoryViewControl*) 
-     createDirectoryViewControlForTree: (TreeContext *)treeContext {
+- (DirectoryViewControl *) 
+     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext {
        
   // Try to match the path.
   ItemPathModel  *path = 
-    [[[ItemPathModel alloc] initWithTreeContext: treeContext] autorelease];
+    [ItemPathModel pathWithTreeContext: [annTreeContext treeContext]];
 
   [path suppressVisibleTreeChangedNotifications: YES];
 
@@ -898,7 +902,7 @@ static MainMenuControl  *singletonInstance = nil;
   [path suppressVisibleTreeChangedNotifications: NO];
 
   return [[[DirectoryViewControl alloc] 
-             initWithTreeContext: treeContext
+             initWithAnnotatedTreeContext: annTreeContext
                pathModel: path 
                settings: settings] autorelease];
 }

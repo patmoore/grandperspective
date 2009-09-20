@@ -50,6 +50,11 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 
 @implementation ItemPathModel
 
++ (id) pathWithTreeContext: (TreeContext *)treeContext {
+  return [[[ItemPathModel alloc] initWithTreeContext: treeContext] autorelease];
+}
+
+
 // Overrides super's designated initialiser.
 - (id) init {
   NSAssert(NO, @"Use -initWithTreeContext: instead.");

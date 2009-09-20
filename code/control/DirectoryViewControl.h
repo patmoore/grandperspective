@@ -16,6 +16,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class ColorLegendTableViewControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
+@class AnnotatedTreeContext;
 @class ItemInFocusControls;
 @protocol FileItemTest;
 
@@ -41,7 +42,7 @@ extern NSString  *DeleteFilesAndFolders;
   IBOutlet NSTextField  *volumeNameField;
   IBOutlet NSTextView  *scanPathTextView;
   IBOutlet NSTextField  *filterNameField;
-  IBOutlet NSTextView  *filterDescriptionTextView;
+  IBOutlet NSTextView  *commentsTextView;
   IBOutlet NSTextField  *scanTimeField;
   IBOutlet NSTextField  *fileSizeMeasureField;
   IBOutlet NSTextField  *volumeSizeField;
@@ -68,8 +69,13 @@ extern NSString  *DeleteFilesAndFolders;
   ItemInFocusControls  *selectedItemFocusControls;
 
   ItemPathModelView  *pathModelView;
-  DirectoryViewControlSettings  *initialSettings;
   TreeContext  *treeContext;
+
+  // The "initialSettings" and "initialComments" fields are only used between
+  // initialization and subsequent creation of the window. The are subsequently
+  // owned and managed by various GUI components.
+  DirectoryViewControlSettings  *initialSettings;
+  NSString  *initialComments;
 
   NSObject <FileItemTest>  *fileItemMask;
   
@@ -107,8 +113,8 @@ extern NSString  *DeleteFilesAndFolders;
 - (IBAction) showEntireVolumeCheckBoxChanged: (id) sender;
 - (IBAction) showPackageContentsCheckBoxChanged: (id) sender;
 
-- (id) initWithTreeContext: (TreeContext *)treeContext;
-- (id) initWithTreeContext: (TreeContext *)treeContext
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)treeContext;
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)treeContext
          pathModel: (ItemPathModel *)itemPathModel
          settings: (DirectoryViewControlSettings *)settings;
 
@@ -122,6 +128,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (DirectoryViewControlSettings*) directoryViewControlSettings;
 
 - (TreeContext*) treeContext;
+- (AnnotatedTreeContext *) annotatedTreeContext;
 
 - (BOOL) canOpenSelectedFile;
 - (BOOL) canRevealSelectedFile;

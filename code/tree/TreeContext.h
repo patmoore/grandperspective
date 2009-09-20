@@ -44,7 +44,7 @@ extern NSString  *FileItemDeletedEvent;
 }
 
 
-/* Creates a new tree context, without a scan time set to "now". 
+/* Creates a new tree context, with the scan time set to "now".
  */
 - (id) initWithVolumePath: (NSString *)volumePath
          fileSizeMeasure: (NSString *)fileSizeMeasure
@@ -70,8 +70,8 @@ extern NSString  *FileItemDeletedEvent;
  * the responsibility of the sender, after which it has to finalise the 
  * volume tree.
  *
- * Note: The returned object is not yet fully ready. The contents scanTree
- * of its scan tree need to be set, after which -postInit must be called.
+ * Note: The returned object is not yet fully ready. The contents of its scan 
+ * tree still need to be set using -setScanTree.
  */
 - (TreeContext *) contextAfterFiltering: (NSObject <FileItemTest> *)newFilter;
 
