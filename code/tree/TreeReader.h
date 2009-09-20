@@ -1,6 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-@class TreeContext;
 @class AnnotatedTreeContext;
 @class TreeBalancer;
 @class ProgressTracker;
@@ -9,7 +8,7 @@
 @interface TreeReader : NSObject {
 
   NSXMLParser  *parser;
-  TreeContext  *tree;
+  AnnotatedTreeContext  *tree;
 
   BOOL  abort;
   NSError  *error;

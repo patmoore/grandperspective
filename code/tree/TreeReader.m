@@ -126,23 +126,33 @@ NSString  *AttributeNameKey = @"name";
 
 
 @interface ScanDumpElementHandler : ElementHandler {
-  TreeContext  *tree;
+  AnnotatedTreeContext  *annotatedTree;
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingScanInfoElement: (TreeContext *) tree;
+           finishedParsingScanInfoElement: (AnnotatedTreeContext *) tree;
 
 @end // @interface ScanDumpElementHandler
 
 
 @interface ScanInfoElementHandler : ElementHandler {
+  NSString  *comments;
   TreeContext  *tree;
 }
 
 - (void) handler: (ElementHandler *)handler 
+           finishedParsingCommentsElement: (NSString *) comments;
+- (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem;
 
 @end // @interface ScanInfoElementHandler
+
+
+@interface ScanCommentsElementHandler : ElementHandler {
+  NSMutableString  *comments;
+}
+ 
+@end // @interface ScanCommentsElementHandler
 
 
 @interface FolderElementHandler : ElementHandler {
@@ -263,12 +273,11 @@ NSString  *AttributeNameKey = @"name";
   [parser release];
   parser = nil;
 
-  TreeContext  *retVal = (error!=nil || abort) ? nil : tree;
+  AnnotatedTreeContext  *retVal = (error!=nil || abort) ? nil : tree;
   [tree autorelease]; // Not releasing, as "retVal" should remain valid.
   tree = nil;
   
-  // TODO: let it read in comments.
-  return [AnnotatedTreeContext annotatedTreeContext: retVal];
+  return retVal;
 }
 
 
@@ -351,7 +360,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler
-           finishedParsingScanDumpElement: (TreeContext *)treeVal {
+           finishedParsingScanDumpElement: (AnnotatedTreeContext *)treeVal {
   [parser setDelegate: self];
   
   tree = [treeVal retain];
@@ -690,14 +699,14 @@ NSString  *AttributeNameKey = @"name";
          onSuccess: (SEL) successSelectorVal {
   if (self = [super initWithElement: elementNameVal reader: readerVal 
                       callback: callbackVal onSuccess: successSelectorVal]) {
-    tree = nil;
+    annotatedTree = nil;
   }
   
   return self;
 }
 
 - (void) dealloc {
-  [tree release];
+  [annotatedTree release];
   
   [super dealloc];
 }
@@ -715,7 +724,7 @@ NSString  *AttributeNameKey = @"name";
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: @"ScanInfo"]) {
-    if (tree != nil) {
+    if (annotatedTree != nil) {
       [self handlerError: 
               NSLocalizedString(@"Encountered more than one ScanInfo element.",
                                 @"Parse error")];  
@@ -733,14 +742,14 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  return tree;
+  return annotatedTree;
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingScanInfoElement: (TreeContext *) treeVal {
-  NSAssert(tree == nil, @"Tree not nil.");
+           finishedParsingScanInfoElement: (AnnotatedTreeContext *) treeVal {
+  NSAssert(annotatedTree == nil, @"Tree not nil.");
   
-  tree = [treeVal retain];
+  annotatedTree = [treeVal retain];
   
   [self handler: handler finishedParsingElement: treeVal];
 }
@@ -756,6 +765,7 @@ NSString  *AttributeNameKey = @"name";
          onSuccess: (SEL) successSelectorVal {
   if (self = [super initWithElement: elementNameVal reader: readerVal 
                       callback: callbackVal onSuccess: successSelectorVal]) {
+    comments = nil;
     tree = nil;
   }
   
@@ -763,6 +773,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) dealloc {
+  [comments release];
   [tree release];
   
   [super dealloc];
@@ -809,7 +820,20 @@ NSString  *AttributeNameKey = @"name";
   
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
-  if ([childElement isEqualToString: @"Folder"]) {
+  if ([childElement isEqualToString: @"ScanComments"]) {
+    if (comments != nil) {
+      [self handlerError: 
+         NSLocalizedString( @"Encountered more than one ScanComments element.",
+                            @"Parse error" )];
+    }
+    else {
+      [[[ScanCommentsElementHandler alloc]
+           initWithElement: childElement reader: reader callback: self
+           onSuccess: @selector(handler:finishedParsingCommentsElement:)]
+             handleAttributes: attribs];
+    }
+  }
+  else if ([childElement isEqualToString: @"Folder"]) {
     if ([[tree scanTree] getContents] != nil) {
       [self handlerError: 
               NSLocalizedString( @"Encountered more than one root folder.",
@@ -829,10 +853,16 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  return tree;
+  return [AnnotatedTreeContext annotatedTreeContext: tree comments: comments];
 }
 
 
+- (void) handler: (ElementHandler *)handler 
+           finishedParsingCommentsElement: (NSString *) commentsVal {
+  comments = [commentsVal retain];
+  
+  [self handler: handler finishedParsingElement: comments];
+}
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem {
@@ -842,6 +872,38 @@ NSString  *AttributeNameKey = @"name";
 }
   
 @end // @implementation ScanInfoElementHandler 
+
+
+@implementation ScanCommentsElementHandler 
+
+- (id) initWithElement: (NSString *)elementNameVal
+         reader: (TreeReader *)readerVal
+         callback: (id) callbackVal
+         onSuccess: (SEL) successSelectorVal {
+  if (self = [super initWithElement: elementNameVal reader: readerVal 
+                      callback: callbackVal onSuccess: successSelectorVal]) {
+    comments = [[NSMutableString alloc] initWithCapacity: 256];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [comments release];
+  
+  [super dealloc];
+}
+
+
+- (id) objectForElement {
+  return comments;
+}
+
+- (void)parser:(NSXMLParser *)parser foundCharacters:(NSString *)string {
+  [comments appendString: string];
+}
+
+@end // @implementation ScanCommentsElementHandler
 
 
 @implementation FolderElementHandler 
