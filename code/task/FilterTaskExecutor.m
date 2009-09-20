@@ -4,7 +4,6 @@
 #import "FilterTaskInput.h"
 #import "FilteredTreeGuide.h"
 #import "TreeContext.h"
-#import "AnnotatedTreeContext.h"
 
 
 @implementation FilterTaskExecutor
@@ -53,7 +52,7 @@
   treeFilter = nil;
   [taskLock unlock];
   
-  return [AnnotatedTreeContext annotatedTreeContext: filteredTree];
+  return filteredTree;
 }
 
 - (void) abortTask {

@@ -89,10 +89,11 @@ static int  nextFilterId = 1;
 
 - (id) initWithWindowManager: (WindowManager *)windowManager;
 
-- (void) createWindowForTree: (AnnotatedTreeContext *)annTreeContext;
+- (void) createWindowForTree: (TreeContext *)treeContext;
+- (void) createWindowForAnnotatedTree: (AnnotatedTreeContext *)annTreeContext;
 
-- (DirectoryViewControl *) 
-     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext;
+- (DirectoryViewControl *) createDirectoryViewControlForAnnotatedTree: 
+                             (AnnotatedTreeContext *)annTreeContext;
 
 @end // @interface FreshDirViewWindowCreator
 
@@ -662,7 +663,7 @@ static MainMenuControl  *singletonInstance = nil;
       [[[FreshDirViewWindowCreator alloc] 
            initWithWindowManager: windowManager] autorelease];
       
-    [windowCreator createWindowForTree: result];
+    [windowCreator createWindowForAnnotatedTree: result];
   }
   else if ([result isKindOfClass: [NSError class]]) {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
@@ -767,7 +768,12 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) createWindowForTree: (AnnotatedTreeContext *)annTreeContext {
+- (void) createWindowForTree: (TreeContext *)treeContext {
+  [self createWindowForAnnotatedTree: 
+          [AnnotatedTreeContext annotatedTreeContext: treeContext]];  
+}
+
+- (void) createWindowForAnnotatedTree: (AnnotatedTreeContext *)annTreeContext {
   if (annTreeContext == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
@@ -785,7 +791,7 @@ static MainMenuControl  *singletonInstance = nil;
 
   // Note: The control should auto-release itself when its window closes  
   DirectoryViewControl  *dirViewControl = 
-    [[self createDirectoryViewControlForTree: annTreeContext] retain];
+    [[self createDirectoryViewControlForAnnotatedTree: annTreeContext] retain];
   
   NSString  *title = 
     [MainMenuControl windowTitleForDirectoryView: dirViewControl];
@@ -794,8 +800,8 @@ static MainMenuControl  *singletonInstance = nil;
   [windowManager addWindow: [dirViewControl window] usingTitle: title];
 }
 
-- (DirectoryViewControl *) 
-     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext {
+- (DirectoryViewControl *) createDirectoryViewControlForAnnotatedTree:
+                             (AnnotatedTreeContext *)annTreeContext {
   return [[[DirectoryViewControl alloc] 
               initWithAnnotatedTreeContext: annTreeContext] autorelease];
 }
@@ -835,9 +841,8 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (DirectoryViewControl *) 
-     createDirectoryViewControlForTree:(AnnotatedTreeContext *)annTreeContext {
-       
+- (DirectoryViewControl *) createDirectoryViewControlForAnnotatedTree:
+                             (AnnotatedTreeContext *)annTreeContext {
   // Try to match the path.
   ItemPathModel  *path = 
     [ItemPathModel pathWithTreeContext: [annTreeContext treeContext]];

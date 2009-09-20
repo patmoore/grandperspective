@@ -1,7 +1,6 @@
 #import "ScanTaskExecutor.h"
 
 #import "TreeBuilder.h"
-#import "AnnotatedTreeContext.h"
 #import "ScanTaskInput.h"
 #import "FilteredTreeGuide.h"
 #import "ProgressTracker.h"
@@ -66,7 +65,7 @@
   treeBuilder = nil;
   [taskLock unlock];
 
-  return [AnnotatedTreeContext annotatedTreeContext: scanResult];  
+  return scanResult;
 }
 
 - (void) abortTask {
