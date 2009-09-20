@@ -238,7 +238,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
                                     ATTRIBUTE_ESCAPE_CHARS ),
         VolumeSizeAttr, [tree volumeSize],
         FreeSpaceAttr, ([tree freeSpace] + [tree freedSpace]),
-        ScanTimeAttr, [tree scanTime],
+        ScanTimeAttr, [[tree scanTime] description],
         FileSizeMeasureAttr, [tree fileSizeMeasure]]];
   
   [self appendScanCommentsElement: [annotatedTree comments]];
