@@ -15,6 +15,36 @@
 
 NSString  *TreeWriterFormatVersion = @"2";
 
+// XML elements
+NSString  *ScanDumpElem = @"GrandPerspectiveScanDump";
+NSString  *ScanInfoElem = @"ScanInfo";
+NSString  *ScanCommentsElem = @"ScanComments";
+NSString  *FolderElem = @"Folder";
+NSString  *FileElem = @"File";
+
+// XML attributes of GrandPerspectiveScanDump
+NSString  *AppVersionAttr = @"appVersion";
+NSString  *FormatVersionAttr = @"formatVersion";
+
+// XML attributes of GrandPerspectiveScanInfo
+NSString  *VolumePathAttr = @"volumePath";
+NSString  *VolumeSizeAttr = @"volumeSize";
+NSString  *FreeSpaceAttr = @"freeSpace";
+NSString  *ScanTimeAttr = @"scanTime";
+NSString  *FileSizeMeasureAttr = @"fileSizeMeasure";
+
+// XML attributes of Folder and File
+NSString  *NameAttr = @"name";
+NSString  *FlagsAttr = @"flags";
+NSString  *SizeAttr = @"size";
+
+// Localized error messages
+#define WRITING_LAST_DATA_FAILED \
+   NSLocalizedString(@"Failed to write last data to file.", @"Error message")
+#define WRITING_BUFFER_FAILED \
+   NSLocalizedString(@"Failed to write entire buffer.", @"Error message")
+
+
 #define  CHAR_AMPERSAND    0x01
 #define  CHAR_LESSTHAN     0x02
 #define  CHAR_DOUBLEQUOTE  0x04
@@ -147,8 +177,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
                 numWritten, dataBufferPos);
 
       error = [[ApplicationError alloc] initWithLocalizedDescription: 
-                  NSLocalizedString( @"Failed to write last data to file.", 
-                                     @"Error message" )];
+                  WRITING_LAST_DATA_FAILED];
     }
   }
   
@@ -186,34 +215,31 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
     [[[NSBundle mainBundle] infoDictionary] objectForKey: 
                                               @"CFBundleVersion"];
 
-  NSMutableString  *buf = [NSMutableString stringWithCapacity: 64];
-  [buf appendString: @"<GrandPerspectiveScanDump"];
-  [buf appendFormat: @" appVersion=\"%@\"", appVersion];
-  [buf appendFormat: @" formatVersion=\"%@\"", TreeWriterFormatVersion];
-  [buf appendString: @">\n"];  
-  [self appendString: buf];
+  [self appendString: 
+    [NSString stringWithFormat: @"<%@ %@=\"%@\" %@=\"%@\">\n", 
+       ScanDumpElem, 
+       AppVersionAttr, appVersion, 
+       FormatVersionAttr, TreeWriterFormatVersion]];
   
   [self appendScanInfoElement: annotatedTree];
   
-  [self appendString: @"</GrandPerspectiveScanDump>\n"];
+  [self appendString: [NSString stringWithFormat: @"</%@>\n", ScanDumpElem]];
 }
 
 
 - (void) appendScanInfoElement: (AnnotatedTreeContext *)annotatedTree {
   TreeContext  *tree = [annotatedTree treeContext];
 
-  NSMutableString  *buf = [NSMutableString stringWithCapacity: 256];
-  [buf appendString: @"<ScanInfo"];
-  [buf appendFormat: @" volumePath=\"%@\"", 
-                     escapedXML( [[tree volumeTree] name], 
-                                 ATTRIBUTE_ESCAPE_CHARS ) ];
-  [buf appendFormat: @" volumeSize=\"%qu\"", [tree volumeSize]];
-  [buf appendFormat: @" freeSpace=\"%qu\"", ( [tree freeSpace] + 
-                                              [tree freedSpace] )];
-  [buf appendFormat: @" scanTime=\"%@\"", [tree scanTime]];
-  [buf appendFormat: @" fileSizeMeasure=\"%@\"", [tree fileSizeMeasure]];
-  [buf appendString: @">\n"];
-  [self appendString: buf];
+  [self appendString: 
+     [NSString stringWithFormat: 
+        @"<%@ %@=\"%@\" %@=\"%qu\" %@=\"%qu\" %@=\"%@\" %@=\"%@\">\n", 
+        ScanInfoElem, 
+        VolumePathAttr, escapedXML( [[tree volumeTree] name], 
+                                    ATTRIBUTE_ESCAPE_CHARS ),
+        VolumeSizeAttr, [tree volumeSize],
+        FreeSpaceAttr, ([tree freeSpace] + [tree freedSpace]),
+        ScanTimeAttr, [tree scanTime],
+        FileSizeMeasureAttr, [tree fileSizeMeasure]]];
   
   [self appendScanCommentsElement: [annotatedTree comments]];
   
@@ -221,7 +247,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
   [self appendFolderElement: [tree scanTree]];
   [tree releaseReadLock];
   
-  [self appendString: @"</ScanInfo>\n"];
+  [self appendString: [NSString stringWithFormat: @"</%@>\n", ScanInfoElem]];
 }
 
 
@@ -230,10 +256,11 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
     return;
   }
 
-  NSString  *escapedComments = escapedXML(comments, CHARDATA_ESCAPE_CHARS);
-  [self appendString: @"<ScanComments>"];
-  [self appendString: escapedComments];
-  [self appendString: @"</ScanComments>\n"];
+  [self appendString: 
+     [NSString stringWithFormat: @"<%@>%@</%@>\n",
+        ScanCommentsElem,
+        escapedXML(comments, CHARDATA_ESCAPE_CHARS),
+        ScanCommentsElem]];
 }
 
 
@@ -244,15 +271,18 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
   [self appendString: 
           ( ([dirItem fileItemFlags] != 0) 
             ? [NSString stringWithFormat:
-                          @"<Folder name=\"%@\" flags=\"%d\">\n", 
-                          nameVal, [dirItem fileItemFlags]]
+                          @"<%@ %@=\"%@\" %@=\"%d\">\n", 
+                          FolderElem,
+                          NameAttr, nameVal, 
+                          FlagsAttr, [dirItem fileItemFlags]]
             : [NSString stringWithFormat:
-                          @"<Folder name=\"%@\">\n", 
-                         nameVal] )];
+                          @"<%@ %@=\"%@\">\n", 
+                          FolderElem,
+                          NameAttr, nameVal] )];
   
   [self dumpItemContents: [dirItem getContents]];
   
-  [self appendString: @"</Folder>\n"];
+  [self appendString: [NSString stringWithFormat: @"</%@>\n", FolderElem]];
   
   [progressTracker processedFolder: dirItem];
 }
@@ -263,12 +293,16 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
   [self appendString: 
           ( ([fileItem fileItemFlags] != 0) 
             ? [NSString stringWithFormat:
-                          @"<File name=\"%@\" size=\"%qu\" flags=\"%d\" />\n", 
-                         nameVal, [fileItem itemSize],
-                         [fileItem fileItemFlags]]
+                          @"<%@ %@=\"%@\" %@=\"%qu\" %@=\"%d\" />\n", 
+                          FileElem,
+                          NameAttr, nameVal, 
+                          SizeAttr, [fileItem itemSize],
+                          FlagsAttr, [fileItem fileItemFlags]]
             : [NSString stringWithFormat:
-                          @"<File name=\"%@\" size=\"%qu\" />\n", 
-                         nameVal, [fileItem itemSize]] )];
+                          @"<%@ %@=\"%@\" %@=\"%qu\" />\n", 
+                          FileElem,
+                          NameAttr, nameVal, 
+                          SizeAttr, [fileItem itemSize]] )];
 }
 
 
@@ -329,8 +363,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
         NSLog(@"Failed to write entire buffer, %d bytes written", numWritten);
         
         error = [[ApplicationError alloc] initWithLocalizedDescription: 
-                    NSLocalizedString( @"Failed to write entire buffer.", 
-                                       @"Error message" )];
+                    WRITING_BUFFER_FAILED];
         abort = YES;
         
         return; // Do not attempt anymore writes to file.

@@ -1,6 +1,30 @@
 #import <Cocoa/Cocoa.h>
 
 
+// XML elements
+extern NSString  *ScanDumpElem;
+extern NSString  *ScanInfoElem;
+extern NSString  *ScanCommentsElem;
+extern NSString  *FolderElem;
+extern NSString  *FileElem;
+
+// XML attributes of GrandPerspectiveScanDump
+extern NSString  *AppVersionAttr;
+extern NSString  *FormatVersionAttr;
+
+// XML attributes of GrandPerspectiveScanInfo
+extern NSString  *VolumePathAttr;
+extern NSString  *VolumeSizeAttr;
+extern NSString  *FreeSpaceAttr;
+extern NSString  *ScanTimeAttr;
+extern NSString  *FileSizeMeasureAttr;
+
+// XML attributes of Folder and File
+extern NSString  *NameAttr;
+extern NSString  *FlagsAttr;
+extern NSString  *SizeAttr;
+
+
 @class AnnotatedTreeContext;
 @class ProgressTracker;
 

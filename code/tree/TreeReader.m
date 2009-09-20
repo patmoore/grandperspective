@@ -11,6 +11,8 @@
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
 
+#import "TreeWriter.h"
+
 #import "AutoreleaseProgressTracker.h"
 
 #import "UniformTypeInventory.h"
@@ -19,6 +21,38 @@
 
 
 NSString  *AttributeNameKey = @"name";
+
+// Localized error messages
+#define PARSE_ERROR_MSG \
+  NSLocalizedString(@"Parse error (line %d): %@", @"Parse error")
+#define ATTR_PARSE_ERROR_MSG \
+  NSLocalizedString(@"Error parsing \"%@\" attribute: %@", @"Parse error")
+
+#define EXPECTED_ELEM_MSG \
+  NSLocalizedString(@"Expected %@ element.", @"Parse error")
+
+#define MULTIPLE_ELEM_MSG \
+  NSLocalizedString(@"Encountered multiple %@ elements.", @"Parse error")
+#define MULTIPLE_ROOT_ELEM_MSG \
+  NSLocalizedString(@"Encountered more than one root element.", @"Parse error")
+#define MULTIPLE_ROOT_FOLDER_MSG \
+  NSLocalizedString(@"Encountered more than one root folder.", @"Parse error")
+
+#define PARSING_ABORTED_MSG \
+  NSLocalizedString(@"Parsing aborted", @"Parse error")
+
+#define ATTR_NOT_FOUND_MSG \
+  NSLocalizedString(@"Attribute not found.", @"Parse error")
+
+#define EXPECTED_UINT_VALUE_MSG \
+  NSLocalizedString(@"Expected unsigned integer value.", @"Parse error")
+#define EXPECTED_INT_VALUE_MSG \
+  NSLocalizedString(@"Expected integer value.", @"Parse error")
+#define EXPECTED_DATE_VALUE_MSG \
+  NSLocalizedString(@"Expected date value.", @"Parse error")
+
+#define UNRECOGNIZED_VALUE_MSG \
+  NSLocalizedString(@"Unrecognized value.", @"Parse error")
 
 
 @interface TreeReader (PrivateMethods) 
@@ -315,16 +349,13 @@ NSString  *AttributeNameKey = @"name";
            attributes: (NSDictionary *)attribs {
   NSError  *parseError = nil;
   if (tree != nil) {
-    parseError = 
-      [ApplicationError errorWithLocalizedDescription:
-         NSLocalizedString( @"Encountered more than one root element.",
-                            @"Parse error" )];
+    parseError = [ApplicationError errorWithLocalizedDescription:
+                                     MULTIPLE_ROOT_ELEM_MSG];
   }
-  else if (! [elementName isEqualToString: @"GrandPerspectiveScanDump"]) {
+  else if (! [elementName isEqualToString: ScanDumpElem]) {
     parseError =
       [ApplicationError errorWithLocalizedDescription:
-         NSLocalizedString( @"Expected GrandPerspectiveScanDump element.",
-                            @"Parse error" )];
+         [NSString stringWithFormat: EXPECTED_ELEM_MSG, ScanDumpElem]];
   }
   
   if (parseError != nil) {
@@ -405,9 +436,7 @@ NSString  *AttributeNameKey = @"name";
      ) {
     error = 
       [[ApplicationError alloc] initWithLocalizedDescription:
-          [NSString stringWithFormat: 
-                      NSLocalizedString( @"Parse error (line %d): %@", 
-                                         @"Parse error" ), 
+          [NSString stringWithFormat: PARSE_ERROR_MSG, 
                       [parser lineNumber],
                       [parseError localizedDescription]]];
   }
@@ -454,8 +483,7 @@ NSString  *AttributeNameKey = @"name";
            attributes: (NSDictionary *)attribs {
   if ([reader isAborted]) {
     NSError  *error = 
-      [ApplicationError errorWithLocalizedDescription:
-         NSLocalizedString( @"Parsing aborted", @"Parse error" )];
+      [ApplicationError errorWithLocalizedDescription: PARSING_ABORTED_MSG];
     [callback handler: self failedParsingElement: error];
   }
   else {
@@ -538,10 +566,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handlerAttributeParseError: (NSException *)ex {
   NSString  *details = 
-    [NSString stringWithFormat:
-       NSLocalizedString( @"Error parsing \"%@\" attribute: %@", 
-                          @"Parse error" ),
-       [[ex userInfo] objectForKey: AttributeNameKey], [ex reason]];
+    [NSString stringWithFormat: ATTR_PARSE_ERROR_MSG,
+                [[ex userInfo] objectForKey: AttributeNameKey], [ex reason]];
        
   [self handlerError: details];
 }
@@ -558,11 +584,9 @@ NSString  *AttributeNameKey = @"name";
     return value;
   }  
 
-  NSString  *reason = 
-    NSLocalizedString(@"Attribute not found.", @"Parse error");
   NSException  *ex = 
-    [[[AttributeParseException alloc] initWithAttributeName: name
-                                          reason: reason] autorelease];
+    [[[AttributeParseException alloc]
+         initWithAttributeName: name reason: ATTR_NOT_FOUND_MSG] autorelease];
   @throw ex;
 }
 
@@ -641,10 +665,9 @@ NSString  *AttributeNameKey = @"name";
     unichar  ch = [stringValue characterAtIndex: i++];
     
     if (ch < '0' || ch > '9') {
-      NSString  *reason = 
-        NSLocalizedString(@"Expected unsigned integer value.", @"Parse error");
       NSException  *ex = [AttributeParseException 
-                            exceptionWithAttributeName: name reason: reason];
+                            exceptionWithAttributeName: name 
+                            reason: EXPECTED_UINT_VALUE_MSG];
       @throw ex;
     }
     
@@ -659,10 +682,9 @@ NSString  *AttributeNameKey = @"name";
   NSDate  *dateValue = [NSDate dateWithString: stringValue];
   
   if (dateValue == nil) {
-    NSString  *reason = 
-      NSLocalizedString(@"Expected date value.", @"Parse error");
     NSException  *ex = [AttributeParseException 
-                          exceptionWithAttributeName: name reason: reason];
+                          exceptionWithAttributeName: name 
+                          reason: EXPECTED_DATE_VALUE_MSG];
     @throw ex;
   }
 
@@ -678,10 +700,9 @@ NSString  *AttributeNameKey = @"name";
   [scanner release];
      
   if (! ok) {
-    NSString  *reason = 
-      NSLocalizedString(@"Expected integer value.", @"Parse error");
     NSException  *ex = [AttributeParseException 
-                          exceptionWithAttributeName: name reason: reason];
+                          exceptionWithAttributeName: name 
+                          reason: EXPECTED_INT_VALUE_MSG];
     @throw ex;
   }
   
@@ -723,11 +744,10 @@ NSString  *AttributeNameKey = @"name";
   
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
-  if ([childElement isEqualToString: @"ScanInfo"]) {
+  if ([childElement isEqualToString: ScanInfoElem]) {
     if (annotatedTree != nil) {
       [self handlerError: 
-              NSLocalizedString(@"Encountered more than one ScanInfo element.",
-                                @"Parse error")];  
+        [NSString stringWithFormat: MULTIPLE_ELEM_MSG, ScanInfoElem]];
     }
     else {
       [[[ScanInfoElementHandler alloc] 
@@ -785,23 +805,22 @@ NSString  *AttributeNameKey = @"name";
   
   @try {
     NSString  *volumePath = 
-      [self getStringAttributeValue: @"volumePath" from: attribs];
+      [self getStringAttributeValue: VolumePathAttr from: attribs];
     ITEM_SIZE  volumeSize = 
-      [self getItemSizeAttributeValue: @"volumeSize" from: attribs];
+      [self getItemSizeAttributeValue: VolumeSizeAttr from: attribs];
     ITEM_SIZE  freeSpace = 
-      [self getItemSizeAttributeValue: @"freeSpace" from: attribs];
+      [self getItemSizeAttributeValue: FreeSpaceAttr from: attribs];
     NSDate  *scanTime = 
-      [self getDateAttributeValue: @"scanTime" from: attribs];
+      [self getDateAttributeValue: ScanTimeAttr from: attribs];
     NSString  *sizeMeasure = 
-      [self getStringAttributeValue: @"fileSizeMeasure" from: attribs];
+      [self getStringAttributeValue: FileSizeMeasureAttr from: attribs];
 
     if (! ( [sizeMeasure isEqualToString: LogicalFileSize] ||
             [sizeMeasure isEqualToString: PhysicalFileSize] ) ) {
-      NSString  *reason = 
-        NSLocalizedString(@"Unrecognized value.", @"Parse error");
       NSException  *ex = 
-        [AttributeParseException exceptionWithAttributeName: @"fileSizeMeasure" 
-                                   reason: reason];
+        [AttributeParseException 
+           exceptionWithAttributeName: FileSizeMeasureAttr 
+           reason: UNRECOGNIZED_VALUE_MSG];
       @throw ex;
     }
   
@@ -820,11 +839,10 @@ NSString  *AttributeNameKey = @"name";
   
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
-  if ([childElement isEqualToString: @"ScanComments"]) {
+  if ([childElement isEqualToString: ScanCommentsElem]) {
     if (comments != nil) {
-      [self handlerError: 
-         NSLocalizedString( @"Encountered more than one ScanComments element.",
-                            @"Parse error" )];
+      [self handlerError:
+        [NSString stringWithFormat: MULTIPLE_ELEM_MSG, ScanCommentsElem]]; 
     }
     else {
       [[[ScanCommentsElementHandler alloc]
@@ -833,11 +851,9 @@ NSString  *AttributeNameKey = @"name";
              handleAttributes: attribs];
     }
   }
-  else if ([childElement isEqualToString: @"Folder"]) {
+  else if ([childElement isEqualToString: FolderElem]) {
     if ([[tree scanTree] getContents] != nil) {
-      [self handlerError: 
-              NSLocalizedString( @"Encountered more than one root folder.",
-                                 @"Parse error" )];
+      [self handlerError: MULTIPLE_ROOT_FOLDER_MSG];
     }
     else {
       [[[FolderElementHandler alloc] 
@@ -948,8 +964,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: @"name" from: attribs];
-    int  flags = [self getIntegerAttributeValue: @"flags"
+    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs];
+    int  flags = [self getIntegerAttributeValue: FlagsAttr
                          from: attribs defaultValue: 0];
 
     dirItem = [[DirectoryItem allocWithZone: [parentItem zone]]
@@ -963,14 +979,14 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
- if ([childElement isEqualToString: @"File"]) {
+ if ([childElement isEqualToString: FileElem]) {
     [[[FileElementHandler alloc] 
          initWithElement: childElement reader: reader callback: self 
            onSuccess: @selector(handler:finishedParsingFileElement:) 
            parent: dirItem]
              handleAttributes: attribs];
   }
-  else if ([childElement isEqualToString: @"Folder"]) {
+  else if ([childElement isEqualToString: FolderElem]) {
     [[[FolderElementHandler alloc] 
          initWithElement: childElement reader: reader callback: self 
            onSuccess: @selector(handler:finishedParsingFolderElement:) 
@@ -1046,10 +1062,10 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: @"name" from: attribs];
-    int  flags = [self getIntegerAttributeValue: @"flags"
+    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs];
+    int  flags = [self getIntegerAttributeValue: FlagsAttr
                          from: attribs defaultValue: 0];
-    ITEM_SIZE  size = [self getItemSizeAttributeValue: @"size" from: attribs];
+    ITEM_SIZE  size = [self getItemSizeAttributeValue: SizeAttr from: attribs];
     
     UniformTypeInventory  *typeInventory = 
       [UniformTypeInventory defaultUniformTypeInventory];
