@@ -5,10 +5,11 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithTreeContext:path: instead");
+  NSAssert(NO, @"Use initWithAnnotatedTreeContext:path: instead");
 }
 
-- (id) initWithTreeContext: (TreeContext *)context path: (NSString *)pathVal {
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)context 
+         path: (NSString *)pathVal {
   if (self = [super init]) {
     treeContext = [context retain];
     path = [pathVal retain];
@@ -24,7 +25,7 @@
   [super dealloc];
 }
 
-- (TreeContext *)treeContext {
+- (AnnotatedTreeContext *)annotatedTreeContext {
   return treeContext;
 }
 

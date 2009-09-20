@@ -4,6 +4,7 @@
 #import "CompoundItem.h"
 
 #import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 
 #import "ProgressTracker.h"
 
@@ -12,14 +13,22 @@
 
 #define  BUFFER_SIZE  4096
 
-NSString  *TreeWriterFormatVersion = @"1";
+NSString  *TreeWriterFormatVersion = @"2";
+
+#define  CHAR_AMPERSAND    0x01
+#define  CHAR_LESSTHAN     0x02
+#define  CHAR_DOUBLEQUOTE  0x04
+
+#define  ATTRIBUTE_ESCAPE_CHARS  (CHAR_AMPERSAND | CHAR_LESSTHAN \
+                                  | CHAR_DOUBLEQUOTE)
+#define  CHARDATA_ESCAPE_CHARS   (CHAR_AMPERSAND | CHAR_LESSTHAN)
 
 
-/* Escapes the string so that it is a valid XML attribute value. This means
- * that the '&', '<' and '"' characters are all be replaced by their
- * encoded representations, respectively "&amp;", "&lt;" and "&quot;".
+/* Escapes the string so that it can be used a valid XML attribute value or
+ * valid XML character data. The characters that are escaped are specified by
+ * a mask, which must reflect the context where the string is to be used.
  */
-NSString *escapedAttributeValue(NSString *s) {
+NSString *escapedXML(NSString *s, int escapeCharMask) {
   // Lazily construct buffer. Only use it when needed.
   NSMutableString  *buf = nil;
   
@@ -30,13 +39,13 @@ NSString *escapedAttributeValue(NSString *s) {
   for (i = 0; i < numCharsInVal; i++) {
     unichar  c = [s characterAtIndex: i];
     NSString  *r = nil;
-    if (c == '&') {
+    if (c == '&' && (escapeCharMask & CHAR_AMPERSAND)!=0 ) {
       r = @"&amp;";
     }
-    else if (c == '<') {
+    else if (c == '<' && (escapeCharMask & CHAR_LESSTHAN)!=0 ) {
       r = @"&lt;";
     }
-    else if (c== '"') {
+    else if (c== '"' && (escapeCharMask & CHAR_DOUBLEQUOTE)!=0) {
       r = @"&quot;";
     }
     if (r != nil) {
@@ -76,8 +85,9 @@ NSString *escapedAttributeValue(NSString *s) {
 
 @interface TreeWriter (PrivateMethods) 
 
-- (void) appendScanDumpElement: (TreeContext *)tree;
-- (void) appendScanInfoElement: (TreeContext *)tree;
+- (void) appendScanDumpElement: (AnnotatedTreeContext *)tree;
+- (void) appendScanInfoElement: (AnnotatedTreeContext *)tree;
+- (void) appendScanCommentsElement: (NSString *)comments;
 - (void) appendFolderElement: (DirectoryItem *)dirItem;
 - (void) appendFileElement: (FileItem *)fileItem;
 
@@ -113,7 +123,7 @@ NSString *escapedAttributeValue(NSString *s) {
 }
 
 
-- (BOOL) writeTree: (TreeContext *)tree toFile: (NSString *)filename {
+- (BOOL) writeTree: (AnnotatedTreeContext *)tree toFile: (NSString *)filename {
   NSAssert(file == NULL, @"File not NULL");
 
   [progressTracker startingTask];
@@ -171,7 +181,7 @@ NSString *escapedAttributeValue(NSString *s) {
 
 @implementation TreeWriter (PrivateMethods) 
 
-- (void) appendScanDumpElement: (TreeContext *)tree {
+- (void) appendScanDumpElement: (AnnotatedTreeContext *)annotatedTree {
   NSString  *appVersion =
     [[[NSBundle mainBundle] infoDictionary] objectForKey: 
                                               @"CFBundleVersion"];
@@ -183,17 +193,20 @@ NSString *escapedAttributeValue(NSString *s) {
   [buf appendString: @">\n"];  
   [self appendString: buf];
   
-  [self appendScanInfoElement: tree];
+  [self appendScanInfoElement: annotatedTree];
   
   [self appendString: @"</GrandPerspectiveScanDump>\n"];
 }
 
 
-- (void) appendScanInfoElement: (TreeContext *)tree {
+- (void) appendScanInfoElement: (AnnotatedTreeContext *)annotatedTree {
+  TreeContext  *tree = [annotatedTree treeContext];
+
   NSMutableString  *buf = [NSMutableString stringWithCapacity: 256];
   [buf appendString: @"<ScanInfo"];
   [buf appendFormat: @" volumePath=\"%@\"", 
-                       escapedAttributeValue([[tree volumeTree] name])];
+                     escapedXML( [[tree volumeTree] name], 
+                                 ATTRIBUTE_ESCAPE_CHARS ) ];
   [buf appendFormat: @" volumeSize=\"%qu\"", [tree volumeSize]];
   [buf appendFormat: @" freeSpace=\"%qu\"", ( [tree freeSpace] + 
                                               [tree freedSpace] )];
@@ -201,6 +214,8 @@ NSString *escapedAttributeValue(NSString *s) {
   [buf appendFormat: @" fileSizeMeasure=\"%@\"", [tree fileSizeMeasure]];
   [buf appendString: @">\n"];
   [self appendString: buf];
+  
+  [self appendScanCommentsElement: [annotatedTree comments]];
   
   [tree obtainReadLock];
   [self appendFolderElement: [tree scanTree]];
@@ -210,10 +225,22 @@ NSString *escapedAttributeValue(NSString *s) {
 }
 
 
+- (void) appendScanCommentsElement: (NSString *)comments {
+  if ([comments length] == 0) {
+    return;
+  }
+
+  NSString  *escapedComments = escapedXML(comments, CHARDATA_ESCAPE_CHARS);
+  [self appendString: @"<ScanComments>"];
+  [self appendString: escapedComments];
+  [self appendString: @"</ScanComments>\n"];
+}
+
+
 - (void) appendFolderElement: (DirectoryItem *)dirItem {
   [progressTracker processingFolder: dirItem];
 
-  NSString  *nameVal = escapedAttributeValue([dirItem name]);
+  NSString  *nameVal = escapedXML([dirItem name], ATTRIBUTE_ESCAPE_CHARS);
   [self appendString: 
           ( ([dirItem fileItemFlags] != 0) 
             ? [NSString stringWithFormat:
@@ -232,7 +259,7 @@ NSString *escapedAttributeValue(NSString *s) {
 
 
 - (void) appendFileElement: (FileItem *)fileItem {
-  NSString  *nameVal = escapedAttributeValue([fileItem name]);
+  NSString  *nameVal = escapedXML([fileItem name], ATTRIBUTE_ESCAPE_CHARS);
   [self appendString: 
           ( ([fileItem fileItemFlags] != 0) 
             ? [NSString stringWithFormat:

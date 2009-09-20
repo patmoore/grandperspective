@@ -3,6 +3,7 @@
 #import "WriteTaskExecutor.h"
 #import "WriteTaskInput.h"
 #import "TreeContext.h"
+#import "AnnotatedTreeContext.h"
 
 
 @implementation WriteProgressPanelControl
@@ -23,7 +24,7 @@
 }
 
 - (NSString *)pathFromTaskInput: (id) taskInput {
-  return [[[taskInput treeContext] scanTree] path];
+  return [[[[taskInput annotatedTreeContext] treeContext] scanTree] path];
 }
 
 - (NSDictionary *)progressInfo {

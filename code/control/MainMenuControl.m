@@ -405,7 +405,8 @@ static MainMenuControl  *singletonInstance = nil;
     
     WriteTaskInput  *input = 
       [[[WriteTaskInput alloc] 
-           initWithTreeContext: [dirViewControl treeContext] path: filename]  
+           initWithAnnotatedTreeContext: [dirViewControl annotatedTreeContext] 
+             path: filename]  
            autorelease];
            
     WriteTaskCallback  *callback = 

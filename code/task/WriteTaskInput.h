@@ -1,16 +1,17 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class TreeContext;
+@class AnnotatedTreeContext;
 
 @interface WriteTaskInput : NSObject {
-  TreeContext  *treeContext;
+  AnnotatedTreeContext  *treeContext;
   NSString  *path;
 }
 
-- (id) initWithTreeContext: (TreeContext *)treeContext path: (NSString *)path;
+- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)context 
+         path: (NSString *)path;
 
-- (TreeContext *)treeContext;
+- (AnnotatedTreeContext *)annotatedTreeContext;
 - (NSString *) path;
 
 @end

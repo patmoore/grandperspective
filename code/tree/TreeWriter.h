@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class TreeContext;
+@class AnnotatedTreeContext;
 @class ProgressTracker;
 
 @interface TreeWriter : NSObject {
@@ -22,7 +22,7 @@
  * operation has been aborted. In the latter case, however, the file will
  * still be valid. It simply will not contain all files/folders in the tree.
  */
-- (BOOL) writeTree: (TreeContext *)tree toFile: (NSString *)path;
+- (BOOL) writeTree: (AnnotatedTreeContext *)tree toFile: (NSString *)path;
 
 /* Aborts writing (when it is carried out in a different execution thread). 
  */
