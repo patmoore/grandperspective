@@ -115,6 +115,8 @@ static int  nextFilterId = 1;
 - (void) scanFolderUsingFilter: (BOOL) useFilter;
 - (void) scanFolder:(NSString *)path filter:(NSObject <FileItemTest> *)filter;
 
+- (void) loadScanDataFromFile:(NSString *)path;
+
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
 
 - (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
@@ -249,6 +251,11 @@ static MainMenuControl  *singletonInstance = nil;
            openFile:(NSString *)filename {
   if ([TreeBuilder pathIsDirectory:filename]) {
     [self scanFolder: filename filter: nil];
+    scanAfterLaunch = NO;
+  }
+  else if ([[[filename pathExtension] lowercaseString] 
+                isEqualToString: @"gpscan"]) {
+    [self loadScanDataFromFile: filename];
     scanAfterLaunch = NO;
   }
 }
@@ -431,19 +438,7 @@ static MainMenuControl  *singletonInstance = nil;
      NSLocalizedString( @"Load scan data", @"Title of load panel") ];
   
   if ([openPanel runModal] == NSOKButton) {
-    NSString  *filename = [openPanel filename];
-    
-    ReadTaskInput  *input = 
-      [[[ReadTaskInput alloc] initWithPath: filename] autorelease];
-           
-    ReadTaskCallback  *callback = 
-      [[[ReadTaskCallback alloc] 
-           initWithWindowManager: windowManager readTaskInput: input] 
-           autorelease];
-    
-    [readTaskManager asynchronouslyRunTaskWithInput: input
-                        callback: callback
-                        selector: @selector(readTaskCompleted:)];
+    [self loadScanDataFromFile: [openPanel filename]];
   }
 }
 
@@ -532,6 +527,21 @@ static MainMenuControl  *singletonInstance = nil;
   [scanTaskManager asynchronouslyRunTaskWithInput: input
                      callback: windowCreator
                      selector: @selector(createWindowForTree:)];
+}
+
+
+- (void) loadScanDataFromFile:(NSString *)path {
+  ReadTaskInput  *input = 
+    [[[ReadTaskInput alloc] initWithPath: path] autorelease];
+
+  ReadTaskCallback  *callback = 
+    [[[ReadTaskCallback alloc] 
+         initWithWindowManager: windowManager readTaskInput: input] 
+         autorelease];
+    
+  [readTaskManager asynchronouslyRunTaskWithInput: input
+                      callback: callback
+                      selector: @selector(readTaskCompleted:)];
 }
 
 
