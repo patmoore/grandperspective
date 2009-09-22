@@ -36,7 +36,9 @@
     treeContext = [treeContextVal retain];
     
     // Create a copy of the string, to ensure it is immutable.
-    comments = [[NSString stringWithString: commentsVal] retain];
+    comments = (commentsVal != nil 
+                ? [[NSString stringWithString: commentsVal] retain]
+                : @"");
   }
   return self;
 }
