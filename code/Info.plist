@@ -26,67 +26,67 @@
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
-    <key>CFBundleHelpBookFolder</key>
-    <string>GrandPerspectiveHelp</string>
-    <key>CFBundleHelpBookName</key>
-    <string>GrandPerspective Help</string>
-    <key>GPWebsiteURL</key>
-    <string>http://grandperspectiv.sourceforge.net</string>
-    <key>GPApplicationDefaults</key>
-    <dict>
-        <key>fileDeletionTargets</key>
-        <string>delete nothing</string>
-        <key>confirmFileDeletion</key>
-        <true/>
-        <key>confirmFolderDeletion</key>
-        <true/>
-        <key>rescanBehaviour</key>
-        <string>keep old window</string>
-        <key>progressPanelRefreshRate</key>
-        <real>0.25</real>
-        <key>defaultColorPalette</key>
-        <string>CoffeeBeans</string>
-        <key>defaultColorGradient</key>
-        <real>0.5</real>
-        <key>defaultColorMapping</key>
-        <string>folder</string>
-        <key>fileSizeMeasure</key>
-        <string>logical</string>
-        <key>uniformTypesRanking</key>
-        <array>
-            <string>unknown</string>
-            <string>public.movie</string>
-            <string>public.audio</string>
-            <string>public.image</string>
-            <string>public.archive</string>
-            <string>com.apple.application</string>
-            <string>com.apple.bundle</string>
-            <string>com.apple.plugin</string>
-            <string>com.apple.systempreference.prefpane</string>
-            <string>com.apple.installer-package</string>
-            <string>com.apple.package</string>
-            <string>public.executable</string>
-            <string>public.font</string>
-            <string>public.log</string>
-            <string>public.source-code</string>
-            <string>public.text</string>
-            <string>com.adobe.pdf</string>
-            <string>com.adobe.postscript</string>
-            <string>com.apple.iwork.keynote.key</string>
-            <string>public.contact</string>
-            <string>public.calendar-event</string>
-            <string>public.message</string>
-            <string>com.apple.property-list</string>
-        </array>
-        <key>showPackageContentsByDefault</key>
-        <false/>
-        <key>defaultViewWindowWidth</key>
-        <real>640</real>
-        <key>defaultViewWindowHeight</key>
-        <real>480</real>
-    </dict>
-    <key>GPDefaultFileItemTests</key>
-    <array>
+	<key>CFBundleHelpBookFolder</key>
+	<string>GrandPerspectiveHelp</string>
+	<key>CFBundleHelpBookName</key>
+	<string>GrandPerspective Help</string>
+	<key>GPWebsiteURL</key>
+	<string>http://grandperspectiv.sourceforge.net</string>
+	<key>GPApplicationDefaults</key>
+	<dict>
+		<key>fileDeletionTargets</key>
+		<string>delete nothing</string>
+		<key>confirmFileDeletion</key>
+		<true/>
+		<key>confirmFolderDeletion</key>
+		<true/>
+		<key>rescanBehaviour</key>
+		<string>keep old window</string>
+		<key>progressPanelRefreshRate</key>
+		<real>0.25</real>
+		<key>defaultColorPalette</key>
+		<string>CoffeeBeans</string>
+		<key>defaultColorGradient</key>
+		<real>0.5</real>
+		<key>defaultColorMapping</key>
+		<string>folder</string>
+		<key>fileSizeMeasure</key>
+		<string>logical</string>
+		<key>uniformTypesRanking</key>
+		<array>
+			<string>unknown</string>
+			<string>public.movie</string>
+			<string>public.audio</string>
+			<string>public.image</string>
+			<string>public.archive</string>
+			<string>com.apple.application</string>
+			<string>com.apple.bundle</string>
+			<string>com.apple.plugin</string>
+			<string>com.apple.systempreference.prefpane</string>
+			<string>com.apple.installer-package</string>
+			<string>com.apple.package</string>
+			<string>public.executable</string>
+			<string>public.font</string>
+			<string>public.log</string>
+			<string>public.source-code</string>
+			<string>public.text</string>
+			<string>com.adobe.pdf</string>
+			<string>com.adobe.postscript</string>
+			<string>com.apple.iwork.keynote.key</string>
+			<string>public.contact</string>
+			<string>public.calendar-event</string>
+			<string>public.message</string>
+			<string>com.apple.property-list</string>
+		</array>
+		<key>showPackageContentsByDefault</key>
+		<false/>
+		<key>defaultViewWindowWidth</key>
+		<real>640</real>
+		<key>defaultViewWindowHeight</key>
+		<real>480</real>
+	</dict>
+	<key>GPDefaultFileItemTests</key>
+	<array>
 		<dict>
 			<key>class</key>
 			<string>ItemFlagsTest</string>
@@ -241,7 +241,7 @@
 				</dict>
 			</dict>
 		</dict>
-        <dict>
+		<dict>
 			<key>class</key>
 			<string>ItemFlagsTest</string>
 			<key>desiredResult</key>
