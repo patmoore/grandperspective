@@ -30,6 +30,40 @@
 	<string>GrandPerspectiveHelp</string>
 	<key>CFBundleHelpBookName</key>
 	<string>GrandPerspective Help</string>
+	<key>CFBundleDocumentTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+			<key>LSItemContentTypes</key>
+			<array>
+				<string>net.sourceforge.grandperspectiv.scandump</string>
+			</array>
+		</dict>
+	</array>
+
+	<key>UTExportedTypeDeclarations</key>
+	<array>
+		<dict>
+			<key>UTTypeConformsTo</key>
+			<array>
+				<string>public.xml</string>
+			</array>
+			<key>UTTypeDescription</key>
+			<string>GrandPerspective scan results</string>
+			<key>UTTypeIconFile</key>
+			<string>GrandPerspectiveScan.icns</string>
+			<key>UTTypeIdentifier</key>
+			<string>net.sourceforge.grandperspectiv.scandump</string>
+			<key>UTTypeTagSpecification</key>
+			<dict>
+				<key>public.filename-extension</key>
+				<array>
+					<string>gpscan</string>
+				</array>
+			</dict>
+		</dict>
+	</array>
 	<key>GPWebsiteURL</key>
 	<string>http://grandperspectiv.sourceforge.net</string>
 	<key>GPApplicationDefaults</key>

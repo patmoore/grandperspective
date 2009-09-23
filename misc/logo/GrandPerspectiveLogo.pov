@@ -50,7 +50,7 @@ global_settings {
 #end
 
 camera {
-  location  <2.8, 4, 2.4> * 0.39
+  location  <2.8, 4, 2.4> * 0.40
   right     x // sets aspect ration of 1:1
   look_at   <0.0, -0.14,  0.0>
 }

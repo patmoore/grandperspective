@@ -11,6 +11,7 @@
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		AA007AEF106AC38900C3B395 /* GrandPerspectiveScan.icns in Resources */ = {isa = PBXBuildFile; fileRef = AA007AEE106AC38900C3B395 /* GrandPerspectiveScan.icns */; };
 		AA1115C40A84CA320023C5CD /* DirectoryViewControlSettings.m in Sources */ = {isa = PBXBuildFile; fileRef = AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */; };
 		AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */ = {isa = PBXBuildFile; fileRef = AA12217F0EF17A41002A178F /* ToggleDrawer.png */; };
 		AA12225A0EF2A822002A178F /* Toolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA1222580EF2A822002A178F /* Toolbar.strings */; };
@@ -140,6 +141,7 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* GrandPerspective.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GrandPerspective.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AA007AEE106AC38900C3B395 /* GrandPerspectiveScan.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = GrandPerspectiveScan.icns; sourceTree = "<group>"; };
 		AA1115C10A84CA320023C5CD /* DirectoryViewControlSettings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectoryViewControlSettings.h; path = control/DirectoryViewControlSettings.h; sourceTree = "<group>"; };
 		AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewControlSettings.m; path = control/DirectoryViewControlSettings.m; sourceTree = "<group>"; };
 		AA12217F0EF17A41002A178F /* ToggleDrawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToggleDrawer.png; path = Images/ToggleDrawer.png; sourceTree = "<group>"; };
@@ -451,6 +453,7 @@
 			children = (
 				AAF952C50EE043A400844FD5 /* Images */,
 				AA6351350972DDC40024C9D0 /* GrandPerspective.icns */,
+				AA007AEE106AC38900C3B395 /* GrandPerspectiveScan.icns */,
 				AAD6855008D9FE600096C6C1 /* Credits.rtf */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -833,6 +836,7 @@
 				AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */,
 				AA2B48B610495BDB00B10262 /* Rescan.png in Resources */,
 				AA2B49B8104AEF9B00B10262 /* PopUpMenu.strings in Resources */,
+				AA007AEF106AC38900C3B395 /* GrandPerspectiveScan.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
