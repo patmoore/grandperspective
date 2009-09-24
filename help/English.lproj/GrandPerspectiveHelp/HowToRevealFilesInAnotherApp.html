@@ -1,0 +1,28 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<title>How to reveal files in another application</title>
+<link href="HelpStyle.css" rel="stylesheet" media="all">
+<meta name="description" content="How to reveal files in another application.">
+<meta name="keywords" content="how, to, howto, reveal, files, Finder">
+</head>
+<body>
+
+<div id="caticon">
+<img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
+</div>
+<div id="pagetitle">
+<h1>How to reveal files in another application</h1>
+</div>
+
+<p>
+By default, when you reveal a file it will be shown in Finder.
+If you want to, you can use another application to reveal files.
+You can do so by setting the <tt>customFileRevealApplication</tt> key in the GrandPerspective user defaults to the name of the application that you want to use instead.
+This can be done in the Terminal by entering the following:
+<tt>defaults write net.sourceforge.grandperspectiv customFileRevealApplication -string ApplicationName</tt>.
+Please make sure that GrandPerspective is not running when you do this, otherwise there is a chance that the change will be undone by the application.
+</li>
+
+</body>
+</html>
