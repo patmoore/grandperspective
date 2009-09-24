@@ -39,6 +39,15 @@
 			<array>
 				<string>net.sourceforge.grandperspectiv.scandump</string>
 			</array>
+			<!-- For redundancy, also declare icon and file
+                             extension here, even though it is also done 
+                             by UTExportedTypeDeclarations. -->
+			<key>CFBundleTypeIconFile</key>
+			<string>GrandPerspectiveScan.icns</string>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>gpscan</string>
+			</array>
 		</dict>
 	</array>
 
