@@ -3,6 +3,24 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.1.0, 27-09-2009
+----------------------------------------------------------------------
+
+New functionality:
+- Added Rescan button to toolbar.
+- Rescan can now optionally close the old window.
+- Added context menu to views to let you Reveal, Open and Delete
+  selected files.
+- Added ability to store user-editable comments with saved scan data.
+- Scan data is now stored in files with a .gpscan extension.
+  - These files have their own icon and filetype, and are associated
+    with the application.
+- You can now invoke the application from the command line with:
+  - a path of a folder to scan, or
+  - a path of a scan data file to load.
+
+
+----------------------------------------------------------------------
   Version 1.0 (localized), 22-12-2008
 ----------------------------------------------------------------------
 
