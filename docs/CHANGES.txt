@@ -3,10 +3,10 @@
 ======================================================================
 
 ----------------------------------------------------------------------
-  Version 1.1.0, 27-09-2009
+  Version 1.1.0, 26-09-2009
 ----------------------------------------------------------------------
 
-New functionality:
+Minor improvements:
 - Added Rescan button to toolbar.
 - Rescan can now optionally close the old window.
 - Added context menu to views to let you Reveal, Open and Delete
@@ -18,6 +18,14 @@ New functionality:
 - You can now invoke the application from the command line with:
   - a path of a folder to scan, or
   - a path of a scan data file to load.
+
+Bug fixes:
+- Fixed bug #2562846: Failure to load scan data
+  - Incorrec saving of scan data in OS X 10.4 should be fixed now.
+- Freed space did not correctly reflect deletion of hard-linked files.
+
+Documentation:
+- Added various advanced "How To" sections to the help documentation.
 
 
 ----------------------------------------------------------------------
