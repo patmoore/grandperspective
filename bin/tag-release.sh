@@ -9,10 +9,10 @@ then
   exit -1
 fi
 
-VERSION="0.9.13"
-VERSION_ID="0_9_13"
-SRC_REV=924
-BIN_REV=927
+VERSION="0.9.13.1"
+VERSION_ID="0_9_13_1"
+SRC_REV=933
+BIN_REV=956
 
 TAG_URL=${GP_SVN_URL}/tags/release-${VERSION_ID}
 
@@ -24,7 +24,4 @@ echo svn copy -r $SRC_REV $GP_SVN_URL/trunk/docs $TAG_URL/docs -m \""Tagging Ver
 
 echo svn copy -r $SRC_REV $GP_SVN_URL/trunk/help $TAG_URL/help -m \""Tagging Version ${VERSION} of the help documentation."\"
 
-for f in export-docs.sh export-help.sh export-source.sh publish-source.sh publish-app.sh update-help-index.sh buildDMG.pl
-do
-  echo svn copy -r $BIN_REV $GP_SVN_URL/trunk/bin/$f $TAG_URL/$f -m \""Tagging Version ${VERSION} of the release scripts."\"
-done
+echo svn copy -r $BIN_REV $GP_SVN_URL/trunk/bin $TAG_URL/bin -m \""Tagging Version ${VERSION} of the scripts."\"
