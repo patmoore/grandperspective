@@ -46,15 +46,11 @@
 				<string>id</string>
 				<key>deleteFile</key>
 				<string>id</string>
-				<key>downAction</key>
-				<string>id</string>
 				<key>editMask</key>
 				<string>id</string>
 				<key>maskCheckBoxChanged</key>
 				<string>id</string>
 				<key>openFile</key>
-				<string>id</string>
-				<key>openFileInFinder</key>
 				<string>id</string>
 				<key>revealFileInFinder</key>
 				<string>id</string>
@@ -63,8 +59,6 @@
 				<key>showPackageContentsCheckBoxChanged</key>
 				<string>id</string>
 				<key>toggleDrawer</key>
-				<string>id</string>
-				<key>upAction</key>
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
@@ -79,16 +73,12 @@
 				<string>NSPopUpButton</string>
 				<key>colorPalettePopUp</key>
 				<string>NSPopUpButton</string>
-				<key>deleteButton</key>
-				<string>NSButton</string>
-				<key>downButton</key>
-				<string>NSButton</string>
+				<key>commentsTextView</key>
+				<string>NSTextView</string>
 				<key>drawer</key>
 				<string>NSDrawer</string>
 				<key>fileSizeMeasureField</key>
 				<string>NSTextField</string>
-				<key>filterDescriptionTextView</key>
-				<string>NSTextView</string>
 				<key>filterNameField</key>
 				<string>NSTextField</string>
 				<key>freeSpaceField</key>
@@ -105,8 +95,10 @@
 				<string>NSButton</string>
 				<key>miscUsedSpaceField</key>
 				<string>NSTextField</string>
-				<key>openButton</key>
-				<string>NSButton</string>
+				<key>numDeletedFilesField</key>
+				<string>NSTextField</string>
+				<key>numScannedFilesField</key>
+				<string>NSTextField</string>
 				<key>scanPathTextView</key>
 				<string>NSTextView</string>
 				<key>scanTimeField</key>
@@ -119,8 +111,6 @@
 				<string>NSTextField</string>
 				<key>selectedItemTitleField</key>
 				<string>NSTextField</string>
-				<key>selectedItemTypeDescriptionField</key>
-				<string>NSTextField</string>
 				<key>selectedItemTypeIdentifierField</key>
 				<string>NSTextField</string>
 				<key>showEntireVolumeCheckBox</key>
@@ -129,8 +119,6 @@
 				<string>NSButton</string>
 				<key>treeSizeField</key>
 				<string>NSTextField</string>
-				<key>upButton</key>
-				<string>NSButton</string>
 				<key>visibleFolderExactSizeField</key>
 				<string>NSTextField</string>
 				<key>visibleFolderPathTextView</key>
