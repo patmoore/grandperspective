@@ -7,6 +7,7 @@
 ----------------------------------------------------------------------
 
 Minor improvements:
+- Added number of scanned and deleted files to Info panel.
 - Added Rescan button to toolbar.
 - Rescan can now optionally close the old window.
 - Added context menu to views to let you Reveal, Open and Delete
