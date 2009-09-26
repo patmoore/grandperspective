@@ -9,12 +9,12 @@ then
   exit -1
 fi
 
-VERSION="0.9.13.1 (Localized)"
-VERSION_ID="0_9_13_1-local"
+VERSION="1.0 (Localized)"
+VERSION_ID="1_0-local"
 
-REV=955
-NL_REV=955
-BIN_REV=957
+REV=1073
+NL_REV=1073
+BIN_REV=1074
 
 TAG_URL=${GP_SVN_URL}/tags/release-${VERSION_ID}
 
