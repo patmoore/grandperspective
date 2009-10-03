@@ -16,6 +16,8 @@
 		AA1221800EF17A41002A178F /* ToggleDrawer.png in Resources */ = {isa = PBXBuildFile; fileRef = AA12217F0EF17A41002A178F /* ToggleDrawer.png */; };
 		AA12225A0EF2A822002A178F /* Toolbar.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA1222580EF2A822002A178F /* Toolbar.strings */; };
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
+		AA13FCE81077318700AE3B23 /* Cross.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE61077318700AE3B23 /* Cross.png */; };
+		AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE71077318700AE3B23 /* Checkmark.png */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
@@ -147,6 +149,8 @@
 		AA12217F0EF17A41002A178F /* ToggleDrawer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = ToggleDrawer.png; path = Images/ToggleDrawer.png; sourceTree = "<group>"; };
 		AA1222590EF2A822002A178F /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/Toolbar.strings; sourceTree = "<group>"; };
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
+		AA13FCE61077318700AE3B23 /* Cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cross.png; path = Images/Cross.png; sourceTree = "<group>"; };
+		AA13FCE71077318700AE3B23 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Checkmark.png; path = Images/Checkmark.png; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
@@ -720,6 +724,8 @@
 				AAF3C75A0EF3FA42004CF446 /* Delete.png */,
 				AA2B48B510495BDB00B10262 /* Rescan.png */,
 				AA12217F0EF17A41002A178F /* ToggleDrawer.png */,
+				AA13FCE61077318700AE3B23 /* Cross.png */,
+				AA13FCE71077318700AE3B23 /* Checkmark.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -837,6 +843,8 @@
 				AA2B48B610495BDB00B10262 /* Rescan.png in Resources */,
 				AA2B49B8104AEF9B00B10262 /* PopUpMenu.strings in Resources */,
 				AA007AEF106AC38900C3B395 /* GrandPerspectiveScan.icns in Resources */,
+				AA13FCE81077318700AE3B23 /* Cross.png in Resources */,
+				AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

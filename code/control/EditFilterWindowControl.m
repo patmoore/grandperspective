@@ -15,6 +15,9 @@ NSString  *ApplyPerformedEvent = @"applyPerformed";
 NSString  *CancelPerformedEvent = @"cancelPerformed";
 NSString  *OkPerformedEvent = @"okPerformed";
 
+NSString  *NameColumn = @"name";
+NSString  *MatchColumn = @"match";
+
 
 // Handles closing of the "Edit Filter Rule Window", including a validity
 // check before the window is closed.
@@ -131,6 +134,9 @@ NSString  *OkPerformedEvent = @"okPerformed";
   
   [availableTestsView setDelegate: self];
   [availableTestsView setDataSource: self];
+  
+  [[[filterTestsView tableColumnWithIdentifier: MatchColumn] dataCell]
+       setImageAlignment: NSImageAlignRight];
     
   [self updateWindowState:nil];
 }
@@ -426,11 +432,19 @@ NSString  *OkPerformedEvent = @"okPerformed";
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
-    NSString  *name = [filterTests objectAtIndex:row];
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"Names"];
+    if ([[column identifier] isEqualToString: NameColumn]) {
+      NSString  *name = [filterTests objectAtIndex:row];
+      NSString  *localizedName = 
+        [mainBundle localizedStringForKey: name value: nil table: @"Names"];
 
-    return localizedName;
+      return localizedName;
+    }
+    else if ([[column identifier] isEqualToString: MatchColumn]) {
+      return [NSImage imageNamed: @"Checkmark"];
+    }
+    else {
+      NSAssert(NO, @"Unknown column.");
+    }
   }
   else if (tableView == availableTestsView) {
     NSString  *name = [availableTests objectAtIndex:row]; 
