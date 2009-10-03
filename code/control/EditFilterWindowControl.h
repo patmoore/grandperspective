@@ -43,7 +43,6 @@ extern NSString  *OkPerformedEvent;
   FileItemTestRepository  *testRepository;
   
   NotifyingDictionary  *repositoryTestsByName;
-  NSMutableDictionary  *filterTestsByName;
     
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
@@ -75,6 +74,8 @@ extern NSString  *OkPerformedEvent;
 - (IBAction) removeAllTestsFromFilter:(id)sender;
 
 - (IBAction) showTestDescriptionChanged:(id)sender;
+
+- (IBAction) testDoubleClicked:(id)sender;
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
 

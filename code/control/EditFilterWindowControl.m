@@ -44,6 +44,28 @@ NSString  *MatchColumn = @"match";
 @end // EditFilterRuleWindowTerminationControl
 
 
+/* A test that is added to the filter.
+ */
+@interface FilterTest : NSObject {
+  NSObject <FileItemTest> *test;
+
+  // Is the test inverted?
+  BOOL  inverted;
+}
+
++ (id) filterTestWithFileItemTest:(NSObject <FileItemTest> *)test;
+
+- (id) initWithFileItemTest:(NSObject <FileItemTest> *)test;
+
+- (NSObject <FileItemTest> *) fileItemTest;
+- (NSString *) name;
+- (BOOL) isInverted;
+- (BOOL) canToggleInverted;
+- (void) toggleInverted;
+
+@end // FilterTest
+
+
 @interface EditFilterWindowControl (PrivateMethods)
 
 - (NSArray *) availableTests;
@@ -52,8 +74,10 @@ NSString  *MatchColumn = @"match";
 // Returns the non-localized name of the selected available test (if any).
 - (NSString *) selectedAvailableTestName;
 
-// Returns the non-localized name of the selected filter test (if any).
-- (NSString *) selectedFilterTestName;
+// Returns the selected filter test (if any).
+- (FilterTest *) selectedFilterTest;
+
+- (BOOL) filterContainsTestWithName:(NSString *)name;
 
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
@@ -93,9 +117,7 @@ NSString  *MatchColumn = @"match";
           name: ObjectUpdatedEvent object: repositoryTestsByName];
     [nc addObserver:self selector: @selector(testRenamedInRepository:) 
           name: ObjectRenamedEvent object: repositoryTestsByName];
-          
-    filterTestsByName = [[NSMutableDictionary alloc] initWithCapacity: 8];
-            
+
     filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
 
     availableTests = [[NSMutableArray alloc] 
@@ -115,7 +137,6 @@ NSString  *MatchColumn = @"match";
   [[repositoryTestsByName notificationCenter] removeObserver:self];
 
   [repositoryTestsByName release];
-  [filterTestsByName release];
   
   [filterTests release];
   [availableTests release];
@@ -130,6 +151,9 @@ NSString  *MatchColumn = @"match";
 - (void) windowDidLoad {
   [filterTestsView setDelegate: self];
   [filterTestsView setDataSource: self];
+  
+  [filterTestsView setTarget: self];
+  [filterTestsView setDoubleAction: @selector(testDoubleClicked:)];
   
   [availableTestsView setDelegate: self];
   [availableTestsView setDataSource: self];
@@ -349,15 +373,15 @@ NSString  *MatchColumn = @"match";
     NSObject  *test = 
       [((NSDictionary*)repositoryTestsByName) objectForKey: testName];
     NSAssert(test != nil, @"Test not found in repository.");
-
-    [filterTests addObject: testName];
-    [filterTestsByName setObject: test forKey: testName];
+    
+    FilterTest  *filterTest = [FilterTest filterTestWithFileItemTest: test];
+    [filterTests addObject: filterTest];
     
     [filterTestsView reloadData];
     [availableTestsView reloadData];
     
     // Select the newly added test.
-    [filterTestsView selectRow: [filterTests indexOfObject:testName]
+    [filterTestsView selectRow: [filterTests indexOfObject: filterTest]
                        byExtendingSelection: NO];
     [[self window] makeFirstResponder: filterTestsView];
 
@@ -366,11 +390,12 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) removeTestFromFilter:(id)sender {
-  NSString  *testName = [self selectedFilterTestName];
+  FilterTest  *filterTest = [self selectedFilterTest];
   
-  if (testName != nil) {
-    [filterTests removeObject: testName];
-    [filterTestsByName removeObjectForKey: testName];
+  if (filterTest != nil) {
+    NSString  *testName = [filterTest name];
+    
+    [filterTests removeObject: filterTest];
 
     [filterTestsView reloadData];
     [availableTestsView reloadData];
@@ -388,7 +413,6 @@ NSString  *MatchColumn = @"match";
 
 - (IBAction) removeAllTestsFromFilter:(id)sender {
   [filterTests removeAllObjects];
-  [filterTestsByName removeAllObjects];
   
   [filterTestsView reloadData];
   [availableTestsView reloadData];
@@ -403,6 +427,14 @@ NSString  *MatchColumn = @"match";
   }
   else if ([button state] == NSOnState) {
     [testDescriptionDrawer open];
+  }
+}
+
+- (IBAction) testDoubleClicked:(id)sender {
+  FilterTest  *filterTest = [self selectedFilterTest];
+  if (filterTest != nil && [filterTest canToggleInverted]) {
+    [filterTest toggleInverted];
+    [filterTestsView reloadData];
   }
 }
 
@@ -427,26 +459,23 @@ NSString  *MatchColumn = @"match";
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
-    if ([[column identifier] isEqualToString: NameColumn]) {
-      NSString  *name = [filterTests objectAtIndex:row];
-      NSString  *localizedName = 
-        [mainBundle localizedStringForKey: name value: nil table: @"Names"];
+    FilterTest  *filterTest = [filterTests objectAtIndex: row];
 
-      return localizedName;
+    if ([[column identifier] isEqualToString: NameColumn]) {
+      return [mainBundle localizedStringForKey: [filterTest name] value: nil 
+                           table: @"Names"];
     }
     else if ([[column identifier] isEqualToString: MatchColumn]) {
-      return [NSImage imageNamed: @"Checkmark"];
+      return [NSImage imageNamed: 
+                        ([filterTest isInverted] ? @"Cross" : @"Checkmark")];
     }
     else {
       NSAssert(NO, @"Unknown column.");
     }
   }
   else if (tableView == availableTestsView) {
-    NSString  *name = [availableTests objectAtIndex:row]; 
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: @"Names"];
-
-    return localizedName;
+    NSString  *name = [availableTests objectAtIndex: row]; 
+    return [mainBundle localizedStringForKey: name value: nil table: @"Names"];
   }
 }
 
@@ -461,7 +490,7 @@ NSString  *MatchColumn = @"match";
   if (tableView == availableTestsView) {
     NSString  *name = [availableTests objectAtIndex: row]; 
 
-    [cell setEnabled: ([filterTestsByName objectForKey: name] == nil)];
+    [cell setEnabled: ![self filterContainsTestWithName: name]];
   }
 }
 
@@ -472,26 +501,24 @@ NSString  *MatchColumn = @"match";
 
 - (void) representFileItemTest:(NSObject <FileItemTest> *)test {
   [filterTests removeAllObjects];
-  [filterTestsByName removeAllObjects];
 
   if (test == nil) {
     // Nothing needs doing
   }
   else {
-    if ([test isKindOfClass:[CompoundOrItemTest class]]) {
+    if ([test isKindOfClass: [CompoundOrItemTest class]]) {
       NSArray  *subTests = [((CompoundOrItemTest*)test) subItemTests];
       NSEnumerator  *subTestEnum = [subTests objectEnumerator];
       NSObject <FileItemTest>  *subTest;
       while (subTest = [subTestEnum nextObject]) {
-        NSAssert([subTest name] != nil, @"Test name must be non-nil.");
-        [filterTests addObject:[subTest name]];
-        [filterTestsByName setObject:subTest forKey:[subTest name]];
+        FilterTest  *filterTest = 
+          [FilterTest filterTestWithFileItemTest: subTest];
+        [filterTests addObject: filterTest];
       }
     }
     else {
-      NSAssert([test name] != nil, @"Test name must be non-nil.");
-      [filterTests addObject:[test name]];
-      [filterTestsByName setObject:test forKey:[test name]];      
+      FilterTest  *filterTest = [FilterTest filterTestWithFileItemTest: test];
+      [filterTests addObject: filterTest];
     }
   }
   
@@ -510,24 +537,27 @@ NSString  *MatchColumn = @"match";
   
   NSObject <FileItemTest>  *test = nil;
   
+  NSMutableArray  *subTests = 
+    [NSMutableArray arrayWithCapacity: [filterTests count]];
+
+  NSEnumerator  *filterTestEnum = [filterTests objectEnumerator];
+  FilterTest  *filterTest;
+  while (filterTest = [filterTestEnum nextObject]) {
+    NSObject <FileItemTest>  *subTest = [filterTest fileItemTest];
+    if ([filterTest isInverted]) {
+      subTest = 
+        [[[NotItemTest alloc] initWithSubItemTest: subTest] autorelease];
+    }
+    [subTests addObject: subTest ];
+  }
+  
   if ([filterTests count] == 1) {
-    NSString  *testName = [filterTests objectAtIndex:0];
-    test = [filterTestsByName objectForKey: testName];
+    return [subTests objectAtIndex: 0];
   }
   else {
-    NSMutableArray  *subTests = 
-      [NSMutableArray arrayWithCapacity:[filterTests count]];
-    NSEnumerator  *testNameEnum = [filterTests objectEnumerator];
-    NSString  *testName;
-    while (testName = [testNameEnum nextObject]) {
-      [subTests addObject: [filterTestsByName objectForKey:testName] ];
-    }
-  
-    test = 
-      [[[CompoundOrItemTest alloc] initWithSubItemTests:subTests] autorelease];
+    return [[[CompoundOrItemTest alloc] initWithSubItemTests: subTests] 
+                autorelease];
   }
-    
-  return test;
 }
 
 @end
@@ -550,11 +580,24 @@ NSString  *MatchColumn = @"match";
   return (index < 0) ? nil : [availableTests objectAtIndex: index];
 }
 
-// Returns the non-localized name of the selected filter test (if any).
-- (NSString *) selectedFilterTestName {
+// Returns the selected filter test (if any).
+- (FilterTest *) selectedFilterTest {
   int  index = [filterTestsView selectedRow];
   
   return (index < 0) ? nil : [filterTests objectAtIndex: index];
+}
+
+- (BOOL) filterContainsTestWithName:(NSString *)name {
+  // Note: Simple search through array does not scale well when the number of
+  // tests is large, but in practise, this will not occur.
+  int  i = [filterTests count];
+  while (--i >= 0) {
+    if ([[[filterTests objectAtIndex: i] name] isEqualToString: name]) {
+      return YES;
+    }
+  }
+
+  return NO;
 }
 
 
@@ -650,11 +693,11 @@ NSString  *MatchColumn = @"match";
 
 
 - (void) updateWindowState: (NSNotification *)notification {
-  NSString  *selectedFilterTestName = [self selectedFilterTestName];
+  FilterTest  *selectedFilterTest = [self selectedFilterTest];
   NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
 
   if (selectedAvailableTestName != nil 
-      && [filterTestsByName objectForKey: selectedAvailableTestName] != nil) {
+      && [self filterContainsTestWithName: selectedAvailableTestName]) {
     // The window is in an anomalous situation: a test is selected in the
     // available tests view, even though the test is used in the filter.
     //
@@ -689,8 +732,8 @@ NSString  *MatchColumn = @"match";
   NSString  *newSelectedTestName = nil;
   NSObject <FileItemTest>  *newSelectedTest = nil;
   if (filterTestsHighlighted) {
-    newSelectedTestName = selectedFilterTestName;
-    newSelectedTest = [filterTestsByName objectForKey: newSelectedTestName];
+    newSelectedTestName = [selectedFilterTest name];
+    newSelectedTest = [selectedFilterTest fileItemTest];
   }
   else if (availableTestsHighlighted) {
     newSelectedTestName = selectedAvailableTestName;
@@ -725,7 +768,7 @@ NSString  *MatchColumn = @"match";
 
   [addTestToFilterButton setEnabled: availableTestHighlighted];
   [removeTestFromFilterButton setEnabled: 
-    ( selectedFilterTestName != nil && filterTestsHighlighted )];
+    ( selectedFilterTest != nil && filterTestsHighlighted )];
 
   BOOL  nonEmptyFilter = ([filterTests count] > 0);
 
@@ -860,4 +903,64 @@ NSString  *MatchColumn = @"match";
   // void
 }
 
-@end
+@end // @implementation EditFilterRuleWindowTerminationControl
+
+
+@implementation FilterTest
+
++ (id) filterTestWithFileItemTest:(NSObject <FileItemTest> *)test {
+  return [[[FilterTest alloc] initWithFileItemTest: test] autorelease];
+}
+
+
+// Overrides designated initialiser.
+- (id) init {
+  NSAssert(NO, @"Use initWithFileItemTest: instead.");
+}
+
+- (id) initWithFileItemTest:(NSObject <FileItemTest> *)testVal {
+  if (self = [super init]) {
+    if ([testVal isKindOfClass: [NotItemTest class]]) {
+      inverted = YES;
+      testVal = [((NotItemTest *)testVal) subItemTest];
+    }
+    else {
+      inverted = NO;
+    }
+
+    NSAssert([testVal name] != nil, @"Test name must not be nil.");  
+    test = [testVal retain];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [test release];
+
+  [super dealloc];
+}
+
+
+- (NSObject <FileItemTest> *) fileItemTest {
+  return test;
+}
+
+- (NSString *) name {
+  return [test name];
+}
+
+- (BOOL) isInverted {
+  return inverted;
+}
+
+- (BOOL) canToggleInverted {
+  return YES; // TODO: change
+}
+
+- (void) toggleInverted {
+  NSAssert([self canToggleInverted], @"Cannot toggle test.");
+  inverted = !inverted;
+}
+
+@end // FilterTest
