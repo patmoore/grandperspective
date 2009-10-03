@@ -83,10 +83,10 @@
 - (NSString *) description {
   NSString  *format = ( onlyFiles 
                         ? NSLocalizedStringFromTable( 
-                            @"(files: %@)", @"Tests",
+                            @"files: %@", @"Tests",
                             @"Selective test with 1: sub test" )
                         : NSLocalizedStringFromTable( 
-                            @"(folders: %@)", @"Tests",
+                            @"folders: %@", @"Tests",
                             @"Selective test with 1: sub test" ) );
   
   return [NSString stringWithFormat: format, [subTest description]];
