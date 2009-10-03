@@ -48,7 +48,6 @@ NSString  *MatchColumn = @"match";
 
 - (NSArray *) availableTests;
 - (NSArray *) filterTests;
-- (NSPopUpButton *) filterActionButton;
 
 // Returns the non-localized name of the selected available test (if any).
 - (NSString *) selectedAvailableTestName;
@@ -397,10 +396,6 @@ NSString  *MatchColumn = @"match";
   [self updateWindowState: nil];
 }
 
-- (IBAction) filterActionChanged:(id)sender {
-  // void
-}
-
 - (IBAction) showTestDescriptionChanged:(id)sender {
   NSButton  *button = sender;
   if ([button state] == NSOffState) {
@@ -483,16 +478,6 @@ NSString  *MatchColumn = @"match";
     // Nothing needs doing
   }
   else {
-    if ([test isKindOfClass:[NotItemTest class]]) {
-      // Don't show
-      [filterActionButton selectItemAtIndex:1];
-      test = [((NotItemTest*)test) subItemTest];
-    }
-    else {
-      // Show only
-      [filterActionButton selectItemAtIndex:0];
-    }
-    
     if ([test isKindOfClass:[CompoundOrItemTest class]]) {
       NSArray  *subTests = [((CompoundOrItemTest*)test) subItemTests];
       NSEnumerator  *subTestEnum = [subTests objectEnumerator];
@@ -542,14 +527,7 @@ NSString  *MatchColumn = @"match";
       [[[CompoundOrItemTest alloc] initWithSubItemTests:subTests] autorelease];
   }
     
-  if ([filterActionButton indexOfSelectedItem] == 0) {
-    // Show only
-    return test;
-  }
-  else {
-    // Don't show
-    return [[[NotItemTest alloc] initWithSubItemTest: test] autorelease];
-  }
+  return test;
 }
 
 @end
@@ -563,10 +541,6 @@ NSString  *MatchColumn = @"match";
 
 - (NSArray *) filterTests {
   return filterTests;
-}
-
-- (NSPopUpButton *) filterActionButton {
-  return filterActionButton;
 }
 
 // Returns the non-localized name of the selected available test (if any).

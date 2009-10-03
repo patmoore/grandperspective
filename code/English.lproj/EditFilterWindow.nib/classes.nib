@@ -17,8 +17,6 @@
 				<string>id</string>
 				<key>editTestInRepository</key>
 				<string>id</string>
-				<key>filterActionChanged</key>
-				<string>id</string>
 				<key>okAction</key>
 				<string>id</string>
 				<key>removeAllTestsFromFilter</key>
@@ -44,8 +42,6 @@
 				<string>NSTableView</string>
 				<key>editTestInRepositoryButton</key>
 				<string>NSButton</string>
-				<key>filterActionButton</key>
-				<string>NSPopUpButton</string>
 				<key>filterTestsView</key>
 				<string>NSTableView</string>
 				<key>okButton</key>

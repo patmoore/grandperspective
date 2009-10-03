@@ -24,8 +24,6 @@ extern NSString  *OkPerformedEvent;
  */
 @interface EditFilterWindowControl : NSWindowController {
 
-  IBOutlet NSPopUpButton  *filterActionButton;
-
   IBOutlet NSTextView  *testDescriptionView;
   IBOutlet NSDrawer  *testDescriptionDrawer;
   
@@ -76,7 +74,6 @@ extern NSString  *OkPerformedEvent;
 - (IBAction) removeTestFromFilter:(id)sender;
 - (IBAction) removeAllTestsFromFilter:(id)sender;
 
-- (IBAction) filterActionChanged:(id)sender;
 - (IBAction) showTestDescriptionChanged:(id)sender;
 
 - (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
