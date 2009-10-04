@@ -26,6 +26,10 @@
   return ([stringTest testString: path] ? TEST_PASSED : TEST_FAILED);
 }
 
+- (BOOL) appliesToDirectories {
+  return YES;
+}
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemPathTest: self];
 }

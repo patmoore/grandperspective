@@ -62,6 +62,10 @@
            : ( (result == TEST_FAILED) ? TEST_PASSED : TEST_FAILED ) );
 }
 
+- (BOOL) appliesToDirectories {
+  return [subTest appliesToDirectories];
+}
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitNotItemTest: self];
 }

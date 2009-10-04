@@ -75,6 +75,11 @@
            ? TEST_PASSED : TEST_FAILED );
 }
 
+- (BOOL) appliesToDirectories {
+  return !onlyFiles;
+}
+
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitSelectiveItemTest: self];
 }

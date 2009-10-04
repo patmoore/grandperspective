@@ -66,4 +66,9 @@
   return NO;
 }
 
+- (BOOL) appliesToDirectories {
+  NSAssert(NO, @"This method must be overridden.");
+  return NO;
+}
+
 @end // @implementation AbstractFileItemTest

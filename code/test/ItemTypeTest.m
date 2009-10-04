@@ -121,6 +121,10 @@
   return TEST_FAILED;
 }
 
+- (BOOL) appliesToDirectories {
+  return NO;
+}
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemTypeTest: self];
 }

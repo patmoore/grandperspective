@@ -18,6 +18,10 @@
   return ([stringTest testString: [item name]] ? TEST_PASSED : TEST_FAILED);
 }
 
+- (BOOL) appliesToDirectories {
+  return YES;
+}
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemNameTest: self];
 }

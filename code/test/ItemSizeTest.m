@@ -85,6 +85,10 @@
             [item itemSize] <= upperBound) ? TEST_PASSED : TEST_FAILED );
 }
 
+- (BOOL) appliesToDirectories {
+  return YES;
+}
+
 - (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemSizeTest: self];
 }

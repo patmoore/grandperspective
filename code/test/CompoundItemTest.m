@@ -97,6 +97,18 @@
   return NO;
 }
 
+- (BOOL) appliesToDirectories {
+  int  max = [subTests count];
+  int  i = 0;
+  
+  while (i < max) {
+    if ([[subTests objectAtIndex: i++] appliesToDirectories]) {
+      return YES;
+    }
+  }
+  return NO;
+}
+
 
 - (NSString*) description {
   NSEnumerator  *subTestEnum = [subTests reverseObjectEnumerator];
