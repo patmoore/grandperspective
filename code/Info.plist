@@ -121,6 +121,8 @@
 			<string>public.message</string>
 			<string>com.apple.property-list</string>
 		</array>
+		<key>updateFiltersBeforeUse</key>
+		<true/>
 		<key>showPackageContentsByDefault</key>
 		<false/>
 		<key>defaultViewWindowWidth</key>

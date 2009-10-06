@@ -7,12 +7,12 @@
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithPath:fileSizeMeasure:filterTest instead");
+  NSAssert(NO, @"Use initWithPath:fileSizeMeasure:filterSet instead");
 }
 
-- (id) initWithPath: (NSString *)path 
-         fileSizeMeasure: (NSString *)fileSizeMeasureVal
-         filterTest: (NSObject <FileItemTest> *)filterTestVal {
+- (id) initWithPath:(NSString *)path 
+         fileSizeMeasure:(NSString *)fileSizeMeasureVal
+         filterSet:(FileItemFilterSet *)filterSetVal {
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
@@ -22,18 +22,18 @@
             
   return [self initWithPath: path
                  fileSizeMeasure: fileSizeMeasureVal
-                 filterTest: filterTestVal
+                 filterSet: filterSetVal
                  packagesAsFiles: !showPackageContentsByDefault];
 }
          
-- (id) initWithPath: (NSString *)path 
-         fileSizeMeasure: (NSString *)fileSizeMeasureVal
-         filterTest: (NSObject <FileItemTest> *)filterTestVal
-         packagesAsFiles: (BOOL) packagesAsFilesVal {
+- (id) initWithPath:(NSString *)path 
+         fileSizeMeasure:(NSString *)fileSizeMeasureVal
+         filterSet:(FileItemFilterSet *)filterSetVal
+         packagesAsFiles:(BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     pathToScan = [path retain];
     fileSizeMeasure = [fileSizeMeasureVal retain];
-    filterTest = [filterTestVal retain];
+    filterSet = [filterSetVal retain];
     packagesAsFiles = packagesAsFilesVal;
   }
   return self;
@@ -42,7 +42,7 @@
 - (void) dealloc {
   [pathToScan release];
   [fileSizeMeasure release];
-  [filterTest release];
+  [filterSet release];
   
   [super dealloc];
 }
@@ -56,8 +56,8 @@
   return fileSizeMeasure;
 }
 
-- (NSObject <FileItemTest> *) filterTest {
-  return filterTest;
+- (FileItemFilterSet *) filterSet {
+  return filterSet;
 }
 
 - (BOOL) packagesAsFiles {

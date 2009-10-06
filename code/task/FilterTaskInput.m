@@ -3,31 +3,32 @@
 #import "TreeContext.h"
 #import "PreferencesPanelControl.h"
 
+
 @implementation FilterTaskInput
 
 // Overrides designated initialiser
 - (id) init {
-  NSAssert(NO, @"Use initWithOldContext:filterTest: instead");
+  NSAssert(NO, @"Use initWithOldContext:filterSet: instead");
 }
 
-- (id) initWithTreeContext: (TreeContext *)treeContextVal
-         filterTest: (NSObject <FileItemTest> *)filterTestVal {
+- (id) initWithTreeContext:(TreeContext *)treeContextVal
+         filterSet:(FileItemFilterSet *)filterSetVal {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
   BOOL  showPackageContentsByDefault =
           ( [userDefaults boolForKey: ShowPackageContentsByDefaultKey]
             ? NSOnState : NSOffState );
 
-  return [self initWithTreeContext: treeContextVal filterTest: filterTestVal
+  return [self initWithTreeContext: treeContextVal filterSet: filterSetVal
                  packagesAsFiles: !showPackageContentsByDefault];
 }
 
-- (id) initWithTreeContext: (TreeContext *)treeContextVal
-         filterTest: (NSObject <FileItemTest> *)filterTestVal
-         packagesAsFiles: (BOOL) packagesAsFilesVal {
+- (id) initWithTreeContext:(TreeContext *)treeContextVal
+         filterSet:(FileItemFilterSet *)filterSetVal
+         packagesAsFiles:(BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     treeContext = [treeContextVal retain];
-    filterTest = [filterTestVal retain];
+    filterSet = [filterSetVal retain];
     
     packagesAsFiles = packagesAsFilesVal;
   }
@@ -36,7 +37,7 @@
 
 - (void) dealloc {
   [treeContext release];
-  [filterTest release];
+  [filterSet release];
   
   [super dealloc];
 }
@@ -46,8 +47,8 @@
   return treeContext;
 }
 
-- (NSObject <FileItemTest> *) filterTest {
-  return filterTest;
+- (FileItemFilterSet *) filterSet {
+  return filterSet;
 }
 
 - (BOOL) packagesAsFiles {

@@ -10,7 +10,6 @@
 
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
-
 #import "TreeWriter.h"
 
 #import "AutoreleaseProgressTracker.h"
@@ -829,7 +828,7 @@ NSString  *AttributeNameKey = @"name";
                fileSizeMeasure: sizeMeasure
                volumeSize: volumeSize 
                freeSpace: freeSpace
-               filter: nil
+               filterSet: nil
                scanTime: scanTime];
   }
   @catch (AttributeParseException *ex) {

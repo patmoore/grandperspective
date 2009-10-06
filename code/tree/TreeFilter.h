@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
+@class FileItemFilterSet;
 @class FilteredTreeGuide;
 @class TreeBalancer;
 @class TreeContext;
@@ -9,6 +10,8 @@
 
 
 @interface TreeFilter : NSObject {
+
+  FileItemFilterSet  *filterSet;
 
   FilteredTreeGuide  *treeGuide;
   TreeBalancer  *treeBalancer;
@@ -23,7 +26,11 @@
 }
 
 
-- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuide;
+- (id) initWithFilterSet:(FileItemFilterSet *)filterSet;
+
+- (BOOL) packagesAsFiles;
+- (void) setPackagesAsFiles: (BOOL) flag;
+
 
 /* Filters the tree. Omits all items from the old tree that should not be
  * descended into according to the filtered tree guide.

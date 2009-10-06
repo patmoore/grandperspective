@@ -10,6 +10,7 @@ extern NSString  *PhysicalFileSize;
 @class TreeBalancer;
 @class UniformTypeInventory;
 @class FileItem;
+@class FileItemFilterSet;
 @class DirectoryItem;
 @class TreeContext;
 @class ProgressTracker;
@@ -19,6 +20,8 @@ extern NSString  *PhysicalFileSize;
  * contents.
  */
 @interface TreeBuilder : NSObject {
+
+  FileItemFilterSet  *filterSet;
 
   NSString  *fileSizeMeasure;
   ITEM_SIZE  (*fileSizeMeasureFunction) (FSCatalogInfo *);
@@ -51,9 +54,10 @@ extern NSString  *PhysicalFileSize;
 + (BOOL) pathIsDirectory: (NSString *)path;
 
 - (id) init;
-- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuide;
+- (id) initWithFilterSet:(FileItemFilterSet *)filterSet;
 
-- (void) abort;
+- (BOOL) packagesAsFiles;
+- (void) setPackagesAsFiles: (BOOL) flag;
 
 - (NSString *) fileSizeMeasure;
 - (void) setFileSizeMeasure: (NSString *)measure;
@@ -61,6 +65,8 @@ extern NSString  *PhysicalFileSize;
 /* Construct the tree for the given folder.
  */
 - (TreeContext *) buildTreeForPath: (NSString *)path;
+
+- (void) abort;
 
 /* Returns a dictionary containing information about the progress of the
  * ongoing tree-building task.

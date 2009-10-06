@@ -3,9 +3,10 @@
 #import "ControlConstants.h"
 #import "NotifyingDictionary.h"
 
+#import "FileItemTest.h"
 #import "FileItemTestRepository.h"
-#import "CompoundOrItemTest.h"
-#import "NotItemTest.h"
+#import "FileItemFilter.h"
+#import "FilterTest.h"
 
 #import "EditFilterRuleWindowControl.h"
 
@@ -44,32 +45,9 @@ NSString  *MatchColumn = @"match";
 @end // EditFilterRuleWindowTerminationControl
 
 
-/* A test that is added to the filter.
- */
-@interface FilterTest : NSObject {
-  NSObject <FileItemTest> *test;
-
-  // Is the test inverted?
-  BOOL  inverted;
-}
-
-+ (id) filterTestWithFileItemTest:(NSObject <FileItemTest> *)test;
-
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)test;
-
-- (NSObject <FileItemTest> *) fileItemTest;
-- (NSString *) name;
-- (BOOL) isInverted;
-- (BOOL) canToggleInverted;
-- (void) toggleInverted;
-
-@end // FilterTest
-
-
 @interface EditFilterWindowControl (PrivateMethods)
 
 - (NSArray *) availableTests;
-- (NSArray *) filterTests;
 
 // Returns the non-localized name of the selected available test (if any).
 - (NSString *) selectedAvailableTestName;
@@ -77,7 +55,10 @@ NSString  *MatchColumn = @"match";
 // Returns the selected filter test (if any).
 - (FilterTest *) selectedFilterTest;
 
-- (BOOL) filterContainsTestWithName:(NSString *)name;
+/* Helper method for creating FilterTests to be added to the filter. It sets
+ * the inverted and canToggleInverted flags correctly.
+ */
+- (FilterTest *) filterTestForTestNamed:(NSString *)name; 
 
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
@@ -118,7 +99,7 @@ NSString  *MatchColumn = @"match";
     [nc addObserver:self selector: @selector(testRenamedInRepository:) 
           name: ObjectRenamedEvent object: repositoryTestsByName];
 
-    filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
+    fileItemFilter = [[FileItemFilter alloc] init];
 
     availableTests = [[NSMutableArray alloc] 
       initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];
@@ -138,7 +119,7 @@ NSString  *MatchColumn = @"match";
 
   [repositoryTestsByName release];
   
-  [filterTests release];
+  [fileItemFilter release];
   [availableTests release];
   
   [selectedTestName release];
@@ -370,18 +351,16 @@ NSString  *MatchColumn = @"match";
   NSString  *testName = [self selectedAvailableTestName];
   
   if (testName != nil) {
-    NSObject  *test = 
-      [((NSDictionary*)repositoryTestsByName) objectForKey: testName];
-    NSAssert(test != nil, @"Test not found in repository.");
-    
-    FilterTest  *filterTest = [FilterTest filterTestWithFileItemTest: test];
-    [filterTests addObject: filterTest];
+    FilterTest  *filterTest = [self filterTestForTestNamed: testName];
+    NSAssert(filterTest != nil, @"Test not found in repository.");
+        
+    [fileItemFilter addFilterTest: filterTest];
     
     [filterTestsView reloadData];
     [availableTestsView reloadData];
     
     // Select the newly added test.
-    [filterTestsView selectRow: [filterTests indexOfObject: filterTest]
+    [filterTestsView selectRow: [fileItemFilter indexOfFilterTest: filterTest]
                        byExtendingSelection: NO];
     [[self window] makeFirstResponder: filterTestsView];
 
@@ -390,12 +369,12 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) removeTestFromFilter:(id)sender {
-  FilterTest  *filterTest = [self selectedFilterTest];
+  int  index = [filterTestsView selectedRow];
   
-  if (filterTest != nil) {
-    NSString  *testName = [filterTest name];
+  if (index >= 0) {
+    NSString  *testName = [[fileItemFilter filterTestAtIndex: index] name];
     
-    [filterTests removeObject: filterTest];
+    [fileItemFilter removeFilterTestAtIndex: index];
 
     [filterTestsView reloadData];
     [availableTestsView reloadData];
@@ -412,7 +391,7 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) removeAllTestsFromFilter:(id)sender {
-  [filterTests removeAllObjects];
+  [fileItemFilter removeAllFilterTests];
   
   [filterTestsView reloadData];
   [availableTestsView reloadData];
@@ -444,7 +423,7 @@ NSString  *MatchColumn = @"match";
 
 - (int) numberOfRowsInTableView: (NSTableView *)tableView {
   if (tableView == filterTestsView) {
-    return [filterTests count];
+    return [fileItemFilter numFilterTests];
   }
   else if (tableView == availableTestsView) {
     return [availableTests count];
@@ -459,7 +438,7 @@ NSString  *MatchColumn = @"match";
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
-    FilterTest  *filterTest = [filterTests objectAtIndex: row];
+    FilterTest  *filterTest = [fileItemFilter filterTestAtIndex: row];
 
     if ([[column identifier] isEqualToString: NameColumn]) {
       return [mainBundle localizedStringForKey: [filterTest name] value: nil 
@@ -490,7 +469,7 @@ NSString  *MatchColumn = @"match";
   if (tableView == availableTestsView) {
     NSString  *name = [availableTests objectAtIndex: row]; 
 
-    [cell setEnabled: ![self filterContainsTestWithName: name]];
+    [cell setEnabled: ([fileItemFilter filterTestWithName: name] == nil)];
   }
 }
 
@@ -499,78 +478,54 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (void) representFileItemTest:(NSObject <FileItemTest> *)test {
-  [filterTests removeAllObjects];
-
-  if (test == nil) {
-    // Nothing needs doing
-  }
-  else {
-    if ([test isKindOfClass: [CompoundOrItemTest class]]) {
-      NSArray  *subTests = [((CompoundOrItemTest*)test) subItemTests];
-      NSEnumerator  *subTestEnum = [subTests objectEnumerator];
-      NSObject <FileItemTest>  *subTest;
-      while (subTest = [subTestEnum nextObject]) {
-        FilterTest  *filterTest = 
-          [FilterTest filterTestWithFileItemTest: subTest];
-        [filterTests addObject: filterTest];
+// Configures the window to represent the given filter.
+- (void) representFileItemFilter:(FileItemFilter *)filter {
+  [fileItemFilter removeAllFilterTests];
+  
+  int  i = 0;
+  int  max = [filter numFilterTests];
+  while (i < max) {
+    FilterTest  *orgFilterTest = [filter filterTestAtIndex: i];
+    NSString  *name = [orgFilterTest name];
+    
+    FilterTest  *newFilterTest = [self filterTestForTestNamed: name];
+    if (newFilterTest != nil) {
+      if ( [newFilterTest canToggleInverted] &&
+           [newFilterTest isInverted] != [orgFilterTest isInverted] ) {
+        [newFilterTest toggleInverted];
       }
+    
+      [fileItemFilter addFilterTest: newFilterTest];
     }
     else {
-      FilterTest  *filterTest = [FilterTest filterTestWithFileItemTest: test];
-      [filterTests addObject: filterTest];
+      NSLog(@"Test \"%@\" does not exist anymore in repository.", name);
+
+      // Simply omit it.
     }
+
+    i++;
   }
   
   [filterTestsView reloadData];
   [availableTestsView reloadData];
   
-  [self updateWindowState:nil];
+  [self updateWindowState: nil];
 }
 
-// Creates the test object that represents the current window state.
-- (NSObject <FileItemTest> *) createFileItemTest {
-  if ([filterTests count] == 0) {
-    // Return "nil" to indicate that there is no filtering.
-    return nil;
-  }
-  
-  NSObject <FileItemTest>  *test = nil;
-  
-  NSMutableArray  *subTests = 
-    [NSMutableArray arrayWithCapacity: [filterTests count]];
-
-  NSEnumerator  *filterTestEnum = [filterTests objectEnumerator];
-  FilterTest  *filterTest;
-  while (filterTest = [filterTestEnum nextObject]) {
-    NSObject <FileItemTest>  *subTest = [filterTest fileItemTest];
-    if ([filterTest isInverted]) {
-      subTest = 
-        [[[NotItemTest alloc] initWithSubItemTest: subTest] autorelease];
-    }
-    [subTests addObject: subTest ];
-  }
-  
-  if ([filterTests count] == 1) {
-    return [subTests objectAtIndex: 0];
-  }
-  else {
-    return [[[CompoundOrItemTest alloc] initWithSubItemTests: subTests] 
-                autorelease];
-  }
+// Returns the filter that represents the current window state.
+- (FileItemFilter *) fileItemFilter {
+  // Return a copy
+  return [[[FileItemFilter alloc] initWithFileItemFilter: fileItemFilter]
+              autorelease];
 }
 
-@end
+@end // @implementation EditFilterWindowControl
 
 
 @implementation EditFilterWindowControl (PrivateMethods)
 
 - (NSArray *) availableTests {
   return availableTests;
-}
-
-- (NSArray *) filterTests {
-  return filterTests;
 }
 
 // Returns the non-localized name of the selected available test (if any).
@@ -584,20 +539,31 @@ NSString  *MatchColumn = @"match";
 - (FilterTest *) selectedFilterTest {
   int  index = [filterTestsView selectedRow];
   
-  return (index < 0) ? nil : [filterTests objectAtIndex: index];
+  return (index < 0) ? nil : [fileItemFilter filterTestAtIndex: index];
 }
 
-- (BOOL) filterContainsTestWithName:(NSString *)name {
-  // Note: Simple search through array does not scale well when the number of
-  // tests is large, but in practise, this will not occur.
-  int  i = [filterTests count];
-  while (--i >= 0) {
-    if ([[[filterTests objectAtIndex: i] name] isEqualToString: name]) {
-      return YES;
-    }
+
+- (FilterTest *) filterTestForTestNamed:(NSString *)name {
+  NSObject <FileItemTest>  *test = 
+      [((NSDictionary *)repositoryTestsByName) objectForKey: name];
+
+  if (test == nil) {
+    return nil;
   }
 
-  return NO;
+  FilterTest  *filterTest = [FilterTest filterTestWithName: name];
+
+  if ([test appliesToDirectories]) {
+    // Fix "inverted" state of the filter test.     
+    
+    if (! [filterTest isInverted]) {
+      [filterTest setCanToggleInverted: YES]; // Not needed, but no harm.
+      [filterTest toggleInverted];
+    }
+    [filterTest setCanToggleInverted: NO];
+  }
+  
+  return filterTest;
 }
 
 
@@ -696,31 +662,33 @@ NSString  *MatchColumn = @"match";
   FilterTest  *selectedFilterTest = [self selectedFilterTest];
   NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
 
-  if (selectedAvailableTestName != nil 
-      && [self filterContainsTestWithName: selectedAvailableTestName]) {
-    // The window is in an anomalous situation: a test is selected in the
-    // available tests view, even though the test is used in the filter.
-    //
-    // This anomalous situation can occur as follows:
-    // 1. Create a mask, and press OK (to apply it and close the window).
-    // 2. Edit the mask. Remove one of the tests from the filter, but now
-    //    press Cancel (so that the mask remains unchanged, yet the window
-    //    closes)
-    // 3. Edit the mask again. Now the focus will still be on the test in the
-    //    available test window that had been moved in Step 2. However, as 
-    //    this change was undone by cancelling the mask, the test is actually
-    //    not available and thus disabled.
+  if (selectedAvailableTestName != nil) {
+    FilterTest  *filterTest = 
+      [fileItemFilter filterTestWithName: selectedAvailableTestName];
+      
+    if (filterTest != nil) {
+      // The window is in an anomalous situation: a test is selected in the
+      // available tests view, even though the test is used in the filter.
+      //
+      // This anomalous situation can occur as follows:
+      // 1. Create a mask, and press OK (to apply it and close the window).
+      // 2. Edit the mask. Remove one of the tests from the filter, but now
+      //    press Cancel (so that the mask remains unchanged, yet the window
+      //    closes)
+      // 3. Edit the mask again. Now the focus will still be on the test in the
+      //    available test window that had been moved in Step 2. However, as 
+      //    this change was undone by cancelling the mask, the test is actually
+      //    not available and thus disabled.
     
-    // Select the disabled test in the other view.      
-    int  index = [filterTests indexOfObject: selectedAvailableTestName];
-    if (index != NSNotFound) {
+      // Select the disabled test in the other view.      
+      int  index = [fileItemFilter indexOfFilterTest: filterTest];
       [filterTestsView selectRow: index byExtendingSelection: NO];
+
+      [availableTestsView deselectAll: nil];
+      selectedAvailableTestName = nil;
+
+      [[self window] makeFirstResponder: filterTestsView];
     }
-
-    [availableTestsView deselectAll: nil];
-    selectedAvailableTestName = nil;
-
-    [[self window] makeFirstResponder: filterTestsView];
   }
 
   BOOL  filterTestsHighlighted = 
@@ -730,19 +698,20 @@ NSString  *MatchColumn = @"match";
 
   // Find out which test (if any) is currently highlighted.
   NSString  *newSelectedTestName = nil;
-  NSObject <FileItemTest>  *newSelectedTest = nil;
+
   if (filterTestsHighlighted) {
     newSelectedTestName = [selectedFilterTest name];
-    newSelectedTest = [selectedFilterTest fileItemTest];
   }
   else if (availableTestsHighlighted) {
     newSelectedTestName = selectedAvailableTestName;
-    newSelectedTest = [((NSDictionary*)repositoryTestsByName) 
-                           objectForKey: newSelectedTestName];
   }
   
+  NSObject <FileItemTest>  *newSelectedTest = 
+    [((NSDictionary *)repositoryTestsByName) 
+                        objectForKey: newSelectedTestName];
+
   // If highlighted test changed, update the description text view
-  if (newSelectedTestName != selectedTestName) {
+  if (newSelectedTestName != selectedTestName) {  
     [selectedTestName release];
     selectedTestName = [newSelectedTestName retain];
 
@@ -770,7 +739,7 @@ NSString  *MatchColumn = @"match";
   [removeTestFromFilterButton setEnabled: 
     ( selectedFilterTest != nil && filterTestsHighlighted )];
 
-  BOOL  nonEmptyFilter = ([filterTests count] > 0);
+  BOOL  nonEmptyFilter = ([fileItemFilter numFilterTests] > 0);
 
   [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
   
@@ -905,62 +874,3 @@ NSString  *MatchColumn = @"match";
 
 @end // @implementation EditFilterRuleWindowTerminationControl
 
-
-@implementation FilterTest
-
-+ (id) filterTestWithFileItemTest:(NSObject <FileItemTest> *)test {
-  return [[[FilterTest alloc] initWithFileItemTest: test] autorelease];
-}
-
-
-// Overrides designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use initWithFileItemTest: instead.");
-}
-
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)testVal {
-  if (self = [super init]) {
-    if ([testVal isKindOfClass: [NotItemTest class]]) {
-      inverted = YES;
-      testVal = [((NotItemTest *)testVal) subItemTest];
-    }
-    else {
-      inverted = NO;
-    }
-
-    NSAssert([testVal name] != nil, @"Test name must not be nil.");  
-    test = [testVal retain];
-  }
-  
-  return self;
-}
-
-- (void) dealloc {
-  [test release];
-
-  [super dealloc];
-}
-
-
-- (NSObject <FileItemTest> *) fileItemTest {
-  return test;
-}
-
-- (NSString *) name {
-  return [test name];
-}
-
-- (BOOL) isInverted {
-  return inverted;
-}
-
-- (BOOL) canToggleInverted {
-  return YES; // TODO: change
-}
-
-- (void) toggleInverted {
-  NSAssert([self canToggleInverted], @"Cannot toggle test.");
-  inverted = !inverted;
-}
-
-@end // FilterTest

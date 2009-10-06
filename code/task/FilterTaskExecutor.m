@@ -2,7 +2,6 @@
 
 #import "TreeFilter.h"
 #import "FilterTaskInput.h"
-#import "FilteredTreeGuide.h"
 #import "TreeContext.h"
 
 
@@ -31,13 +30,10 @@
   NSAssert( treeFilter==nil, @"treeFilter already set.");
   
   FilterTaskInput  *filterInput = input;
-  FilteredTreeGuide  *treeGuide = 
-    [[[FilteredTreeGuide alloc] 
-         initWithFileItemTest: [filterInput filterTest]
-           packagesAsFiles: [filterInput packagesAsFiles]] autorelease];
   
   [taskLock lock];
-  treeFilter = [[TreeFilter alloc] initWithFilteredTreeGuide: treeGuide];
+  treeFilter = [[TreeFilter alloc] initWithFilterSet: [filterInput filterSet]];
+  [treeFilter setPackagesAsFiles: [filterInput packagesAsFiles]];
   [taskLock unlock];
     
   TreeContext  *originalTree = [filterInput treeContext];

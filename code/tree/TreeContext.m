@@ -1,10 +1,12 @@
 #import "TreeContext.h"
 
-#import "CompoundAndItemTest.h"
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
+
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
+
+#import "FileItemFilterSet.h"
 
 
 NSString  *FreeSpace = @"free";
@@ -54,12 +56,12 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
          volumeSize: (unsigned long long) volumeSizeVal 
          freeSpace: (unsigned long long) freeSpaceVal
-         filter: (NSObject <FileItemTest> *)filterVal {
+         filterSet: (FileItemFilterSet *)filterSetVal {
   return [self initWithVolumePath: volumePath
                  fileSizeMeasure: fileSizeMeasureVal
                  volumeSize: volumeSizeVal 
                  freeSpace: freeSpaceVal
-                 filter: filterVal 
+                 filterSet: filterSetVal 
                  scanTime: [NSDate date]];
 }
 
@@ -67,7 +69,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
          fileSizeMeasure: (NSString *)fileSizeMeasureVal
          volumeSize: (unsigned long long) volumeSizeVal 
          freeSpace: (unsigned long long) freeSpaceVal
-         filter: (NSObject <FileItemTest> *)filterVal
+         filterSet: (FileItemFilterSet *)filterSetVal
          scanTime: (NSDate *)scanTimeVal {
   if (self = [super init]) {
     volumeTree = [[DirectoryItem alloc] initWithName: volumePath parent: nil];
@@ -83,7 +85,10 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     
     scanTime = [scanTimeVal retain];
 
-    filter = [filterVal retain];
+    // Ensure filter set is always set
+    filterSet = 
+      [ ((filterSetVal != nil) ? filterSetVal : [FileItemFilterSet filterSet])
+          retain];
 
     // Listen to self
     [[NSNotificationCenter defaultCenter] 
@@ -110,7 +115,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   
   [fileSizeMeasure release];
   [scanTime release];
-  [filter release];
+  [filterSet release];
   
   [replacedItem release];
   [replacingItem release];
@@ -119,28 +124,6 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   [lock release];
 
   [super dealloc];
-}
-
-
-- (TreeContext *) contextAfterFiltering: (NSObject <FileItemTest> *)newFilter {
-  NSAssert(newFilter!=nil, @"Filter should not be nil.");
-
-  NSObject <FileItemTest>  *totalFilter = nil;
-  if (filter == nil) {
-    totalFilter = newFilter;
-  }
-  else {
-    totalFilter = 
-      [[[CompoundAndItemTest alloc] initWithSubItemTests:
-           [NSArray arrayWithObjects:filter, newFilter, nil]] autorelease];
-  }
-
-  return [[[TreeContext alloc] initWithVolumePath: [volumeTree name]
-                                 fileSizeMeasure: fileSizeMeasure
-                                 volumeSize: volumeSize
-                                 freeSpace: freeSpace
-                                 filter: totalFilter
-                                 scanTime: scanTime] autorelease];
 }
 
 
@@ -248,8 +231,8 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (NSObject <FileItemTest>*) fileItemFilter {
-  return filter;
+- (FileItemFilterSet *) filterSet {
+  return filterSet;
 }
 
 

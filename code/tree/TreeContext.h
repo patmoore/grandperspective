@@ -7,10 +7,11 @@ extern NSString  *FreedSpace;
 
 extern NSString  *FileItemDeletedEvent;
 
-@protocol FileItemTest;
 @class FileItem;
+@class FileItemFilterSet;
 @class DirectoryItem;
 @class ItemPathModelView;
+
 
 @interface TreeContext : NSObject {
   unsigned long long  volumeSize;
@@ -25,7 +26,7 @@ extern NSString  *FileItemDeletedEvent;
   NSDate  *scanTime;
   NSString  *fileSizeMeasure;
   
-  NSObject <FileItemTest>  *filter;
+  FileItemFilterSet  *filterSet;
   
   FileItem  *replacedItem;
   FileItem  *replacingItem;
@@ -50,7 +51,7 @@ extern NSString  *FileItemDeletedEvent;
          fileSizeMeasure: (NSString *)fileSizeMeasure
          volumeSize: (unsigned long long) volumeSize 
          freeSpace: (unsigned long long) freeSpace
-         filter: (NSObject <FileItemTest> *)filter;
+         filterSet: (FileItemFilterSet *)filterSet;
          
 /* Creates a new tree context. 
  *
@@ -62,18 +63,9 @@ extern NSString  *FileItemDeletedEvent;
          fileSizeMeasure: (NSString *)fileSizeMeasure
          volumeSize: (unsigned long long) volumeSize 
          freeSpace: (unsigned long long) freeSpace
-         filter: (NSObject <FileItemTest> *)filter
+         filterSet: (FileItemFilterSet *)filterSet
          scanTime: (NSDate *)scanTime;
 
-/* Creates a new tree context, based on the current one, but with an additional
- * filter applied. The filtering itself still needs to be performed. This is
- * the responsibility of the sender, after which it has to finalise the 
- * volume tree.
- *
- * Note: The returned object is not yet fully ready. The contents of its scan 
- * tree still need to be set using -setScanTree.
- */
-- (TreeContext *) contextAfterFiltering: (NSObject <FileItemTest> *)newFilter;
 
 /* Sets the scan tree. This finalises the volume tree. The parent of the scan
  * tree should be that returned by -scanTreeParent.
@@ -112,7 +104,7 @@ extern NSString  *FileItemDeletedEvent;
  */
 - (NSString *) stringForScanTime;
 
-- (NSObject <FileItemTest>*) fileItemFilter;
+- (FileItemFilterSet *) filterSet;
 
 
 - (void) deleteSelectedFileItem: (ItemPathModelView *)path;

@@ -18,7 +18,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class TreeContext;
 @class AnnotatedTreeContext;
 @class ItemInFocusControls;
-@protocol FileItemTest;
+@class FileItemFilter;
 
 @interface DirectoryViewControl : NSWindowController {
 
@@ -77,7 +77,7 @@ extern NSString  *DeleteFilesAndFolders;
   DirectoryViewControlSettings  *initialSettings;
   NSString  *initialComments;
 
-  NSObject <FileItemTest>  *fileItemMask;
+  FileItemFilter  *fileItemMask;
   
   BOOL  canDeleteFiles;
   BOOL  canDeleteFolders;
@@ -118,7 +118,7 @@ extern NSString  *DeleteFilesAndFolders;
          pathModel: (ItemPathModel *)itemPathModel
          settings: (DirectoryViewControlSettings *)settings;
 
-- (NSObject <FileItemTest> *) fileItemMask;
+- (FileItemFilter *) fileItemMask;
 
 - (ItemPathModelView *) pathModelView;
 

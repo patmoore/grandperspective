@@ -2,7 +2,6 @@
 
 #import "TreeBuilder.h"
 #import "ScanTaskInput.h"
-#import "FilteredTreeGuide.h"
 #import "ProgressTracker.h"
 
 
@@ -33,14 +32,11 @@
   NSAssert( treeBuilder==nil, @"treeBuilder already set.");
 
   ScanTaskInput  *myInput = input;
-  FilteredTreeGuide  *treeGuide = 
-    [[[FilteredTreeGuide alloc] 
-         initWithFileItemTest: [myInput filterTest]
-           packagesAsFiles: [myInput packagesAsFiles]] autorelease];
 
   [taskLock lock];
-  treeBuilder = [[TreeBuilder alloc] initWithFilteredTreeGuide: treeGuide];
+  treeBuilder = [[TreeBuilder alloc] initWithFilterSet: [input filterSet]];
   [treeBuilder setFileSizeMeasure: [myInput fileSizeMeasure]];
+  [treeBuilder setPackagesAsFiles: [myInput packagesAsFiles]];
   [taskLock unlock];
   
   NSDate  *startTime = [NSDate date];

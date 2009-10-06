@@ -35,8 +35,9 @@
 #import "WriteTaskInput.h"
 #import "WriteTaskExecutor.h"
 
-#import "FileItemTest.h"
 #import "FileItemTestRepository.h"
+#import "FileItemFilter.h"
+#import "FileItemFilterSet.h"
 
 #import "UniformTypeRanking.h"
 #import "UniformTypeInventory.h"
@@ -45,9 +46,6 @@
 NSString  *RescanClosesOldWindow = @"close old window";
 NSString  *RescanKeepsOldWindow = @"keep old window";
 NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
-
-
-static int  nextFilterId = 1;
 
 
 @interface ModalityTerminator : NSObject {
@@ -113,13 +111,14 @@ static int  nextFilterId = 1;
 @interface MainMenuControl (PrivateMethods)
 
 - (void) scanFolderUsingFilter: (BOOL) useFilter;
-- (void) scanFolder:(NSString *)path filter:(NSObject <FileItemTest> *)filter;
+- (void) scanFolder:(NSString *)path filter:(FileItemFilter *)filter;
+- (void) scanFolder:(NSString *)path filterSet:(FileItemFilterSet *)filterSet;
 
 - (void) loadScanDataFromFile:(NSString *)path;
 
 - (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
 
-- (NSObject <FileItemTest> *) getFilter: (NSObject <FileItemTest> *)initialTest;
+- (FileItemFilter *) getFilter:(FileItemFilter *)initialFilter;
 
 /* Creates window title based on scan location, scan time and filter (if any).
  */
@@ -341,11 +340,17 @@ static MainMenuControl  *singletonInstance = nil;
          autorelease];
 
   TreeContext  *oldContext = [oldControl treeContext];
+  FileItemFilterSet  *filterSet = [oldContext filterSet];
+  if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
+    filterSet = [filterSet updatedFilterSetUsingRepository:
+                   [FileItemTestRepository defaultFileItemTestRepository]];
+  }
+  
   ScanTaskInput  *input = 
     [[[ScanTaskInput alloc] 
          initWithPath: [[oldContext scanTree] path]
            fileSizeMeasure: [oldContext fileSizeMeasure]
-           filterTest: [oldContext fileItemFilter]]
+           filterSet: filterSet]
          autorelease];
     
   [scanTaskManager asynchronouslyRunTaskWithInput: input
@@ -358,12 +363,21 @@ static MainMenuControl  *singletonInstance = nil;
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  NSObject <FileItemTest>  *filterTest =
-    [self getFilter: [oldControl fileItemMask]];
-    
-  if (filterTest == nil) {
+  FileItemFilter  *filter = [self getFilter: [oldControl fileItemMask]];
+  if (filter == nil) {
     return;
   }
+  
+  NSObject <FileItemTest>  *filterTest =
+    [filter createFileItemTestFromRepository:
+              [FileItemTestRepository defaultFileItemTestRepository]];
+  if (filterTest == nil) {
+    NSLog(@"Filter test of new filter is nil.");
+    return;
+  }
+  
+  FileItemFilterSet  *filterSet = 
+    [[[oldControl treeContext] filterSet] filterSetWithNewFilter: filter];
       
   ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
   DirectoryViewControlSettings  *oldSettings = 
@@ -379,7 +393,7 @@ static MainMenuControl  *singletonInstance = nil;
   FilterTaskInput  *input = 
     [[[FilterTaskInput alloc] 
          initWithTreeContext: [oldControl treeContext]
-           filterTest: filterTest
+           filterSet: filterSet
            packagesAsFiles: ! [oldSettings showPackageContents]]
          autorelease];
 
@@ -506,12 +520,28 @@ static MainMenuControl  *singletonInstance = nil;
   }  
 
   NSString  *pathToScan = [[openPanel filenames] objectAtIndex: 0];
-  NSObject <FileItemTest>  *filter = useFilter ? [self getFilter: nil] : nil;
+  FileItemFilter  *filter = nil;
+  if (useFilter) {
+    filter = [self getFilter: nil];
+    
+    // Instantiate the test
+    [filter createFileItemTestFromRepository: 
+              [FileItemTestRepository defaultFileItemTestRepository]];
+  }
 
   [self scanFolder: pathToScan filter: filter];
 }
 
-- (void) scanFolder:(NSString *)path filter:(NSObject <FileItemTest> *)filter {
+- (void) scanFolder:(NSString *)path filter:(FileItemFilter *)filter {
+  NSAssert(filter==nil || [filter fileItemTest] != nil, 
+           @"Filter must be nil or instantiated.");
+  FileItemFilterSet  *filterSet =
+    (filter != nil) ? [FileItemFilterSet filterSetWithFilter: filter] : nil;
+
+  [self scanFolder: path filterSet: filterSet];
+}
+
+- (void) scanFolder:(NSString *)path filterSet:(FileItemFilterSet *)filterSet {
   NSString  *fileSizeMeasure =
     [[NSUserDefaults standardUserDefaults] stringForKey: FileSizeMeasureKey];
 
@@ -521,7 +551,7 @@ static MainMenuControl  *singletonInstance = nil;
   ScanTaskInput  *input = 
     [[[ScanTaskInput alloc] initWithPath: path
                               fileSizeMeasure: fileSizeMeasure 
-                              filterTest: filter] 
+                              filterSet: filterSet] 
          autorelease];
     
   [scanTaskManager asynchronouslyRunTaskWithInput: input
@@ -569,14 +599,14 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (NSObject <FileItemTest> *)getFilter: (NSObject <FileItemTest> *)initialTest {
+- (FileItemFilter *) getFilter:(FileItemFilter *)initialFilter {
   EditFilterWindowControl  *editFilterWindowControl = 
     [[[EditFilterWindowControl alloc] init] autorelease];
 
   [[editFilterWindowControl window] setTitle: 
       NSLocalizedString( @"Apply filter", @"Window title" ) ];
   [editFilterWindowControl removeApplyButton];
-  [editFilterWindowControl representFileItemTest: initialTest];
+  [editFilterWindowControl representFileItemFilter: initialFilter];
 
   ModalityTerminator  *stopModal = 
     [[[ModalityTerminator alloc] init] autorelease];
@@ -602,7 +632,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
   
   // Get rule from window
-  return [editFilterWindowControl createFileItemTest];
+  return [editFilterWindowControl fileItemFilter];
 }
 
 
@@ -611,16 +641,16 @@ static MainMenuControl  *singletonInstance = nil;
   NSString  *scanPath = [[treeContext scanTree] path];
 
   NSString  *scanTimeString = [treeContext stringForScanTime]; 
-  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
+  FileItemFilterSet  *filterSet = [treeContext filterSet];
 
-  if (filter == nil) {
+  if (filterSet == nil) {
     return [NSString stringWithFormat: @"%@ - %@", 
                                          scanPath, scanTimeString];
   }
   else {
     return [NSString stringWithFormat: @"%@ - %@ - %@", 
                                          scanPath, scanTimeString,
-                                         [filter name] ];
+                                         [filterSet description] ];
   }
 }
 
@@ -788,16 +818,6 @@ static MainMenuControl  *singletonInstance = nil;
   if (annTreeContext == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
-  }
-  
-  // If there is a filter, ensure it has a name
-  NSObject <FileItemTest>  *filter = 
-    [[annTreeContext treeContext] fileItemFilter];    
-  if (filter != nil && [filter name] == nil) {
-    NSString  *format = NSLocalizedString( @"Filter%d", 
-                                           @"Filter naming template." );
-    
-    [filter setName: [NSString stringWithFormat: format, nextFilterId++]];
   }
 
   // Note: The control should auto-release itself when its window closes  

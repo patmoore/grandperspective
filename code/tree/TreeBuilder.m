@@ -1,12 +1,13 @@
 #import "TreeBuilder.h"
 
 #import "TreeConstants.h"
-#import "CompoundItem.h"
-#import "DirectoryItem.h"
 #import "PlainFileItem.h"
+#import "DirectoryItem.h"
+#import "CompoundItem.h"
+#import "TreeContext.h"
+#import "FileItemFilterSet.h"
 #import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
-#import "TreeContext.h"
 
 #import "ProgressTracker.h"
 #import "UniformTypeInventory.h"
@@ -171,13 +172,17 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
 
 
 - (id) init {
-  return [self initWithFilteredTreeGuide: nil];
+  return [self initWithFilterSet: nil];
 }
 
 
-- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuideVal {
+- (id) initWithFilterSet:(FileItemFilterSet *)filterSetVal {
   if (self = [super init]) {
-    treeGuide = [treeGuideVal retain];
+    filterSet = [filterSetVal retain];
+
+    treeGuide = [[FilteredTreeGuide alloc]
+                    initWithFileItemTest: [filterSet fileItemTest]];
+
     treeBalancer = [[TreeBalancer alloc] init];
     typeInventory = [[UniformTypeInventory defaultUniformTypeInventory] retain];
     
@@ -206,6 +211,8 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
 
 
 - (void) dealloc {
+  [filterSet release];
+
   [treeGuide release];
   [treeBalancer release];
   [typeInventory release];
@@ -219,6 +226,15 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   free(bulkCatalogInfo);
   
   [super dealloc];
+}
+
+
+- (BOOL) packagesAsFiles {
+  return [treeGuide packagesAsFiles];
+}
+
+- (void) setPackagesAsFiles:(BOOL) flag {
+  [treeGuide setPackagesAsFiles: flag];
 }
 
 
@@ -303,13 +319,13 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
     NSLog(@"Scanning entire volume %@ [%@].", volumePath, 
              [manager displayNameAtPath: volumePath]);
   }
-       
+
   TreeContext  *scanResult =
     [[[TreeContext alloc] initWithVolumePath: volumePath
                             fileSizeMeasure: fileSizeMeasure
                             volumeSize: volumeSize 
                             freeSpace: freeSpace
-                            filter: [treeGuide fileItemTest]] autorelease];
+                            filterSet: filterSet] autorelease];
   DirectoryItem  *scanTree = 
     [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
          initWithName: relativePath 
@@ -322,7 +338,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
                      parentPath: volumePath];
 
   [progressTracker finishedTask];
-
+  
   if (! ok) {
     return nil;
   }

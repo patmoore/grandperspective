@@ -2,6 +2,9 @@
 
 #import "TreeContext.h"
 
+#import "FileItemFilterSet.h"
+#import "FileItemTest.h"
+
 @implementation AnnotatedTreeContext
 
 + (id) annotatedTreeContext:(TreeContext *)treeContext {
@@ -22,10 +25,10 @@
 
 
 - (id) initWithTreeContext:(TreeContext *) treeContextVal {
-  NSObject <FileItemTest>*  filter = [treeContextVal fileItemFilter];
-  
+  NSObject <FileItemTest>  *test = [[treeContextVal filterSet] fileItemTest];
+
   return [self initWithTreeContext: treeContextVal
-                 comments: ((filter != nil) ? [filter description] : @"")];
+                 comments: ((test != nil) ? [test description] : @"")];
 }
 
 - (id) initWithTreeContext:(TreeContext *) treeContextVal

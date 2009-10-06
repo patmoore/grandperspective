@@ -18,6 +18,9 @@
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA13FCE81077318700AE3B23 /* Cross.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE61077318700AE3B23 /* Cross.png */; };
 		AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE71077318700AE3B23 /* Checkmark.png */; };
+		AA13FD9E1078CDA400AE3B23 /* FileItemFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */; };
+		AA13FDA21078D04E00AE3B23 /* FilterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FDA11078D04E00AE3B23 /* FilterTest.m */; };
+		AA13FDF71078F2A700AE3B23 /* FileItemFilterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
@@ -151,6 +154,12 @@
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
 		AA13FCE61077318700AE3B23 /* Cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cross.png; path = Images/Cross.png; sourceTree = "<group>"; };
 		AA13FCE71077318700AE3B23 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Checkmark.png; path = Images/Checkmark.png; sourceTree = "<group>"; };
+		AA13FD9C1078CDA400AE3B23 /* FileItemFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilter.h; path = test/FileItemFilter.h; sourceTree = "<group>"; };
+		AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilter.m; path = test/FileItemFilter.m; sourceTree = "<group>"; };
+		AA13FDA01078D04E00AE3B23 /* FilterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTest.h; path = test/FilterTest.h; sourceTree = "<group>"; };
+		AA13FDA11078D04E00AE3B23 /* FilterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTest.m; path = test/FilterTest.m; sourceTree = "<group>"; };
+		AA13FDF51078F2A700AE3B23 /* FileItemFilterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilterSet.h; path = test/FileItemFilterSet.h; sourceTree = "<group>"; };
+		AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilterSet.m; path = test/FileItemFilterSet.m; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
@@ -494,6 +503,12 @@
 			children = (
 				AA9881A40DF57BFD00A6EA33 /* strings */,
 				AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */,
+				AA13FDA01078D04E00AE3B23 /* FilterTest.h */,
+				AA13FDA11078D04E00AE3B23 /* FilterTest.m */,
+				AA13FD9C1078CDA400AE3B23 /* FileItemFilter.h */,
+				AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */,
+				AA13FDF51078F2A700AE3B23 /* FileItemFilterSet.h */,
+				AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */,
 				AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */,
 				AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */,
 				AA98816E0DF57B2F00A6EA33 /* FileItemTestRepository.h */,
@@ -948,6 +963,9 @@
 				AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */,
 				AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */,
 				AA2B4A0A104B122900B10262 /* AnnotatedTreeContext.m in Sources */,
+				AA13FD9E1078CDA400AE3B23 /* FileItemFilter.m in Sources */,
+				AA13FDA21078D04E00AE3B23 /* FilterTest.m in Sources */,
+				AA13FDF71078F2A700AE3B23 /* FileItemFilterSet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

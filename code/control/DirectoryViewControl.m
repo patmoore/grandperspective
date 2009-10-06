@@ -9,7 +9,8 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
-#import "FileItemTest.h"
+#import "FileItemFilter.h"
+#import "FileItemTestRepository.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 #import "EditFilterWindowControl.h"
@@ -194,7 +195,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (NSObject <FileItemTest> *) fileItemMask {
+- (FileItemFilter *) fileItemMask {
   return fileItemMask;
 }
 
@@ -298,10 +299,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [scanPathTextView setDrawsBackground: NO];
   [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
-  NSObject <FileItemTest>  *filter = [treeContext fileItemFilter];
+  FileItemFilterSet  *filterSet = [treeContext filterSet];
   [filterNameField setStringValue: 
-    ( (filter != nil)
-      ? [filter name]
+    ( ([filterSet fileItemTest] != nil)
+      ? [filterSet description]
       : NSLocalizedString( @"None", 
                            @"The filter name when there is no filter." ) ) ];
 
@@ -656,7 +657,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [self createEditMaskFilterWindow];
   }
   
-  [editMaskFilterWindowControl representFileItemTest:fileItemMask];
+  [editMaskFilterWindowControl representFileItemFilter: fileItemMask];
 
   // Note: First order it to front, then make it key. This ensures that
   // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
@@ -1034,11 +1035,22 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
   
 - (void) updateMask {
-  NSObject <FileItemTest>  *newMask = 
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+
+  FileItemFilter  *newMask = 
     [maskCheckBox state]==NSOnState ? fileItemMask : nil;
 
+  NSObject <FileItemTest>  *newMaskTest = [newMask fileItemTest];  
+  if ( newMask != nil
+       && ( newMaskTest == nil
+            || [userDefaults boolForKey: UpdateFiltersBeforeUse] ) ) {
+    newMaskTest =
+      [newMask createFileItemTestFromRepository:
+                 [FileItemTestRepository defaultFileItemTestRepository]];
+  }
+
   [mainView setTreeDrawerSettings: 
-    [[mainView treeDrawerSettings] copyWithFileItemMask: newMask]];
+    [[mainView treeDrawerSettings] copyWithFileItemMask: newMaskTest]];
 }
 
 
@@ -1065,7 +1077,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) maskWindowApplyAction:(NSNotification*)notification {
   [fileItemMask release];
   
-  fileItemMask = [[editMaskFilterWindowControl createFileItemTest] retain];
+  fileItemMask = [[editMaskFilterWindowControl fileItemFilter] retain];
 
   if (fileItemMask != nil) {
     // Automatically enable mask.

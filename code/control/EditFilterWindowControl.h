@@ -10,6 +10,7 @@ extern NSString  *OkPerformedEvent;
 @class EditFilterRuleWindowControl;
 @class NotifyingDictionary;
 @class FileItemTestRepository;
+@class FileItemFilter;
 @protocol FileItemTest;
 
 /**
@@ -44,7 +45,7 @@ extern NSString  *OkPerformedEvent;
   
   NotifyingDictionary  *repositoryTestsByName;
     
-  NSMutableArray  *filterTests;
+  FileItemFilter  *fileItemFilter;
   NSMutableArray  *availableTests;
 
   // Non-localized name of currently selected test.
@@ -84,10 +85,14 @@ extern NSString  *OkPerformedEvent;
 - (void) setAllowEmptyFilter: (BOOL) flag;
 - (BOOL) allowEmptyFilter;
 
-// Configures the window to represent the given test.
-- (void) representFileItemTest:(NSObject <FileItemTest> *)test;
+/* Configures the window to represent the given filter. It copies the state of
+ * the original filter (as far as possible, given that some filter tests may
+ * not exist anymore) and leaves the provided filter unchanged.
+ */
+- (void) representFileItemFilter:(FileItemFilter *)filter;
 
-// Creates the test object that represents the current window state.
-- (NSObject <FileItemTest> *) createFileItemTest;
+/* Returns the filter that represents the current window state.
+ */
+- (FileItemFilter *) fileItemFilter;
 
 @end

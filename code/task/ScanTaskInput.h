@@ -1,27 +1,27 @@
 #import <Cocoa/Cocoa.h>
 
-@protocol FileItemTest;
+@class FileItemFilterSet;
 
 
 @interface ScanTaskInput : NSObject {
   BOOL  packagesAsFiles;
   NSString  *pathToScan;
   NSString  *fileSizeMeasure;
-  NSObject <FileItemTest>  *filterTest;
+  FileItemFilterSet  *filterSet;
 }
 
-- (id) initWithPath: (NSString *)path 
-         fileSizeMeasure: (NSString *) measure
-         filterTest: (NSObject <FileItemTest> *)filter;
+- (id) initWithPath:(NSString *)path 
+         fileSizeMeasure:(NSString *) measure
+         filterSet:(FileItemFilterSet *)filterSet;
 
-- (id) initWithPath: (NSString *)path 
-         fileSizeMeasure: (NSString *) measure
-         filterTest: (NSObject <FileItemTest> *)filter
-         packagesAsFiles: (BOOL) packagesAsFiles;
+- (id) initWithPath:(NSString *)path 
+         fileSizeMeasure:(NSString *) measure
+         filterSet:(FileItemFilterSet *)filterSet
+         packagesAsFiles:(BOOL) packagesAsFiles;
 
 - (NSString *) pathToScan;
 - (NSString *) fileSizeMeasure;
-- (NSObject <FileItemTest> *) filterTest;
+- (FileItemFilterSet *) filterSet;
 - (BOOL) packagesAsFiles;
 
 @end

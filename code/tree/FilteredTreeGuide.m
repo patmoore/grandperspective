@@ -10,7 +10,11 @@
 
 // Overrides designated initialiser
 - (id) init {
-  return [self initWithFileItemTest: nil packagesAsFiles: YES];
+  return [self initWithFileItemTest: nil];
+}
+
+- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTestVal {
+  return [self initWithFileItemTest: itemTestVal packagesAsFiles: NO];
 }
 
 - (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal

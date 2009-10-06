@@ -5,6 +5,7 @@
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "TreeContext.h"
+#import "FileItemFilterSet.h"
 #import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
 
@@ -27,9 +28,12 @@
 
 @implementation TreeFilter
 
-- (id) initWithFilteredTreeGuide: (FilteredTreeGuide *)treeGuideVal {
+- (id) initWithFilterSet:(FileItemFilterSet *)filterSetVal {
   if (self = [super init]) {
-    treeGuide = [treeGuideVal retain];    
+    filterSet = [filterSetVal retain];
+
+    treeGuide = [[FilteredTreeGuide alloc]
+                    initWithFileItemTest: [filterSet fileItemTest]];
     treeBalancer = [[TreeBalancer alloc] init];
     
     abort = NO;
@@ -44,6 +48,7 @@
 }
 
 - (void) dealloc {
+  [filterSet release];
   [treeGuide release];
   [treeBalancer release];
 
@@ -52,9 +57,23 @@
   [super dealloc];
 }
 
+
+- (BOOL) packagesAsFiles {
+  return [treeGuide packagesAsFiles];
+}
+
+- (void) setPackagesAsFiles:(BOOL) flag {
+  [treeGuide setPackagesAsFiles: flag];
+}
+
+
 - (TreeContext *)filterTree: (TreeContext *)oldTree {
-  TreeContext  *filterResult = 
-    [oldTree contextAfterFiltering: [treeGuide fileItemTest]];
+  TreeContext  *filterResult =
+    [[[TreeContext alloc] initWithVolumePath: [[oldTree volumeTree] name]
+                            fileSizeMeasure: [oldTree fileSizeMeasure]
+                            volumeSize: [oldTree volumeSize] 
+                            freeSpace: [oldTree freeSpace]
+                            filterSet: filterSet] autorelease];
 
   DirectoryItem  *oldScanTree = [oldTree scanTree];
   DirectoryItem  *scanTree = 

@@ -68,6 +68,7 @@
   
 }
 
+- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest;
 - (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest
          packagesAsFiles: (BOOL) packagesAsFiles;
 

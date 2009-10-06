@@ -85,6 +85,10 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 }
 
 
+- (NSObject <FileItemTest> *) fileItemTestForName:(NSString *)name {
+  return [((NSDictionary *)testsByName) objectForKey: name];
+}
+
 - (NSObject <FileItemTest> *) applicationProvidedTestForName: (NSString *)name {
   return [applicationProvidedTests objectForKey: name];
 }

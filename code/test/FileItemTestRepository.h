@@ -15,6 +15,8 @@
 
 - (NotifyingDictionary*) testsByNameAsNotifyingDictionary;
 
+- (NSObject <FileItemTest> *) fileItemTestForName:(NSString *)name;
+
 - (NSObject <FileItemTest> *) applicationProvidedTestForName: (NSString *)name;
 
 - (void) storeUserCreatedTests;

@@ -15,7 +15,7 @@ extern NSString  *DefaultViewWindowWidth;
 extern NSString  *DefaultViewWindowHeight;
 extern NSString  *CustomFileOpenApplication;
 extern NSString  *CustomFileRevealApplication;
-
+extern NSString  *UpdateFiltersBeforeUse;
 
 @class EditUniformTypeRankingWindowControl;
 
