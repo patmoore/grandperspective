@@ -6,6 +6,10 @@
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 
+#import "FilterTest.h"
+#import "FileItemFilter.h"
+#import "FileItemFilterSet.h"
+
 #import "ProgressTracker.h"
 
 #import "ApplicationError.h"
@@ -19,6 +23,9 @@ NSString  *TreeWriterFormatVersion = @"2";
 NSString  *ScanDumpElem = @"GrandPerspectiveScanDump";
 NSString  *ScanInfoElem = @"ScanInfo";
 NSString  *ScanCommentsElem = @"ScanComments";
+NSString  *FilterSetElem = @"FilterSet";
+NSString  *FilterElem = @"Filter";
+NSString  *FilterTestElem = @"FilterTest";
 NSString  *FolderElem = @"Folder";
 NSString  *FileElem = @"File";
 
@@ -33,10 +40,17 @@ NSString  *FreeSpaceAttr = @"freeSpace";
 NSString  *ScanTimeAttr = @"scanTime";
 NSString  *FileSizeMeasureAttr = @"fileSizeMeasure";
 
+// XML attributes of FilterTest
+NSString  *InvertedAttr = @"inverted";
+
 // XML attributes of Folder and File
 NSString  *NameAttr = @"name";
 NSString  *FlagsAttr = @"flags";
 NSString  *SizeAttr = @"size";
+
+// XML attribute values
+NSString  *TrueValue = @"true";
+NSString  *FalseValue = @"false";
 
 // Localized error messages
 #define WRITING_LAST_DATA_FAILED \
@@ -118,6 +132,9 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 - (void) appendScanDumpElement: (AnnotatedTreeContext *)tree;
 - (void) appendScanInfoElement: (AnnotatedTreeContext *)tree;
 - (void) appendScanCommentsElement: (NSString *)comments;
+- (void) appendFilterSetElement: (FileItemFilterSet *)filterSet;
+- (void) appendFilterElement: (FileItemFilter *)filter;
+- (void) appendFilterTestElement: (FilterTest *)filterTest;
 - (void) appendFolderElement: (DirectoryItem *)dirItem;
 - (void) appendFileElement: (FileItem *)fileItem;
 
@@ -242,6 +259,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
         FileSizeMeasureAttr, [tree fileSizeMeasure]]];
   
   [self appendScanCommentsElement: [annotatedTree comments]];
+  [self appendFilterSetElement: [tree filterSet]];
   
   [tree obtainReadLock];
   [self appendFolderElement: [tree scanTree]];
@@ -261,6 +279,55 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
         ScanCommentsElem,
         escapedXML(comments, CHARDATA_ESCAPE_CHARS),
         ScanCommentsElem]];
+}
+
+
+- (void) appendFilterSetElement: (FileItemFilterSet *)filterSet {
+  if ([filterSet numFileItemFilters] == 0) {
+    return;
+  }
+  
+  [self appendString: [NSString stringWithFormat: @"<%@>\n", FilterSetElem]];
+
+  NSEnumerator  *filterEnum = [[filterSet fileItemFilters] objectEnumerator];
+  FileItemFilter  *filter;
+  while (filter = [filterEnum nextObject]) {
+    [self appendFilterElement: filter];
+  }
+
+  [self appendString: [NSString stringWithFormat: @"</%@>\n", FilterSetElem]];
+}
+
+
+- (void) appendFilterElement: (FileItemFilter *)filter {
+  if ([filter numFilterTests] == 0) {
+    return;
+  }
+  
+  NSString  *nameVal = escapedXML([filter name], ATTRIBUTE_ESCAPE_CHARS);
+  [self appendString: 
+          [NSString stringWithFormat: @"<%@ %@=\"%@\">\n", 
+                      FilterElem,
+                      NameAttr, nameVal]];
+
+  NSEnumerator  *testEnum = [[filter filterTests] objectEnumerator];
+  FilterTest  *filterTest;
+  while (filterTest = [testEnum nextObject]) {
+    [self appendFilterTestElement: filterTest];
+  }
+
+  [self appendString: [NSString stringWithFormat: @"</%@>\n", FilterElem]];
+}
+
+
+- (void) appendFilterTestElement: (FilterTest *)filterTest {
+  NSString  *nameVal = escapedXML([filterTest name], ATTRIBUTE_ESCAPE_CHARS);
+  [self appendString: 
+          [NSString stringWithFormat: @"<%@ %@=\"%@\" %@=\"%@\" />\n", 
+                      FilterTestElem, 
+                      NameAttr, nameVal,
+                      InvertedAttr,
+                      ([filterTest isInverted] ? TrueValue : FalseValue) ]];
 }
 
 

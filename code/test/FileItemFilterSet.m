@@ -82,6 +82,14 @@
 }
 
 
+- (int) numFileItemFilters {
+  return [filters count];
+}
+
+- (NSArray *)fileItemFilters {
+  return [NSArray arrayWithArray: filters];
+}
+
 /* Creates the test object that represents the filter set.
  */
 - (NSObject <FileItemTest> *) createFileItemTestFromRepository: 

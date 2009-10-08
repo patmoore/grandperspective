@@ -36,6 +36,9 @@
  */
 - (FileItemFilterSet *)filterSetWithNewFilter:(FileItemFilter *)filter;
 
+- (int) numFileItemFilters;
+- (NSArray *)fileItemFilters;
+
 - (NSObject <FileItemTest> *)fileItemTest;
 
 @end // @interface FileItemFilterSet
