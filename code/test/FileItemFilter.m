@@ -90,6 +90,12 @@
 
 - (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
                                 (FileItemTestRepository *)repository {
+  return [self createFileItemTestFromRepository: repository unboundTests: nil];
+}
+
+- (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
+                                (FileItemTestRepository *)repository
+                                unboundTests: (NSMutableArray *)unboundTests {                                
   [fileItemTest release];
   fileItemTest = nil;
 
@@ -110,6 +116,9 @@
       }
       
       [subTests addObject: subTest];
+    }
+    else {
+      [unboundTests addObject: [filterTest name]];
     }
   }
   

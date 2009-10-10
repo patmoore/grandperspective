@@ -36,18 +36,17 @@
   treeReader = [[TreeReader alloc] init];
   [taskLock unlock];
 
-  id  result = [treeReader readTreeFromFile: [myInput path]];
-  if (result == nil) {
-    result = [[[treeReader error] retain] autorelease]; 
-      // Will return nil when task was aborted
-  }
+  [treeReader readTreeFromFile: [myInput path]];
+  TreeReader  *retVal = [[treeReader retain] autorelease];
 
   [taskLock lock];
   [treeReader release];
   treeReader = nil;
   [taskLock unlock];
 
-  return result;
+  // Return the TreeReader as next to the tree that is read, its -error and
+  // -unboundTests might be of interest as well.
+  return retVal;
 }
 
 - (void) abortTask {

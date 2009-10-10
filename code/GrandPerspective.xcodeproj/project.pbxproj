@@ -129,6 +129,7 @@
 		AAD8DFC70B077FCF0060DADA /* PreferencesPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */; };
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
+		AAEF42831081136100468832 /* LocalizableStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF42821081136100468832 /* LocalizableStrings.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
 		AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF3C75A0EF3FA42004CF446 /* Delete.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
@@ -372,6 +373,8 @@
 		AADD349A0B8B905900AC2C97 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Tests.strings; sourceTree = "<group>"; };
 		AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = UniformTypeInventory.m; path = util/UniformTypeInventory.m; sourceTree = "<group>"; };
 		AAE87FD90CE10B9B00A99883 /* UniformTypeInventory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UniformTypeInventory.h; path = util/UniformTypeInventory.h; sourceTree = "<group>"; };
+		AAEF42811081136100468832 /* LocalizableStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalizableStrings.h; path = util/LocalizableStrings.h; sourceTree = "<group>"; };
+		AAEF42821081136100468832 /* LocalizableStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalizableStrings.m; path = util/LocalizableStrings.m; sourceTree = "<group>"; };
 		AAEF5E240AFE79FA00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
 		AAEF5E270AFE7B9C00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/SaveImageDialog.nib; sourceTree = "<group>"; };
 		AAEF5E310AFE7C8700C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
@@ -633,6 +636,8 @@
 				AAB52EC20E520E7A00BF7B20 /* MutableArrayPool.m */,
 				AAA6E72B0EFD29CB00B4E71E /* ToolbarSegmentedCell.h */,
 				AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */,
+				AAEF42811081136100468832 /* LocalizableStrings.h */,
+				AAEF42821081136100468832 /* LocalizableStrings.m */,
 			);
 			name = util;
 			sourceTree = "<group>";
@@ -966,6 +971,7 @@
 				AA13FD9E1078CDA400AE3B23 /* FileItemFilter.m in Sources */,
 				AA13FDA21078D04E00AE3B23 /* FilterTest.m in Sources */,
 				AA13FDF71078F2A700AE3B23 /* FileItemFilterSet.m in Sources */,
+				AAEF42831081136100468832 /* LocalizableStrings.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

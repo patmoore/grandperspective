@@ -71,7 +71,9 @@ NSString  *AttributeNameKey = @"name";
 - (TreeBalancer *) treeBalancer;
 - (ObjectPool *) dirsArrayPool;
 - (ObjectPool *) filesArrayPool;
+
 - (FileItemTestRepository *)fileItemTestRepository;
+- (NSMutableArray *) mutableUnboundFilterTests;
 
 - (void) setParseError: (NSError *)error;
 
@@ -296,6 +298,8 @@ NSString  *AttributeNameKey = @"name";
     error = nil;
     abort = NO;
     
+    unboundTests = [[NSMutableArray alloc] initWithCapacity: 8];
+    
     // Either ProgressTracker can be used, or AutoreleaseProgressTracker. Using
     // the latter means that temporary objects using autorelease will be 
     // released while a tree is being read, thus reducing the total amount of
@@ -319,11 +323,12 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) dealloc {
   NSAssert(parser == nil, @"parser should be nil.");
-  NSAssert(tree == nil, @"tree should be nil.");
   
   [testRepository release];
-  
+
+  [tree release];  
   [error release];
+  [unboundTests release];
   
   [progressTracker release];
   [treeBalancer release];
@@ -347,9 +352,14 @@ NSString  *AttributeNameKey = @"name";
   parser = [[NSXMLParser alloc] initWithData: data];
   [parser setDelegate: self];
   
+  [tree release];
+  tree = nil;
+  
   abort = NO;
   [error release];
   error = nil;
+  
+  [unboundTests removeAllObjects];
   
   [progressTracker startingTask];
   
@@ -360,11 +370,7 @@ NSString  *AttributeNameKey = @"name";
   [parser release];
   parser = nil;
 
-  AnnotatedTreeContext  *retVal = (error!=nil || abort) ? nil : tree;
-  [tree autorelease]; // Not releasing, as "retVal" should remain valid.
-  tree = nil;
-  
-  return retVal;
+  return (error!=nil || abort) ? nil : tree;
 }
 
 
@@ -383,8 +389,17 @@ NSString  *AttributeNameKey = @"name";
   return (error != nil) && abort;
 }
 
+- (AnnotatedTreeContext *)annotatedTreeContext {
+  return tree;
+}
+
 - (NSError *) error {
   return error;
+}
+
+- (NSArray *) unboundFilterTests {
+  // Return a copy
+  return [NSArray arrayWithArray: unboundTests];
 }
 
 - (NSDictionary *) progressInfo {
@@ -483,6 +498,10 @@ NSString  *AttributeNameKey = @"name";
 
 - (FileItemTestRepository *)fileItemTestRepository {
   return testRepository;
+}
+
+- (NSMutableArray *) mutableUnboundFilterTests {
+  return unboundTests;
 }
 
 
@@ -1084,7 +1103,8 @@ NSString  *AttributeNameKey = @"name";
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFilterElement: (FileItemFilter *) filter {
   if ( [filter createFileItemTestFromRepository: 
-                 [reader fileItemTestRepository]] != nil) {
+                 [reader fileItemTestRepository]
+                 unboundTests: [reader mutableUnboundFilterTests]] != nil) {
     FileItemFilterSet  *oldFilterSet = filterSet;
   
     filterSet = [[oldFilterSet filterSetWithNewFilter: filter] retain];

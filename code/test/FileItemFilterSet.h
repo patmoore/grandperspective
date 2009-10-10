@@ -31,6 +31,16 @@
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
                          (FileItemTestRepository *)repository;
 
+/* Creates an updated set of filters. Each of the filters is re-instantiated
+ * so that it is based on the tests currently defined in the test repository.
+ *
+ * If any test cannot be found in the repository its name will be added to
+ * "unboundTests".
+ */
+- (FileItemFilterSet *)updatedFilterSetUsingRepository: 
+                         (FileItemTestRepository *)repository
+                         unboundTests: (NSMutableArray *)unboundTests;
+                                
 /* Creates a new set with an extra filter. The existing filters are taken
  * over directly (they are not re-instantiated).
  */

@@ -41,6 +41,12 @@
 
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
                          (FileItemTestRepository *)repository {
+  return [self updatedFilterSetUsingRepository: repository unboundTests: nil];
+}
+
+- (FileItemFilterSet *)updatedFilterSetUsingRepository: 
+                         (FileItemTestRepository *)repository
+                         unboundTests: (NSMutableArray *)unboundTests {
   NSMutableArray  *newFilters = 
     [NSMutableArray arrayWithCapacity: [filters count]];
   
@@ -52,7 +58,8 @@
       [[[FileItemFilter alloc] initWithFileItemFilter: filter] autorelease];
        
     NSObject <FileItemTest>  *filterTest = 
-      [updatedFilter createFileItemTestFromRepository: repository];
+      [updatedFilter createFileItemTestFromRepository: repository
+                       unboundTests: unboundTests];
       
     if (filterTest != nil) {
       // Only add filters for which a tests still exists.
@@ -88,37 +95,6 @@
 
 - (NSArray *)fileItemFilters {
   return [NSArray arrayWithArray: filters];
-}
-
-/* Creates the test object that represents the filter set.
- */
-- (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
-                                (FileItemTestRepository *)repository {
-  NSMutableArray  *filterTests = 
-    [NSMutableArray arrayWithCapacity: [filters count]];
-  
-  NSEnumerator  *filterEnum = [filters objectEnumerator];
-  FileItemFilter  *filter;
-
-  while (filter = [filterEnum nextObject]) {
-    NSObject <FileItemTest>  *filterTest = 
-      [filter createFileItemTestFromRepository: repository];
-      
-    if (filterTest != nil) {
-      [filterTests addObject: filterTest];
-    }
-  }
-  
-  if ([filterTests count] == 0) {
-    return nil;
-  }
-  else if ([filterTests count] == 1) {
-    return [filterTests objectAtIndex: 0];
-  }
-  else {
-    return [[[CompoundAndItemTest alloc] initWithSubItemTests: filterTests] 
-                autorelease];
-  }
 }
 
 

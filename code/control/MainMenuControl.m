@@ -3,6 +3,7 @@
 #import "DirectoryItem.h"
 
 #import "ControlConstants.h"
+#import "LocalizableStrings.h"
 
 #import "DirectoryViewControl.h"
 #import "DirectoryViewControlSettings.h"
@@ -65,7 +66,7 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 - (id) initWithWindowManager: (WindowManager *)windowManager 
          readTaskInput: (ReadTaskInput *)taskInput;
 
-- (void) readTaskCompleted: (id) result;
+- (void) readTaskCompleted: (TreeReader *)treeReader;
 
 @end // @interface ReadTaskCallback
 
@@ -171,6 +172,40 @@ static MainMenuControl  *singletonInstance = nil;
 + (NSArray *) rescanBehaviourNames {
   return [NSArray arrayWithObjects: RescanClosesOldWindow, 
                                     RescanKeepsOldWindow, nil];
+}
+
++ (void) reportUnboundTests:(NSArray *)unboundTests {
+  if ([unboundTests count] == 0) {
+    // No unbound tests. Nothing to report.
+    return;
+  }
+
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  NSString  *format = 
+    NSLocalizedString( @"Failed to bind one or more filter tests:\n%@", 
+                       @"Alert message" );
+
+  // Quote the names of the tests.
+  NSMutableArray  *quotedTestNames =
+    [NSMutableArray arrayWithCapacity: [unboundTests count]];
+  NSEnumerator  *testEnum = [unboundTests objectEnumerator];
+  NSString  *testName;
+  while (testName = [testEnum nextObject]) {
+    [quotedTestNames addObject: 
+                       [NSString stringWithFormat: @"\"%@\"", testName]];
+  }
+    
+  NSString  *testList =
+    [LocalizableStrings localizedAndEnumerationString: quotedTestNames]; 
+  NSString  *infoText = 
+    NSLocalizedString( @"The unbound tests have been omitted from the filter set.", 
+                       @"Alert informative text" );
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert setMessageText: [NSString stringWithFormat: format, testList]];
+  [alert setInformativeText: infoText];
+
+  [alert runModal];
 }
 
 
@@ -342,8 +377,12 @@ static MainMenuControl  *singletonInstance = nil;
   TreeContext  *oldContext = [oldControl treeContext];
   FileItemFilterSet  *filterSet = [oldContext filterSet];
   if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
-    filterSet = [filterSet updatedFilterSetUsingRepository:
-                   [FileItemTestRepository defaultFileItemTestRepository]];
+    NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
+    filterSet = 
+      [filterSet updatedFilterSetUsingRepository:
+                   [FileItemTestRepository defaultFileItemTestRepository]
+                   unboundTests: unboundTests];
+    [MainMenuControl reportUnboundTests: unboundTests];
   }
   
   ScanTaskInput  *input = 
@@ -695,18 +734,12 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) readTaskCompleted: (id) result {
-  if ( result == nil ) {
-    // The task was aborted. Silently ignore.
+- (void) readTaskCompleted: (TreeReader *) treeReader {
+  if ([treeReader aborted]) {
+    // Reading was aborted. Silently ignore.
+    return;
   }
-  else if ([result isKindOfClass: [AnnotatedTreeContext class]]) {
-    FreshDirViewWindowCreator  *windowCreator =
-      [[[FreshDirViewWindowCreator alloc] 
-           initWithWindowManager: windowManager] autorelease];
-      
-    [windowCreator createWindowForAnnotatedTree: result];
-  }
-  else if ([result isKindOfClass: [NSError class]]) {
+  else if ([treeReader error]) {
     NSAlert *alert = [[[NSAlert alloc] init] autorelease];
 
     NSString  *format = 
@@ -717,12 +750,21 @@ static MainMenuControl  *singletonInstance = nil;
     [alert setMessageText: 
              [NSString stringWithFormat: format, 
                                          [[taskInput path] lastPathComponent]]];
-    [alert setInformativeText: [result localizedDescription]];
+    [alert setInformativeText: [[treeReader error] localizedDescription]];
 
     [alert runModal];
   }
   else {
-    NSAssert(NO, @"Unexpected result type.");
+    AnnotatedTreeContext  *tree = [treeReader annotatedTreeContext];
+    NSAssert(tree != nil, @"Unexpected state.");
+    
+    [MainMenuControl reportUnboundTests: [treeReader unboundFilterTests]];
+    
+    FreshDirViewWindowCreator  *windowCreator =
+      [[[FreshDirViewWindowCreator alloc] 
+           initWithWindowManager: windowManager] autorelease];
+      
+    [windowCreator createWindowForAnnotatedTree: tree];
   }
 }
 

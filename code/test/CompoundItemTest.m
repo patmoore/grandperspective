@@ -1,6 +1,8 @@
 #import "CompoundItemTest.h"
 
 #import "FileItemTestRepository.h"
+#import "LocalizableStrings.h"
+
 
 @interface CompoundItemTest (PrivateMethods) 
 
@@ -111,20 +113,11 @@
 
 
 - (NSString*) description {
-  NSEnumerator  *subTestEnum = [subTests reverseObjectEnumerator];
-
-  // Can assume that there are always two sub-tests.
-  NSString  *subTest = [subTestEnum nextObject]; // Last sub-test in array
-  NSString  *descr =
-    [NSString stringWithFormat: [self bootstrapDescriptionTemplate],
-                                [subTestEnum nextObject], subTest];
-
-  while ( subTest = [subTestEnum nextObject] ) {
-    descr = [NSString stringWithFormat: [self repeatingDescriptionTemplate],
-                                        subTest, descr];
-  }
-    
-  return descr;
+  return [LocalizableStrings
+            localizedEnumerationString: subTests
+               pairTemplate: [self bootstrapDescriptionTemplate]
+               bootstrapTemplate: [self bootstrapDescriptionTemplate]
+               repeatingTemplate: [self repeatingDescriptionTemplate]];
 }
 
 @end

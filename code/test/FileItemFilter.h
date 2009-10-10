@@ -57,6 +57,17 @@
 - (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
                                 (FileItemTestRepository *)repository;
 
+/* Creates the test object that represents the filter given the tests 
+ * currently in the test repository. Returns the test that has been created,
+ * which if it was non-nil can also be retrieved using -fileItemTest.
+ *
+ * If any test cannot be found in the repository its name will be added to
+ * "unboundTests".
+ */
+- (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
+                                (FileItemTestRepository *)repository
+                                unboundTests: (NSMutableArray *)unboundTests;
+
 /* Can only be used after -createFileItemTestFromRepository: has been invoked
  * successfully.
  */

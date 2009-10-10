@@ -13,9 +13,12 @@
 #import "FileItemTestRepository.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
+
 #import "EditFilterWindowControl.h"
 #import "ColorLegendTableViewControl.h"
 #import "PreferencesPanelControl.h"
+#import "MainMenuControl.h"
+
 #import "TreeDrawerSettings.h"
 #import "ControlConstants.h"
 #import "UniformType.h"
@@ -1044,9 +1047,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   if ( newMask != nil
        && ( newMaskTest == nil
             || [userDefaults boolForKey: UpdateFiltersBeforeUse] ) ) {
+    NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
     newMaskTest =
       [newMask createFileItemTestFromRepository:
-                 [FileItemTestRepository defaultFileItemTestRepository]];
+                 [FileItemTestRepository defaultFileItemTestRepository]
+                 unboundTests: unboundTests];
+    [MainMenuControl reportUnboundTests: unboundTests];
   }
 
   [mainView setTreeDrawerSettings: 
