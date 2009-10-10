@@ -14,11 +14,15 @@
 }
 
 - (id) initWithName:(NSString *)nameVal {
+  return [self initWithName: nameVal inverted: NO];
+}
+
+- (id) initWithName:(NSString *)nameVal inverted:(BOOL) invertedVal {
   if (self = [super init]) {
     name = [nameVal retain];
-    
+    inverted = invertedVal;
+
     // Set default values
-    inverted = NO;
     canToggleInverted = YES;
   }
 

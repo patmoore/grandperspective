@@ -8,6 +8,11 @@
 #import "PlainFileItem.h"
 #import "CompoundItem.h"
 
+#import "FilterTest.h"
+#import "FileItemFilter.h"
+#import "FileItemFilterSet.h"
+#import "FileItemTestRepository.h"
+
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
 #import "TreeWriter.h"
@@ -36,6 +41,8 @@ NSString  *AttributeNameKey = @"name";
   NSLocalizedString(@"Encountered more than one root element.", @"Parse error")
 #define MULTIPLE_ROOT_FOLDER_MSG \
   NSLocalizedString(@"Encountered more than one root folder.", @"Parse error")
+#define FILTER_AFTER_FOLDER_MSG \
+  NSLocalizedString(@"Encountered filter after folder.", @"Parse error")
 
 #define PARSING_ABORTED_MSG \
   NSLocalizedString(@"Parsing aborted", @"Parse error")
@@ -47,6 +54,8 @@ NSString  *AttributeNameKey = @"name";
   NSLocalizedString(@"Expected unsigned integer value.", @"Parse error")
 #define EXPECTED_INT_VALUE_MSG \
   NSLocalizedString(@"Expected integer value.", @"Parse error")
+#define EXPECTED_BOOL_VALUE_MSG \
+  NSLocalizedString(@"Expected boolean value.", @"Parse error")
 #define EXPECTED_DATE_VALUE_MSG \
   NSLocalizedString(@"Expected date value.", @"Parse error")
 
@@ -62,6 +71,7 @@ NSString  *AttributeNameKey = @"name";
 - (TreeBalancer *) treeBalancer;
 - (ObjectPool *) dirsArrayPool;
 - (ObjectPool *) filesArrayPool;
+- (FileItemTestRepository *)fileItemTestRepository;
 
 - (void) setParseError: (NSError *)error;
 
@@ -132,20 +142,25 @@ NSString  *AttributeNameKey = @"name";
                  from: (NSDictionary *)attribs defaultValue: (NSString *)defVal;
 
 - (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs;
+                from: (NSDictionary *)attribs;
 - (ITEM_SIZE) getItemSizeAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (ITEM_SIZE) defVal;
+                from: (NSDictionary *)attribs defaultValue: (ITEM_SIZE) defVal;
 
 - (NSDate *) getDateAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs;
+               from: (NSDictionary *)attribs;
 - (NSDate *) getDateAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (NSDate *)defVal;
+               from: (NSDictionary *)attribs defaultValue: (NSDate *)defVal;
 
 - (int) getIntegerAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs;
+          from: (NSDictionary *)attribs;
 - (int) getIntegerAttributeValue: (NSString *)name 
-                 from: (NSDictionary *)attribs defaultValue: (int) defVal;
+          from: (NSDictionary *)attribs defaultValue: (int) defVal;
 
+- (BOOL) getBooleanAttributeValue: (NSString *)name 
+           from: (NSDictionary *)attribs;
+- (BOOL) getBooleanAttributeValue: (NSString *)name 
+           from: (NSDictionary *)attribs defaultValue: (BOOL) defVal;
+                 
 @end // @interface ElementHandler
 
 
@@ -153,7 +168,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (ITEM_SIZE) parseItemSizeAttribute: (NSString *)name value: (NSString *)value;
 - (NSDate *) parseDateAttribute: (NSString *)name value: (NSString *)value;
-- (int) parseIntegerAttribute: (NSString *)name value: (NSString *)value; 
+- (int) parseIntegerAttribute: (NSString *)name value: (NSString *)value;
+- (BOOL) parseBooleanAttribute: (NSString *)name value: (NSString *)value;
 
 @end // @interface ElementHandler (PrivateMethods) 
 
@@ -175,6 +191,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingCommentsElement: (NSString *) comments;
+- (void) handler: (ElementHandler *)handler
+           finishedParsingFilterSetElement: (FileItemFilterSet *)filterSet;
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem;
 
@@ -186,6 +204,33 @@ NSString  *AttributeNameKey = @"name";
 }
  
 @end // @interface ScanCommentsElementHandler
+
+
+@interface FilterSetElementHandler : ElementHandler {
+  FileItemFilterSet  *filterSet;
+}
+
+- (void) handler: (ElementHandler *)handler 
+           finishedParsingFilterElement: (FileItemFilter *) filter;
+ 
+@end // @interface FilterSetElementHandler
+
+
+@interface FilterElementHandler : ElementHandler {
+  FileItemFilter  *filter;
+}
+
+- (void) handler: (ElementHandler *)handler 
+           finishedParsingFilterTestElement: (FilterTest *) filterTest;
+
+@end // @interface FilterElementHandler
+
+
+@interface FilterTestElementHandler : ElementHandler {
+  FilterTest  *filterTest;
+}
+
+@end // @interface FilterTestElementHandler
 
 
 @interface FolderElementHandler : ElementHandler {
@@ -238,7 +283,14 @@ NSString  *AttributeNameKey = @"name";
 @implementation TreeReader
 
 - (id) init {
+  return [self initWithFileItemTestRepository:
+                 [FileItemTestRepository defaultFileItemTestRepository]];
+}
+
+- (id) initWithFileItemTestRepository:(FileItemTestRepository *)repository {
   if (self = [super init]) {
+    testRepository = [repository retain];
+  
     parser = nil;
     tree = nil;
     error = nil;
@@ -268,6 +320,8 @@ NSString  *AttributeNameKey = @"name";
 - (void) dealloc {
   NSAssert(parser == nil, @"parser should be nil.");
   NSAssert(tree == nil, @"tree should be nil.");
+  
+  [testRepository release];
   
   [error release];
   
@@ -425,6 +479,10 @@ NSString  *AttributeNameKey = @"name";
 
 - (ObjectPool *) filesArrayPool {
   return filesArrayPool;
+}
+
+- (FileItemTestRepository *)fileItemTestRepository {
+  return testRepository;
 }
 
 
@@ -644,6 +702,20 @@ NSString  *AttributeNameKey = @"name";
            ? [self parseIntegerAttribute: name value: stringValue] : defVal );
 }
 
+- (BOOL) getBooleanAttributeValue: (NSString *)name 
+           from: (NSDictionary *)attribs {
+  return [self parseBooleanAttribute: name 
+                 value: [self getStringAttributeValue: name from: attribs]];
+}
+
+- (BOOL) getBooleanAttributeValue: (NSString *)name 
+           from: (NSDictionary *)attribs defaultValue: (BOOL) defVal {  
+  NSString  *stringValue = [attribs objectForKey: name];
+  
+  return ( (stringValue != nil)
+           ? [self parseBooleanAttribute: name value: stringValue] : defVal );
+}
+
 @end // @implementation ElementHandler
 
 
@@ -708,6 +780,24 @@ NSString  *AttributeNameKey = @"name";
   return intValue;
 }
 
+- (BOOL) parseBooleanAttribute: (NSString *)name value: (NSString *)value {
+  NSString  *lcValue = [value lowercaseString];
+  
+  if ([lcValue isEqualToString: @"true"] ||
+      [lcValue isEqualToString: @"1"]) {
+    return YES;
+  }
+  else if  ([lcValue isEqualToString: @"false"] ||
+            [lcValue isEqualToString: @"0"]) {
+    return NO;
+  }
+  
+  NSException  *ex = [AttributeParseException 
+                        exceptionWithAttributeName: name 
+                        reason: EXPECTED_BOOL_VALUE_MSG];
+  @throw ex;
+}
+
 @end // @implementation ElementHandler (PrivateMethods) 
 
 
@@ -740,7 +830,6 @@ NSString  *AttributeNameKey = @"name";
   [super handleAttributes: attribs];
 }
 
-  
 - (void) handleChildElement: (NSString *)childElement 
            attributes: (NSDictionary *)attribs {
   if ([childElement isEqualToString: ScanInfoElem]) {
@@ -850,6 +939,21 @@ NSString  *AttributeNameKey = @"name";
              handleAttributes: attribs];
     }
   }
+  else if ([childElement isEqualToString: FilterSetElem]) {
+    if ([tree scanTree] != nil) {
+      [self handlerError: FILTER_AFTER_FOLDER_MSG];
+    }
+    else if ([[tree filterSet] numFileItemFilters] > 0) {
+      [self handlerError:
+        [NSString stringWithFormat: MULTIPLE_ELEM_MSG, FilterSetElem]];
+    }
+    else {
+      [[[FilterSetElementHandler alloc]
+           initWithElement: childElement reader: reader callback: self
+           onSuccess: @selector(handler:finishedParsingFilterSetElement:)]
+             handleAttributes: attribs];
+    }
+  }
   else if ([childElement isEqualToString: FolderElem]) {
     if ([[tree scanTree] getContents] != nil) {
       [self handlerError: MULTIPLE_ROOT_FOLDER_MSG];
@@ -877,6 +981,24 @@ NSString  *AttributeNameKey = @"name";
   comments = [commentsVal retain];
   
   [self handler: handler finishedParsingElement: comments];
+}
+
+- (void) handler: (ElementHandler *)handler
+           finishedParsingFilterSetElement: (FileItemFilterSet *)filterSet {
+  TreeContext  *oldTree = tree;
+
+  // Replace tree by new one that also contains the given filter set.  
+  tree = [[TreeContext alloc]  
+             initWithVolumePath: [[oldTree volumeTree] name]
+             fileSizeMeasure: [oldTree fileSizeMeasure]
+             volumeSize: [oldTree volumeSize] 
+             freeSpace: [oldTree freeSpace]
+             filterSet: filterSet
+             scanTime: [oldTree scanTime]];
+
+  [oldTree release];
+
+  [self handler: handler finishedParsingElement: filterSet];
 }
 
 - (void) handler: (ElementHandler *)handler 
@@ -919,6 +1041,162 @@ NSString  *AttributeNameKey = @"name";
 }
 
 @end // @implementation ScanCommentsElementHandler
+
+
+@implementation FilterSetElementHandler 
+
+- (id) initWithElement: (NSString *)elementNameVal
+         reader: (TreeReader *)readerVal
+         callback: (id) callbackVal
+         onSuccess: (SEL) successSelectorVal {
+  if (self = [super initWithElement: elementNameVal reader: readerVal 
+                      callback: callbackVal onSuccess: successSelectorVal]) {
+    filterSet = [[FileItemFilterSet alloc] init];
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [filterSet release];
+  
+  [super dealloc];
+}
+
+
+- (void) handleChildElement: (NSString *)childElement 
+           attributes: (NSDictionary *)attribs {
+ if ([childElement isEqualToString: FilterElem]) {
+    [[[FilterElementHandler alloc] 
+         initWithElement: childElement reader: reader callback: self 
+           onSuccess: @selector(handler:finishedParsingFilterElement:)]
+             handleAttributes: attribs];
+  }
+  else {
+    [super handleChildElement: childElement attributes: attribs];
+  }
+}
+
+- (id) objectForElement {
+  return filterSet;
+}
+
+- (void) handler: (ElementHandler *)handler 
+           finishedParsingFilterElement: (FileItemFilter *) filter {
+  if ( [filter createFileItemTestFromRepository: 
+                 [reader fileItemTestRepository]] != nil) {
+    FileItemFilterSet  *oldFilterSet = filterSet;
+  
+    filterSet = [[oldFilterSet filterSetWithNewFilter: filter] retain];
+  
+    [oldFilterSet release];
+  }
+  
+  [self handler: handler finishedParsingElement: filter];
+}
+
+@end // @implementation FilterSetElementHandler
+
+
+@implementation FilterElementHandler 
+
+- (id) initWithElement: (NSString *)elementNameVal
+         reader: (TreeReader *)readerVal
+         callback: (id) callbackVal
+         onSuccess: (SEL) successSelectorVal {
+  if (self = [super initWithElement: elementNameVal reader: readerVal 
+                      callback: callbackVal onSuccess: successSelectorVal]) {
+    filter = nil;
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [filter release];
+  
+  [super dealloc];
+}
+
+
+- (void) handleAttributes: (NSDictionary *)attribs {
+  @try {
+    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs];
+
+    filter = [[FileItemFilter alloc] initWithName: name];
+  }
+  @catch (AttributeParseException *ex) {
+    [self handlerAttributeParseError: ex];
+  }
+}
+
+- (void) handleChildElement: (NSString *)childElement 
+           attributes: (NSDictionary *)attribs {
+ if ([childElement isEqualToString: FilterTestElem]) {
+    [[[FilterTestElementHandler alloc] 
+         initWithElement: childElement reader: reader callback: self 
+           onSuccess: @selector(handler:finishedParsingFilterTestElement:)]
+             handleAttributes: attribs];
+  }
+  else {
+    [super handleChildElement: childElement attributes: attribs];
+  }
+}
+
+- (id) objectForElement {
+  return filter;
+}
+
+- (void) handler: (ElementHandler *)handler 
+           finishedParsingFilterTestElement: (FilterTest *) filterTest {
+  [filter addFilterTest: filterTest];
+  
+  [self handler: handler finishedParsingElement: filterTest];
+}
+
+@end // @implementation FilterElementHandler
+
+
+@implementation FilterTestElementHandler 
+
+- (id) initWithElement: (NSString *)elementNameVal
+         reader: (TreeReader *)readerVal
+         callback: (id) callbackVal
+         onSuccess: (SEL) successSelectorVal {
+  if (self = [super initWithElement: elementNameVal reader: readerVal 
+                      callback: callbackVal onSuccess: successSelectorVal]) {
+    filterTest = nil;
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [filterTest release];
+  
+  [super dealloc];
+}
+
+
+- (void) handleAttributes: (NSDictionary *)attribs {
+  @try {
+    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs];
+    
+    BOOL  inv = [self getBooleanAttributeValue: InvertedAttr from: attribs
+                        defaultValue: NO];
+
+    filterTest = [[FilterTest alloc] initWithName: name inverted: inv];
+  }
+  @catch (AttributeParseException *ex) {
+    [self handlerAttributeParseError: ex];
+  }
+}
+
+- (id) objectForElement {
+  return filterTest;
+}
+
+@end // @implementation FilterTestElementHandler
 
 
 @implementation FolderElementHandler 

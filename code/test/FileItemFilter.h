@@ -48,7 +48,7 @@
 
 - (void) removeAllFilterTests;
 - (void) removeFilterTestAtIndex:(int) index;
-- (void) addFilterTest:(FilterTest* )test;
+- (void) addFilterTest:(FilterTest *)test;
 
 /* Creates the test object that represents the filter given the tests 
  * currently in the test repository. Returns the test that has been created,

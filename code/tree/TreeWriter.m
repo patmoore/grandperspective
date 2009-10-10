@@ -17,7 +17,7 @@
 
 #define  BUFFER_SIZE  4096
 
-NSString  *TreeWriterFormatVersion = @"2";
+NSString  *TreeWriterFormatVersion = @"3";
 
 // XML elements
 NSString  *ScanDumpElem = @"GrandPerspectiveScanDump";

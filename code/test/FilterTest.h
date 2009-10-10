@@ -15,6 +15,7 @@
 + (id) filterTestWithName:(NSString *)name;
 
 - (id) initWithName:(NSString *)name;
+- (id) initWithName:(NSString *)name inverted:(BOOL) inverted;
 
 - (NSString *) name;
 - (BOOL) isInverted;

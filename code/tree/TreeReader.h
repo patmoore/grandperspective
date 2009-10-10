@@ -1,11 +1,14 @@
 #import <Cocoa/Cocoa.h>
 
+@class FileItemTestRepository;
 @class AnnotatedTreeContext;
 @class TreeBalancer;
 @class ProgressTracker;
 @class ObjectPool;
 
 @interface TreeReader : NSObject {
+
+  FileItemTestRepository  *testRepository;
 
   NSXMLParser  *parser;
   AnnotatedTreeContext  *tree;
@@ -19,6 +22,8 @@
   ObjectPool  *filesArrayPool;
 }
 
+- (id) init;
+- (id) initWithFileItemTestRepository:(FileItemTestRepository *)repository;
 
 - (AnnotatedTreeContext *) readTreeFromFile: (NSString *)path;
 

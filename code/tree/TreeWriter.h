@@ -5,6 +5,9 @@
 extern NSString  *ScanDumpElem;
 extern NSString  *ScanInfoElem;
 extern NSString  *ScanCommentsElem;
+extern NSString  *FilterSetElem;
+extern NSString  *FilterElem;
+extern NSString  *FilterTestElem;
 extern NSString  *FolderElem;
 extern NSString  *FileElem;
 
@@ -18,6 +21,9 @@ extern NSString  *VolumeSizeAttr;
 extern NSString  *FreeSpaceAttr;
 extern NSString  *ScanTimeAttr;
 extern NSString  *FileSizeMeasureAttr;
+
+// XML attributes of FilterTest
+extern NSString  *InvertedAttr;
 
 // XML attributes of Folder and File
 extern NSString  *NameAttr;
