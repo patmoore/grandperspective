@@ -1,4 +1,4 @@
-#import "FileItemFilter.h"
+#import "Filter.h"
 
 #import "FileItemTest.h"
 #import "FilterTestRepository.h"
@@ -8,7 +8,7 @@
 #import "NotItemTest.h"
 
 
-@implementation FileItemFilter
+@implementation Filter
 
 - (id) init {
   static int  nextFilterId = 1;
@@ -26,7 +26,7 @@
                  filterTests: [NSArray array]];
 }
 
-- (id) initWithFileItemFilter:(FileItemFilter *)filter {
+- (id) initWithFilter:(Filter *)filter {
   return [self initWithName: [filter name] 
                  automaticName: [filter hasAutomaticName] 
                  filterTests: [filter filterTests]];
@@ -151,10 +151,10 @@
   return fileItemTest;
 }
 
-@end // @implementation FileItemFilter
+@end // @implementation Filter
 
 
-@implementation FileItemFilter (ProtectedMethods)
+@implementation Filter (ProtectedMethods)
 
 /* Designated initialiser. It should not be called directly. Use the public
  * initialiser methods instead.
@@ -175,4 +175,4 @@
   return self;
 }
 
-@end // @implementation FileItemFilter (ProtectedMethods)
+@end // @implementation Filter (ProtectedMethods)

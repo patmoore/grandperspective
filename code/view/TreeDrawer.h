@@ -31,8 +31,8 @@
 - (id) initWithScanTree:(DirectoryItem *)scanTree 
          treeDrawerSettings:(TreeDrawerSettings *)settings;
 
-- (void) setFileItemMask:(FileItemTest *)fileItemMask;
-- (FileItemTest *)fileItemMask;
+- (void) setMaskTest:(FileItemTest *)mask;
+- (FileItemTest *)maskTest;
 
 - (void) setColorMapper:(NSObject <FileItemMapping> *)colorMapper;
 - (NSObject <FileItemMapping> *)colorMapper;

@@ -12,7 +12,7 @@
   NSObject <FileItemMapping>  *colorMapper;
   NSColorList  *colorPalette;
   float  colorGradient;
-  FileItemTest  *fileItemMask;
+  FileItemTest  *maskTest;
   BOOL  showPackageContents;
 }
 
@@ -22,19 +22,19 @@
 - (id) initWithColorMapper:(NSObject <FileItemMapping> *)colorMapper
          colorPalette:(NSColorList *)colorPalette
          colorGradient:(float) colorGradient
-         fileItemMask:(FileItemTest *)fileItemMask
+         maskTest:(FileItemTest *)maskTest
          showPackageContents:(BOOL) showPackageContents;
 
 - (id) copyWithColorMapper:(NSObject <FileItemMapping> *)colorMapper;
 - (id) copyWithColorPalette:(NSColorList *)colorPalette;
 - (id) copyWithColorGradient:(float) colorGradient;
-- (id) copyWithFileItemMask:(FileItemTest *)fileItemMask;
+- (id) copyWithMaskTest:(FileItemTest *)maskTest;
 - (id) copyWithShowPackageContents:(BOOL) showPackageContents;
 
 - (NSObject <FileItemMapping> *)colorMapper;
 - (NSColorList *)colorPalette;
 - (float) colorGradient;
-- (FileItemTest *)fileItemMask;
+- (FileItemTest *)maskTest;
 - (BOOL) showPackageContents;
 
 @end

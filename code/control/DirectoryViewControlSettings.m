@@ -1,7 +1,7 @@
 #import "DirectoryViewControlSettings.h"
 
 #import "PreferencesPanelControl.h"
-#import "FileItemFilter.h"
+#import "Filter.h"
 
 @implementation DirectoryViewControlSettings
 
@@ -27,7 +27,7 @@
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKeyVal 
          colorPaletteKey: (NSString *)colorPaletteKeyVal
-         mask: (FileItemFilter *)maskVal
+         mask: (Filter *)maskVal
          maskEnabled: (BOOL) maskEnabledVal 
          showEntireVolume: (BOOL) showEntireVolumeVal
          showPackageContents: (BOOL) showPackageContentsVal
@@ -77,11 +77,11 @@
 }
 
 
-- (FileItemFilter *) fileItemMask {
+- (Filter *) fileItemMask {
   return mask;
 }
 
-- (void) setFileItemMask:(FileItemFilter *)maskVal {
+- (void) setFileItemMask:(Filter *)maskVal {
   if (maskVal != mask) {
     [mask release];
     mask = [maskVal retain];

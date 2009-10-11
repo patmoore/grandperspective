@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class FileItemFilterSet;
+@class FilterSet;
 @class FilteredTreeGuide;
 @class TreeBalancer;
 @class TreeContext;
@@ -11,7 +11,7 @@
 
 @interface TreeFilter : NSObject {
 
-  FileItemFilterSet  *filterSet;
+  FilterSet  *filterSet;
 
   FilteredTreeGuide  *treeGuide;
   TreeBalancer  *treeBalancer;
@@ -26,7 +26,7 @@
 }
 
 
-- (id) initWithFilterSet:(FileItemFilterSet *)filterSet;
+- (id) initWithFilterSet:(FilterSet *)filterSet;
 
 - (BOOL) packagesAsFiles;
 - (void) setPackagesAsFiles: (BOOL) flag;

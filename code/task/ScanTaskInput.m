@@ -12,7 +12,7 @@
 
 - (id) initWithPath:(NSString *)path 
          fileSizeMeasure:(NSString *)fileSizeMeasureVal
-         filterSet:(FileItemFilterSet *)filterSetVal {
+         filterSet:(FilterSet *)filterSetVal {
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
@@ -28,7 +28,7 @@
          
 - (id) initWithPath:(NSString *)path 
          fileSizeMeasure:(NSString *)fileSizeMeasureVal
-         filterSet:(FileItemFilterSet *)filterSetVal
+         filterSet:(FilterSet *)filterSetVal
          packagesAsFiles:(BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     pathToScan = [path retain];
@@ -56,7 +56,7 @@
   return fileSizeMeasure;
 }
 
-- (FileItemFilterSet *) filterSet {
+- (FilterSet *) filterSet {
   return filterSet;
 }
 

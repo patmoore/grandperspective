@@ -5,7 +5,7 @@
 #import "DirectoryItem.h"
 #import "CompoundItem.h"
 #import "TreeContext.h"
-#import "FileItemFilterSet.h"
+#import "FilterSet.h"
 #import "FilteredTreeGuide.h"
 #import "TreeBalancer.h"
 
@@ -176,7 +176,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
 }
 
 
-- (id) initWithFilterSet:(FileItemFilterSet *)filterSetVal {
+- (id) initWithFilterSet:(FilterSet *)filterSetVal {
   if (self = [super init]) {
     filterSet = [filterSetVal retain];
 

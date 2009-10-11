@@ -14,7 +14,7 @@
  * implementation of the filter's overall test returned by 
  * -createFileItemTestFromRepository:.
  */
-@interface FileItemFilter : NSObject {
+@interface Filter : NSObject {
   NSString  *name;
   BOOL  hasAutomaticName;
   
@@ -40,7 +40,7 @@
  * (eventually) created using -createFileItemTestFromRepository:, it will be
  * based on the tests as then defined in the repository.
  */
-- (id) initWithFileItemFilter:(FileItemFilter *)filter;
+- (id) initWithFilter:(Filter *)filter;
 
 
 - (NSString *)name;
@@ -83,10 +83,10 @@
  */
 - (FileItemTest *)fileItemTest;
 
-@end // @interface FileItemFilter
+@end // @interface Filter
 
 
-@interface FileItemFilter (ProtectedMethods)
+@interface Filter (ProtectedMethods)
 
 /* Designated initialiser. It should not be called directly. Use the public
  * initialiser methods instead.
@@ -95,4 +95,4 @@
          automaticName:(BOOL) automaticName
          filterTests:(NSArray *)filterTests;
 
-@end // @interface FileItemFilter (ProtectedMethods)
+@end // @interface Filter (ProtectedMethods)

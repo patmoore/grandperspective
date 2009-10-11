@@ -10,7 +10,7 @@ extern NSString  *OkPerformedEvent;
 @class EditFilterRuleWindowControl;
 @class NotifyingDictionary;
 @class FilterTestRepository;
-@class FileItemFilter;
+@class Filter;
 
 /**
  * A control for an EditFilterWindow.
@@ -44,7 +44,7 @@ extern NSString  *OkPerformedEvent;
   
   NotifyingDictionary  *repositoryTestsByName;
     
-  FileItemFilter  *fileItemFilter;
+  Filter  *filter;
   NSMutableArray  *availableTests;
 
   // Non-localized name of currently selected test.
@@ -88,10 +88,10 @@ extern NSString  *OkPerformedEvent;
  * the original filter (as far as possible, given that some filter tests may
  * not exist anymore) and leaves the provided filter unchanged.
  */
-- (void) representFileItemFilter:(FileItemFilter *)filter;
+- (void) representFilter:(Filter *)filterVal;
 
 /* Returns the filter that represents the current window state.
  */
-- (FileItemFilter *)fileItemFilter;
+- (Filter *)filter;
 
 @end

@@ -10,7 +10,7 @@ extern NSString  *PhysicalFileSize;
 @class TreeBalancer;
 @class UniformTypeInventory;
 @class FileItem;
-@class FileItemFilterSet;
+@class FilterSet;
 @class DirectoryItem;
 @class TreeContext;
 @class ProgressTracker;
@@ -21,7 +21,7 @@ extern NSString  *PhysicalFileSize;
  */
 @interface TreeBuilder : NSObject {
 
-  FileItemFilterSet  *filterSet;
+  FilterSet  *filterSet;
 
   NSString  *fileSizeMeasure;
   ITEM_SIZE  (*fileSizeMeasureFunction) (FSCatalogInfo *);
@@ -54,7 +54,7 @@ extern NSString  *PhysicalFileSize;
 + (BOOL) pathIsDirectory: (NSString *)path;
 
 - (id) init;
-- (id) initWithFilterSet:(FileItemFilterSet *)filterSet;
+- (id) initWithFilterSet:(FilterSet *)filterSet;
 
 - (BOOL) packagesAsFiles;
 - (void) setPackagesAsFiles: (BOOL) flag;

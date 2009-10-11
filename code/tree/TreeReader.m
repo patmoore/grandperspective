@@ -8,9 +8,9 @@
 #import "PlainFileItem.h"
 #import "CompoundItem.h"
 
+#import "Filter.h"
+#import "FilterSet.h"
 #import "FilterTestRef.h"
-#import "FileItemFilter.h"
-#import "FileItemFilterSet.h"
 #import "FilterTestRepository.h"
 
 #import "TreeBuilder.h"
@@ -194,7 +194,7 @@ NSString  *AttributeNameKey = @"name";
 - (void) handler: (ElementHandler *)handler 
            finishedParsingCommentsElement: (NSString *) comments;
 - (void) handler: (ElementHandler *)handler
-           finishedParsingFilterSetElement: (FileItemFilterSet *)filterSet;
+           finishedParsingFilterSetElement: (FilterSet *)filterSet;
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFolderElement: (DirectoryItem *) dirItem;
 
@@ -209,17 +209,17 @@ NSString  *AttributeNameKey = @"name";
 
 
 @interface FilterSetElementHandler : ElementHandler {
-  FileItemFilterSet  *filterSet;
+  FilterSet  *filterSet;
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterElement: (FileItemFilter *) filter;
+           finishedParsingFilterElement: (Filter *) filter;
  
 @end // @interface FilterSetElementHandler
 
 
 @interface FilterElementHandler : ElementHandler {
-  FileItemFilter  *filter;
+  Filter  *filter;
 }
 
 - (void) handler: (ElementHandler *)handler 
@@ -962,7 +962,7 @@ NSString  *AttributeNameKey = @"name";
     if ([tree scanTree] != nil) {
       [self handlerError: FILTER_AFTER_FOLDER_MSG];
     }
-    else if ([[tree filterSet] numFileItemFilters] > 0) {
+    else if ([[tree filterSet] numFilters] > 0) {
       [self handlerError:
         [NSString stringWithFormat: MULTIPLE_ELEM_MSG, FilterSetElem]];
     }
@@ -1003,7 +1003,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler
-           finishedParsingFilterSetElement: (FileItemFilterSet *)filterSet {
+           finishedParsingFilterSetElement: (FilterSet *)filterSet {
   TreeContext  *oldTree = tree;
 
   // Replace tree by new one that also contains the given filter set.  
@@ -1070,7 +1070,7 @@ NSString  *AttributeNameKey = @"name";
          onSuccess: (SEL) successSelectorVal {
   if (self = [super initWithElement: elementNameVal reader: readerVal 
                       callback: callbackVal onSuccess: successSelectorVal]) {
-    filterSet = [[FileItemFilterSet alloc] init];
+    filterSet = [[FilterSet alloc] init];
   }
   
   return self;
@@ -1101,10 +1101,10 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterElement: (FileItemFilter *) filter {
+           finishedParsingFilterElement: (Filter *) filter {
   if ( [filter createFileItemTestFromRepository: [reader filterTestRepository]
                  unboundTests: [reader mutableUnboundFilterTests]] != nil) {
-    FileItemFilterSet  *oldFilterSet = filterSet;
+    FilterSet  *oldFilterSet = filterSet;
   
     filterSet = [[oldFilterSet filterSetWithNewFilter: filter] retain];
   
@@ -1144,10 +1144,10 @@ NSString  *AttributeNameKey = @"name";
                               defaultValue: nil];
 
     if (name != nil) {
-      filter = [[FileItemFilter alloc] initWithName: name];
+      filter = [[Filter alloc] initWithName: name];
     }
     else {
-      filter = [[FileItemFilter alloc] init];
+      filter = [[Filter alloc] init];
     }
   }
   @catch (AttributeParseException *ex) {

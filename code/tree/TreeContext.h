@@ -8,7 +8,7 @@ extern NSString  *FreedSpace;
 extern NSString  *FileItemDeletedEvent;
 
 @class FileItem;
-@class FileItemFilterSet;
+@class FilterSet;
 @class DirectoryItem;
 @class ItemPathModelView;
 
@@ -26,7 +26,7 @@ extern NSString  *FileItemDeletedEvent;
   NSDate  *scanTime;
   NSString  *fileSizeMeasure;
   
-  FileItemFilterSet  *filterSet;
+  FilterSet  *filterSet;
   
   FileItem  *replacedItem;
   FileItem  *replacingItem;
@@ -47,11 +47,11 @@ extern NSString  *FileItemDeletedEvent;
 
 /* Creates a new tree context, with the scan time set to "now".
  */
-- (id) initWithVolumePath: (NSString *)volumePath
-         fileSizeMeasure: (NSString *)fileSizeMeasure
-         volumeSize: (unsigned long long) volumeSize 
-         freeSpace: (unsigned long long) freeSpace
-         filterSet: (FileItemFilterSet *)filterSet;
+- (id) initWithVolumePath:(NSString *)volumePath
+         fileSizeMeasure:(NSString *)fileSizeMeasure
+         volumeSize:(unsigned long long) volumeSize 
+         freeSpace:(unsigned long long) freeSpace
+         filterSet:(FilterSet *)filterSet;
          
 /* Creates a new tree context. 
  *
@@ -59,26 +59,26 @@ extern NSString  *FileItemDeletedEvent;
  * is created, but still needs to be finalised. The scanTree still needs
  * to be set using -setScanTree.
  */
-- (id) initWithVolumePath: (NSString *)volumePath
-         fileSizeMeasure: (NSString *)fileSizeMeasure
-         volumeSize: (unsigned long long) volumeSize 
-         freeSpace: (unsigned long long) freeSpace
-         filterSet: (FileItemFilterSet *)filterSet
-         scanTime: (NSDate *)scanTime;
+- (id) initWithVolumePath:(NSString *)volumePath
+         fileSizeMeasure:(NSString *)fileSizeMeasure
+         volumeSize:(unsigned long long) volumeSize 
+         freeSpace:(unsigned long long) freeSpace
+         filterSet:(FilterSet *)filterSet
+         scanTime:(NSDate *)scanTime;
 
 
 /* Sets the scan tree. This finalises the volume tree. The parent of the scan
  * tree should be that returned by -scanTreeParent.
  */
-- (void) setScanTree: (DirectoryItem *)scanTree;
+- (void) setScanTree:(DirectoryItem *)scanTree;
 
 /* The parent (to be) for the scan tree.
  */
-- (DirectoryItem *) scanTreeParent;
+- (DirectoryItem *)scanTreeParent;
 
 
-- (DirectoryItem*) volumeTree;
-- (DirectoryItem*) scanTree;
+- (DirectoryItem *)volumeTree;
+- (DirectoryItem *)scanTree;
 
 /* The size of the volume (in bytes)
  */
@@ -96,18 +96,18 @@ extern NSString  *FileItemDeletedEvent;
  */
 - (unsigned long long) freedFiles;
 
-- (NSString*) fileSizeMeasure;
+- (NSString *)fileSizeMeasure;
 
-- (NSDate *) scanTime;
+- (NSDate *)scanTime;
 
 /* A string representation for the scan time.
  */
-- (NSString *) stringForScanTime;
+- (NSString *)stringForScanTime;
 
-- (FileItemFilterSet *) filterSet;
+- (FilterSet *)filterSet;
 
 
-- (void) deleteSelectedFileItem: (ItemPathModelView *)path;
+- (void) deleteSelectedFileItem:(ItemPathModelView *)path;
 
 
 /* Returns the item that is being replaced.
@@ -115,14 +115,14 @@ extern NSString  *FileItemDeletedEvent;
  * It should only be called in response to a TreeItemReplacedEvent. It will
  * return "nil" otherwise.
  */
-- (FileItem *) replacedFileItem;
+- (FileItem *)replacedFileItem;
 
 /* Returns the item that replaces the item that is being replaced.
  *
  * It should only be called in response to a TreeItemReplacedEvent. It will
  * return "nil" otherwise.
  */
-- (FileItem *) replacingFileItem;
+- (FileItem *)replacingFileItem;
 
 
 /* Obtains a read lock on the tree. This is required before reading, e.g.

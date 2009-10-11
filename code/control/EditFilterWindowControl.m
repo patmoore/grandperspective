@@ -6,7 +6,7 @@
 #import "FileItemTest.h"
 
 #import "FilterTestRepository.h"
-#import "FileItemFilter.h"
+#import "Filter.h"
 #import "FilterTest.h"
 #import "FilterTestRef.h"
 
@@ -101,7 +101,7 @@ NSString  *MatchColumn = @"match";
     [nc addObserver:self selector: @selector(testRenamedInRepository:) 
           name: ObjectRenamedEvent object: repositoryTestsByName];
 
-    fileItemFilter = [[FileItemFilter alloc] init];
+    filter = [[Filter alloc] init];
 
     availableTests = [[NSMutableArray alloc] 
       initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];
@@ -121,7 +121,7 @@ NSString  *MatchColumn = @"match";
 
   [repositoryTestsByName release];
   
-  [fileItemFilter release];
+  [filter release];
   [availableTests release];
   
   [selectedTestName release];
@@ -359,13 +359,13 @@ NSString  *MatchColumn = @"match";
     FilterTestRef  *filterTest = [self filterTestForTestNamed: testName];
     NSAssert(filterTest != nil, @"Test not found in repository.");
         
-    [fileItemFilter addFilterTest: filterTest];
+    [filter addFilterTest: filterTest];
     
     [filterTestsView reloadData];
     [availableTestsView reloadData];
     
     // Select the newly added test.
-    [filterTestsView selectRow: [fileItemFilter indexOfFilterTest: filterTest]
+    [filterTestsView selectRow: [filter indexOfFilterTest: filterTest]
                        byExtendingSelection: NO];
     [[self window] makeFirstResponder: filterTestsView];
 
@@ -377,9 +377,9 @@ NSString  *MatchColumn = @"match";
   int  index = [filterTestsView selectedRow];
   
   if (index >= 0) {
-    NSString  *testName = [[fileItemFilter filterTestAtIndex: index] name];
+    NSString  *testName = [[filter filterTestAtIndex: index] name];
     
-    [fileItemFilter removeFilterTestAtIndex: index];
+    [filter removeFilterTestAtIndex: index];
 
     [filterTestsView reloadData];
     [availableTestsView reloadData];
@@ -396,7 +396,7 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) removeAllTestsFromFilter:(id)sender {
-  [fileItemFilter removeAllFilterTests];
+  [filter removeAllFilterTests];
   
   [filterTestsView reloadData];
   [availableTestsView reloadData];
@@ -428,7 +428,7 @@ NSString  *MatchColumn = @"match";
 
 - (int) numberOfRowsInTableView: (NSTableView *)tableView {
   if (tableView == filterTestsView) {
-    return [fileItemFilter numFilterTests];
+    return [filter numFilterTests];
   }
   else if (tableView == availableTestsView) {
     return [availableTests count];
@@ -443,7 +443,7 @@ NSString  *MatchColumn = @"match";
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
-    FilterTestRef  *filterTest = [fileItemFilter filterTestAtIndex: row];
+    FilterTestRef  *filterTest = [filter filterTestAtIndex: row];
 
     if ([[column identifier] isEqualToString: NameColumn]) {
       return [mainBundle localizedStringForKey: [filterTest name] value: nil 
@@ -474,7 +474,7 @@ NSString  *MatchColumn = @"match";
   if (tableView == availableTestsView) {
     NSString  *name = [availableTests objectAtIndex: row]; 
 
-    [cell setEnabled: ([fileItemFilter filterTestWithName: name] == nil)];
+    [cell setEnabled: ([filter filterTestWithName: name] == nil)];
   }
 }
 
@@ -484,13 +484,13 @@ NSString  *MatchColumn = @"match";
 
 
 // Configures the window to represent the given filter.
-- (void) representFileItemFilter:(FileItemFilter *)filter {
-  [fileItemFilter removeAllFilterTests];
+- (void) representFilter:(Filter *)filterVal {
+  [filter removeAllFilterTests];
   
   int  i = 0;
-  int  max = [filter numFilterTests];
+  int  max = [filterVal numFilterTests];
   while (i < max) {
-    FilterTestRef  *orgFilterTest = [filter filterTestAtIndex: i];
+    FilterTestRef  *orgFilterTest = [filterVal filterTestAtIndex: i];
     NSString  *name = [orgFilterTest name];
     
     FilterTestRef  *newFilterTest = [self filterTestForTestNamed: name];
@@ -500,7 +500,7 @@ NSString  *MatchColumn = @"match";
         [newFilterTest toggleInverted];
       }
     
-      [fileItemFilter addFilterTest: newFilterTest];
+      [filter addFilterTest: newFilterTest];
     }
     else {
       NSLog(@"Test \"%@\" does not exist anymore in repository.", name);
@@ -518,10 +518,9 @@ NSString  *MatchColumn = @"match";
 }
 
 // Returns the filter that represents the current window state.
-- (FileItemFilter *) fileItemFilter {
+- (Filter *)filter {
   // Return a copy
-  return [[[FileItemFilter alloc] initWithFileItemFilter: fileItemFilter]
-              autorelease];
+  return [[[Filter alloc] initWithFilter: filter] autorelease];
 }
 
 @end // @implementation EditFilterWindowControl
@@ -544,7 +543,7 @@ NSString  *MatchColumn = @"match";
 - (FilterTestRef *) selectedFilterTest {
   int  index = [filterTestsView selectedRow];
   
-  return (index < 0) ? nil : [fileItemFilter filterTestAtIndex: index];
+  return (index < 0) ? nil : [filter filterTestAtIndex: index];
 }
 
 
@@ -669,7 +668,7 @@ NSString  *MatchColumn = @"match";
 
   if (selectedAvailableTestName != nil) {
     FilterTestRef  *filterTest = 
-      [fileItemFilter filterTestWithName: selectedAvailableTestName];
+      [filter filterTestWithName: selectedAvailableTestName];
       
     if (filterTest != nil) {
       // The window is in an anomalous situation: a test is selected in the
@@ -686,7 +685,7 @@ NSString  *MatchColumn = @"match";
       //    not available and thus disabled.
     
       // Select the disabled test in the other view.      
-      int  index = [fileItemFilter indexOfFilterTest: filterTest];
+      int  index = [filter indexOfFilterTest: filterTest];
       [filterTestsView selectRow: index byExtendingSelection: NO];
 
       [availableTestsView deselectAll: nil];
@@ -744,7 +743,7 @@ NSString  *MatchColumn = @"match";
   [removeTestFromFilterButton setEnabled: 
     ( selectedFilterTest != nil && filterTestsHighlighted )];
 
-  BOOL  nonEmptyFilter = ([fileItemFilter numFilterTests] > 0);
+  BOOL  nonEmptyFilter = ([filter numFilterTests] > 0);
 
   [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
   

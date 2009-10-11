@@ -1,13 +1,13 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class FileItemFilter;
+@class Filter;
 
 
 @interface DirectoryViewControlSettings : NSObject {
   NSString  *colorMappingKey;
   NSString  *colorPaletteKey;
-  FileItemFilter  *mask;
+  Filter  *mask;
   BOOL  maskEnabled;
   BOOL  showEntireVolume;
   BOOL  showPackageContents;
@@ -20,7 +20,7 @@
 
 - (id) initWithColorMappingKey: (NSString *)colorMappingKey 
          colorPaletteKey: (NSString *)colorPaletteKey
-         mask: (FileItemFilter *)mask
+         mask: (Filter *)mask
          maskEnabled: (BOOL) maskEnabled
          showEntireVolume: (BOOL) showEntireVolume
          showPackageContents: (BOOL) showPackageContents
@@ -32,8 +32,8 @@
 - (NSString*) colorPaletteKey;
 - (void) setColorPaletteKey: (NSString *)key;
 
-- (FileItemFilter *) fileItemMask;
-- (void) setFileItemMask:(FileItemFilter *)mask;
+- (Filter *) fileItemMask;
+- (void) setFileItemMask:(Filter *)mask;
 
 - (BOOL) fileItemMaskEnabled;
 - (void) setFileItemMaskEnabled: (BOOL)flag;

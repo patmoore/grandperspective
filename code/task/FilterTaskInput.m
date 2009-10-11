@@ -12,7 +12,7 @@
 }
 
 - (id) initWithTreeContext:(TreeContext *)treeContextVal
-         filterSet:(FileItemFilterSet *)filterSetVal {
+         filterSet:(FilterSet *)filterSetVal {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   
   BOOL  showPackageContentsByDefault =
@@ -24,7 +24,7 @@
 }
 
 - (id) initWithTreeContext:(TreeContext *)treeContextVal
-         filterSet:(FileItemFilterSet *)filterSetVal
+         filterSet:(FilterSet *)filterSetVal
          packagesAsFiles:(BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     treeContext = [treeContextVal retain];
@@ -47,7 +47,7 @@
   return treeContext;
 }
 
-- (FileItemFilterSet *) filterSet {
+- (FilterSet *) filterSet {
   return filterSet;
 }
 

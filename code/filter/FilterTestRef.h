@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-/* A test that is part of a FileItemFilter.
+/* A test that is part of a Filter.
  */
 @interface FilterTestRef : NSObject {
   NSString  *name;

@@ -2,7 +2,7 @@
 
 #import "TreeContext.h"
 
-#import "FileItemFilterSet.h"
+#import "FilterSet.h"
 #import "FileItemTest.h"
 
 @implementation AnnotatedTreeContext

@@ -22,7 +22,7 @@
                           [[[StatelessFileItemMapping alloc] init] autorelease]
             colorPalette: [TreeDrawerSettings defaultColorPalette]
             colorGradient: [userDefaults floatForKey: DefaultColorGradient] 
-            fileItemMask: nil
+            maskTest: nil
             showPackageContents: YES];
 }
 
@@ -30,13 +30,13 @@
 - (id) initWithColorMapper:(NSObject <FileItemMapping> *)colorMapperVal
          colorPalette:(NSColorList *)colorPaletteVal
          colorGradient:(float) colorGradientVal
-         fileItemMask:(FileItemTest *)fileItemMaskVal
+         maskTest:(FileItemTest *)maskTestVal
          showPackageContents:(BOOL) showPackageContentsVal {
   if (self = [super init]) {
     colorMapper = [colorMapperVal retain];
     colorPalette = [colorPaletteVal retain];
     colorGradient = colorGradientVal;
-    fileItemMask = [fileItemMaskVal retain];
+    maskTest = [maskTestVal retain];
     showPackageContents = showPackageContentsVal;
   }
   
@@ -46,9 +46,9 @@
 - (void) dealloc {
   [colorMapper release];
   [colorPalette release];
-  [fileItemMask release];
+  [maskTest release];
   
-  [super dealloc];  
+  [super dealloc];
 }
 
 
@@ -57,7 +57,7 @@
               initWithColorMapper: colorMapperVal
               colorPalette: colorPalette
               colorGradient: colorGradient
-              fileItemMask: fileItemMask
+              maskTest: maskTest
               showPackageContents: showPackageContents] autorelease];
 }
 
@@ -66,7 +66,7 @@
               initWithColorMapper: colorMapper
               colorPalette: colorPaletteVal
               colorGradient: colorGradient
-              fileItemMask: fileItemMask
+              maskTest: maskTest
               showPackageContents: showPackageContents] autorelease];
 }
 
@@ -75,16 +75,16 @@
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
               colorGradient: colorGradientVal
-              fileItemMask: fileItemMask
+              maskTest: maskTest
               showPackageContents: showPackageContents] autorelease];
 }
 
-- (id) copyWithFileItemMask:(FileItemTest *)fileItemMaskVal {
+- (id) copyWithMaskTest:(FileItemTest *)maskTestVal {
   return [[[TreeDrawerSettings alloc]
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
               colorGradient: colorGradient
-              fileItemMask: fileItemMaskVal
+              maskTest: maskTestVal
               showPackageContents: showPackageContents] autorelease];
 }
 
@@ -93,7 +93,7 @@
               initWithColorMapper: colorMapper
               colorPalette: colorPalette
               colorGradient: colorGradient
-              fileItemMask: fileItemMask
+              maskTest: maskTest
               showPackageContents: showPackageContentsVal] autorelease];
 }
 
@@ -109,8 +109,8 @@
   return colorGradient;
 }
 
-- (FileItemTest *)fileItemMask {
-  return fileItemMask;
+- (FileItemTest *)maskTest {
+  return maskTest;
 }
 
 - (BOOL) showPackageContents {

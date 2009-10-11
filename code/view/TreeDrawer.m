@@ -70,11 +70,11 @@
 }
 
 
-- (void) setFileItemMask:(FileItemTest *)maskTest {
+- (void) setMaskTest:(FileItemTest *)maskTest {
   [treeGuide setFileItemTest: maskTest];
 }
 
-- (FileItemTest *)fileItemMask {
+- (FileItemTest *)maskTest {
   return [treeGuide fileItemTest];
 }
 
@@ -92,7 +92,7 @@
   [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
   [self setColorGradient: [settings colorGradient]];
-  [self setFileItemMask: [settings fileItemMask]];
+  [self setMaskTest: [settings maskTest]];
   [self setShowPackageContents: [settings showPackageContents]];
 }
 

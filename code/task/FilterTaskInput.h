@@ -1,25 +1,25 @@
 #import <Cocoa/Cocoa.h>
 
 @class TreeContext;
-@class FileItemFilterSet;
+@class FilterSet;
 
 
 @interface FilterTaskInput : NSObject {
   BOOL  packagesAsFiles;
   TreeContext  *treeContext;
-  FileItemFilterSet  *filterSet;
+  FilterSet  *filterSet;
 }
 
 - (id) initWithTreeContext:(TreeContext *)context 
-         filterSet:(FileItemFilterSet *)filterSet;
+         filterSet:(FilterSet *)filterSet;
 
 - (id) initWithTreeContext:(TreeContext *)context 
-         filterSet:(FileItemFilterSet *)test
+         filterSet:(FilterSet *)test
          packagesAsFiles:(BOOL) packagesAsFiles;
 
 
 - (TreeContext *) treeContext;
-- (FileItemFilterSet *) filterSet;
+- (FilterSet *) filterSet;
 - (BOOL) packagesAsFiles;
 
 @end

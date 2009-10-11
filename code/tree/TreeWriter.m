@@ -7,8 +7,8 @@
 #import "AnnotatedTreeContext.h"
 
 #import "FilterTestRef.h"
-#import "FileItemFilter.h"
-#import "FileItemFilterSet.h"
+#import "Filter.h"
+#import "FilterSet.h"
 
 #import "ProgressTracker.h"
 
@@ -132,8 +132,8 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 - (void) appendScanDumpElement: (AnnotatedTreeContext *)tree;
 - (void) appendScanInfoElement: (AnnotatedTreeContext *)tree;
 - (void) appendScanCommentsElement: (NSString *)comments;
-- (void) appendFilterSetElement: (FileItemFilterSet *)filterSet;
-- (void) appendFilterElement: (FileItemFilter *)filter;
+- (void) appendFilterSetElement: (FilterSet *)filterSet;
+- (void) appendFilterElement: (Filter *)filter;
 - (void) appendFilterTestElement: (FilterTestRef *)filterTest;
 - (void) appendFolderElement: (DirectoryItem *)dirItem;
 - (void) appendFileElement: (FileItem *)fileItem;
@@ -282,15 +282,15 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 }
 
 
-- (void) appendFilterSetElement: (FileItemFilterSet *)filterSet {
-  if ([filterSet numFileItemFilters] == 0) {
+- (void) appendFilterSetElement: (FilterSet *)filterSet {
+  if ([filterSet numFilters] == 0) {
     return;
   }
   
   [self appendString: [NSString stringWithFormat: @"<%@>\n", FilterSetElem]];
 
-  NSEnumerator  *filterEnum = [[filterSet fileItemFilters] objectEnumerator];
-  FileItemFilter  *filter;
+  NSEnumerator  *filterEnum = [[filterSet filters] objectEnumerator];
+  Filter  *filter;
   while (filter = [filterEnum nextObject]) {
     [self appendFilterElement: filter];
   }
@@ -299,7 +299,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 }
 
 
-- (void) appendFilterElement: (FileItemFilter *)filter {
+- (void) appendFilterElement: (Filter *)filter {
   if ([filter numFilterTests] == 0) {
     return;
   }

@@ -6,7 +6,7 @@
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
 
-#import "FileItemFilterSet.h"
+#import "FilterSet.h"
 
 
 NSString  *FreeSpace = @"free";
@@ -28,18 +28,18 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 /* Returns the item that owns the selected file item, i.e. the one directly
  * above it in the tree. This can be a virtual item.
  */
-- (Item *) itemContainingSelectedFileItem: (ItemPathModelView *)pathModelView;
+- (Item *)itemContainingSelectedFileItem:(ItemPathModelView *)pathModelView;
 
 // Signals that an item in the tree has been replaced (by another one, of the
 // same size). The item itself is not part of the notification, but can be 
 // recognized because its parent directory has been cleared.
 - (void) postFileItemDeleted;
-- (void) fileItemDeletedHandled: (NSNotification *)notification;
+- (void) fileItemDeletedHandled:(NSNotification *)notification;
 
 /* Recursively updates the freed space count after the given item has been
  * deleted.
  */
-- (void) updateFreedSpaceForDeletedItem: (Item *)item;
+- (void) updateFreedSpaceForDeletedItem:(Item *)item;
 
 @end
 
@@ -52,11 +52,11 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (id) initWithVolumePath: (NSString *)volumePath
-         fileSizeMeasure: (NSString *)fileSizeMeasureVal
-         volumeSize: (unsigned long long) volumeSizeVal 
-         freeSpace: (unsigned long long) freeSpaceVal
-         filterSet: (FileItemFilterSet *)filterSetVal {
+- (id) initWithVolumePath:(NSString *)volumePath
+         fileSizeMeasure:(NSString *)fileSizeMeasureVal
+         volumeSize:(unsigned long long) volumeSizeVal 
+         freeSpace:(unsigned long long) freeSpaceVal
+         filterSet:(FilterSet *)filterSetVal {
   return [self initWithVolumePath: volumePath
                  fileSizeMeasure: fileSizeMeasureVal
                  volumeSize: volumeSizeVal 
@@ -65,12 +65,12 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
                  scanTime: [NSDate date]];
 }
 
-- (id) initWithVolumePath: (NSString *)volumePath
-         fileSizeMeasure: (NSString *)fileSizeMeasureVal
-         volumeSize: (unsigned long long) volumeSizeVal 
-         freeSpace: (unsigned long long) freeSpaceVal
-         filterSet: (FileItemFilterSet *)filterSetVal
-         scanTime: (NSDate *)scanTimeVal {
+- (id) initWithVolumePath:(NSString *)volumePath
+         fileSizeMeasure:(NSString *)fileSizeMeasureVal
+         volumeSize:(unsigned long long) volumeSizeVal 
+         freeSpace:(unsigned long long) freeSpaceVal
+         filterSet:(FilterSet *)filterSetVal
+         scanTime:(NSDate *)scanTimeVal {
   if (self = [super init]) {
     volumeTree = [[DirectoryItem alloc] initWithName: volumePath parent: nil];
     usedSpaceItem = [[DirectoryItem alloc] initWithName: UsedSpace 
@@ -87,7 +87,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 
     // Ensure filter set is always set
     filterSet = 
-      [ ((filterSetVal != nil) ? filterSetVal : [FileItemFilterSet filterSet])
+      [ ((filterSetVal != nil) ? filterSetVal : [FilterSet filterSet])
           retain];
 
     // Listen to self
@@ -127,7 +127,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (void) setScanTree: (DirectoryItem *)scanTreeVal {
+- (void) setScanTree:(DirectoryItem *)scanTreeVal {
   NSAssert(scanTree == nil, @"scanTree should be nil.");
   NSAssert([scanTreeVal parentDirectory] == [self scanTreeParent], 
              @"Invalid parent.");
@@ -173,15 +173,15 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (DirectoryItem *) scanTreeParent {
+- (DirectoryItem *)scanTreeParent {
   return usedSpaceItem;
 }
 
-- (DirectoryItem*) volumeTree {
+- (DirectoryItem *)volumeTree {
   return volumeTree;
 }
 
-- (DirectoryItem*) scanTree {
+- (DirectoryItem *)scanTree {
   return scanTree;
 }
 
@@ -202,16 +202,16 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (NSString*) fileSizeMeasure {
+- (NSString *)fileSizeMeasure {
   return fileSizeMeasure;
 }
 
 
-- (NSDate*) scanTime {
+- (NSDate *)scanTime {
   return scanTime;
 }
 
-- (NSString *) stringForScanTime {  
+- (NSString *)stringForScanTime {  
   NSString  *timeFormat =
     NSLocalizedString( @"%H:%M:%S", @"Time format (for scan time)" );
   NSString  *dateFormat =
@@ -231,12 +231,12 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 
-- (FileItemFilterSet *) filterSet {
+- (FilterSet *)filterSet {
   return filterSet;
 }
 
 
-- (void) deleteSelectedFileItem: (ItemPathModelView *)pathModelView {
+- (void) deleteSelectedFileItem:(ItemPathModelView *)pathModelView {
   NSAssert(replacedItem == nil, @"Replaced item not nil.");
   NSAssert(replacingItem == nil, @"Replacing item not nil.");
   
@@ -279,12 +279,12 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   [self postFileItemDeleted];
 }
 
-- (FileItem *) replacedFileItem {
+- (FileItem *)replacedFileItem {
   NSAssert(replacedItem != nil, @"replacedFileItem is nil.");
   return replacedItem;
 }
 
-- (FileItem *) replacingFileItem {
+- (FileItem *)replacingFileItem {
   NSAssert(replacingItem != nil, @"replacingFileItem is nil.");
   return replacingItem;
 }
@@ -403,7 +403,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 
 @implementation TreeContext (PrivateMethods)
 
-- (Item *) itemContainingSelectedFileItem: (ItemPathModelView *)pathModelView {
+- (Item *)itemContainingSelectedFileItem:(ItemPathModelView *)pathModelView {
   FileItem  *selectedItem = [pathModelView selectedFileItemInTree];
   
   // Get the items in the path (from the underlying path model). 
@@ -426,7 +426,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   [nc postNotificationName: FileItemDeletedHandledEvent object: self];
 }
 
-- (void) fileItemDeletedHandled: (NSNotification *)notification {
+- (void) fileItemDeletedHandled:(NSNotification *)notification {
   [replacedItem release];
   replacedItem = nil;
   
@@ -434,7 +434,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   replacingItem = nil;  
 }
 
-- (void) updateFreedSpaceForDeletedItem: (Item *)item; {
+- (void) updateFreedSpaceForDeletedItem:(Item *)item; {
   if ( [item isVirtual] ) {
     [self updateFreedSpaceForDeletedItem: [((CompoundItem *)item) getFirst]];
     [self updateFreedSpaceForDeletedItem: [((CompoundItem *)item) getSecond]];

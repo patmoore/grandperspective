@@ -1,34 +1,33 @@
-#import "FileItemFilterSet.h"
+#import "FilterSet.h"
 
-#import "FileItemFilter.h"
+#import "Filter.h"
 #import "CompoundAndItemTest.h"
 
-@interface FileItemFilterSet (PrivateMethods)
+@interface FilterSet (PrivateMethods)
 
 + (id) filterSetWithFilters:(NSArray *)filters;
 
-@end // @interface FileItemFilterSet (PrivateMethods)
+@end // @interface FilterSet (PrivateMethods)
 
 
-@implementation FileItemFilterSet
+@implementation FilterSet
 
 + (id) filterSet {
-  return [[[FileItemFilterSet alloc] init] autorelease];
+  return [[[FilterSet alloc] init] autorelease];
 }
 
-+ (id) filterSetWithFilter:(FileItemFilter *)filter {
-  return [[[FileItemFilterSet alloc] initWithFileItemFilter: filter] 
-              autorelease];
++ (id) filterSetWithFilter:(Filter *)filter {
+  return [[[FilterSet alloc] initWithFilter: filter] autorelease];
 }
 
 
 // Overrides designated initialiser.
 - (id) init {
-  return [self initWithFileItemFilters: [NSArray array]];
+  return [self initWithFilters: [NSArray array]];
 }
 
-- (id) initWithFileItemFilter:(FileItemFilter *)filter {
-  return [self initWithFileItemFilters: [NSArray arrayWithObject: filter]];
+- (id) initWithFilter:(Filter *)filter {
+  return [self initWithFilters: [NSArray arrayWithObject: filter]];
 }
 
 - (void) dealloc {
@@ -39,49 +38,48 @@
 }
 
 
-- (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FilterTestRepository *)repository {
+- (FilterSet *)updatedFilterSetUsingRepository: 
+                 (FilterTestRepository *)repository {
   return [self updatedFilterSetUsingRepository: repository unboundTests: nil];
 }
 
-- (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FilterTestRepository *)repository
-                         unboundTests:(NSMutableArray *)unboundTests {
+- (FilterSet *)updatedFilterSetUsingRepository: 
+                 (FilterTestRepository *)repository
+                 unboundTests:(NSMutableArray *)unboundTests {
   NSMutableArray  *newFilters = 
     [NSMutableArray arrayWithCapacity: [filters count]];
   
   NSEnumerator  *filterEnum = [filters objectEnumerator];
-  FileItemFilter  *filter;
+  Filter  *filter;
 
   while (filter = [filterEnum nextObject]) {
-    FileItemFilter  *updatedFilter = 
-      [[[FileItemFilter alloc] initWithFileItemFilter: filter] autorelease];
+    Filter  *newFilter = [[[Filter alloc] initWithFilter: filter] autorelease];
        
     FileItemTest  *filterTest = 
-      [updatedFilter createFileItemTestFromRepository: repository
-                       unboundTests: unboundTests];
+      [newFilter createFileItemTestFromRepository: repository
+                   unboundTests: unboundTests];
       
     if (filterTest != nil) {
       // Only add filters for which a tests still exists.
       
-      [newFilters addObject: updatedFilter];
+      [newFilters addObject: newFilter];
     }
     else {
       NSLog(@"Filter \"%@\" does not have a test anymore.", [filter name]);
     }
   }
   
-  return [FileItemFilterSet filterSetWithFilters: newFilters];
+  return [FilterSet filterSetWithFilters: newFilters];
 }
 
-- (FileItemFilterSet *)filterSetWithNewFilter:(FileItemFilter *)filter {
+- (FilterSet *)filterSetWithNewFilter:(Filter *)filter {
   NSMutableArray  *newFilters =
     [NSMutableArray arrayWithCapacity: [filters count]+1];
     
   [newFilters addObjectsFromArray: filters];
   [newFilters addObject: filter];
   
-  return [FileItemFilterSet filterSetWithFilters: newFilters];
+  return [FilterSet filterSetWithFilters: newFilters];
 }
 
 - (FileItemTest *)fileItemTest {
@@ -89,11 +87,11 @@
 }
 
 
-- (int) numFileItemFilters {
+- (int) numFilters {
   return [filters count];
 }
 
-- (NSArray *)fileItemFilters {
+- (NSArray *)filters {
   return [NSArray arrayWithArray: filters];
 }
 
@@ -102,7 +100,7 @@
   NSMutableString  *descr = [NSMutableString stringWithCapacity: 32];
   
   NSEnumerator  *filterEnum = [filters objectEnumerator];
-  FileItemFilter  *filter;
+  Filter  *filter;
 
   while (filter = [filterEnum nextObject]) {
     // TODO: I18N?
@@ -115,14 +113,14 @@
   return descr;
 }
 
-@end // @implementation FileItemFilterSet
+@end // @implementation FilterSet
 
 
-@implementation FileItemFilterSet (ProtectedMethods)
+@implementation FilterSet (ProtectedMethods)
 
 /* Designated initialiser.
  */
-- (id) initWithFileItemFilters:(NSArray *)filtersVal {
+- (id) initWithFilters:(NSArray *)filtersVal {
   if (self = [super init]) {
     filters = [filtersVal retain];
 
@@ -131,7 +129,7 @@
       [NSMutableArray arrayWithCapacity: [filters count]];
   
     NSEnumerator  *filterEnum = [filters objectEnumerator];
-    FileItemFilter  *filter;
+    Filter  *filter;
 
     while (filter = [filterEnum nextObject]) {
       FileItemTest  *filterTest = [filter fileItemTest];
@@ -154,14 +152,14 @@
   return self;
 }
 
-@end // @implementation FileItemFilterSet (ProtectedMethods)
+@end // @implementation FilterSet (ProtectedMethods)
 
 
-@implementation FileItemFilterSet (PrivateMethods)
+@implementation FilterSet (PrivateMethods)
 
 + (id) filterSetWithFilters:(NSArray *)filters {
-  return [[[FileItemFilterSet alloc] initWithFileItemFilters:
+  return [[[FilterSet alloc] initWithFilters:
               [NSArray arrayWithArray: filters]] autorelease];
 }
 
-@end // @implementation FileItemFilterSet (PrivateMethods)
+@end // @implementation FilterSet (PrivateMethods)

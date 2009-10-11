@@ -9,7 +9,7 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
-#import "FileItemFilter.h"
+#import "Filter.h"
 #import "FilterTestRepository.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
@@ -183,7 +183,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [initialSettings release];
   [initialComments release];
   
-  [fileItemMask release];
+  [mask release];
   
   [colorMappings release];
   [colorPalettes release];
@@ -198,8 +198,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (FileItemFilter *) fileItemMask {
-  return fileItemMask;
+- (Filter *) fileItemMask {
+  return mask;
 }
 
 - (ItemPathModelView *) pathModelView {
@@ -222,7 +222,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [[[DirectoryViewControlSettings alloc]
          initWithColorMappingKey: colorMappingKey
            colorPaletteKey: colorPaletteKey
-           mask: fileItemMask
+           mask: mask
            maskEnabled: [maskCheckBox state]==NSOnState
            showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState
            showPackageContents: [showPackageContentsCheckBox state]==NSOnState
@@ -273,7 +273,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [[ColorLegendTableViewControl alloc] initWithDirectoryView: mainView 
                                            tableView: colorLegendTable];
   
-  fileItemMask = [[initialSettings fileItemMask] retain];
+  mask = [[initialSettings fileItemMask] retain];
   [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
                               ? NSOnState : NSOffState ) ];
   [self maskChanged];
@@ -302,7 +302,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [scanPathTextView setDrawsBackground: NO];
   [[scanPathTextView enclosingScrollView] setDrawsBackground: NO];
 
-  FileItemFilterSet  *filterSet = [treeContext filterSet];
+  FilterSet  *filterSet = [treeContext filterSet];
   [filterNameField setStringValue: 
     ( ([filterSet fileItemTest] != nil)
       ? [filterSet description]
@@ -660,7 +660,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [self createEditMaskFilterWindow];
   }
   
-  [editMaskFilterWindowControl representFileItemFilter: fileItemMask];
+  [editMaskFilterWindowControl representFilter: mask];
 
   // Note: First order it to front, then make it key. This ensures that
   // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
@@ -1026,7 +1026,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) maskChanged {
-  if (fileItemMask != nil) {
+  if (mask != nil) {
     [maskCheckBox setEnabled: YES];
   }
   else {
@@ -1040,8 +1040,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) updateMask {
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
 
-  FileItemFilter  *newMask = 
-    [maskCheckBox state]==NSOnState ? fileItemMask : nil;
+  Filter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
 
   FileItemTest  *newMaskTest = [newMask fileItemTest];  
   if ( newMask != nil
@@ -1056,7 +1055,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 
   [mainView setTreeDrawerSettings: 
-    [[mainView treeDrawerSettings] copyWithFileItemMask: newMaskTest]];
+    [[mainView treeDrawerSettings] copyWithMaskTest: newMaskTest]];
 }
 
 
@@ -1081,11 +1080,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) maskWindowApplyAction:(NSNotification*)notification {
-  [fileItemMask release];
+  [mask release];
   
-  fileItemMask = [[editMaskFilterWindowControl fileItemFilter] retain];
+  mask = [[editMaskFilterWindowControl filter] retain];
 
-  if (fileItemMask != nil) {
+  if (mask != nil) {
     // Automatically enable mask.
     [maskCheckBox setState: NSOnState];
   }
