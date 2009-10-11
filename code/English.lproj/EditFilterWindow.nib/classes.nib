@@ -27,6 +27,8 @@
 				<string>id</string>
 				<key>showTestDescriptionChanged</key>
 				<string>id</string>
+				<key>testDoubleClicked</key>
+				<string>id</string>
 			</dict>
 			<key>CLASS</key>
 			<string>EditFilterWindowControl</string>

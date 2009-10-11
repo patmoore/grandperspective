@@ -216,15 +216,15 @@ NSString  *MatchColumn = @"match";
   
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
 
-  NSString  *fmt = NSLocalizedString( @"Remove the rule named \"%@\"?",
+  NSString  *fmt = NSLocalizedString( @"Remove the test named \"%@\"?",
                                       @"Alert message" );
   NSString  *infoMsg = 
     ([testRepository applicationProvidedTestForName: testName] != nil) ?
       NSLocalizedString(
-        @"The rule will be replaced by the default rule with this name.",
+        @"The test will be replaced by the default test with this name.",
         @"Alert informative text" ) :
       NSLocalizedString( 
-        @"The rule will be irrevocably removed from the rule repository.",
+        @"The test will be irrevocably removed from the test repository.",
         @"Alert informative text" );
 
   NSBundle  *mainBundle = [NSBundle mainBundle];
@@ -841,12 +841,12 @@ NSString  *MatchColumn = @"match";
   NSString*  errorText = nil;
 
   if ([newName isEqualToString:@""]) {
-    errorText = NSLocalizedString( @"The rule must have a name.",
+    errorText = NSLocalizedString( @"The test must have a name.",
                                    @"Alert message" );
   }
   else if ( ![allowedName isEqualToString:newName] &&
             [allTests objectForKey:newName] != nil) {
-    NSString  *fmt = NSLocalizedString( @"A rule named \"%@\" already exists.",
+    NSString  *fmt = NSLocalizedString( @"A test named \"%@\" already exists.",
                                         @"Alert message" );
             
     errorText = [NSString stringWithFormat: fmt, newName];
