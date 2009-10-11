@@ -1,4 +1,4 @@
-#import "EditFilterRuleWindowControl.h"
+#import "EditFilterTestWindowControl.h"
 
 #import "FileItem.h"
 
@@ -25,7 +25,7 @@
 #import "EditFilterWindowControl.h"
 
 
-// ruleTargetPopUp choices
+// testTargetPopUp choices
 #define POPUP_FILES              0
 #define POPUP_FOLDERS            1
 #define POPUP_FILES_AND_FOLDERS  2
@@ -54,7 +54,7 @@
 #define POPUP_GB     3
 
 
-@interface EditFilterRuleWindowControl (PrivateMethods) 
+@interface EditFilterTestWindowControl (PrivateMethods) 
 
 - (void) resetState;
 - (void) updateStateBasedOnTest:(FileItemTest *)test;
@@ -72,7 +72,7 @@
 - (ItemFlagsTest *)itemFlagsTestBasedOnState;
 - (FileItemTest *)selectiveItemTestBasedOnState:(FileItemTest *)subTest;
 
-@end // @interface EditFilterRuleWindowControl (PrivateMethods)
+@end // @interface EditFilterTestWindowControl (PrivateMethods)
 
 
 @interface MultiMatchControls : NSObject {
@@ -147,23 +147,24 @@
 @end
 
 
-@implementation EditFilterRuleWindowControl
-
-EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
+@implementation EditFilterTestWindowControl
 
 + (id) defaultInstance {
-  if (defaultEditFilterRuleWindowControlInstance == nil) {
-    defaultEditFilterRuleWindowControlInstance = 
-      [[EditFilterRuleWindowControl alloc] init];
+  EditFilterTestWindowControl  
+    *defaultEditFilterTestWindowControlInstance = nil;
+
+  if (defaultEditFilterTestWindowControlInstance == nil) {
+    defaultEditFilterTestWindowControlInstance = 
+      [[EditFilterTestWindowControl alloc] init];
   }
   
-  return defaultEditFilterRuleWindowControlInstance;
+  return defaultEditFilterTestWindowControlInstance;
 }
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) init {         
-  if (self = [super initWithWindowNibName:@"EditFilterRuleWindow" owner:self]) {
+  if (self = [super initWithWindowNibName:@"EditFilterTestWindow" owner:self]) {
     // void
   }
   return self;
@@ -175,7 +176,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [pathTestControls release];
   [typeTestControls release];
   
-  [ruleName release];
+  [testName release];
 
   [super dealloc];
 }
@@ -205,14 +206,14 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (NSString*) fileItemTestName {
-  if ([ruleNameField isEnabled]) {
+  if ([testNameField isEnabled]) {
     // No fixed "visible" name was set, so get the name from the text field.
-    return [ruleNameField stringValue];
+    return [testNameField stringValue];
   }
   else {
-    // The rule name field was showing the rule's visible name. Return its
+    // The test name field was showing the test's visible name. Return its
     // original name.
-    return ruleName;
+    return testName;
   }
 }
 
@@ -225,11 +226,11 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     return;
   }
   
-  // Remember the original name of the rule
-  [ruleName release];
-  ruleName = [[filterTest name] retain];
+  // Remember the original name of the test
+  [testName release];
+  testName = [[filterTest name] retain];
   
-  [ruleNameField setStringValue: ruleName];
+  [testNameField setStringValue: testName];
   
   FileItemTest  *test = [filterTest fileItemTest];
   
@@ -240,7 +241,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
                    (SelectiveItemTest *)test];
   }
   else {
-    [ruleTargetPopUp selectItemAtIndex: POPUP_FILES_AND_FOLDERS];
+    [testTargetPopUp selectItemAtIndex: POPUP_FILES_AND_FOLDERS];
   }
 
   
@@ -280,7 +281,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
     [subTests addObject: subTest];
   }
   
-  if ( [ruleTargetPopUp indexOfSelectedItem] == POPUP_FILES ) {
+  if ( [testTargetPopUp indexOfSelectedItem] == POPUP_FILES ) {
     // Add any file-only tests
     
     subTest = [self itemSizeTestBasedOnState];
@@ -313,8 +314,8 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 - (void) setVisibleName: (NSString *)name {
-  [ruleNameField setStringValue: name];
-  [ruleNameField setEnabled: NO];
+  [testNameField setStringValue: name];
+  [testNameField setEnabled: NO];
 }
 
 
@@ -441,7 +442,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   // Note: "sender" is ignored. Always updating all.
   
   BOOL  targetsOnlyFiles = 
-          [ruleTargetPopUp indexOfSelectedItem] == POPUP_FILES;
+          [testTargetPopUp indexOfSelectedItem] == POPUP_FILES;
   
   BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
   BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
@@ -471,7 +472,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
 
   [doneButton setEnabled:
-     [[ruleNameField stringValue] length] > 0
+     [[testNameField stringValue] length] > 0
      && ( ( nameTestUsed && [nameTestControls hasTargets] )
           || ( pathTestUsed && [pathTestControls hasTargets] )
           || ( typeTestUsed && [typeTestControls hasTargets] )
@@ -484,13 +485,13 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 @end
 
 
-@implementation EditFilterRuleWindowControl (PrivateMethods) 
+@implementation EditFilterTestWindowControl (PrivateMethods) 
 
 - (void) resetState {
-  [ruleNameField setStringValue: @""];
-  [ruleNameField setEnabled: YES];
+  [testNameField setStringValue: @""];
+  [testNameField setEnabled: YES];
   
-  [ruleTargetPopUp selectItemAtIndex: POPUP_FILES];
+  [testTargetPopUp selectItemAtIndex: POPUP_FILES];
 
   [nameCheckBox setState: NSOffState];
   [nameTestControls resetState];
@@ -622,7 +623,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 - (FileItemTest *)updateStateBasedOnSelectiveItemTest: 
                     (SelectiveItemTest *)test {
-  [ruleTargetPopUp selectItemAtIndex: ( [test applyToFilesOnly] 
+  [testTargetPopUp selectItemAtIndex: ( [test applyToFilesOnly] 
                                         ? POPUP_FILES 
                                         : POPUP_FOLDERS ) ];
   
@@ -725,7 +726,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 
 
 - (FileItemTest *)selectiveItemTestBasedOnState:(FileItemTest *)subTest {
-  int  index = [ruleTargetPopUp indexOfSelectedItem];
+  int  index = [testTargetPopUp indexOfSelectedItem];
   
   if (index == POPUP_FILES_AND_FOLDERS) { 
     return subTest;
@@ -905,7 +906,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   
   [matchTargets addObject: 
      NSLocalizedString( @"New match", 
-                        @"Initial match value in EditFilterRuleWindow" ) ];
+                        @"Initial match value in EditFilterTestWindow" ) ];
   [targetsView reloadData];
   [targetsView selectRow: newRow byExtendingSelection: NO];
   

@@ -4,10 +4,10 @@
 @class StringMatchControls;
 @class TypeMatchControls;
 
-@interface EditFilterRuleWindowControl : NSWindowController {
+@interface EditFilterTestWindowControl : NSWindowController {
 
-  IBOutlet NSTextField  *ruleNameField;
-  IBOutlet NSPopUpButton  *ruleTargetPopUp;
+  IBOutlet NSTextField  *testNameField;
+  IBOutlet NSPopUpButton  *testTargetPopUp;
   
   IBOutlet NSButton  *nameCheckBox;
   IBOutlet NSPopUpButton  *nameMatchPopUpButton;
@@ -46,7 +46,7 @@
   IBOutlet NSButton  *cancelButton;
   IBOutlet NSButton  *doneButton;
   
-  NSString  *ruleName;
+  NSString  *testName;
   
   TypeMatchControls  *typeTestControls;
   StringMatchControls  *nameTestControls;
@@ -55,33 +55,33 @@
 
 + (id) defaultInstance;
 
-- (IBAction) valueEntered:(id)sender;
+- (IBAction) valueEntered:(id) sender;
 
-- (IBAction) targetPopUpChanged:(id)sender;
+- (IBAction) targetPopUpChanged:(id) sender;
 
-- (IBAction) nameCheckBoxChanged:(id)sender;
-- (IBAction) pathCheckBoxChanged:(id)sender;
-- (IBAction) hardLinkCheckBoxChanged:(id)sender;
-- (IBAction) packageCheckBoxChanged:(id)sender;
-- (IBAction) typeCheckBoxChanged:(id)sender;
-- (IBAction) lowerBoundCheckBoxChanged:(id)sender;
-- (IBAction) upperBoundCheckBoxChanged:(id)sender;
+- (IBAction) nameCheckBoxChanged:(id) sender;
+- (IBAction) pathCheckBoxChanged:(id) sender;
+- (IBAction) hardLinkCheckBoxChanged:(id) sender;
+- (IBAction) packageCheckBoxChanged:(id) sender;
+- (IBAction) typeCheckBoxChanged:(id) sender;
+- (IBAction) lowerBoundCheckBoxChanged:(id) sender;
+- (IBAction) upperBoundCheckBoxChanged:(id) sender;
 
-- (IBAction) addNameTarget: (id) sender;
-- (IBAction) removeNameTarget: (id) sender;
+- (IBAction) addNameTarget:(id) sender;
+- (IBAction) removeNameTarget:(id) sender;
 
-- (IBAction) addPathTarget: (id) sender;
-- (IBAction) removePathTarget: (id) sender;
+- (IBAction) addPathTarget:(id) sender;
+- (IBAction) removePathTarget:(id) sender;
 
-- (IBAction) addTypeTarget: (id) sender;
-- (IBAction) removeTypeTarget: (id) sender;
+- (IBAction) addTypeTarget:(id) sender;
+- (IBAction) removeTypeTarget:(id) sender;
 
-- (IBAction) updateEnabledState:(id)sender;
+- (IBAction) updateEnabledState:(id) sender;
 
-- (IBAction) cancelAction:(id)sender;
-- (IBAction) okAction:(id)sender;
+- (IBAction) cancelAction:(id) sender;
+- (IBAction) okAction:(id) sender;
 
-- (NSString*) fileItemTestName;
+- (NSString *)fileItemTestName;
 
 /* Configures the window to represent the given test.
  */
@@ -91,10 +91,10 @@
  */
 - (FilterTest *)createFilterTest;
 
-/* Sets the name of the rule as it is shown in the window. This may be
- * different from the actual name of the rule (in particular, the visible
+/* Sets the name of the filter test as it is shown in the window. This may be
+ * different from the actual name of the test (in particular, the visible
  * name may be localized). Once a visible name is set, it cannot be changed.
  */
-- (void) setVisibleName: (NSString *)name;
+- (void) setVisibleName:(NSString *)name;
 
 @end

@@ -7,7 +7,7 @@ extern NSString  *CancelPerformedEvent;
 extern NSString  *OkPerformedEvent;
 
 
-@class EditFilterRuleWindowControl;
+@class EditFilterTestWindowControl;
 @class NotifyingDictionary;
 @class FilterTestRepository;
 @class Filter;

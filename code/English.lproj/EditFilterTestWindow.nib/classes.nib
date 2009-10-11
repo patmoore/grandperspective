@@ -45,7 +45,7 @@
 				<string>id</string>
 			</dict>
 			<key>CLASS</key>
-			<string>EditFilterRuleWindowControl</string>
+			<string>EditFilterTestWindowControl</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
 			<key>OUTLETS</key>
@@ -90,10 +90,6 @@
 				<string>NSButton</string>
 				<key>removeTypeTargetButton</key>
 				<string>NSButton</string>
-				<key>ruleNameField</key>
-				<string>NSTextField</string>
-				<key>ruleTargetPopUp</key>
-				<string>NSPopUpButton</string>
 				<key>sizeLowerBoundCheckBox</key>
 				<string>NSButton</string>
 				<key>sizeLowerBoundField</key>
@@ -105,6 +101,10 @@
 				<key>sizeUpperBoundField</key>
 				<string>NSTextField</string>
 				<key>sizeUpperBoundUnits</key>
+				<string>NSPopUpButton</string>
+				<key>testNameField</key>
+				<string>NSTextField</string>
+				<key>testTargetPopUp</key>
 				<string>NSPopUpButton</string>
 				<key>typeCheckBox</key>
 				<string>NSButton</string>

@@ -10,7 +10,7 @@
 #import "FilterTest.h"
 #import "FilterTestRef.h"
 
-#import "EditFilterRuleWindowControl.h"
+#import "EditFilterTestWindowControl.h"
 
 
 NSString  *ClosePerformedEvent = @"closePerformed";
@@ -22,18 +22,19 @@ NSString  *NameColumn = @"name";
 NSString  *MatchColumn = @"match";
 
 
-// Handles closing of the "Edit Filter Rule Window", including a validity
-// check before the window is closed.
-@interface EditFilterRuleWindowTerminationControl : NSObject {
-  EditFilterRuleWindowControl  *windowControl;
+/* Handles closing of the "Edit Filter Test Window", including a validity
+ * check before the window is closed.
+ */
+@interface EditFilterTestWindowTerminationControl : NSObject {
+  EditFilterTestWindowControl  *windowControl;
   NSDictionary  *allTests;
   NSString  *allowedName;
   BOOL  done;
 }
 
-- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControl 
+- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControl 
          existingTests:(NSDictionary*)allTests;
-- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControl 
+- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControl 
          existingTests:(NSDictionary*)allTests 
          allowedName:(NSString*)name;
 
@@ -44,7 +45,7 @@ NSString  *MatchColumn = @"match";
 - (void) alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode 
            contextInfo:(void *)contextInfo;
 
-@end // EditFilterRuleWindowTerminationControl
+@end // EditFilterTestWindowTerminationControl
 
 
 @interface EditFilterWindowControl (PrivateMethods)
@@ -243,24 +244,24 @@ NSString  *MatchColumn = @"match";
 
 
 - (IBAction) addTestToRepository:(id)sender {
-  EditFilterRuleWindowControl  *ruleWindowControl = 
-    [EditFilterRuleWindowControl defaultInstance];
+  EditFilterTestWindowControl  *editTestWindowControl = 
+    [EditFilterTestWindowControl defaultInstance];
   
   // Ensure window is loaded before configuring its contents
-  NSWindow  *ruleWindow = [ruleWindowControl window];  
+  NSWindow  *editTestWindow = [editTestWindowControl window];  
 
-  EditFilterRuleWindowTerminationControl  *terminationControl = 
-    [[[EditFilterRuleWindowTerminationControl alloc]
-        initWithWindowControl:ruleWindowControl
-          existingTests:((NSDictionary*)repositoryTestsByName)] autorelease];
+  EditFilterTestWindowTerminationControl  *terminationControl = 
+    [[[EditFilterTestWindowTerminationControl alloc]
+        initWithWindowControl: editTestWindowControl
+          existingTests: ((NSDictionary *)repositoryTestsByName)] autorelease];
 
-  [ruleWindowControl representFilterTest: nil];
+  [editTestWindowControl representFilterTest: nil];
 
-  int  status = [NSApp runModalForWindow:ruleWindow];
-  [ruleWindow close];
+  int  status = [NSApp runModalForWindow: editTestWindow];
+  [editTestWindow close];
 
   if (status == NSRunStoppedResponse) {
-    FilterTest  *filterTest = [ruleWindowControl createFilterTest];
+    FilterTest  *filterTest = [editTestWindowControl createFilterTest];
     
     if (filterTest != nil) {
       NSString  *name = [filterTest name];
@@ -284,23 +285,22 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (IBAction) editTestInRepository:(id)sender {
-  EditFilterRuleWindowControl  *ruleWindowControl = 
-    [EditFilterRuleWindowControl defaultInstance];
+- (IBAction) editTestInRepository:(id) sender {
+  EditFilterTestWindowControl  *editTestWindowControl = 
+    [EditFilterTestWindowControl defaultInstance];
 
   NSString  *oldName = [self selectedAvailableTestName];
   FileItemTest  *oldTest = 
     [((NSDictionary *)repositoryTestsByName) objectForKey: oldName];
 
   // Ensure window is loaded before configuring its contents
-  NSWindow  *ruleWindow = [ruleWindowControl window];
+  NSWindow  *editTestWindow = [editTestWindowControl window];
 
-  [ruleWindowControl representFilterTest: 
-                       [FilterTest filterTestWithName: 
-                                     oldName fileItemTest: oldTest]];
+  [editTestWindowControl representFilterTest: 
+     [FilterTest filterTestWithName: oldName fileItemTest: oldTest]];
 
   if ([testRepository applicationProvidedTestForName: oldName] != nil) {
-    // The rule's name equals that of an application provided test. Show the
+    // The test's name equals that of an application provided test. Show the
     // localized version of the name (which implicitly prevents the name from
     // being changed).
   
@@ -308,20 +308,20 @@ NSString  *MatchColumn = @"match";
     NSString  *localizedName = 
       [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
       
-    [ruleWindowControl setVisibleName: localizedName];
+    [editTestWindowControl setVisibleName: localizedName];
   }
   
-  EditFilterRuleWindowTerminationControl  *terminationControl = 
-    [[[EditFilterRuleWindowTerminationControl alloc]
-        initWithWindowControl: ruleWindowControl
-          existingTests: ((NSDictionary*)repositoryTestsByName)
+  EditFilterTestWindowTerminationControl  *terminationControl = 
+    [[[EditFilterTestWindowTerminationControl alloc]
+        initWithWindowControl: editTestWindowControl
+          existingTests: ((NSDictionary *)repositoryTestsByName)
           allowedName: oldName] autorelease];
 
-  int  status = [NSApp runModalForWindow: ruleWindow];
-  [ruleWindow close];
+  int  status = [NSApp runModalForWindow: editTestWindow];
+  [editTestWindow close];
     
   if (status == NSRunStoppedResponse) {
-    FilterTest  *newFilterTest = [ruleWindowControl createFilterTest];
+    FilterTest  *newFilterTest = [editTestWindowControl createFilterTest];
     
     if (newFilterTest != nil) {
       NSString  *newName = [newFilterTest name];
@@ -776,20 +776,20 @@ NSString  *MatchColumn = @"match";
 @end
 
 
-@implementation EditFilterRuleWindowTerminationControl
+@implementation EditFilterTestWindowTerminationControl
 
 // Overrides designated initialiser.
 - (id) init {
   NSAssert(NO, @"Use initWithWindowControl:existingTests: instead.");
 }
 
-- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControlVal
+- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControlVal
          existingTests:(NSDictionary*)allTestsVal {
   return [self initWithWindowControl:windowControlVal
                  existingTests:allTestsVal allowedName:nil];
 }
 
-- (id) initWithWindowControl:(EditFilterRuleWindowControl*)windowControlVal 
+- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControlVal 
          existingTests:(NSDictionary*)allTestsVal
          allowedName:(NSString*)name {
   if (self = [super init]) {
@@ -871,10 +871,10 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
           contextInfo:(void *)contextInfo {
   // void
 }
 
-@end // @implementation EditFilterRuleWindowTerminationControl
+@end // @implementation EditFilterTestWindowTerminationControl
 

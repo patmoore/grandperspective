@@ -670,7 +670,7 @@ static MainMenuControl  *singletonInstance = nil;
   }
   NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
   
-  // Get rule from window
+  // Get filter from window
   return [editFilterWindowControl filter];
 }
 
