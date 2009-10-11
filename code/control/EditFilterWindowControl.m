@@ -4,8 +4,10 @@
 #import "NotifyingDictionary.h"
 
 #import "FileItemTest.h"
+
 #import "FileItemTestRepository.h"
 #import "FileItemFilter.h"
+#import "FilterTest.h"
 #import "FilterTestRef.h"
 
 #import "EditFilterRuleWindowControl.h"
@@ -252,26 +254,26 @@ NSString  *MatchColumn = @"match";
         initWithWindowControl:ruleWindowControl
           existingTests:((NSDictionary*)repositoryTestsByName)] autorelease];
 
-  [ruleWindowControl representFileItemTest:nil];
+  [ruleWindowControl representFilterTest: nil];
 
   int  status = [NSApp runModalForWindow:ruleWindow];
   [ruleWindow close];
 
   if (status == NSRunStoppedResponse) {
-    NSObject <FileItemTest>  *test = [ruleWindowControl createFileItemTest];
+    FilterTest  *filterTest = [ruleWindowControl createFilterTest];
     
-    if (test != nil) {
-      NSString*  testName = [test name];
+    if (filterTest != nil) {
+      NSString  *name = [filterTest name];
 
       // The terminationControl should have ensured that this check succeeds.
       NSAssert( 
-        [((NSDictionary*)repositoryTestsByName) objectForKey:testName] == nil,
+        [((NSDictionary *)repositoryTestsByName) objectForKey: name] == nil,
         @"Duplicate name check failed.");
 
       [testNameToSelect release];
-      testNameToSelect = [testName retain];
+      testNameToSelect = [name retain];
 
-      [repositoryTestsByName addObject:test forKey:testName];
+      [repositoryTestsByName addObject: [filterTest fileItemTest] forKey: name];
         
       // Rest of addition handled in response to notification event.
     }
@@ -293,7 +295,9 @@ NSString  *MatchColumn = @"match";
   // Ensure window is loaded before configuring its contents
   NSWindow  *ruleWindow = [ruleWindowControl window];
 
-  [ruleWindowControl representFileItemTest: oldTest];
+  [ruleWindowControl representFilterTest: 
+                       [FilterTest filterTestWithName: 
+                                     oldName fileItemTest: oldTest]];
 
   if ([testRepository applicationProvidedTestForName: oldName] != nil) {
     // The rule's name equals that of an application provided test. Show the
@@ -317,15 +321,15 @@ NSString  *MatchColumn = @"match";
   [ruleWindow close];
     
   if (status == NSRunStoppedResponse) {
-    NSObject <FileItemTest>  *newTest = [ruleWindowControl createFileItemTest];
+    FilterTest  *newFilterTest = [ruleWindowControl createFilterTest];
     
-    if (newTest != nil) {
-      NSString  *newName = [newTest name];
+    if (newFilterTest != nil) {
+      NSString  *newName = [newFilterTest name];
 
       // The terminationControl should have ensured that this check succeeds.
       NSAssert( 
         [newName isEqualToString: oldName] ||
-        [((NSDictionary*)repositoryTestsByName) objectForKey: newName] == nil,
+        [((NSDictionary *)repositoryTestsByName) objectForKey: newName] == nil,
         @"Duplicate name check failed.");
 
       if (! [newName isEqualToString: oldName]) {
@@ -336,7 +340,8 @@ NSString  *MatchColumn = @"match";
       }
         
       // Test itself has changed as well.
-      [repositoryTestsByName updateObject: newTest forKey: newName];
+      [repositoryTestsByName updateObject: [newFilterTest fileItemTest] 
+                               forKey: newName];
 
       // Rest of update handled in response to update notification event.
     }

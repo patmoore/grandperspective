@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@protocol FileItemTest;
+@class FilterTest;
 @class StringMatchControls;
 @class TypeMatchControls;
 
@@ -85,11 +85,11 @@
 
 /* Configures the window to represent the given test.
  */
-- (void) representFileItemTest:(NSObject <FileItemTest> *)test;
+- (void) representFilterTest:(FilterTest *)test;
 
-/* Creates the test object that represents the current window state.
+/* Creates the filter test that represents the current window state.
  */
-- (NSObject <FileItemTest> *) createFileItemTest;
+- (FilterTest *)createFilterTest;
 
 /* Sets the name of the rule as it is shown in the window. This may be
  * different from the actual name of the rule (in particular, the visible

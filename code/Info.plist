@@ -130,8 +130,9 @@
 		<key>defaultViewWindowHeight</key>
 		<real>480</real>
 	</dict>
-	<key>GPDefaultFileItemTests</key>
-	<array>
+	<key>GPDefaultFilterTests</key>
+	<dict>
+		<key>Hard-linked items</key>
 		<dict>
 			<key>class</key>
 			<string>ItemFlagsTest</string>
@@ -139,14 +140,11 @@
 			<integer>2</integer>
 			<key>flagsMask</key>
 			<integer>2</integer>
-			<key>name</key>
-			<string>Hard-linked items</string>
 		</dict>
+		<key>Tiny files</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Tiny files</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -157,11 +155,10 @@
 				<integer>1024</integer>
 			</dict>
 		</dict>
+		<key>Small files</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Small files</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -174,11 +171,10 @@
 				<integer>10240</integer>
 			</dict>
 		</dict>
+		<key>Medium files</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Medium files</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -191,12 +187,11 @@
 				<integer>1048576</integer>
 			</dict>
 		</dict>
+		<key>Large files</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
 			<key>name</key>
-			<string>Large files</string>
-			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
 			<dict>
@@ -208,11 +203,10 @@
 				<integer>104857600</integer>
 			</dict>
 		</dict>
+		<key>Huge files</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Huge files</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -223,11 +217,10 @@
 				<integer>104857600</integer>
 			</dict>
 		</dict>
+		<key>Images</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Images</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -242,11 +235,10 @@
 				<false/>
 			</dict>
 		</dict>
+		<key>Audio</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Audio</string>
 			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
@@ -261,11 +253,10 @@
 				<false/>
 			</dict>
 		</dict>
+		<key>Version control</key>
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
-			<string>Version control</string>
 			<key>onlyFiles</key>
 			<false/>
 			<key>subTest</key>
@@ -286,6 +277,7 @@
 				</dict>
 			</dict>
 		</dict>
+		<key>Packages</key>
 		<dict>
 			<key>class</key>
 			<string>ItemFlagsTest</string>
@@ -293,9 +285,7 @@
 			<integer>4</integer>
 			<key>flagsMask</key>
 			<integer>4</integer>
-			<key>name</key>
-			<string>Packages</string>
 		</dict>
-	</array>
+	</dict>
 </dict>
 </plist>

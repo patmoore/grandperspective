@@ -38,8 +38,6 @@
  */
 - (BOOL) appliesToDirectories;
 
-- (NSString *) name;
-- (void) setName: (NSString *)name;
 
 /* Returns a dictionary that represents the test. It can be used for storing 
  * object to preferences.

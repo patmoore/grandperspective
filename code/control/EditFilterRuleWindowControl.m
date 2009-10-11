@@ -2,6 +2,8 @@
 
 #import "FileItem.h"
 
+#import "FilterTest.h"
+
 #import "FileItemTest.h"
 #import "CompoundAndItemTest.h"
 #import "ItemNameTest.h"
@@ -217,19 +219,21 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
 }
 
 // Configures the window to represent the given test.
-- (void) representFileItemTest:(NSObject <FileItemTest> *)test {
+- (void) representFilterTest:(FilterTest *)filterTest {
   [self resetState];
   
-  if (test == nil) {
+  if (filterTest == nil) {
     // No test specified. Leave window in default state.
     return;
   }
   
   // Remember the original name of the rule
   [ruleName release];
-  ruleName = [[test name] retain];
+  ruleName = [[filterTest name] retain];
   
   [ruleNameField setStringValue: ruleName];
+  
+  NSObject <FileItemTest>  *test = [filterTest fileItemTest];
   
   if ([test isKindOfClass: [SelectiveItemTest class]]) {
     // It is a selective test. Update state and continue with its subtest
@@ -259,7 +263,7 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   [self updateEnabledState:nil];
 }
 
-- (NSObject <FileItemTest> *) createFileItemTest {
+- (FilterTest *)createFilterTest {
   NSMutableArray  *subTests = [NSMutableArray arrayWithCapacity: 4];
   NSObject <FileItemTest>  *subTest;
   
@@ -305,10 +309,9 @@ EditFilterRuleWindowControl  *defaultEditFilterRuleWindowControlInstance = nil;
   }
   
   test = [self selectiveItemTestBasedOnState: test];
-  
-  [test setName: [self fileItemTestName]];
-  
-  return test;
+    
+  return [FilterTest filterTestWithName: [self fileItemTestName] 
+                       fileItemTest: test];
 }
 
 - (void) setVisibleName: (NSString *)name {

@@ -4,8 +4,6 @@
 
 @interface AbstractFileItemTest : NSObject<FileItemTest> {
 
-  NSString*  name;
-
 }
 
 // Helper methods for storing and restoring objects from preferences. These
