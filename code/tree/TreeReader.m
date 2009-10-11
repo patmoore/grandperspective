@@ -8,7 +8,7 @@
 #import "PlainFileItem.h"
 #import "CompoundItem.h"
 
-#import "FilterTest.h"
+#import "FilterTestRef.h"
 #import "FileItemFilter.h"
 #import "FileItemFilterSet.h"
 #import "FileItemTestRepository.h"
@@ -223,13 +223,13 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterTestElement: (FilterTest *) filterTest;
+           finishedParsingFilterTestElement: (FilterTestRef *) filterTest;
 
 @end // @interface FilterElementHandler
 
 
 @interface FilterTestElementHandler : ElementHandler {
-  FilterTest  *filterTest;
+  FilterTestRef  *filterTest;
 }
 
 @end // @interface FilterTestElementHandler
@@ -1174,7 +1174,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterTestElement: (FilterTest *) filterTest {
+           finishedParsingFilterTestElement: (FilterTestRef *) filterTest {
   [filter addFilterTest: filterTest];
   
   [self handler: handler finishedParsingElement: filterTest];
@@ -1211,7 +1211,7 @@ NSString  *AttributeNameKey = @"name";
     BOOL  inv = [self getBooleanAttributeValue: InvertedAttr from: attribs
                         defaultValue: NO];
 
-    filterTest = [[FilterTest alloc] initWithName: name inverted: inv];
+    filterTest = [[FilterTestRef alloc] initWithName: name inverted: inv];
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];

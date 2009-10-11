@@ -6,7 +6,7 @@
 #import "FileItemTest.h"
 #import "FileItemTestRepository.h"
 #import "FileItemFilter.h"
-#import "FilterTest.h"
+#import "FilterTestRef.h"
 
 #import "EditFilterRuleWindowControl.h"
 
@@ -53,12 +53,12 @@ NSString  *MatchColumn = @"match";
 - (NSString *) selectedAvailableTestName;
 
 // Returns the selected filter test (if any).
-- (FilterTest *) selectedFilterTest;
+- (FilterTestRef *) selectedFilterTest;
 
 /* Helper method for creating FilterTests to be added to the filter. It sets
  * the inverted and canToggleInverted flags correctly.
  */
-- (FilterTest *) filterTestForTestNamed:(NSString *)name; 
+- (FilterTestRef *) filterTestForTestNamed:(NSString *)name; 
 
 - (void) testAddedToRepository:(NSNotification*)notification;
 - (void) testRemovedFromRepository:(NSNotification*)notification;
@@ -351,7 +351,7 @@ NSString  *MatchColumn = @"match";
   NSString  *testName = [self selectedAvailableTestName];
   
   if (testName != nil) {
-    FilterTest  *filterTest = [self filterTestForTestNamed: testName];
+    FilterTestRef  *filterTest = [self filterTestForTestNamed: testName];
     NSAssert(filterTest != nil, @"Test not found in repository.");
         
     [fileItemFilter addFilterTest: filterTest];
@@ -410,7 +410,7 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) testDoubleClicked:(id)sender {
-  FilterTest  *filterTest = [self selectedFilterTest];
+  FilterTestRef  *filterTest = [self selectedFilterTest];
   if (filterTest != nil && [filterTest canToggleInverted]) {
     [filterTest toggleInverted];
     [filterTestsView reloadData];
@@ -438,7 +438,7 @@ NSString  *MatchColumn = @"match";
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
-    FilterTest  *filterTest = [fileItemFilter filterTestAtIndex: row];
+    FilterTestRef  *filterTest = [fileItemFilter filterTestAtIndex: row];
 
     if ([[column identifier] isEqualToString: NameColumn]) {
       return [mainBundle localizedStringForKey: [filterTest name] value: nil 
@@ -485,10 +485,10 @@ NSString  *MatchColumn = @"match";
   int  i = 0;
   int  max = [filter numFilterTests];
   while (i < max) {
-    FilterTest  *orgFilterTest = [filter filterTestAtIndex: i];
+    FilterTestRef  *orgFilterTest = [filter filterTestAtIndex: i];
     NSString  *name = [orgFilterTest name];
     
-    FilterTest  *newFilterTest = [self filterTestForTestNamed: name];
+    FilterTestRef  *newFilterTest = [self filterTestForTestNamed: name];
     if (newFilterTest != nil) {
       if ( [newFilterTest canToggleInverted] &&
            [newFilterTest isInverted] != [orgFilterTest isInverted] ) {
@@ -536,14 +536,14 @@ NSString  *MatchColumn = @"match";
 }
 
 // Returns the selected filter test (if any).
-- (FilterTest *) selectedFilterTest {
+- (FilterTestRef *) selectedFilterTest {
   int  index = [filterTestsView selectedRow];
   
   return (index < 0) ? nil : [fileItemFilter filterTestAtIndex: index];
 }
 
 
-- (FilterTest *) filterTestForTestNamed:(NSString *)name {
+- (FilterTestRef *) filterTestForTestNamed:(NSString *)name {
   NSObject <FileItemTest>  *test = 
       [((NSDictionary *)repositoryTestsByName) objectForKey: name];
 
@@ -551,7 +551,7 @@ NSString  *MatchColumn = @"match";
     return nil;
   }
 
-  FilterTest  *filterTest = [FilterTest filterTestWithName: name];
+  FilterTestRef  *filterTest = [FilterTestRef filterTestWithName: name];
 
   if ([test appliesToDirectories]) {
     // Fix "inverted" state of the filter test.     
@@ -659,11 +659,11 @@ NSString  *MatchColumn = @"match";
 
 
 - (void) updateWindowState: (NSNotification *)notification {
-  FilterTest  *selectedFilterTest = [self selectedFilterTest];
+  FilterTestRef  *selectedFilterTest = [self selectedFilterTest];
   NSString  *selectedAvailableTestName = [self selectedAvailableTestName];
 
   if (selectedAvailableTestName != nil) {
-    FilterTest  *filterTest = 
+    FilterTestRef  *filterTest = 
       [fileItemFilter filterTestWithName: selectedAvailableTestName];
       
     if (filterTest != nil) {

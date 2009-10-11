@@ -6,7 +6,7 @@
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 
-#import "FilterTest.h"
+#import "FilterTestRef.h"
 #import "FileItemFilter.h"
 #import "FileItemFilterSet.h"
 
@@ -134,7 +134,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 - (void) appendScanCommentsElement: (NSString *)comments;
 - (void) appendFilterSetElement: (FileItemFilterSet *)filterSet;
 - (void) appendFilterElement: (FileItemFilter *)filter;
-- (void) appendFilterTestElement: (FilterTest *)filterTest;
+- (void) appendFilterTestElement: (FilterTestRef *)filterTest;
 - (void) appendFolderElement: (DirectoryItem *)dirItem;
 - (void) appendFileElement: (FileItem *)fileItem;
 
@@ -318,7 +318,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
   [self appendString: openElem];
 
   NSEnumerator  *testEnum = [[filter filterTests] objectEnumerator];
-  FilterTest  *filterTest;
+  FilterTestRef  *filterTest;
   while (filterTest = [testEnum nextObject]) {
     [self appendFilterTestElement: filterTest];
   }
@@ -327,7 +327,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 }
 
 
-- (void) appendFilterTestElement: (FilterTest *)filterTest {
+- (void) appendFilterTestElement: (FilterTestRef *)filterTest {
   NSString  *nameVal = escapedXML([filterTest name], ATTRIBUTE_ESCAPE_CHARS);
   [self appendString: 
           [NSString stringWithFormat: @"<%@ %@=\"%@\" %@=\"%@\" />\n", 

@@ -2,7 +2,7 @@
 
 #import "FileItemTest.h"
 #import "FileItemTestRepository.h"
-#import "FilterTest.h"
+#import "FilterTestRef.h"
 
 #import "CompoundOrItemTest.h"
 #import "NotItemTest.h"
@@ -67,13 +67,13 @@
   return filterTests;
 }
 
-- (FilterTest *) filterTestAtIndex:(int) index {
+- (FilterTestRef *) filterTestAtIndex:(int) index {
   return [filterTests objectAtIndex: index];
 }
 
-- (FilterTest *) filterTestWithName:(NSString *)testName {
+- (FilterTestRef *) filterTestWithName:(NSString *)testName {
   NSEnumerator  *filterTestEnum = [filterTests objectEnumerator];
-  FilterTest  *filterTest;
+  FilterTestRef  *filterTest;
 
   while (filterTest = [filterTestEnum nextObject]) {
     if ([[filterTest name] isEqualToString: testName]) {
@@ -83,7 +83,7 @@
   return nil;
 }
 
-- (int) indexOfFilterTest:(FilterTest *)test {
+- (int) indexOfFilterTest:(FilterTestRef *)test {
   return [filterTests indexOfObject: test];
 }
 
@@ -95,7 +95,7 @@
   [filterTests removeObjectAtIndex: index];
 }
 
-- (void) addFilterTest:(FilterTest *)test {
+- (void) addFilterTest:(FilterTestRef *)test {
   [filterTests addObject: test];
 }
 
@@ -115,7 +115,7 @@
     [NSMutableArray arrayWithCapacity: [filterTests count]];
 
   NSEnumerator  *filterTestEnum = [filterTests objectEnumerator];
-  FilterTest  *filterTest;
+  FilterTestRef  *filterTest;
 
   while (filterTest = [filterTestEnum nextObject]) {
     NSObject <FileItemTest>  *subTest = 

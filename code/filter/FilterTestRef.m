@@ -1,10 +1,10 @@
-#import "FilterTest.h"
+#import "FilterTestRef.h"
 
 
-@implementation FilterTest
+@implementation FilterTestRef
 
 + (id) filterTestWithName:(NSString *)name {
-  return [[[FilterTest alloc] initWithName: name] autorelease];
+  return [[[FilterTestRef alloc] initWithName: name] autorelease];
 }
 
 
@@ -57,4 +57,4 @@
   inverted = !inverted;
 }
 
-@end // @implementation FilterTest
+@end // @implementation FilterTestRef

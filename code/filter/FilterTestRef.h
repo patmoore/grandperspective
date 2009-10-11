@@ -1,8 +1,8 @@
 #import <Cocoa/Cocoa.h>
 
-/* A test that can be part of a FileItemFilter.
+/* A test that is part of a FileItemFilter.
  */
-@interface FilterTest : NSObject {
+@interface FilterTestRef : NSObject {
   NSString  *name;
 
   // Is the test inverted?

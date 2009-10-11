@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class FilterTest;
+@class FilterTestRef;
 @class FileItemTestRepository;
 @protocol FileItemTest;
 
@@ -18,7 +18,7 @@
   NSString  *name;
   BOOL  hasAutomaticName;
   
-  // Array containing FilterTests
+  // Array containing FilterTestRefs
   NSMutableArray  *filterTests;
  
   /* The filter test. Only valid after -createFileItemTestFromRepository: has
@@ -52,13 +52,13 @@
 
 - (int) numFilterTests;
 - (NSArray *) filterTests;
-- (FilterTest *) filterTestAtIndex:(int) index;
-- (FilterTest *) filterTestWithName:(NSString *)name;
-- (int) indexOfFilterTest:(FilterTest *)test;
+- (FilterTestRef *) filterTestAtIndex:(int) index;
+- (FilterTestRef *) filterTestWithName:(NSString *)name;
+- (int) indexOfFilterTest:(FilterTestRef *)test;
 
 - (void) removeAllFilterTests;
 - (void) removeFilterTestAtIndex:(int) index;
-- (void) addFilterTest:(FilterTest *)test;
+- (void) addFilterTest:(FilterTestRef *)test;
 
 /* Creates the test object that represents the filter given the tests 
  * currently in the test repository. Returns the test that has been created,
