@@ -13,16 +13,23 @@
 - (id) init {
   static int  nextFilterId = 1;
 
-  NSString  *nameVal = [NSString stringWithFormat: @"#%d", nextFilterId++];
-  return [self initWithName: nameVal];
+  NSString  *autoName = [NSString stringWithFormat: @"#%d", nextFilterId++];
+
+  return [self initWithName: autoName
+                 automaticName: YES
+                 filterTests: [NSArray array]];
 }
 
 - (id) initWithName:(NSString *)nameVal {
-  return [self initWithName: nameVal filterTests: [NSArray array]];
+  return [self initWithName: nameVal 
+                 automaticName: NO 
+                 filterTests: [NSArray array]];
 }
 
 - (id) initWithFileItemFilter:(FileItemFilter *)filter {
-  return [self initWithName: [filter name] filterTests: [filter filterTests]];
+  return [self initWithName: [filter name] 
+                 automaticName: [filter hasAutomaticName] 
+                 filterTests: [filter filterTests]];
 }
 
 
@@ -43,9 +50,14 @@
   if (name != nameVal) {
     [name release];
     name = [nameVal retain];
+    
+    hasAutomaticName = NO;
   }
 }
 
+- (BOOL) hasAutomaticName {
+  return hasAutomaticName;
+}
 
 - (int) numFilterTests {
   return [filterTests count];
@@ -147,9 +159,12 @@
 /* Designated initialiser. It should not be called directly. Use the public
  * initialiser methods instead.
  */
-- (id) initWithName:(NSString *)nameVal filterTests:(NSArray *)filterTestsVal {
+- (id) initWithName:(NSString *)nameVal 
+         automaticName:(BOOL) automaticName
+         filterTests:(NSArray *)filterTestsVal {
   if (self = [super init]) {
     name = [nameVal retain];
+    hasAutomaticName = automaticName;
     
     filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
     [filterTests addObjectsFromArray: filterTestsVal];

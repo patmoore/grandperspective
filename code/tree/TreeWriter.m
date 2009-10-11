@@ -304,11 +304,18 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
     return;
   }
   
-  NSString  *nameVal = escapedXML([filter name], ATTRIBUTE_ESCAPE_CHARS);
-  [self appendString: 
-          [NSString stringWithFormat: @"<%@ %@=\"%@\">\n", 
-                      FilterElem,
-                      NameAttr, nameVal]];
+  NSString  *openElem;
+  if ([filter hasAutomaticName]) {
+    openElem = [NSString stringWithFormat: @"<%@>\n", FilterElem];
+  }
+  else {
+    NSString  *nameVal = escapedXML([filter name], ATTRIBUTE_ESCAPE_CHARS);
+
+    openElem = [NSString stringWithFormat: @"<%@ %@=\"%@\">\n", 
+                           FilterElem,
+                           NameAttr, nameVal];
+  }
+  [self appendString: openElem];
 
   NSEnumerator  *testEnum = [[filter filterTests] objectEnumerator];
   FilterTest  *filterTest;

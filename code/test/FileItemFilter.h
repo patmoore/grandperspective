@@ -16,6 +16,7 @@
  */
 @interface FileItemFilter : NSObject {
   NSString  *name;
+  BOOL  hasAutomaticName;
   
   // Array containing FilterTests
   NSMutableArray  *filterTests;
@@ -26,7 +27,12 @@
   NSObject <FileItemTest>  *fileItemTest;
 }
 
+/* Initialises the filter with a generic name.
+ */
 - (id) init;
+
+/* Initialises the filter with the given name.
+ */
 - (id) initWithName:(NSString *)name;
 
 /* Initialises the filter based on the provided one. The newly created filter
@@ -39,6 +45,10 @@
 
 - (NSString *) name;
 - (void) setName:(NSString *)name;
+
+/* Returns YES if the name was automatically generated.
+ */
+- (BOOL) hasAutomaticName;
 
 - (int) numFilterTests;
 - (NSArray *) filterTests;
@@ -81,6 +91,8 @@
 /* Designated initialiser. It should not be called directly. Use the public
  * initialiser methods instead.
  */
-- (id) initWithName:(NSString *)name filterTests:(NSArray *)filterTests;
+- (id) initWithName:(NSString *)name 
+         automaticName:(BOOL) automaticName
+         filterTests:(NSArray *)filterTests;
 
 @end // @interface FileItemFilter (ProtectedMethods)

@@ -1141,9 +1141,15 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs];
+    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs
+                              defaultValue: nil];
 
-    filter = [[FileItemFilter alloc] initWithName: name];
+    if (name != nil) {
+      filter = [[FileItemFilter alloc] initWithName: name];
+    }
+    else {
+      filter = [[FileItemFilter alloc] init];
+    }
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];
