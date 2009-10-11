@@ -11,16 +11,16 @@
   NSAssert(NO, @"Use initWithLowerBound:upperBound: instead.");
 }
 
-- (id) initWithLowerBound:(ITEM_SIZE)lowerBoundVal {
-  return [self initWithLowerBound:lowerBoundVal upperBound:ULONG_LONG_MAX];
+- (id) initWithLowerBound:(ITEM_SIZE) lowerBoundVal {
+  return [self initWithLowerBound: lowerBoundVal upperBound: ULONG_LONG_MAX];
 }
 
-- (id) initWithUpperBound:(ITEM_SIZE)upperBoundVal {
-  return [self initWithLowerBound:0 upperBound:upperBoundVal];
+- (id) initWithUpperBound:(ITEM_SIZE) upperBoundVal {
+  return [self initWithLowerBound: 0 upperBound: upperBoundVal];
 }
 
-- (id) initWithLowerBound:(ITEM_SIZE)lowerBoundVal
-               upperBound:(ITEM_SIZE)upperBoundVal {
+- (id) initWithLowerBound:(ITEM_SIZE) lowerBoundVal
+               upperBound:(ITEM_SIZE) upperBoundVal {
   if (self = [super init]) {
     lowerBound = lowerBoundVal;
     upperBound = upperBoundVal;
@@ -32,7 +32,7 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     id  object;
     
@@ -47,7 +47,7 @@
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"ItemSizeTest" forKey: @"class"];
@@ -80,7 +80,7 @@
 }
 
                                     
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   return ( ([item itemSize] >= lowerBound && 
             [item itemSize] <= upperBound) ? TEST_PASSED : TEST_FAILED );
 }
@@ -89,12 +89,12 @@
   return YES;
 }
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemSizeTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   if ([self hasLowerBound]) {
     if ([self hasUpperBound]) {
       NSString  *fmt = 
@@ -130,12 +130,12 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemSizeTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[ItemSizeTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end // @implementation ItemSizeTest

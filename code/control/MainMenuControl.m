@@ -36,7 +36,7 @@
 #import "WriteTaskInput.h"
 #import "WriteTaskExecutor.h"
 
-#import "FileItemTestRepository.h"
+#import "FilterTestRepository.h"
 #import "FileItemFilter.h"
 #import "FileItemFilterSet.h"
 
@@ -301,7 +301,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
-  [[FileItemTestRepository defaultFileItemTestRepository]
+  [[FilterTestRepository defaultFilterTestRepository]
        storeUserCreatedTests];
        
   [[UniformTypeRanking defaultUniformTypeRanking] storeRanking];
@@ -380,7 +380,7 @@ static MainMenuControl  *singletonInstance = nil;
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
     filterSet = 
       [filterSet updatedFilterSetUsingRepository:
-                   [FileItemTestRepository defaultFileItemTestRepository]
+                   [FilterTestRepository defaultFilterTestRepository]
                    unboundTests: unboundTests];
     [MainMenuControl reportUnboundTests: unboundTests];
   }
@@ -407,9 +407,9 @@ static MainMenuControl  *singletonInstance = nil;
     return;
   }
   
-  NSObject <FileItemTest>  *filterTest =
+  FileItemTest  *filterTest =
     [filter createFileItemTestFromRepository:
-              [FileItemTestRepository defaultFileItemTestRepository]];
+              [FilterTestRepository defaultFilterTestRepository]];
   if (filterTest == nil) {
     NSLog(@"Filter test of new filter is nil.");
     return;
@@ -565,7 +565,7 @@ static MainMenuControl  *singletonInstance = nil;
     
     // Instantiate the test
     [filter createFileItemTestFromRepository: 
-              [FileItemTestRepository defaultFileItemTestRepository]];
+              [FilterTestRepository defaultFilterTestRepository]];
   }
 
   [self scanFolder: pathToScan filter: filter];

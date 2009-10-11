@@ -3,7 +3,7 @@
 @class FileItem;
 @class DirectoryItem;
 @class FileItemPathStringCache;
-@protocol FileItemTest;
+@class FileItemTest;
 
 /* Guide for traversing a tree when a filter is applied. It can be used when
  * the tree is complete, as well as when the tree is still being constructed.
@@ -42,7 +42,7 @@
  */
 @interface FilteredTreeGuide : NSObject {
 
-  NSObject <FileItemTest>  *itemTest;
+  FileItemTest  *itemTest;
 
   /* Cache used by filterTest.
    */
@@ -68,16 +68,16 @@
   
 }
 
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest;
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTest
-         packagesAsFiles: (BOOL) packagesAsFiles;
+- (id) initWithFileItemTest:(FileItemTest *)itemTest;
+- (id) initWithFileItemTest:(FileItemTest *)itemTest
+         packagesAsFiles:(BOOL) packagesAsFiles;
 
 
 - (BOOL) packagesAsFiles;
 - (void) setPackagesAsFiles: (BOOL) flag;
 
-- (NSObject <FileItemTest> *) fileItemTest;
-- (void) setFileItemTest: (NSObject <FileItemTest> *) test;
+- (FileItemTest *)fileItemTest;
+- (void) setFileItemTest:(FileItemTest *)test;
 
 
 /* Returns "nil" iff the file item should be ignored (because it did not pass
@@ -96,7 +96,7 @@
  * used with or without package contents being shown, irrespective of the
  * configuration of the current guide).
  */
-- (FileItem *) includeFileItem: (FileItem *)item;
+- (FileItem *)includeFileItem:(FileItem *)item;
 
 /* Returns YES if the item should be visited. It should only be used when the
  * tree is being constructed. In this case, for certain directories it is clear
@@ -106,17 +106,17 @@
  * -includeFileItem may still return NO, indicating that the item should be
  * excluded from the tree. 
  */
-- (BOOL) shouldDescendIntoDirectory: (DirectoryItem *)item;
+- (BOOL) shouldDescendIntoDirectory:(DirectoryItem *)item;
 
 /* Called to indicate that the given item is being visited. This should only
  * be done for directories for which an earlier call to either -includeFileItem
  * (when a complete tree is traversed) or -shouldDescendInfoFileItem:
  * (when the tree is being  constructed) returned YES.
  */
-- (void) descendIntoDirectory: (DirectoryItem *)item;
+- (void) descendIntoDirectory:(DirectoryItem *)item;
 
 /* Called to indicate that the item has been visited.
  */
-- (void) emergedFromDirectory: (DirectoryItem *)item;
+- (void) emergedFromDirectory:(DirectoryItem *)item;
 
 @end

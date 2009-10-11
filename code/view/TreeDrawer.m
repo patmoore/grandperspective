@@ -15,7 +15,7 @@
   NSAssert(NO, @"Use initWithScanTree: instead.");
 }
 
-- (id) initWithScanTree: (DirectoryItem *)scanTreeVal {
+- (id) initWithScanTree:(DirectoryItem *)scanTreeVal {
   TreeDrawerSettings  *defaultSettings = 
     [[[TreeDrawerSettings alloc] init] autorelease];
     
@@ -23,8 +23,8 @@
                  treeDrawerSettings: defaultSettings];
 }
 
-- (id) initWithScanTree: (DirectoryItem *)scanTreeVal 
-         treeDrawerSettings: (TreeDrawerSettings *)settings {
+- (id) initWithScanTree:(DirectoryItem *)scanTreeVal 
+         treeDrawerSettings:(TreeDrawerSettings *)settings {
   if (self = [super initWithColorPalette: [settings colorPalette]]) {
     scanTree = [scanTreeVal retain];
   
@@ -56,7 +56,7 @@
 }
 
 
-- (void) setColorMapper: (NSObject <FileItemMapping> *)colorMapperVal {
+- (void) setColorMapper:(NSObject <FileItemMapping> *)colorMapperVal {
   NSAssert(colorMapperVal != nil, @"Cannot set an invalid color mapper.");
 
   if (colorMapperVal != colorMapper) {
@@ -65,21 +65,21 @@
   }
 }
 
-- (NSObject <FileItemMapping> *) colorMapper {
+- (NSObject <FileItemMapping> *)colorMapper {
   return colorMapper;
 }
 
 
-- (void) setFileItemMask:(NSObject <FileItemTest> *)maskTest {
+- (void) setFileItemMask:(FileItemTest *)maskTest {
   [treeGuide setFileItemTest: maskTest];
 }
 
-- (NSObject <FileItemTest> *) fileItemMask {
+- (FileItemTest *)fileItemMask {
   return [treeGuide fileItemTest];
 }
 
 
-- (void) setShowPackageContents: (BOOL) showPackageContents {
+- (void) setShowPackageContents:(BOOL) showPackageContents {
   [treeGuide setPackagesAsFiles: !showPackageContents];
 }
 
@@ -88,7 +88,7 @@
 }
 
 
-- (void) updateSettings: (TreeDrawerSettings *)settings {
+- (void) updateSettings:(TreeDrawerSettings *)settings {
   [self setColorMapper: [settings colorMapper]];
   [self setColorPalette: [settings colorPalette]];
   [self setColorGradient: [settings colorGradient]];
@@ -97,10 +97,10 @@
 }
 
 
-- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTreeVal
-                startingAtTree: (FileItem *)treeRoot
-                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
-                inRect: (NSRect) bounds {
+- (NSImage *)drawImageOfVisibleTree:(FileItem *)visibleTreeVal
+               startingAtTree:(FileItem *)treeRoot
+               usingLayoutBuilder:(TreeLayoutBuilder *)layoutBuilder
+               inRect:(NSRect) bounds {
   [self setupBitmap: bounds];
   
   insideVisibleTree = NO;
@@ -133,8 +133,7 @@
 }
 
 
-- (BOOL) descendIntoItem: (Item *)item atRect: (NSRect) rect 
-           depth: (int) depth {
+- (BOOL) descendIntoItem:(Item *)item atRect:(NSRect) rect depth:(int) depth {
   if ( [item isVirtual] ) {
     return YES;
   }
@@ -235,7 +234,7 @@
   return NO;
 }
 
-- (void) emergedFromItem: (Item *)item {
+- (void) emergedFromItem:(Item *)item {
   if ( ! [item isVirtual] ) {
     if (item == visibleTree) {
       insideVisibleTree = NO;

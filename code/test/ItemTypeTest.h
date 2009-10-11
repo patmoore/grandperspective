@@ -1,9 +1,9 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
 
 
-@interface ItemTypeTest : AbstractFileItemTest {
+@interface ItemTypeTest : FileItemTest {
 
   // Array of UniformTypes
   NSArray  *matches;
@@ -13,14 +13,14 @@
 
 }
 
-- (id) initWithMatchTargets: (NSArray *)matches;
+- (id) initWithMatchTargets:(NSArray *)matches;
 
-- (id) initWithMatchTargets: (NSArray *)matches strict: (BOOL) strict;
+- (id) initWithMatchTargets:(NSArray *)matches strict:(BOOL) strict;
 
 
-- (NSArray *) matchTargets;
+- (NSArray *)matchTargets;
 - (BOOL) isStrict;
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict;
 
 @end

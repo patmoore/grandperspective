@@ -3,20 +3,20 @@
 
 @implementation StringContainmentTest
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"StringContainmentTest" forKey: @"class"];
 }
 
 
-- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+- (BOOL) testString:(NSString *)string matches:(NSString *)match {
   return [string rangeOfString: match
                    options: (caseSensitive ? 0 : NSCaseInsensitiveSearch)
                    ].location != NSNotFound;
 }
 
-- (NSString*) descriptionFormat {
+- (NSString *)descriptionFormat {
   return 
     ( caseSensitive
       ? NSLocalizedStringFromTable( 
@@ -28,13 +28,13 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (StringTest *)stringTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] 
              isEqualToString: @"StringContainmentTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[StringContainmentTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

@@ -11,7 +11,7 @@
   NSAssert(NO, @"Use initWithFlagsMask:desiredResult: instead.");
 }
 
-- (id) initWithFlagsMask: (UInt8) mask desiredResult: (UInt8) result {
+- (id) initWithFlagsMask:(UInt8) mask desiredResult:(UInt8) result {
   if (self = [super init]) {
     flagsMask = mask;
     desiredResult = result;
@@ -24,7 +24,7 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     id  object;
     
@@ -39,7 +39,7 @@
 }
 
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"ItemFlagsTest" forKey: @"class"];
@@ -60,7 +60,7 @@
 }
 
 
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   return ( (([item fileItemFlags] & flagsMask) == desiredResult)
            ? TEST_PASSED : TEST_FAILED );
 }
@@ -69,12 +69,12 @@
   return YES;
 }
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemFlagsTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   
   // The total description (so far)
   NSString  *s = nil;
@@ -125,12 +125,12 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemFlagsTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[ItemFlagsTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

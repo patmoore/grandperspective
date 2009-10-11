@@ -88,7 +88,6 @@
 		AA8FEB2B0B6CC2D90049FF42 /* Names.strings in Resources */ = {isa = PBXBuildFile; fileRef = AA8FEB290B6CC2D80049FF42 /* Names.strings */; };
 		AA8FEB510B6CD0810049FF42 /* ScanTaskInput.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8FEA0B0B6BFBB40049FF42 /* ScanTaskInput.m */; };
 		AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */ = {isa = PBXBuildFile; fileRef = AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */; };
-		AA98818F0DF57B2F00A6EA33 /* AbstractFileItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */; };
 		AA9881900DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */; };
 		AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881680DF57B2F00A6EA33 /* CompoundAndItemTest.m */; };
 		AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816A0DF57B2F00A6EA33 /* CompoundItemTest.m */; };
@@ -108,6 +107,7 @@
 		AA9881BC0DF57C6B00A6EA33 /* StringPrefixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B40DF57C6B00A6EA33 /* StringPrefixTest.m */; };
 		AA9881BD0DF57C6B00A6EA33 /* StringSuffixTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881B60DF57C6B00A6EA33 /* StringSuffixTest.m */; };
 		AA9882BF0DF71B8900A6EA33 /* ItemSizeTestFinder.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */; };
+		AAA2800310822DB000229112 /* StringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA2800210822DB000229112 /* StringTest.m */; };
 		AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */; };
 		AAAB9A700EF3D38F00B3C482 /* RevealInFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */; };
 		AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */; };
@@ -128,9 +128,10 @@
 		AAEF42831081136100468832 /* LocalizableStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF42821081136100468832 /* LocalizableStrings.m */; };
 		AAEF435A1081DE2900468832 /* FileItemFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43531081DE2900468832 /* FileItemFilter.m */; };
 		AAEF435B1081DE2900468832 /* FileItemFilterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43551081DE2900468832 /* FileItemFilterSet.m */; };
-		AAEF435C1081DE2900468832 /* FileItemTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43571081DE2900468832 /* FileItemTestRepository.m */; };
 		AAEF43771081E0EE00468832 /* FilterTestRef.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43761081E0EE00468832 /* FilterTestRef.m */; };
 		AAEF43A71081FC2E00468832 /* FilterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43A61081FC2E00468832 /* FilterTest.m */; };
+		AAEF440C10821A3800468832 /* FilterTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF440B10821A3800468832 /* FilterTestRepository.m */; };
+		AAEF442510821EC800468832 /* FileItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF442410821EC800468832 /* FileItemTest.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
 		AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF3C75A0EF3FA42004CF446 /* Delete.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
@@ -292,8 +293,6 @@
 		AA8FEB700B6CD4670049FF42 /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/PreferencesPanel.nib; sourceTree = "<group>"; };
 		AA987F5F0DF16D0300A6EA33 /* FilteredTreeGuide.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilteredTreeGuide.h; path = tree/FilteredTreeGuide.h; sourceTree = "<group>"; };
 		AA987F600DF16D0300A6EA33 /* FilteredTreeGuide.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilteredTreeGuide.m; path = tree/FilteredTreeGuide.m; sourceTree = "<group>"; };
-		AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AbstractFileItemTest.h; path = test/AbstractFileItemTest.h; sourceTree = "<group>"; };
-		AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AbstractFileItemTest.m; path = test/AbstractFileItemTest.m; sourceTree = "<group>"; };
 		AA9881650DF57B2F00A6EA33 /* BasicFileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicFileItemTestVisitor.h; path = test/BasicFileItemTestVisitor.h; sourceTree = "<group>"; };
 		AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicFileItemTestVisitor.m; path = test/BasicFileItemTestVisitor.m; sourceTree = "<group>"; };
 		AA9881670DF57B2F00A6EA33 /* CompoundAndItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundAndItemTest.h; path = test/CompoundAndItemTest.h; sourceTree = "<group>"; };
@@ -335,6 +334,7 @@
 		AA9881B70DF57C6B00A6EA33 /* StringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StringTest.h; path = test/strings/StringTest.h; sourceTree = "<group>"; };
 		AA9882BD0DF71B8900A6EA33 /* ItemSizeTestFinder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemSizeTestFinder.h; path = test/ItemSizeTestFinder.h; sourceTree = "<group>"; };
 		AA9882BE0DF71B8900A6EA33 /* ItemSizeTestFinder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemSizeTestFinder.m; path = test/ItemSizeTestFinder.m; sourceTree = "<group>"; };
+		AAA2800210822DB000229112 /* StringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringTest.m; path = test/strings/StringTest.m; sourceTree = "<group>"; };
 		AAA6E72B0EFD29CB00B4E71E /* ToolbarSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ToolbarSegmentedCell.h; path = util/ToolbarSegmentedCell.h; sourceTree = "<group>"; };
 		AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ToolbarSegmentedCell.m; path = util/ToolbarSegmentedCell.m; sourceTree = "<group>"; };
 		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
@@ -372,12 +372,13 @@
 		AAEF43531081DE2900468832 /* FileItemFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilter.m; path = filter/FileItemFilter.m; sourceTree = "<group>"; };
 		AAEF43541081DE2900468832 /* FileItemFilterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilterSet.h; path = filter/FileItemFilterSet.h; sourceTree = "<group>"; };
 		AAEF43551081DE2900468832 /* FileItemFilterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilterSet.m; path = filter/FileItemFilterSet.m; sourceTree = "<group>"; };
-		AAEF43561081DE2900468832 /* FileItemTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestRepository.h; path = filter/FileItemTestRepository.h; sourceTree = "<group>"; };
-		AAEF43571081DE2900468832 /* FileItemTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTestRepository.m; path = filter/FileItemTestRepository.m; sourceTree = "<group>"; };
 		AAEF43751081E0EE00468832 /* FilterTestRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTestRef.h; path = filter/FilterTestRef.h; sourceTree = "<group>"; };
 		AAEF43761081E0EE00468832 /* FilterTestRef.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTestRef.m; path = filter/FilterTestRef.m; sourceTree = "<group>"; };
 		AAEF43A51081FC2E00468832 /* FilterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTest.h; path = filter/FilterTest.h; sourceTree = "<group>"; };
 		AAEF43A61081FC2E00468832 /* FilterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTest.m; path = filter/FilterTest.m; sourceTree = "<group>"; };
+		AAEF440A10821A3800468832 /* FilterTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTestRepository.h; path = filter/FilterTestRepository.h; sourceTree = "<group>"; };
+		AAEF440B10821A3800468832 /* FilterTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTestRepository.m; path = filter/FilterTestRepository.m; sourceTree = "<group>"; };
+		AAEF442410821EC800468832 /* FileItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTest.m; path = test/FileItemTest.m; sourceTree = "<group>"; };
 		AAEF5E240AFE79FA00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
 		AAEF5E270AFE7B9C00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/SaveImageDialog.nib; sourceTree = "<group>"; };
 		AAEF5E310AFE7C8700C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
@@ -510,8 +511,7 @@
 			children = (
 				AA9881A40DF57BFD00A6EA33 /* strings */,
 				AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */,
-				AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */,
-				AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */,
+				AAEF442410821EC800468832 /* FileItemTest.m */,
 				AA9881700DF57B2F00A6EA33 /* FileItemTestVisitor.h */,
 				AA9881650DF57B2F00A6EA33 /* BasicFileItemTestVisitor.h */,
 				AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */,
@@ -677,6 +677,7 @@
 			isa = PBXGroup;
 			children = (
 				AA9881B70DF57C6B00A6EA33 /* StringTest.h */,
+				AAA2800210822DB000229112 /* StringTest.m */,
 				AA9881AD0DF57C6B00A6EA33 /* MultiMatchStringTest.h */,
 				AA9881AE0DF57C6B00A6EA33 /* MultiMatchStringTest.m */,
 				AA9881AF0DF57C6B00A6EA33 /* StringContainmentTest.h */,
@@ -735,12 +736,12 @@
 				AAEF43531081DE2900468832 /* FileItemFilter.m */,
 				AAEF43541081DE2900468832 /* FileItemFilterSet.h */,
 				AAEF43551081DE2900468832 /* FileItemFilterSet.m */,
-				AAEF43561081DE2900468832 /* FileItemTestRepository.h */,
-				AAEF43571081DE2900468832 /* FileItemTestRepository.m */,
 				AAEF43751081E0EE00468832 /* FilterTestRef.h */,
 				AAEF43761081E0EE00468832 /* FilterTestRef.m */,
 				AAEF43A51081FC2E00468832 /* FilterTest.h */,
 				AAEF43A61081FC2E00468832 /* FilterTest.m */,
+				AAEF440A10821A3800468832 /* FilterTestRepository.h */,
+				AAEF440B10821A3800468832 /* FilterTestRepository.m */,
 			);
 			name = filter;
 			sourceTree = "<group>";
@@ -938,7 +939,6 @@
 				AA8A38100D7B437300DB872C /* UniformTypeMappingScheme.m in Sources */,
 				AA7B906A0DD707F000488CAA /* ItemPathModelView.m in Sources */,
 				AA987F610DF16D0300A6EA33 /* FilteredTreeGuide.m in Sources */,
-				AA98818F0DF57B2F00A6EA33 /* AbstractFileItemTest.m in Sources */,
 				AA9881900DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m in Sources */,
 				AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */,
 				AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */,
@@ -983,9 +983,11 @@
 				AAEF42831081136100468832 /* LocalizableStrings.m in Sources */,
 				AAEF435A1081DE2900468832 /* FileItemFilter.m in Sources */,
 				AAEF435B1081DE2900468832 /* FileItemFilterSet.m in Sources */,
-				AAEF435C1081DE2900468832 /* FileItemTestRepository.m in Sources */,
 				AAEF43771081E0EE00468832 /* FilterTestRef.m in Sources */,
 				AAEF43A71081FC2E00468832 /* FilterTest.m in Sources */,
+				AAEF440C10821A3800468832 /* FilterTestRepository.m in Sources */,
+				AAEF442510821EC800468832 /* FileItemTest.m in Sources */,
+				AAA2800310822DB000229112 /* StringTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

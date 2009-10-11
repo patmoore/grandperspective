@@ -1,7 +1,6 @@
 #import "SelectiveItemTest.h"
 
 #import "FileItemTestVisitor.h"
-#import "FileItemTestRepository.h"
 
 
 @implementation SelectiveItemTest
@@ -11,8 +10,8 @@
   NSAssert(NO, @"Use initWithSubItemTest:onlyFiles: instead.");
 }
 
-- (id) initWithSubItemTest: (NSObject<FileItemTest> *)subTestVal 
-         onlyFiles: (BOOL) onlyFilesVal {
+- (id) initWithSubItemTest:(FileItemTest *)subTestVal 
+         onlyFiles:(BOOL) onlyFilesVal {
   if (self = [super init]) {
     subTest = [subTestVal retain];
     
@@ -31,21 +30,18 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSDictionary  *subTestDict = [dict objectForKey: @"subTest"];
     
-    subTest = 
-      [[FileItemTestRepository fileItemTestFromDictionary: subTestDict]
-          retain];
-          
+    subTest = [[FileItemTest fileItemTestFromDictionary: subTestDict] retain];
     onlyFiles = [[dict objectForKey: @"onlyFiles"] boolValue];
   }
   
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"SelectiveItemTest" forKey: @"class"];
@@ -56,7 +52,7 @@
 }
 
 
-- (NSObject <FileItemTest> *) subItemTest {
+- (FileItemTest *)subItemTest {
   return subTest;
 }
 
@@ -65,7 +61,7 @@
 }
 
 
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   if ([item isDirectory] == onlyFiles) {
     // Test should not be applied to this type of item.
     return TEST_NOT_APPLICABLE;
@@ -80,12 +76,12 @@
 }
 
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitSelectiveItemTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   NSString  *format = ( onlyFiles 
                         ? NSLocalizedStringFromTable( 
                             @"files: %@", @"Tests",
@@ -98,13 +94,13 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {  
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {  
   NSAssert([[dict objectForKey: @"class"] 
                isEqualToString: @"SelectiveItemTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[SelectiveItemTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

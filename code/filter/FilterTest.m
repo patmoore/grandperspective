@@ -3,8 +3,7 @@
 
 @implementation FilterTest
 
-+ (id) filterTestWithName: (NSString *)name 
-         fileItemTest: (NSObject <FileItemTest> *)test {
++ (id) filterTestWithName:(NSString *)name fileItemTest:(FileItemTest *)test {
   return [[[FilterTest alloc] initWithName: name fileItemTest: test]
               autorelease];
 }
@@ -15,8 +14,7 @@
 }
 
 // Designated initialiser.
-- (id) initWithName: (NSString *)nameVal
-         fileItemTest: (NSObject <FileItemTest> *)testVal {
+- (id) initWithName:(NSString *)nameVal fileItemTest:(FileItemTest *)testVal {
   if (self = [super init]) {
     name = [nameVal retain];
     test = [testVal retain];
@@ -36,7 +34,7 @@
   return name;
 }
 
-- (NSObject <FileItemTest> *)fileItemTest {
+- (FileItemTest *)fileItemTest {
   return test;
 }
 

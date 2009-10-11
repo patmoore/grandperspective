@@ -1,21 +1,18 @@
 #import <Cocoa/Cocoa.h>
 
 
-@protocol FileItemTest;
+@class FileItemTest;
 
 @interface FilterTest : NSObject {
   NSString  *name;
-  NSObject <FileItemTest>  *test;
+  FileItemTest  *test;
 }
 
-+ (id) filterTestWithName: (NSString *)name 
-         fileItemTest: (NSObject <FileItemTest> *)test;
++ (id) filterTestWithName:(NSString *)name fileItemTest:(FileItemTest *)test;
 
-- (id) initWithName: (NSString *)name 
-         fileItemTest: (NSObject <FileItemTest> *)test;
+- (id) initWithName:(NSString *)name fileItemTest:(FileItemTest *)test;
 
 - (NSString *)name;
-
-- (NSObject <FileItemTest> *)fileItemTest;
+- (FileItemTest *)fileItemTest;
 
 @end

@@ -5,7 +5,7 @@
 
 #import "FileItemTest.h"
 
-#import "FileItemTestRepository.h"
+#import "FilterTestRepository.h"
 #import "FileItemFilter.h"
 #import "FilterTest.h"
 #import "FilterTestRef.h"
@@ -79,12 +79,12 @@ NSString  *MatchColumn = @"match";
 
 - (id) init {
   return [self initWithTestRepository:
-                 [FileItemTestRepository defaultFileItemTestRepository]];
+                 [FilterTestRepository defaultFilterTestRepository]];
 }
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithTestRepository: (FileItemTestRepository *)testRepositoryVal {
+- (id) initWithTestRepository: (FilterTestRepository *)testRepositoryVal {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
     testRepository = [testRepositoryVal retain];
     repositoryTestsByName = 
@@ -289,8 +289,8 @@ NSString  *MatchColumn = @"match";
     [EditFilterRuleWindowControl defaultInstance];
 
   NSString  *oldName = [self selectedAvailableTestName];
-  NSObject <FileItemTest>  *oldTest = 
-    [((NSDictionary*)repositoryTestsByName) objectForKey: oldName];
+  FileItemTest  *oldTest = 
+    [((NSDictionary *)repositoryTestsByName) objectForKey: oldName];
 
   // Ensure window is loaded before configuring its contents
   NSWindow  *ruleWindow = [ruleWindowControl window];
@@ -549,8 +549,8 @@ NSString  *MatchColumn = @"match";
 
 
 - (FilterTestRef *) filterTestForTestNamed:(NSString *)name {
-  NSObject <FileItemTest>  *test = 
-      [((NSDictionary *)repositoryTestsByName) objectForKey: name];
+  FileItemTest  *test = 
+    [((NSDictionary *)repositoryTestsByName) objectForKey: name];
 
   if (test == nil) {
     return nil;
@@ -711,7 +711,7 @@ NSString  *MatchColumn = @"match";
     newSelectedTestName = selectedAvailableTestName;
   }
   
-  NSObject <FileItemTest>  *newSelectedTest = 
+  FileItemTest  *newSelectedTest = 
     [((NSDictionary *)repositoryTestsByName) 
                         objectForKey: newSelectedTestName];
 
@@ -754,15 +754,15 @@ NSString  *MatchColumn = @"match";
 
 
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
-          returnCode:(int)returnCode contextInfo:(void *)testName {
+          returnCode:(int) returnCode contextInfo:(void *)testName {
   if (returnCode == NSAlertFirstButtonReturn) {
     // Delete confirmed.
     
-    NSObject <FileItemTest>  *defaultTest = 
+    FileItemTest  *defaultTest = 
       [testRepository applicationProvidedTestForName: testName];
     
     if (defaultTest == nil) {
-      [repositoryTestsByName removeObjectForKey:testName];
+      [repositoryTestsByName removeObjectForKey: testName];
     }
     else {
       // Replace it by the application-provided test with the same name

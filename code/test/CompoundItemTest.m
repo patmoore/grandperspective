@@ -1,6 +1,5 @@
 #import "CompoundItemTest.h"
 
-#import "FileItemTestRepository.h"
 #import "LocalizableStrings.h"
 
 
@@ -12,7 +11,7 @@
  * sub-tests. The string should have two "%@" arguments. The first for the
  * description of the first sub-test, and the second for the second sub-test.
  */
-- (NSString*) bootstrapDescriptionTemplate;
+- (NSString *)bootstrapDescriptionTemplate;
 
 /* Not implemented. Needs to be provided by subclass.
  *
@@ -21,7 +20,7 @@
  * description of the first sub-test, and the second for the description
  * of the remaining sub-tests. The template will be applied iteratively.
  */
-- (NSString*) repeatingDescriptionTemplate;
+- (NSString *)repeatingDescriptionTemplate;
 
 @end // CompoundItemTest (PrivateMethods) 
 
@@ -54,7 +53,7 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSArray  *subTestDicts = [dict objectForKey: @"subTests"];
     
@@ -64,7 +63,7 @@
     NSDictionary  *subTestDict;
     while ((subTestDict = [subTestsDictsEnum nextObject]) != nil) {
       [tmpSubTests addObject: 
-        [FileItemTestRepository fileItemTestFromDictionary: subTestDict]];
+                     [FileItemTest fileItemTestFromDictionary: subTestDict]];
     }
     
     // Make the array immutable
@@ -74,13 +73,13 @@
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   NSMutableArray  *subTestsDicts = 
     [NSMutableArray arrayWithCapacity: [subTests count]];
   NSEnumerator  *subTestsEnum = [subTests objectEnumerator];
-  NSObject <FileItemTest> *subTest;
+  FileItemTest  *subTest;
 
   while ((subTest = [subTestsEnum nextObject]) != nil) {
     [subTestsDicts addObject: [subTest dictionaryForObject]];
@@ -90,11 +89,11 @@
 }
 
 
-- (NSArray*) subItemTests {
+- (NSArray *)subItemTests {
   return subTests;
 }
 
-- (BOOL) testFileItem:(FileItem*)item {
+- (BOOL) testFileItem:(FileItem *)item {
   NSAssert(NO, @"This method must be overridden.");
   return NO;
 }
@@ -112,7 +111,7 @@
 }
 
 
-- (NSString*) description {
+- (NSString *)description {
   return [LocalizableStrings
             localizedEnumerationString: subTests
                pairTemplate: [self bootstrapDescriptionTemplate]

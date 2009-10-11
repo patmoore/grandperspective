@@ -1,7 +1,7 @@
 #import "FileItemFilter.h"
 
 #import "FileItemTest.h"
-#import "FileItemTestRepository.h"
+#import "FilterTestRepository.h"
 #import "FilterTestRef.h"
 
 #import "CompoundOrItemTest.h"
@@ -42,7 +42,7 @@
 }
 
 
-- (NSString *) name {
+- (NSString *)name {
   return name;
 }
 
@@ -63,15 +63,15 @@
   return [filterTests count];
 }
 
-- (NSArray *) filterTests {
+- (NSArray *)filterTests {
   return filterTests;
 }
 
-- (FilterTestRef *) filterTestAtIndex:(int) index {
+- (FilterTestRef *)filterTestAtIndex:(int) index {
   return [filterTests objectAtIndex: index];
 }
 
-- (FilterTestRef *) filterTestWithName:(NSString *)testName {
+- (FilterTestRef *)filterTestWithName:(NSString *)testName {
   NSEnumerator  *filterTestEnum = [filterTests objectEnumerator];
   FilterTestRef  *filterTest;
 
@@ -100,14 +100,14 @@
 }
 
 
-- (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
-                                (FileItemTestRepository *)repository {
+- (FileItemTest *)createFileItemTestFromRepository: 
+                    (FilterTestRepository *)repository {
   return [self createFileItemTestFromRepository: repository unboundTests: nil];
 }
 
-- (NSObject <FileItemTest> *) createFileItemTestFromRepository: 
-                                (FileItemTestRepository *)repository
-                                unboundTests: (NSMutableArray *)unboundTests {                                
+- (FileItemTest *)createFileItemTestFromRepository: 
+                    (FilterTestRepository *)repository
+                    unboundTests:(NSMutableArray *)unboundTests {
   [fileItemTest release];
   fileItemTest = nil;
 
@@ -118,7 +118,7 @@
   FilterTestRef  *filterTest;
 
   while (filterTest = [filterTestEnum nextObject]) {
-    NSObject <FileItemTest>  *subTest = 
+    FileItemTest  *subTest = 
       [repository fileItemTestForName: [filterTest name]];
 
     if (subTest != nil) {
@@ -147,7 +147,7 @@
   return fileItemTest;
 }
 
-- (NSObject <FileItemTest> *)fileItemTest {
+- (FileItemTest *)fileItemTest {
   return fileItemTest;
 }
 

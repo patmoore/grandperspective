@@ -9,6 +9,6 @@
 @interface ItemNameTest : ItemStringTest {
 }
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict;
 
 @end

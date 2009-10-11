@@ -40,13 +40,13 @@
 
 
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FileItemTestRepository *)repository {
+                         (FilterTestRepository *)repository {
   return [self updatedFilterSetUsingRepository: repository unboundTests: nil];
 }
 
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FileItemTestRepository *)repository
-                         unboundTests: (NSMutableArray *)unboundTests {
+                         (FilterTestRepository *)repository
+                         unboundTests:(NSMutableArray *)unboundTests {
   NSMutableArray  *newFilters = 
     [NSMutableArray arrayWithCapacity: [filters count]];
   
@@ -57,7 +57,7 @@
     FileItemFilter  *updatedFilter = 
       [[[FileItemFilter alloc] initWithFileItemFilter: filter] autorelease];
        
-    NSObject <FileItemTest>  *filterTest = 
+    FileItemTest  *filterTest = 
       [updatedFilter createFileItemTestFromRepository: repository
                        unboundTests: unboundTests];
       
@@ -84,7 +84,7 @@
   return [FileItemFilterSet filterSetWithFilters: newFilters];
 }
 
-- (NSObject <FileItemTest> *)fileItemTest {
+- (FileItemTest *)fileItemTest {
   return fileItemTest;
 }
 
@@ -98,7 +98,7 @@
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   NSMutableString  *descr = [NSMutableString stringWithCapacity: 32];
   
   NSEnumerator  *filterEnum = [filters objectEnumerator];
@@ -134,7 +134,7 @@
     FileItemFilter  *filter;
 
     while (filter = [filterEnum nextObject]) {
-      NSObject <FileItemTest>  *filterTest = [filter fileItemTest];
+      FileItemTest  *filterTest = [filter fileItemTest];
 
       NSAssert(filterTest != nil, @"Filter not instantiated.");
       [filterTests addObject: filterTest];

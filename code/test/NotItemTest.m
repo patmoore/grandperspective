@@ -1,7 +1,6 @@
 #import "NotItemTest.h"
 
 #import "FileItemTestVisitor.h"
-#import "FileItemTestRepository.h"
 
 
 @implementation NotItemTest
@@ -11,7 +10,7 @@
   NSAssert(NO, @"Use initWithSubItemTest: instead.");
 }
 
-- (id) initWithSubItemTest: (NSObject<FileItemTest> *)subTestVal {
+- (id) initWithSubItemTest:(FileItemTest *)subTestVal {
   if (self = [super init]) {
     subTest = [subTestVal retain];
   }
@@ -28,19 +27,17 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSDictionary  *subTestDict = [dict objectForKey: @"subTest"];
     
-    subTest = 
-      [[FileItemTestRepository fileItemTestFromDictionary: subTestDict]
-          retain];
+    subTest = [[FileItemTest fileItemTestFromDictionary: subTestDict] retain];
   }
   
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"NotItemTest" forKey: @"class"];
@@ -49,12 +46,12 @@
 }
 
 
-- (NSObject <FileItemTest> *) subItemTest {
+- (FileItemTest *)subItemTest {
   return subTest;
 }
 
 
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   TestResult  result = [subTest testFileItem: item context: context];
   
   return ( (result == TEST_NOT_APPLICABLE) 
@@ -66,12 +63,12 @@
   return [subTest appliesToDirectories];
 }
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitNotItemTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   NSString  *fmt =
     NSLocalizedStringFromTable( @"not (%@)" , @"Tests", 
                                 @"NOT-test with 1: sub test" );
@@ -80,12 +77,12 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"NotItemTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[NotItemTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

@@ -9,9 +9,8 @@ extern NSString  *OkPerformedEvent;
 
 @class EditFilterRuleWindowControl;
 @class NotifyingDictionary;
-@class FileItemTestRepository;
+@class FilterTestRepository;
 @class FileItemFilter;
-@protocol FileItemTest;
 
 /**
  * A control for an EditFilterWindow.
@@ -41,7 +40,7 @@ extern NSString  *OkPerformedEvent;
   IBOutlet NSTableView  *filterTestsView;
   IBOutlet NSTableView  *availableTestsView;
   
-  FileItemTestRepository  *testRepository;
+  FilterTestRepository  *testRepository;
   
   NotifyingDictionary  *repositoryTestsByName;
     
@@ -78,11 +77,11 @@ extern NSString  *OkPerformedEvent;
 
 - (IBAction) testDoubleClicked:(id)sender;
 
-- (id) initWithTestRepository:(FileItemTestRepository*)testRepository;
+- (id) initWithTestRepository:(FilterTestRepository *)testRepository;
 
 - (void) removeApplyButton;
 
-- (void) setAllowEmptyFilter: (BOOL) flag;
+- (void) setAllowEmptyFilter:(BOOL) flag;
 - (BOOL) allowEmptyFilter;
 
 /* Configures the window to represent the given filter. It copies the state of
@@ -93,6 +92,6 @@ extern NSString  *OkPerformedEvent;
 
 /* Returns the filter that represents the current window state.
  */
-- (FileItemFilter *) fileItemFilter;
+- (FileItemFilter *)fileItemFilter;
 
 @end

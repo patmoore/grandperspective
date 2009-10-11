@@ -5,23 +5,17 @@
 /**
  * (Abstract) string test with one or more possible matches.
  */
-@interface MultiMatchStringTest : NSObject<StringTest> {
+@interface MultiMatchStringTest : StringTest {
 
-  NSArray*  matches;
+  NSArray  *matches;
   BOOL  caseSensitive;
 
 }
 
-- (id) initWithMatchTargets: (NSArray *)matches;
-- (id) initWithMatchTargets: (NSArray *)matches caseSensitive: (BOOL)caseFlag;
+- (id) initWithMatchTargets:(NSArray *)matches;
+- (id) initWithMatchTargets:(NSArray *)matches caseSensitive:(BOOL) caseFlag;
 
-- (NSArray*) matchTargets;
+- (NSArray *)matchTargets;
 - (BOOL) isCaseSensitive;
-
-// Helper methods for storing and restoring objects from preferences. These
-// are meant to be used and overridden by subclasses, and should not be 
-// called directly.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict;
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict;
 
 @end

@@ -3,14 +3,14 @@
 
 @implementation StringSuffixTest
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"StringSuffixTest" forKey: @"class"];
 }
 
 
-- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+- (BOOL) testString:(NSString *)string matches:(NSString *)match {
   int  stringLen = [string length];
   int  matchLen = [match length];
   
@@ -25,7 +25,7 @@
   }
 }
 
-- (NSString*) descriptionFormat {
+- (NSString *)descriptionFormat {
   return 
     ( caseSensitive
       ? NSLocalizedStringFromTable( 
@@ -37,13 +37,13 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (StringTest *)stringTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] 
              isEqualToString: @"StringSuffixTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[StringSuffixTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

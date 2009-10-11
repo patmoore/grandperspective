@@ -1,7 +1,6 @@
 #import "ItemStringTest.h"
 
 #import "StringTest.h"
-#import "FileItemTestRepository.h"
 
 
 @implementation ItemStringTest
@@ -11,7 +10,7 @@
   NSAssert(NO, @"Use initWithStringTest: instead.");
 }
 
-- (id) initWithStringTest:(NSObject <StringTest>*)stringTestVal {
+- (id) initWithStringTest:(StringTest *)stringTestVal {
   if (self = [super init]) {
     stringTest = [stringTestVal retain];
   }
@@ -27,30 +26,28 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSDictionary  *stringTestDict = [dict objectForKey: @"stringTest"];
     
-    stringTest = 
-      [[FileItemTestRepository stringTestFromDictionary: stringTestDict]
-          retain];
+    stringTest = [[StringTest stringTestFromDictionary: stringTestDict] retain];
   }
   
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: [stringTest dictionaryForObject] forKey: @"stringTest"];
 }
 
 
-- (NSObject <StringTest>*) stringTest {
+- (StringTest *)stringTest {
   return stringTest;
 }
 
-- (BOOL) testFileItem:(FileItem*)item {
+- (BOOL) testFileItem:(FileItem *)item {
   NSAssert(NO, @"This method must be overridden.");
 }
 

@@ -1,20 +1,20 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
 
 
-@interface ItemFlagsTest : AbstractFileItemTest {
+@interface ItemFlagsTest : FileItemTest {
 
   UInt8  flagsMask;
   UInt8  desiredResult;
 
 }
 
-- (id) initWithFlagsMask: (UInt8) mask desiredResult: (UInt8) result;
+- (id) initWithFlagsMask:(UInt8) mask desiredResult:(UInt8) result;
 
 - (UInt8) flagsMask;
 - (UInt8) desiredResult;
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict;
 
 @end

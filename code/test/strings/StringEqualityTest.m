@@ -3,14 +3,14 @@
 
 @implementation StringEqualityTest
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"StringEqualityTest" forKey: @"class"];
 }
 
 
-- (BOOL) testString: (NSString *)string matches: (NSString *)match {
+- (BOOL) testString:(NSString *)string matches:(NSString *)match {
   if (caseSensitive) {
     return [string isEqualToString: match];
   }
@@ -19,7 +19,7 @@
   }
 }
 
-- (NSString*) descriptionFormat {
+- (NSString *)descriptionFormat {
   return 
     ( caseSensitive
       ? NSLocalizedStringFromTable( 
@@ -31,13 +31,13 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (StringTest *)stringTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] 
              isEqualToString: @"StringEqualityTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[StringEqualityTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+             autorelease];
 }
 
 @end

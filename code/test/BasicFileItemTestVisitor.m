@@ -44,7 +44,7 @@
 
 - (void) visitCompoundItemTest: (CompoundItemTest *)test {
   NSEnumerator  *subItemTestEnum = [[test subItemTests] objectEnumerator];
-  NSObject <FileItemTest>  *subItemTest;
+  FileItemTest  *subItemTest;
   
   while (subItemTest = [subItemTestEnum nextObject]) {
     [subItemTest acceptFileItemTestVisitor: self];

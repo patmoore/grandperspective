@@ -1,17 +1,17 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
 
 
 /**
  * (Abstract) compound item test.
  */
-@interface CompoundItemTest : AbstractFileItemTest  {
+@interface CompoundItemTest : FileItemTest  {
   NSArray  *subTests;
 }
 
-- (id) initWithSubItemTests:(NSArray*)subTests;
+- (id) initWithSubItemTests:(NSArray *)subTests;
 
-- (NSArray*) subItemTests;
+- (NSArray *)subItemTests;
 
 @end

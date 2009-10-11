@@ -11,7 +11,7 @@
 #import "FilterTestRef.h"
 #import "FileItemFilter.h"
 #import "FileItemFilterSet.h"
-#import "FileItemTestRepository.h"
+#import "FilterTestRepository.h"
 
 #import "TreeBuilder.h"
 #import "TreeBalancer.h"
@@ -66,16 +66,16 @@ NSString  *AttributeNameKey = @"name";
 @interface TreeReader (PrivateMethods) 
 
 - (BOOL) isAborted;
-- (NSXMLParser *) parser;
-- (ProgressTracker *) progressTracker;
-- (TreeBalancer *) treeBalancer;
-- (ObjectPool *) dirsArrayPool;
-- (ObjectPool *) filesArrayPool;
+- (NSXMLParser *)parser;
+- (ProgressTracker *)progressTracker;
+- (TreeBalancer *)treeBalancer;
+- (ObjectPool *)dirsArrayPool;
+- (ObjectPool *)filesArrayPool;
 
-- (FileItemTestRepository *)fileItemTestRepository;
-- (NSMutableArray *) mutableUnboundFilterTests;
+- (FilterTestRepository *)filterTestRepository;
+- (NSMutableArray *)mutableUnboundFilterTests;
 
-- (void) setParseError: (NSError *)error;
+- (void) setParseError:(NSError *)error;
 
 @end
 
@@ -285,11 +285,11 @@ NSString  *AttributeNameKey = @"name";
 @implementation TreeReader
 
 - (id) init {
-  return [self initWithFileItemTestRepository:
-                 [FileItemTestRepository defaultFileItemTestRepository]];
+  return [self initWithFilterTestRepository:
+                 [FilterTestRepository defaultFilterTestRepository]];
 }
 
-- (id) initWithFileItemTestRepository:(FileItemTestRepository *)repository {
+- (id) initWithFilterTestRepository:(FilterTestRepository *)repository {
   if (self = [super init]) {
     testRepository = [repository retain];
   
@@ -338,7 +338,7 @@ NSString  *AttributeNameKey = @"name";
   [super dealloc];
 }
 
-- (AnnotatedTreeContext *) readTreeFromFile: (NSString *)path {
+- (AnnotatedTreeContext *)readTreeFromFile:(NSString *)path {
   NSAssert(parser == nil, @"Invalid state. Already reading?");
 
   // TODO: Using NSData loads the entire file into memory. It would be nice to
@@ -393,16 +393,16 @@ NSString  *AttributeNameKey = @"name";
   return tree;
 }
 
-- (NSError *) error {
+- (NSError *)error {
   return error;
 }
 
-- (NSArray *) unboundFilterTests {
+- (NSArray *)unboundFilterTests {
   // Return a copy
   return [NSArray arrayWithArray: unboundTests];
 }
 
-- (NSDictionary *) progressInfo {
+- (NSDictionary *)progressInfo {
   return [progressTracker progressInfo];
 }
 
@@ -410,11 +410,11 @@ NSString  *AttributeNameKey = @"name";
 //----------------------------------------------------------------------------
 // NSXMLParser delegate methods
 
-- (void) parser: (NSXMLParser *)parserVal 
-           didStartElement: (NSString *)elementName 
-           namespaceURI: (NSString *)namespaceURI 
-           qualifiedName: (NSString *)qName 
-           attributes: (NSDictionary *)attribs {
+- (void) parser:(NSXMLParser *)parserVal 
+           didStartElement:(NSString *)elementName 
+           namespaceURI:(NSString *)namespaceURI 
+           qualifiedName:(NSString *)qName 
+           attributes:(NSDictionary *)attribs {
   NSError  *parseError = nil;
   if (tree != nil) {
     parseError = [ApplicationError errorWithLocalizedDescription:
@@ -438,8 +438,8 @@ NSString  *AttributeNameKey = @"name";
   }
 }
 
-- (void) parser: (NSXMLParser *)parser 
-           parseErrorOccurred: (NSError *)parseError {
+- (void) parser:(NSXMLParser *)parser 
+           parseErrorOccurred:(NSError *)parseError {
   [self setParseError: parseError];
 }
 
@@ -447,8 +447,8 @@ NSString  *AttributeNameKey = @"name";
 //----------------------------------------------------------------------------
 // Handler callback methods
 
-- (void) handler: (ElementHandler *)handler 
-           failedParsingElement: (NSError *)parseError {
+- (void) handler:(ElementHandler *)handler 
+           failedParsingElement:(NSError *)parseError {
   [parser setDelegate: self];
   
   [self setParseError: parseError];
@@ -458,8 +458,8 @@ NSString  *AttributeNameKey = @"name";
   [parser abortParsing];
 }
 
-- (void) handler: (ElementHandler *)handler
-           finishedParsingScanDumpElement: (AnnotatedTreeContext *)treeVal {
+- (void) handler:(ElementHandler *)handler
+           finishedParsingScanDumpElement:(AnnotatedTreeContext *)treeVal {
   [parser setDelegate: self];
   
   tree = [treeVal retain];
@@ -476,36 +476,36 @@ NSString  *AttributeNameKey = @"name";
   return abort;
 }
 
-- (NSXMLParser *) parser {
+- (NSXMLParser *)parser {
   return parser;
 }
 
-- (ProgressTracker *) progressTracker {
+- (ProgressTracker *)progressTracker {
   return progressTracker;
 }
 
-- (TreeBalancer *) treeBalancer {
+- (TreeBalancer *)treeBalancer {
   return treeBalancer;
 }
 
-- (ObjectPool *) dirsArrayPool {
+- (ObjectPool *)dirsArrayPool {
   return dirsArrayPool;
 }
 
-- (ObjectPool *) filesArrayPool {
+- (ObjectPool *)filesArrayPool {
   return filesArrayPool;
 }
 
-- (FileItemTestRepository *)fileItemTestRepository {
+- (FilterTestRepository *)filterTestRepository {
   return testRepository;
 }
 
-- (NSMutableArray *) mutableUnboundFilterTests {
+- (NSMutableArray *)mutableUnboundFilterTests {
   return unboundTests;
 }
 
 
-- (void) setParseError: (NSError *)parseError {
+- (void) setParseError:(NSError *)parseError {
   if ( error == nil // There is no error yet
        && !abort    // ... and parsing has not been aborted (this also 
                     // triggers an error, which should be ignored).
@@ -1102,8 +1102,7 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFilterElement: (FileItemFilter *) filter {
-  if ( [filter createFileItemTestFromRepository: 
-                 [reader fileItemTestRepository]
+  if ( [filter createFileItemTestFromRepository: [reader filterTestRepository]
                  unboundTests: [reader mutableUnboundFilterTests]] != nil) {
     FileItemFilterSet  *oldFilterSet = filterSet;
   

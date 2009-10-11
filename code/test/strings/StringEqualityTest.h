@@ -5,6 +5,6 @@
 @interface StringEqualityTest : MultiMatchStringTest {
 }
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
++ (StringTest *)stringTestFromDictionary:(NSDictionary *)dict;
 
 @end

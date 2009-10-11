@@ -13,12 +13,12 @@
   return [self initWithFileItemTest: nil];
 }
 
-- (id) initWithFileItemTest:(NSObject <FileItemTest> *)itemTestVal {
+- (id) initWithFileItemTest:(FileItemTest *)itemTestVal {
   return [self initWithFileItemTest: itemTestVal packagesAsFiles: NO];
 }
 
-- (id) initWithFileItemTest: (NSObject <FileItemTest> *)itemTestVal
-         packagesAsFiles: (BOOL) packagesAsFilesVal {
+- (id) initWithFileItemTest:(FileItemTest *)itemTestVal
+         packagesAsFiles:(BOOL) packagesAsFilesVal {
   if (self = [super init]) {
     itemTest = nil;
     testUsesSize = NO;
@@ -47,16 +47,16 @@
   return packagesAsFiles;
 }
 
-- (void) setPackagesAsFiles: (BOOL) flag {
+- (void) setPackagesAsFiles:(BOOL) flag {
   packagesAsFiles = flag;
 }
 
 
-- (NSObject <FileItemTest>*) fileItemTest {
+- (FileItemTest *)fileItemTest {
   return itemTest;
 }
 
-- (void) setFileItemTest: (NSObject <FileItemTest> *) test {
+- (void) setFileItemTest:(FileItemTest *)test {
   if (itemTest != test) {
     [itemTest release];
     itemTest = [test retain];
@@ -114,7 +114,7 @@
 }
 
 
-- (BOOL) shouldDescendIntoDirectory: (DirectoryItem *)item {
+- (BOOL) shouldDescendIntoDirectory:(DirectoryItem *)item {
   FileItem  *proxyItem = item; // Default
   
   if ( packagesAsFiles ) {
@@ -139,13 +139,13 @@
 }
 
 
-- (void) descendIntoDirectory: (DirectoryItem *)item {   
+- (void) descendIntoDirectory:(DirectoryItem *)item {   
   if ( [item isPackage] ) {
     packageCount++;
   }
 }
 
-- (void) emergedFromDirectory: (DirectoryItem *)item {
+- (void) emergedFromDirectory:(DirectoryItem *)item {
   if ( [item isPackage] ) {
     NSAssert(packageCount > 0, @"Count should be positive." );
     packageCount--;

@@ -9,7 +9,7 @@
 
 @interface ItemTypeTest (PrivateMethods)
 
-- (NSArray *) matchesAsStrings;
+- (NSArray *)matchesAsStrings;
 
 @end
 
@@ -21,11 +21,11 @@
   NSAssert(NO, @"Use initWithMatchTargets: instead.");
 }
 
-- (id) initWithMatchTargets: (NSArray *)matchesVal {
+- (id) initWithMatchTargets:(NSArray *)matchesVal {
   return [self initWithMatchTargets: matchesVal strict: NO];
 }
 
-- (id) initWithMatchTargets: (NSArray *)matchesVal strict: (BOOL) strictVal {
+- (id) initWithMatchTargets:(NSArray *)matchesVal strict:(BOOL) strictVal {
   if (self = [super init]) {
     // Make the array immutable
     matches = [[NSArray alloc] initWithArray: matchesVal];
@@ -46,7 +46,7 @@
 
 // Note: Special case. Does not call own designated initialiser. It should
 // be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
   if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSArray  *utis = [dict objectForKey: @"matches"];
     unsigned  numMatches = [utis count];
@@ -79,7 +79,7 @@
 }
 
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"ItemTypeTest" forKey: @"class"];
@@ -92,7 +92,7 @@
 }
 
 
-- (NSArray *) matchTargets {
+- (NSArray *)matchTargets {
   return matches;
 }
 
@@ -101,7 +101,7 @@
 }
 
 
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   if ([item isDirectory]) {
     // Test does not apply to directories
     return TEST_NOT_APPLICABLE;
@@ -125,12 +125,12 @@
   return NO;
 }
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemTypeTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   NSString  *matchesDescr = descriptionForMatches( [self matchesAsStrings] );
   NSString  *format = ( strict 
                         ? NSLocalizedStringFromTable( 
@@ -144,12 +144,12 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {  
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {  
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemTypeTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[ItemTypeTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end
@@ -157,7 +157,7 @@
 
 @implementation ItemTypeTest (PrivateMethods)
 
-- (NSArray *) matchesAsStrings {
+- (NSArray *)matchesAsStrings {
   unsigned  numMatches = [matches count];
   NSMutableArray  *utis = [NSMutableArray arrayWithCapacity: numMatches];
 

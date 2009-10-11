@@ -23,7 +23,7 @@
 - (id) initWithTreeContext:(TreeContext *)treeContext 
          comments:(NSString *)comments;
 
-- (TreeContext *) treeContext;
-- (NSString *) comments;
+- (TreeContext *)treeContext;
+- (NSString *)comments;
 
 @end

@@ -15,7 +15,7 @@
 }
 
 + (id) annotatedTreeContext:(TreeContext *)treeContext 
-         comments: (NSString *)comments {
+         comments:(NSString *)comments {
   return (treeContext == nil
           ? nil
           : [[[AnnotatedTreeContext alloc] 
@@ -24,14 +24,14 @@
 }
 
 
-- (id) initWithTreeContext:(TreeContext *) treeContextVal {
-  NSObject <FileItemTest>  *test = [[treeContextVal filterSet] fileItemTest];
+- (id) initWithTreeContext:(TreeContext *)treeContextVal {
+  FileItemTest  *test = [[treeContextVal filterSet] fileItemTest];
 
   return [self initWithTreeContext: treeContextVal
                  comments: ((test != nil) ? [test description] : @"")];
 }
 
-- (id) initWithTreeContext:(TreeContext *) treeContextVal
+- (id) initWithTreeContext:(TreeContext *)treeContextVal
          comments:(NSString *)commentsVal {
   if (self = [super init]) {
     NSAssert(treeContextVal != nil, @"TreeContext must be set.");
@@ -47,11 +47,11 @@
 }
 
 
-- (TreeContext *) treeContext {
+- (TreeContext *)treeContext {
   return treeContext;
 }
 
-- (NSString *) comments {
+- (NSString *)comments {
   return comments;
 }
 

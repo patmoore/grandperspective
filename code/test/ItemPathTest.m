@@ -7,14 +7,14 @@
 
 @implementation ItemPathTest
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
   [super addPropertiesToDictionary: dict];
   
   [dict setObject: @"ItemPathTest" forKey: @"class"];
 }
 
 
-- (TestResult) testFileItem: (FileItem *)item context: (id)context {
+- (TestResult) testFileItem:(FileItem *)item context:(id) context {
   NSString  *path = [context pathStringForFileItem: item];
   // Note: For performance reasons, the path string is not obtained from the 
   // item itself, but from the context instead. The context, it is assumed, 
@@ -30,12 +30,12 @@
   return YES;
 }
 
-- (void) acceptFileItemTestVisitor: (NSObject <FileItemTestVisitor> *)visitor {
+- (void) acceptFileItemTestVisitor:(NSObject <FileItemTestVisitor> *)visitor {
   [visitor visitItemPathTest: self];
 }
 
 
-- (NSString *) description {
+- (NSString *)description {
   NSString  *subject = 
     NSLocalizedStringFromTable( @"path" , @"Tests", 
                                 @"A pathname as the subject of a string test" );
@@ -44,12 +44,12 @@
 }
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict {
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemPathTest"],
              @"Incorrect value for class in dictionary.");
 
   return [[[ItemPathTest alloc] initWithPropertiesFromDictionary: dict]
-           autorelease];
+              autorelease];
 }
 
 @end

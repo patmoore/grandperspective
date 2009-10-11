@@ -1,21 +1,7 @@
-#import "FileItemTestRepository.h"
-
-#import "StringTest.h"
-#import "StringPrefixTest.h"
-#import "StringSuffixTest.h"
-#import "StringEqualityTest.h"
-#import "StringContainmentTest.h"
+#import "FilterTestRepository.h"
 
 #import "FileItemTest.h"
-#import "ItemNameTest.h"
-#import "ItemPathTest.h"
-#import "ItemSizeTest.h"
-#import "ItemTypeTest.h"
-#import "ItemFlagsTest.h"
 #import "SelectiveItemTest.h"
-#import "CompoundAndItemTest.h"
-#import "CompoundOrItemTest.h"
-#import "NotItemTest.h"
 
 #import "ItemSizeTestFinder.h"
 
@@ -32,29 +18,29 @@ NSString  *UserTestsKey_Array = @"fileItemTests";
 NSString  *AppTestsKey = @"GPDefaultFilterTests";
 
 
-@interface FileItemTestRepository (PrivateMethods) 
+@interface FilterTestRepository (PrivateMethods) 
 
-- (void) addTestDictsFromDictionary: (NSDictionary *)testDicts
-           toTestDictionary: (NSMutableDictionary *)testsByName;
+- (void) addTestDictsFromDictionary:(NSDictionary *)testDicts
+           toTestDictionary:(NSMutableDictionary *)testsByName;
 
 /* Handles reading of tests from old user preferences (pre 1.1.1)
  */
-- (void) addTestDictsFromArray: (NSArray *)testDicts
-           toTestDictionary: (NSMutableDictionary *)testsByName;
+- (void) addTestDictsFromArray:(NSArray *)testDicts
+           toTestDictionary:(NSMutableDictionary *)testsByName;
 
 @end
 
 
-@implementation FileItemTestRepository
+@implementation FilterTestRepository
 
-static FileItemTestRepository  *defaultFileItemTestRepository = nil;
++ (FilterTestRepository *)defaultFilterTestRepository {
+  static FilterTestRepository  *defaultFilterTestRepository = nil;
 
-+ (FileItemTestRepository*) defaultFileItemTestRepository {
-  if (defaultFileItemTestRepository == nil) {
-    defaultFileItemTestRepository = [[FileItemTestRepository alloc] init];
+  if (defaultFilterTestRepository == nil) {
+    defaultFilterTestRepository = [[FilterTestRepository alloc] init];
   }
   
-  return defaultFileItemTestRepository;
+  return defaultFilterTestRepository;
 }
 
 
@@ -98,16 +84,16 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
 }
 
 
-- (NotifyingDictionary*) testsByNameAsNotifyingDictionary {
+- (NotifyingDictionary *)testsByNameAsNotifyingDictionary {
   return testsByName;
 }
 
 
-- (NSObject <FileItemTest> *) fileItemTestForName:(NSString *)name {
+- (FileItemTest *)fileItemTestForName:(NSString *)name {
   return [((NSDictionary *)testsByName) objectForKey: name];
 }
 
-- (NSObject <FileItemTest> *) applicationProvidedTestForName: (NSString *)name {
+- (FileItemTest *)applicationProvidedTestForName:(NSString *)name {
   return [applicationProvidedTests objectForKey: name];
 }
 
@@ -123,7 +109,7 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   NSEnumerator  *nameEnum = [((NSDictionary *)testsByName) keyEnumerator];
 
   while ((name = [nameEnum nextObject]) != nil) {
-    NSObject <FileItemTest>  *fileItemTest = 
+    FileItemTest  *fileItemTest = 
       [((NSDictionary *)testsByName) objectForKey: name];
 
     if (fileItemTest != [applicationProvidedTests objectForKey: name]) {
@@ -138,83 +124,28 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   [userDefaults synchronize];
 }
 
-
-+ (NSObject <FileItemTest> *) fileItemTestFromDictionary: (NSDictionary *)dict {
-  NSString  *classString = [dict objectForKey: @"class"];
-  
-  if ([classString isEqualToString: @"ItemSizeTest"]) {
-    return [ItemSizeTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"CompoundAndItemTest"]) {
-    return [CompoundAndItemTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"CompoundOrItemTest"]) {
-    return [CompoundOrItemTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"NotItemTest"]) {
-    return [NotItemTest objectFromDictionary: dict];
-  } 
-  else if ([classString isEqualToString: @"ItemNameTest"]) {
-    return [ItemNameTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"ItemPathTest"]) {
-    return [ItemPathTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"ItemTypeTest"]) {
-    return [ItemTypeTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"ItemFlagsTest"]) {
-    return [ItemFlagsTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"SelectiveItemTest"]) {
-    return [SelectiveItemTest objectFromDictionary: dict];
-  }
-
-  
-  NSAssert1(NO, @"Unrecognized file item test class \"%@\".", classString);
-}
-
-+ (NSObject <StringTest> *) stringTestFromDictionary: (NSDictionary *)dict {
-  NSString  *classString = [dict objectForKey: @"class"];
-  
-  if ([classString isEqualToString: @"StringContainmentTest"]) {
-    return [StringContainmentTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"StringSuffixTest"]) {
-    return [StringSuffixTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"StringPrefixTest"]) {
-    return [StringPrefixTest objectFromDictionary: dict];
-  }
-  else if ([classString isEqualToString: @"StringEqualityTest"]) {
-    return [StringEqualityTest objectFromDictionary: dict];
-  }
-
-  NSAssert1(NO, @"Unrecognized string test class \"%@\".", classString);
-}
-
-@end // FileItemTestRepository
+@end // FilterTestRepository
 
 
-@implementation FileItemTestRepository (PrivateMethods) 
+@implementation FilterTestRepository (PrivateMethods) 
 
-- (void) addTestDictsFromDictionary: (NSDictionary *)testDicts
-           toTestDictionary: (NSMutableDictionary *)testsByNameVal {
+- (void) addTestDictsFromDictionary:(NSDictionary *)testDicts
+           toTestDictionary:(NSMutableDictionary *)testsByNameVal {
   NSString  *name;
   NSEnumerator  *nameEnum = [testDicts keyEnumerator];
 
   while (name = [nameEnum nextObject]) {
     NSDictionary  *filterTestDict = [testDicts objectForKey: name];
-    NSObject <FileItemTest>  *fileItemTest =
-      [FileItemTestRepository fileItemTestFromDictionary: filterTestDict];
+    FileItemTest  *fileItemTest =
+      [FileItemTest fileItemTestFromDictionary: filterTestDict];
     
     [testsByNameVal setObject: fileItemTest forKey: name];
   }
 }
 
 
-- (void) addTestDictsFromArray: (NSArray *)testDicts
-           toTestDictionary: (NSMutableDictionary *)testsByNameVal {
+- (void) addTestDictsFromArray:(NSArray *)testDicts
+           toTestDictionary:(NSMutableDictionary *)testsByNameVal {
   NSDictionary  *fileItemTestDict;
   NSEnumerator  *fileItemTestDictEnum = [testDicts objectEnumerator];
   
@@ -222,8 +153,8 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
     [[[ItemSizeTestFinder alloc] init] autorelease];
 
   while ((fileItemTestDict = [fileItemTestDictEnum nextObject]) != nil) {
-    NSObject <FileItemTest>  *fileItemTest =
-      [FileItemTestRepository fileItemTestFromDictionary: fileItemTestDict];
+    FileItemTest  *fileItemTest =
+      [FileItemTest fileItemTestFromDictionary: fileItemTestDict];
     NSString  *name = [fileItemTestDict objectForKey: @"name"];
     
     // Update tests stored by older versions of GrandPerspective (pre 0.9.12).
@@ -241,7 +172,7 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
       
       NSLog( @"Wrapping SelectiveItemTest around \"%@\" test.", name);
       
-      NSObject <FileItemTest>  *subTest = fileItemTest;
+      FileItemTest  *subTest = fileItemTest;
       fileItemTest = [[[SelectiveItemTest alloc] initWithSubItemTest: subTest 
                                                    onlyFiles: YES] autorelease];
     }
@@ -250,4 +181,4 @@ static FileItemTestRepository  *defaultFileItemTestRepository = nil;
   }
 }
 
-@end //  FileItemTestRepository (PrivateMethods) 
+@end // FilterTestRepository (PrivateMethods) 

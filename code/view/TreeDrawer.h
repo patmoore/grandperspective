@@ -8,8 +8,8 @@
 @class TreeLayoutBuilder;
 @class TreeDrawerSettings;
 @class FilteredTreeGuide;
+@class FileItemTest;
 @protocol FileItemMapping;
-@protocol FileItemTest;
 
 @interface TreeDrawer : GradientRectangleDrawer <TreeLayoutTraverser> {
   NSObject <FileItemMapping>  *colorMapper;
@@ -27,27 +27,27 @@
   BOOL  abort;
 }
 
-- (id) initWithScanTree: (DirectoryItem *)scanTree;
-- (id) initWithScanTree: (DirectoryItem *)scanTree 
-         treeDrawerSettings: (TreeDrawerSettings *)settings;
+- (id) initWithScanTree:(DirectoryItem *)scanTree;
+- (id) initWithScanTree:(DirectoryItem *)scanTree 
+         treeDrawerSettings:(TreeDrawerSettings *)settings;
 
-- (void) setFileItemMask: (NSObject <FileItemTest> *)fileItemMask;
-- (NSObject <FileItemTest> *) fileItemMask;
+- (void) setFileItemMask:(FileItemTest *)fileItemMask;
+- (FileItemTest *)fileItemMask;
 
-- (void) setColorMapper: (NSObject <FileItemMapping> *)colorMapper;
-- (NSObject <FileItemMapping> *) colorMapper;
+- (void) setColorMapper:(NSObject <FileItemMapping> *)colorMapper;
+- (NSObject <FileItemMapping> *)colorMapper;
 
-- (void) setShowPackageContents: (BOOL) showPackageContents;
+- (void) setShowPackageContents:(BOOL) showPackageContents;
 - (BOOL) showPackageContents;
 
 // Updates the drawer according to the given settings.
-- (void) updateSettings: (TreeDrawerSettings *)settings;
+- (void) updateSettings:(TreeDrawerSettings *)settings;
 
 // Note: The tree starting at "treeRoot" should be immutable.
-- (NSImage *) drawImageOfVisibleTree: (FileItem *)visibleTree
-                startingAtTree: (FileItem *)treeRoot
-                usingLayoutBuilder: (TreeLayoutBuilder *)layoutBuilder
-                inRect: (NSRect) bounds;
+- (NSImage *)drawImageOfVisibleTree:(FileItem *)visibleTree
+               startingAtTree:(FileItem *)treeRoot
+               usingLayoutBuilder:(TreeLayoutBuilder *)layoutBuilder
+               inRect:(NSRect) bounds;
 
 /* Any outstanding request to abort Drawing is cancelled.
  */

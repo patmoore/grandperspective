@@ -10,7 +10,7 @@
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
 #import "FileItemFilter.h"
-#import "FileItemTestRepository.h"
+#import "FilterTestRepository.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 
@@ -1043,14 +1043,14 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   FileItemFilter  *newMask = 
     [maskCheckBox state]==NSOnState ? fileItemMask : nil;
 
-  NSObject <FileItemTest>  *newMaskTest = [newMask fileItemTest];  
+  FileItemTest  *newMaskTest = [newMask fileItemTest];  
   if ( newMask != nil
        && ( newMaskTest == nil
             || [userDefaults boolForKey: UpdateFiltersBeforeUse] ) ) {
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
     newMaskTest =
       [newMask createFileItemTestFromRepository:
-                 [FileItemTestRepository defaultFileItemTestRepository]
+                 [FilterTestRepository defaultFilterTestRepository]
                  unboundTests: unboundTests];
     [MainMenuControl reportUnboundTests: unboundTests];
   }

@@ -1,24 +1,24 @@
 #import <Cocoa/Cocoa.h>
 
-#import "AbstractFileItemTest.h"
+#import "FileItemTest.h"
+
 
 /**
  * A test that applies to only files or only folders, but not both.
  */
-@interface SelectiveItemTest : AbstractFileItemTest {
+@interface SelectiveItemTest : FileItemTest {
 
-  NSObject <FileItemTest>  *subTest;
+  FileItemTest  *subTest;
 
   // Controls if the subtest targets only files or only folders.
   BOOL  onlyFiles;
 
 }
 
-- (id) initWithSubItemTest: (NSObject<FileItemTest> *)subTest 
-         onlyFiles: (BOOL) onlyFiles;
+- (id) initWithSubItemTest:(FileItemTest *)subTest onlyFiles:(BOOL) onlyFiles;
 
 
-- (NSObject <FileItemTest> *) subItemTest;
+- (FileItemTest *)subItemTest;
 
 /**
  * Returns yes if "YES" the subtest is only be applied to files; otherwise the
@@ -27,6 +27,6 @@
 - (BOOL) applyToFilesOnly;
 
 
-+ (NSObject *) objectFromDictionary: (NSDictionary *)dict;
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict;
 
 @end

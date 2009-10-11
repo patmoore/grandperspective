@@ -7,7 +7,7 @@
 
 /* Not implemented. Needs to be provided by subclass.
  */
-- (BOOL) testString: (NSString *)string matches: (NSString *)match;
+- (BOOL) testString:(NSString *)string matches:(NSString *)match;
 
 /* Not implemented. Needs to be provided by subclass.
  *
@@ -17,7 +17,7 @@
  * Furthermore, the descriptionFormat should somehow indicate whether or not 
  * the matching is case-sensitive.
  */
-- (NSString *) descriptionFormat;
+- (NSString *)descriptionFormat;
 
 @end
 
@@ -29,11 +29,11 @@
   NSAssert(NO, @"Use initWithMatchTargets: instead.");
 }
 
-- (id) initWithMatchTargets: (NSArray *)matchesVal {
+- (id) initWithMatchTargets:(NSArray *)matchesVal {
   return [self initWithMatchTargets: matchesVal caseSensitive: YES];
 }
   
-- (id) initWithMatchTargets: (NSArray *)matchesVal
+- (id) initWithMatchTargets:(NSArray *)matchesVal
          caseSensitive: (BOOL)caseFlag {
   if (self = [super init]) {
     NSAssert([matchesVal count] >= 1, 
@@ -54,10 +54,13 @@
 }
 
 
-// Note: Special case. Does not call own designated initialiser. It should
-// be overridden and only called by initialisers with the same signature.
-- (id) initWithPropertiesFromDictionary: (NSDictionary *)dict {
-  if (self = [super init]) {
+/* Initialiser used when the test is restored from a dictionary.
+ *
+ * Note: Special case. Does not call own designated initialiser. It should
+ * be overridden and only called by initialisers with the same signature.
+ */
+- (id) initWithPropertiesFromDictionary:(NSDictionary *)dict {
+  if (self = [super initWithPropertiesFromDictionary: dict]) {
     NSArray  *tmpMatches = [dict objectForKey: @"matches"];
     
     // Make the array immutable
@@ -69,7 +72,9 @@
   return self;
 }
 
-- (void) addPropertiesToDictionary: (NSMutableDictionary *)dict {
+- (void) addPropertiesToDictionary:(NSMutableDictionary *)dict {
+  [super addPropertiesToDictionary: dict];
+  
   [dict setObject: matches forKey: @"matches"];
   
   [dict setObject: [NSNumber numberWithBool: caseSensitive] 
@@ -77,7 +82,7 @@
 }
 
 
-- (NSDictionary *) dictionaryForObject {
+- (NSDictionary *)dictionaryForObject {
   NSMutableDictionary  *dict = [NSMutableDictionary dictionaryWithCapacity: 8];
   
   [self addPropertiesToDictionary: dict];
@@ -86,7 +91,7 @@
 }
 
 
-- (NSArray *) matchTargets {
+- (NSArray *)matchTargets {
   return matches;
 }
 
@@ -95,7 +100,7 @@
 }
 
 
-- (BOOL) testString: (NSString *)string {
+- (BOOL) testString:(NSString *)string {
   int  i = [matches count];
   while (--i >= 0) {
     if ([self testString: string matches: [matches objectAtIndex: i]]) {
@@ -107,7 +112,7 @@
 }
 
 
-- (NSString *) descriptionWithSubject: (NSString *)subject {
+- (NSString *)descriptionWithSubject:(NSString *)subject {
   // Note: Whether or not the matching is case-sensitive is not indicated here.
   // This is the responsibility of the descriptionFormat method. 
 

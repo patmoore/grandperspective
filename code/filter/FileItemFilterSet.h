@@ -1,8 +1,8 @@
 #import <Cocoa/Cocoa.h>
 
 @class FileItemFilter;
-@class FileItemTestRepository;
-@protocol FileItemTest;
+@class FilterTestRepository;
+@class FileItemTest;
 
 /* Set of file item filters.
  */
@@ -10,7 +10,7 @@
   // Array of FileItemFilters
   NSArray  *filters;
   
-  NSObject <FileItemTest>  *fileItemTest;
+  FileItemTest  *fileItemTest;
 }
 
 + (id) filterSet;
@@ -29,7 +29,7 @@
  * so that it is based on the tests currently defined in the test repository.
  */
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FileItemTestRepository *)repository;
+                         (FilterTestRepository *)repository;
 
 /* Creates an updated set of filters. Each of the filters is re-instantiated
  * so that it is based on the tests currently defined in the test repository.
@@ -38,7 +38,7 @@
  * "unboundTests".
  */
 - (FileItemFilterSet *)updatedFilterSetUsingRepository: 
-                         (FileItemTestRepository *)repository
+                         (FilterTestRepository *)repository
                          unboundTests: (NSMutableArray *)unboundTests;
                                 
 /* Creates a new set with an extra filter. The existing filters are taken
@@ -49,7 +49,7 @@
 - (int) numFileItemFilters;
 - (NSArray *)fileItemFilters;
 
-- (NSObject <FileItemTest> *)fileItemTest;
+- (FileItemTest *)fileItemTest;
 
 @end // @interface FileItemFilterSet
 
