@@ -18,9 +18,6 @@
 		AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */ = {isa = PBXBuildFile; fileRef = AA13BA8D0B8A5746000AEAA9 /* Palettes */; };
 		AA13FCE81077318700AE3B23 /* Cross.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE61077318700AE3B23 /* Cross.png */; };
 		AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */ = {isa = PBXBuildFile; fileRef = AA13FCE71077318700AE3B23 /* Checkmark.png */; };
-		AA13FD9E1078CDA400AE3B23 /* FileItemFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */; };
-		AA13FDA21078D04E00AE3B23 /* FilterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FDA11078D04E00AE3B23 /* FilterTest.m */; };
-		AA13FDF71078F2A700AE3B23 /* FileItemFilterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */; };
 		AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8600EE1401E009CBD3E /* FocusDown.png */; };
 		AA14A8630EE1401F009CBD3E /* FocusUp.png in Resources */ = {isa = PBXBuildFile; fileRef = AA14A8610EE1401E009CBD3E /* FocusUp.png */; };
 		AA16DABC0AF93C7D005052D1 /* NotifyingPanel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA16DABA0AF93C7D005052D1 /* NotifyingPanel.m */; };
@@ -96,7 +93,6 @@
 		AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881680DF57B2F00A6EA33 /* CompoundAndItemTest.m */; };
 		AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816A0DF57B2F00A6EA33 /* CompoundItemTest.m */; };
 		AA9881930DF57B2F00A6EA33 /* CompoundOrItemTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816C0DF57B2F00A6EA33 /* CompoundOrItemTest.m */; };
-		AA9881940DF57B2F00A6EA33 /* FileItemTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */; };
 		AA9881950DF57B2F00A6EA33 /* ItemFlagsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881720DF57B2F00A6EA33 /* ItemFlagsTest.m */; };
 		AA9881960DF57B2F00A6EA33 /* ItemNameTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881740DF57B2F00A6EA33 /* ItemNameTest.m */; };
 		AA9881970DF57B2F00A6EA33 /* ItemPathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AA9881760DF57B2F00A6EA33 /* ItemPathTest.m */; };
@@ -130,6 +126,10 @@
 		AADD34930B8B902000AC2C97 /* Tests.strings in Resources */ = {isa = PBXBuildFile; fileRef = AADD34910B8B902000AC2C97 /* Tests.strings */; };
 		AAE87FDA0CE10B9B00A99883 /* UniformTypeInventory.m in Sources */ = {isa = PBXBuildFile; fileRef = AAE87FD80CE10B9B00A99883 /* UniformTypeInventory.m */; };
 		AAEF42831081136100468832 /* LocalizableStrings.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF42821081136100468832 /* LocalizableStrings.m */; };
+		AAEF435A1081DE2900468832 /* FileItemFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43531081DE2900468832 /* FileItemFilter.m */; };
+		AAEF435B1081DE2900468832 /* FileItemFilterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43551081DE2900468832 /* FileItemFilterSet.m */; };
+		AAEF435C1081DE2900468832 /* FileItemTestRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43571081DE2900468832 /* FileItemTestRepository.m */; };
+		AAEF435D1081DE2900468832 /* FilterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF43591081DE2900468832 /* FilterTest.m */; };
 		AAEF60510B028DD800C7134A /* ColorListCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AAEF604F0B028DD800C7134A /* ColorListCollection.m */; };
 		AAF3C75B0EF3FA42004CF446 /* Delete.png in Resources */ = {isa = PBXBuildFile; fileRef = AAF3C75A0EF3FA42004CF446 /* Delete.png */; };
 		AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */; };
@@ -155,12 +155,6 @@
 		AA13BA8D0B8A5746000AEAA9 /* Palettes */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Palettes; sourceTree = "<group>"; };
 		AA13FCE61077318700AE3B23 /* Cross.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Cross.png; path = Images/Cross.png; sourceTree = "<group>"; };
 		AA13FCE71077318700AE3B23 /* Checkmark.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = Checkmark.png; path = Images/Checkmark.png; sourceTree = "<group>"; };
-		AA13FD9C1078CDA400AE3B23 /* FileItemFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilter.h; path = test/FileItemFilter.h; sourceTree = "<group>"; };
-		AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilter.m; path = test/FileItemFilter.m; sourceTree = "<group>"; };
-		AA13FDA01078D04E00AE3B23 /* FilterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTest.h; path = test/FilterTest.h; sourceTree = "<group>"; };
-		AA13FDA11078D04E00AE3B23 /* FilterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTest.m; path = test/FilterTest.m; sourceTree = "<group>"; };
-		AA13FDF51078F2A700AE3B23 /* FileItemFilterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilterSet.h; path = test/FileItemFilterSet.h; sourceTree = "<group>"; };
-		AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilterSet.m; path = test/FileItemFilterSet.m; sourceTree = "<group>"; };
 		AA14A8600EE1401E009CBD3E /* FocusDown.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusDown.png; path = Images/FocusDown.png; sourceTree = "<group>"; };
 		AA14A8610EE1401E009CBD3E /* FocusUp.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = FocusUp.png; path = Images/FocusUp.png; sourceTree = "<group>"; };
 		AA16DAB90AF93C7D005052D1 /* NotifyingPanel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NotifyingPanel.h; path = util/NotifyingPanel.h; sourceTree = "<group>"; };
@@ -308,8 +302,6 @@
 		AA98816B0DF57B2F00A6EA33 /* CompoundOrItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CompoundOrItemTest.h; path = test/CompoundOrItemTest.h; sourceTree = "<group>"; };
 		AA98816C0DF57B2F00A6EA33 /* CompoundOrItemTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CompoundOrItemTest.m; path = test/CompoundOrItemTest.m; sourceTree = "<group>"; };
 		AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTest.h; path = test/FileItemTest.h; sourceTree = "<group>"; };
-		AA98816E0DF57B2F00A6EA33 /* FileItemTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestRepository.h; path = test/FileItemTestRepository.h; sourceTree = "<group>"; };
-		AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTestRepository.m; path = test/FileItemTestRepository.m; sourceTree = "<group>"; };
 		AA9881700DF57B2F00A6EA33 /* FileItemTestVisitor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestVisitor.h; path = test/FileItemTestVisitor.h; sourceTree = "<group>"; };
 		AA9881710DF57B2F00A6EA33 /* ItemFlagsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ItemFlagsTest.h; path = test/ItemFlagsTest.h; sourceTree = "<group>"; };
 		AA9881720DF57B2F00A6EA33 /* ItemFlagsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ItemFlagsTest.m; path = test/ItemFlagsTest.m; sourceTree = "<group>"; };
@@ -375,6 +367,14 @@
 		AAE87FD90CE10B9B00A99883 /* UniformTypeInventory.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UniformTypeInventory.h; path = util/UniformTypeInventory.h; sourceTree = "<group>"; };
 		AAEF42811081136100468832 /* LocalizableStrings.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocalizableStrings.h; path = util/LocalizableStrings.h; sourceTree = "<group>"; };
 		AAEF42821081136100468832 /* LocalizableStrings.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocalizableStrings.m; path = util/LocalizableStrings.m; sourceTree = "<group>"; };
+		AAEF43521081DE2900468832 /* FileItemFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilter.h; path = filter/FileItemFilter.h; sourceTree = "<group>"; };
+		AAEF43531081DE2900468832 /* FileItemFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilter.m; path = filter/FileItemFilter.m; sourceTree = "<group>"; };
+		AAEF43541081DE2900468832 /* FileItemFilterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemFilterSet.h; path = filter/FileItemFilterSet.h; sourceTree = "<group>"; };
+		AAEF43551081DE2900468832 /* FileItemFilterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemFilterSet.m; path = filter/FileItemFilterSet.m; sourceTree = "<group>"; };
+		AAEF43561081DE2900468832 /* FileItemTestRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemTestRepository.h; path = filter/FileItemTestRepository.h; sourceTree = "<group>"; };
+		AAEF43571081DE2900468832 /* FileItemTestRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemTestRepository.m; path = filter/FileItemTestRepository.m; sourceTree = "<group>"; };
+		AAEF43581081DE2900468832 /* FilterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTest.h; path = filter/FilterTest.h; sourceTree = "<group>"; };
+		AAEF43591081DE2900468832 /* FilterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTest.m; path = filter/FilterTest.m; sourceTree = "<group>"; };
 		AAEF5E240AFE79FA00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
 		AAEF5E270AFE7B9C00C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/SaveImageDialog.nib; sourceTree = "<group>"; };
 		AAEF5E310AFE7C8700C7134A /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditFilterWindow.nib; sourceTree = "<group>"; };
@@ -413,6 +413,7 @@
 				AA6012020A5AEE6200DEBCB8 /* view */,
 				AA6012010A5AEE0D00DEBCB8 /* tree */,
 				AAB4719F0A3AE2460096C5B6 /* control */,
+				AAEF43511081DDB600468832 /* filter */,
 				AA2184AE0A26F9C6000E1C8C /* test */,
 			);
 			name = Classes;
@@ -506,16 +507,8 @@
 			children = (
 				AA9881A40DF57BFD00A6EA33 /* strings */,
 				AA98816D0DF57B2F00A6EA33 /* FileItemTest.h */,
-				AA13FDA01078D04E00AE3B23 /* FilterTest.h */,
-				AA13FDA11078D04E00AE3B23 /* FilterTest.m */,
-				AA13FD9C1078CDA400AE3B23 /* FileItemFilter.h */,
-				AA13FD9D1078CDA400AE3B23 /* FileItemFilter.m */,
-				AA13FDF51078F2A700AE3B23 /* FileItemFilterSet.h */,
-				AA13FDF61078F2A700AE3B23 /* FileItemFilterSet.m */,
 				AA9881630DF57B2F00A6EA33 /* AbstractFileItemTest.h */,
 				AA9881640DF57B2F00A6EA33 /* AbstractFileItemTest.m */,
-				AA98816E0DF57B2F00A6EA33 /* FileItemTestRepository.h */,
-				AA98816F0DF57B2F00A6EA33 /* FileItemTestRepository.m */,
 				AA9881700DF57B2F00A6EA33 /* FileItemTestVisitor.h */,
 				AA9881650DF57B2F00A6EA33 /* BasicFileItemTestVisitor.h */,
 				AA9881660DF57B2F00A6EA33 /* BasicFileItemTestVisitor.m */,
@@ -732,6 +725,21 @@
 			name = control;
 			sourceTree = "<group>";
 		};
+		AAEF43511081DDB600468832 /* filter */ = {
+			isa = PBXGroup;
+			children = (
+				AAEF43521081DE2900468832 /* FileItemFilter.h */,
+				AAEF43531081DE2900468832 /* FileItemFilter.m */,
+				AAEF43541081DE2900468832 /* FileItemFilterSet.h */,
+				AAEF43551081DE2900468832 /* FileItemFilterSet.m */,
+				AAEF43561081DE2900468832 /* FileItemTestRepository.h */,
+				AAEF43571081DE2900468832 /* FileItemTestRepository.m */,
+				AAEF43581081DE2900468832 /* FilterTest.h */,
+				AAEF43591081DE2900468832 /* FilterTest.m */,
+			);
+			name = filter;
+			sourceTree = "<group>";
+		};
 		AAF952C50EE043A400844FD5 /* Images */ = {
 			isa = PBXGroup;
 			children = (
@@ -930,7 +938,6 @@
 				AA9881910DF57B2F00A6EA33 /* CompoundAndItemTest.m in Sources */,
 				AA9881920DF57B2F00A6EA33 /* CompoundItemTest.m in Sources */,
 				AA9881930DF57B2F00A6EA33 /* CompoundOrItemTest.m in Sources */,
-				AA9881940DF57B2F00A6EA33 /* FileItemTestRepository.m in Sources */,
 				AA9881950DF57B2F00A6EA33 /* ItemFlagsTest.m in Sources */,
 				AA9881960DF57B2F00A6EA33 /* ItemNameTest.m in Sources */,
 				AA9881970DF57B2F00A6EA33 /* ItemPathTest.m in Sources */,
@@ -968,10 +975,11 @@
 				AAF951B10EDEE2E100844FD5 /* DirectoryViewToolbarControl.m in Sources */,
 				AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */,
 				AA2B4A0A104B122900B10262 /* AnnotatedTreeContext.m in Sources */,
-				AA13FD9E1078CDA400AE3B23 /* FileItemFilter.m in Sources */,
-				AA13FDA21078D04E00AE3B23 /* FilterTest.m in Sources */,
-				AA13FDF71078F2A700AE3B23 /* FileItemFilterSet.m in Sources */,
 				AAEF42831081136100468832 /* LocalizableStrings.m in Sources */,
+				AAEF435A1081DE2900468832 /* FileItemFilter.m in Sources */,
+				AAEF435B1081DE2900468832 /* FileItemFilterSet.m in Sources */,
+				AAEF435C1081DE2900468832 /* FileItemTestRepository.m in Sources */,
+				AAEF435D1081DE2900468832 /* FilterTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
