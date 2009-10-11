@@ -22,7 +22,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
 - (int) numberOfRowsInTableView: (NSTableView *)tableView;
 - (id) tableView: (NSTableView *)tableView 
          objectValueForTableColumn: (NSTableColumn *)column row: (int) row;
-//----         
+//---- 
 
 - (NSString *) descriptionForRow: (int) row;
 
@@ -217,7 +217,7 @@ NSString  *ColorDescriptionColumnIdentifier = @"colorDescription";
        [selectedItem isPhysical] &&
        ![selectedItem isDirectory] ) {
     NSObject <FileItemMapping>  *colorMapper =
-      [[dirView treeDrawerSettings] colorMapper];   
+      [[dirView treeDrawerSettings] colorMapper]; 
        
     if ([colorMapper canProvideLegend]) {
       int  colorIndex = 

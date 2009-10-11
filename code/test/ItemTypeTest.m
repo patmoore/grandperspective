@@ -87,7 +87,7 @@
   UniformTypeInventory  *typeInventory = 
     [UniformTypeInventory defaultUniformTypeInventory];
 
-  [dict setObject: [self matchesAsStrings] forKey: @"matches"];  
+  [dict setObject: [self matchesAsStrings] forKey: @"matches"]; 
   [dict setObject: [NSNumber numberWithBool: strict] forKey: @"strict"];
 }
 
@@ -144,7 +144,7 @@
 }
 
 
-+ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {  
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict { 
   NSAssert([[dict objectForKey: @"class"] isEqualToString: @"ItemTypeTest"],
              @"Incorrect value for class in dictionary.");
 

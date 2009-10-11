@@ -94,7 +94,7 @@
 }
 
 
-+ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict {  
++ (FileItemTest *)fileItemTestFromDictionary:(NSDictionary *)dict { 
   NSAssert([[dict objectForKey: @"class"] 
                isEqualToString: @"SelectiveItemTest"],
              @"Incorrect value for class in dictionary.");

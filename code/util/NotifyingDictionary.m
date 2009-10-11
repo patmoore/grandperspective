@@ -37,7 +37,7 @@ static NSDictionary  *immutableDict = nil;
       [dict addEntriesFromDictionary:contents];
     }
     
-    notificationCenter = [[NSNotificationCenter defaultCenter] retain];    
+    notificationCenter = [[NSNotificationCenter defaultCenter] retain]; 
   }
   
   return self;

@@ -253,7 +253,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   
-  [colorMappingPopUp removeAllItems];  
+  [colorMappingPopUp removeAllItems]; 
   [tagMaker addLocalisedNamesToPopUp: colorMappingPopUp
               names: [colorMappings allKeys]
               select: [initialSettings colorMappingKey]
@@ -263,7 +263,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [colorPalettePopUp removeAllItems];
   [tagMaker addLocalisedNamesToPopUp: colorPalettePopUp
               names: [colorPalettes allKeys]
-              select: [initialSettings colorPaletteKey]  
+              select: [initialSettings colorPaletteKey] 
               table: @"Names"];
   [self colorPaletteChanged: nil];
   
@@ -279,7 +279,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [self maskChanged];
   
   [showEntireVolumeCheckBox setState: 
-     ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ];  
+     ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ]; 
   [showPackageContentsCheckBox setState: 
      ( [initialSettings showPackageContents] ? NSOnState : NSOffState ) ];
   
@@ -321,11 +321,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   unsigned long long  volumeSize = [volumeTree itemSize];
   unsigned long long  miscUsedSpace = volumeSize - freeSpace - scanTreeSize;
 
-  [volumeSizeField setStringValue:  
-                            [FileItem stringForFileItemSize: volumeSize]];  
+  [volumeSizeField setStringValue: 
+                            [FileItem stringForFileItemSize: volumeSize]]; 
   [treeSizeField setStringValue: 
                             [FileItem stringForFileItemSize: scanTreeSize]];
-  [miscUsedSpaceField setStringValue:  
+  [miscUsedSpaceField setStringValue: 
                             [FileItem stringForFileItemSize: miscUsedSpace]];
   [freeSpaceField setStringValue: 
                             [FileItem stringForFileItemSize: freeSpace]];
@@ -411,7 +411,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
   
   // Change window's background color (which should only affect the statusbar)
-  [[self window] setBackgroundColor: [NSColor lightGrayColor]];  
+  [[self window] setBackgroundColor: [NSColor lightGrayColor]]; 
 }
 
 - (void) windowDidResignMain: (NSNotification *)notification {
@@ -425,7 +425,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [NSColor colorWithDeviceHue: h saturation: s 
                brightness: 1 - 0.5 * (1-b) alpha: a];
 
-  [[self window] setBackgroundColor: inactiveBackgroundColor];  
+  [[self window] setBackgroundColor: inactiveBackgroundColor]; 
 }
 
 
@@ -515,7 +515,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       return; // All went okay
     }
   }
-  else {  
+  else { 
     // Work-around for bug/limitation of NSWorkSpace. It apparently cannot 
     // select files that are inside a package, unless the package is the root
     // path. So check if the selected file is inside a package. If so, use it
@@ -694,7 +694,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [tagMaker nameForTag: [[colorPalettePopUp selectedItem] tag]];
   NSColorList  *palette = [colorPalettes colorListForKey: name];
 
-  if (palette != nil) {  
+  if (palette != nil) { 
     [mainView setTreeDrawerSettings: 
       [[mainView treeDrawerSettings] copyWithColorPalette: palette]];
   }
@@ -849,7 +849,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) createEditMaskFilterWindow {  
+- (void) createEditMaskFilterWindow { 
   editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
 
   [editMaskFilterWindowControl setAllowEmptyFilter: YES];
@@ -991,7 +991,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                                  sizeString: itemSizeString];
   }
   else {
-    [selectedItemFocusControls clear];    
+    [selectedItemFocusControls clear]; 
   }
 
   // Update the file type fields in the Focus panel
@@ -1008,7 +1008,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
   else {
     [selectedItemTypeIdentifierField setStringValue: @""];
-    [selectedItemTypeIdentifierField setToolTip: nil];  
+    [selectedItemTypeIdentifierField setToolTip: nil]; 
   }
 }
 
@@ -1042,7 +1042,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   Filter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
 
-  FileItemTest  *newMaskTest = [newMask fileItemTest];  
+  FileItemTest  *newMaskTest = [newMask fileItemTest]; 
   if ( newMask != nil
        && ( newMaskTest == nil
             || [userDefaults boolForKey: UpdateFiltersBeforeUse] ) ) {

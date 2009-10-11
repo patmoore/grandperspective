@@ -232,7 +232,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
 - (void) extendVisiblePath: (Item *)nextItem {
   NSAssert(!visiblePathLocked, @"Cannot extend path when locked.");
    
-  [path addObject: nextItem];  
+  [path addObject: nextItem]; 
 
   if (! [nextItem isVirtual]) {
     NSAssert( [((FileItem *)nextItem) parentDirectory] == 
@@ -343,7 +343,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
     [self observeEvents];
   }
 
-  return self;  
+  return self; 
 }
 
 - (void) observeEvents {
@@ -519,7 +519,7 @@ NSString  *VisiblePathLockingChangedEvent = @"visiblePathLockingChanged";
     
     if ([self extendVisiblePathToFileItem: target similar: similar
                 fromItem: [compoundItem getFirst]]) {
-      return YES;  
+      return YES; 
     }
     if ([self extendVisiblePathToFileItem: target similar: similar
                 fromItem: [compoundItem getSecond]]) {

@@ -86,7 +86,7 @@ NSString  *UnknownTypeUTI = @"unknown";
 }
 
 
-- (UniformType *)uniformTypeForExtension: (NSString *)ext {  
+- (UniformType *)uniformTypeForExtension: (NSString *)ext { 
   UniformType  *type = [typeForExtension objectForKey: ext];
   if (type != nil) {
     // The extension was already encountered, and corresponds to a valid UTI.
@@ -102,7 +102,7 @@ NSString  *UnknownTypeUTI = @"unknown";
   NSString  *uti = 
     (NSString*) UTTypeCreatePreferredIdentifierForTag
                   (kUTTagClassFilenameExtension, (CFStringRef)ext, NULL); 
-    // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up.  
+    // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up. 
 
   if (! [uti hasPrefix: @"dyn."]) {
     type = [self uniformTypeForIdentifier: uti];

@@ -27,7 +27,7 @@
 }
 
 - (void) addWindow: (NSWindow *)window usingTitle: (NSString *)title {
-  nextWindowPosition = [window cascadeTopLeftFromPoint: nextWindowPosition];  
+  nextWindowPosition = [window cascadeTopLeftFromPoint: nextWindowPosition]; 
   [window setTitle: [self makeTitleUnique: title]];
 }
 
@@ -66,7 +66,7 @@
 
 - (NSString *) stripTitle: (NSString *)title {
   int  pos = [title length] - 1;
-  NSCharacterSet*  digitSet = [NSCharacterSet decimalDigitCharacterSet];  
+  NSCharacterSet*  digitSet = [NSCharacterSet decimalDigitCharacterSet]; 
 
   if ( pos == 0 || 
        [title characterAtIndex: pos--] != ']' ||

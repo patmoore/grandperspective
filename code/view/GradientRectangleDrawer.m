@@ -85,7 +85,7 @@
 
   bitmapBounds = bounds;
 
-  drawBitmap =  
+  drawBitmap = 
     [[NSBitmapImageRep alloc] 
       initWithBitmapDataPlanes: NULL
       pixelsWide: (int) bitmapBounds.size.width
@@ -131,7 +131,7 @@
   
   int  x, y;
   int  x0 = (int)(rect.origin.x + 0.5f);
-  int  y0 = (int)(rect.origin.y + 0.5f);  
+  int  y0 = (int)(rect.origin.y + 0.5f); 
   int  height = (int)(rect.origin.y + rect.size.height + 0.5f) - y0;
   int  width = (int)(rect.origin.x + rect.size.width + 0.5f) - x0;
   int  bitmapWidth = [drawBitmap bytesPerRow] / sizeof(UInt32);
@@ -220,7 +220,7 @@
   int  i, j;
   UInt32  *pos = gradientColors;
   
-  for (i=0; i<numGradientColors; i++) {    
+  for (i=0; i<numGradientColors; i++) { 
     NSColor  *color = 
       [colorPalette colorWithKey: [colorKeys objectAtIndex: i]];
     
@@ -252,7 +252,7 @@
     for (j=0; j<128; j++) {
       float  adjust = colorGradient * (float)j / 128;
       
-      // First ramp up brightness, then decrease saturation  
+      // First ramp up brightness, then decrease saturation 
       float dif = 1 - brightness;
       float absAdjust = (dif + saturation) * adjust;
 

@@ -109,7 +109,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 }
 
 - (void) dealloc {
-  // We were not retaining it, so should not call -release  
+  // We were not retaining it, so should not call -release 
   dirViewControl = nil;
 
   [super dealloc];
@@ -132,7 +132,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
   // as changing the cells resets it again. Furthermore, might as well do it
   // here once, as opposed to in all (localized) versions of the NIB file.
   [zoomControls setTarget: self];
-  [zoomControls setAction: @selector(zoom:)];  
+  [zoomControls setAction: @selector(zoom:)]; 
   [focusControls setTarget: self];
   [focusControls setAction: @selector(focus:)];
   
@@ -167,7 +167,7 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
          autorelease];
            
   [toolbar setAllowsUserCustomization: YES];
-  [toolbar setAutosavesConfiguration: YES];     
+  [toolbar setAutosavesConfiguration: YES]; 
   [toolbar setDisplayMode: NSToolbarDisplayModeIconAndLabel];
 
   [toolbar setDelegate: self];
@@ -213,7 +213,7 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 - (NSArray *)toolbarDefaultItemIdentifiers:(NSToolbar*)toolbar {
     return [NSArray arrayWithObjects:
                       ToolbarZoom, ToolbarFocus,
-                      NSToolbarSpaceItemIdentifier,  
+                      NSToolbarSpaceItemIdentifier, 
                       ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem, 
                       NSToolbarFlexibleSpaceItemIdentifier, 
                       ToolbarToggleDrawer, nil];

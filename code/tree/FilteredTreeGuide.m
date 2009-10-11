@@ -139,7 +139,7 @@
 }
 
 
-- (void) descendIntoDirectory:(DirectoryItem *)item {   
+- (void) descendIntoDirectory:(DirectoryItem *)item { 
   if ( [item isPackage] ) {
     packageCount++;
   }

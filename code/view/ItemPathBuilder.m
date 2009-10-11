@@ -18,7 +18,7 @@
   
   [pathModel clearVisiblePath];
 
-  insideVisibleTree = NO;  
+  insideVisibleTree = NO; 
   FileItem  *retVal = [self itemAtPoint: point 
                               startingAtTree: treeRoot 
                               usingLayoutBuilder: layoutBuilder 

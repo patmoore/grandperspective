@@ -120,7 +120,7 @@
   
   [self updateSelectedItemInModel];
   
-  [pathModel suppressSelectedItemChangedNotifications: NO];  
+  [pathModel suppressSelectedItemChangedNotifications: NO]; 
 
   if ([[self visibleTree] isAncestorOfFileItem: itemAtPoint]) {
     // The item is inside the visible tree. The selection can therefore be
@@ -217,7 +217,7 @@
   return (preferredSelectionDepth == STICK_TO_ENDPOINT);
 }
 
-- (void) setSelectionSticksToEndPoint: (BOOL)value {  
+- (void) setSelectionSticksToEndPoint: (BOOL)value { 
   if (value) {
     preferredSelectionDepth = STICK_TO_ENDPOINT;
     
@@ -269,7 +269,7 @@
     preferredSelectionDepth = STICK_TO_ENDPOINT;
   }
   else {
-    preferredSelectionDepth = selectedItemIndex + 1 - visibleTreeIndex;  
+    preferredSelectionDepth = selectedItemIndex + 1 - visibleTreeIndex; 
   }
 }
 

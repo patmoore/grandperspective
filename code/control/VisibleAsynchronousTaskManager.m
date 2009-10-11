@@ -5,11 +5,11 @@
 #import "ProgressPanelControl.h"
 
 
-@interface CallbackHandler : NSObject {  
+@interface CallbackHandler : NSObject { 
   ProgressPanelControl  *progressPanelControl;
 
   NSObject  *callback;
-  SEL  callbackSelector;   
+  SEL  callbackSelector; 
 }
 
 - (id) initWithProgressPanel: (ProgressPanelControl *)progressPanel

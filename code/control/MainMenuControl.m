@@ -213,7 +213,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(singletonInstance == nil, @"Can only create one MainMenuControl.");
 
   if (self = [super init]) {
-    windowManager = [[WindowManager alloc] init];  
+    windowManager = [[WindowManager alloc] init]; 
 
     ProgressPanelControl  *scanProgressPanelControl = 
       [[[ScanProgressPanelControl alloc] 
@@ -222,7 +222,7 @@ static MainMenuControl  *singletonInstance = nil;
 
     scanTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
-          initWithProgressPanel: scanProgressPanelControl];    
+          initWithProgressPanel: scanProgressPanelControl]; 
 
     ProgressPanelControl  *filterProgressPanelControl = 
       [[[FilterProgressPanelControl alloc] 
@@ -455,7 +455,7 @@ static MainMenuControl  *singletonInstance = nil;
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
     
-  NSSavePanel  *savePanel = [NSSavePanel savePanel];  
+  NSSavePanel  *savePanel = [NSSavePanel savePanel]; 
   [savePanel setRequiredFileType: @"gpscan"];
   [savePanel setTitle: 
      NSLocalizedString( @"Save scan data", @"Title of save panel") ];
@@ -466,7 +466,7 @@ static MainMenuControl  *singletonInstance = nil;
     WriteTaskInput  *input = 
       [[[WriteTaskInput alloc] 
            initWithAnnotatedTreeContext: [dirViewControl annotatedTreeContext] 
-             path: filename]  
+             path: filename] 
            autorelease];
            
     WriteTaskCallback  *callback = 
@@ -556,7 +556,7 @@ static MainMenuControl  *singletonInstance = nil;
 
   if ([openPanel runModalForTypes:nil] != NSOKButton) {
     return; // Abort
-  }  
+  } 
 
   NSString  *pathToScan = [[openPanel filenames] objectAtIndex: 0];
   Filter  *filter = nil;
@@ -816,7 +816,7 @@ static MainMenuControl  *singletonInstance = nil;
     // An error occured while writing
     msgFormat = NSLocalizedString( @"Failed to save the scan data to \"%@\"", 
                                    @"Alert message (with filename arg)" );
-    [alert setInformativeText: [((NSError *)result) localizedDescription]];     
+    [alert setInformativeText: [((NSError *)result) localizedDescription]]; 
   }
 
   [alert setMessageText: 
@@ -853,7 +853,7 @@ static MainMenuControl  *singletonInstance = nil;
 
 - (void) createWindowForTree: (TreeContext *)treeContext {
   [self createWindowForAnnotatedTree: 
-          [AnnotatedTreeContext annotatedTreeContext: treeContext]];  
+          [AnnotatedTreeContext annotatedTreeContext: treeContext]]; 
 }
 
 - (void) createWindowForAnnotatedTree: (AnnotatedTreeContext *)annTreeContext {
@@ -862,7 +862,7 @@ static MainMenuControl  *singletonInstance = nil;
     return;
   }
 
-  // Note: The control should auto-release itself when its window closes  
+  // Note: The control should auto-release itself when its window closes 
   DirectoryViewControl  *dirViewControl = 
     [[self createDirectoryViewControlForAnnotatedTree: annTreeContext] retain];
   

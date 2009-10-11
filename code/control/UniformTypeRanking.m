@@ -49,7 +49,7 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
 - (void) loadRanking: (UniformTypeInventory *)typeInventory {
   NSAssert([rankedTypes count] == 0, @"List must be empty before load.");
   
-  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];  
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults]; 
   NSArray  *rankedUTIs = [userDefaults arrayForKey: UniformTypesRankingKey];
   
   NSEnumerator  *utiEnum = [rankedUTIs objectEnumerator];
@@ -108,7 +108,7 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
   while (type = [typesEnum nextObject]) {
     if (! [typesInRanking containsObject: type]) {
       [rankedTypes addObject: type];
-      [typesInRanking addObject: type];  
+      [typesInRanking addObject: type]; 
     }
   }
 }
@@ -116,7 +116,7 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
 
 - (NSArray *) rankedUniformTypes {
   // Return an immutable copy of the array.
-  return [NSArray arrayWithArray: rankedTypes];  
+  return [NSArray arrayWithArray: rankedTypes]; 
 }
 
 - (void) updateRankedUniformTypes: (NSArray *)ranking {
@@ -126,7 +126,7 @@ NSString  *UniformTypesRankingKey = @"uniformTypesRanking";
                  withObjectsFromArray: ranking];
   
   // Notify any observers.
-  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];  
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter]; 
   [nc postNotificationName: UniformTypeRankingChangedEvent object: self];
 }
 

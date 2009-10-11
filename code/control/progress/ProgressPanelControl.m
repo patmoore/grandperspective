@@ -50,7 +50,7 @@ extern NSString  *CurrentFolderPathKey;
 
   NSAssert(cancelCallback==nil, @"cancelCallback not nil.");
   
-  [super dealloc];  
+  [super dealloc]; 
 }
 
 
@@ -92,11 +92,11 @@ extern NSString  *CurrentFolderPathKey;
   [cancelCallback release];
   cancelCallback = nil;
   
-  [progressIndicator stopAnimation: self];  
+  [progressIndicator stopAnimation: self]; 
 
   [[self window] close];
 
-  taskRunning = NO;  
+  taskRunning = NO; 
 }
 
 
@@ -124,7 +124,7 @@ extern NSString  *CurrentFolderPathKey;
             [[dict objectForKey: NumFoldersProcessedKey] intValue]];
   }
 
-  // Schedule another update    
+  // Schedule another update 
   [self performSelector: @selector(updatePanel) withObject: 0 
           afterDelay: refreshRate];
 }

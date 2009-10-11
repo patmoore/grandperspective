@@ -248,7 +248,7 @@ NSString  *MatchColumn = @"match";
     [EditFilterTestWindowControl defaultInstance];
   
   // Ensure window is loaded before configuring its contents
-  NSWindow  *editTestWindow = [editTestWindowControl window];  
+  NSWindow  *editTestWindow = [editTestWindowControl window]; 
 
   EditFilterTestWindowTerminationControl  *terminationControl = 
     [[[EditFilterTestWindowTerminationControl alloc]
@@ -558,7 +558,7 @@ NSString  *MatchColumn = @"match";
   FilterTestRef  *filterTest = [FilterTestRef filterTestWithName: name];
 
   if ([test appliesToDirectories]) {
-    // Fix "inverted" state of the filter test.     
+    // Fix "inverted" state of the filter test. 
     
     if (! [filterTest isInverted]) {
       [filterTest setCanToggleInverted: YES]; // Not needed, but no harm.
@@ -571,7 +571,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (void) testAddedToRepository:(NSNotification*)notification {        
+- (void) testAddedToRepository:(NSNotification*)notification { 
   NSString  *testName = [[notification userInfo] objectForKey:@"key"];
   NSString  *selectedName = [self selectedAvailableTestName];
 
@@ -684,7 +684,7 @@ NSString  *MatchColumn = @"match";
       //    this change was undone by cancelling the mask, the test is actually
       //    not available and thus disabled.
     
-      // Select the disabled test in the other view.      
+      // Select the disabled test in the other view. 
       int  index = [filter indexOfFilterTest: filterTest];
       [filterTestsView selectRow: index byExtendingSelection: NO];
 
@@ -715,7 +715,7 @@ NSString  *MatchColumn = @"match";
                         objectForKey: newSelectedTestName];
 
   // If highlighted test changed, update the description text view
-  if (newSelectedTestName != selectedTestName) {  
+  if (newSelectedTestName != selectedTestName) { 
     [selectedTestName release];
     selectedTestName = [newSelectedTestName retain];
 

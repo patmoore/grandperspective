@@ -5,7 +5,7 @@
 // Overrides super's designated initialiser.
 - (id) init {
   NSAssert(NO, 
-           @"Use initWithUniformTypeIdentifier:description:parents instead.");  
+           @"Use initWithUniformTypeIdentifier:description:parents instead."); 
 }
 
 
@@ -13,7 +13,7 @@
          description: (NSString *)descriptionVal
          parents: (NSArray *)parentTypes {
 
-  if (self = [super init]) {  
+  if (self = [super init]) { 
     uti = [utiVal retain];
     description = [descriptionVal retain];
     

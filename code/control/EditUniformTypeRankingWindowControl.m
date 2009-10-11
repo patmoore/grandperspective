@@ -170,7 +170,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 //----------------------------------------------------------------------------
 // Delegate methods for NSWindow
 
-- (void) windowDidBecomeKey: (NSNotification *)notification {  
+- (void) windowDidBecomeKey: (NSNotification *)notification { 
   if ([typeCells count] == 0) {
     // The window has just been opened. Fetch the latest type list.
     
@@ -301,7 +301,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
     [typeCells addObject: typeCell];
   }
   
-  [typesTable reloadData];  
+  [typesTable reloadData]; 
   [typesTable selectRow: 0 byExtendingSelection: NO];
 }
 
@@ -420,7 +420,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 
 /* Update the window after a cell has been moved.
  */
-- (void) movedCellToIndex: (int) index {  
+- (void) movedCellToIndex: (int) index { 
   [typesTable selectRow: index byExtendingSelection: NO];
   [typesTable reloadData];
   [self updateWindowState];

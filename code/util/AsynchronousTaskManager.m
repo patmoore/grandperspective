@@ -167,7 +167,7 @@ enum {
         // The manager has been disposed of while BUSY.
         [workLock unlockWithCondition: BACKGROUND_THREAD_SHUTDOWN];
       }
-      else if (nextTaskInput == nil) {      
+      else if (nextTaskInput == nil) { 
         [workLock unlockWithCondition: BACKGROUND_THREAD_IDLE];
       }
       else {

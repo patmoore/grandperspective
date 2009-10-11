@@ -18,7 +18,7 @@
  *   if ([fileItemToUse isDirectory]) {
  *     [guide descendIntoDirectory: (DirectoryItem *)fileItemToUse];
  *
- *     // Recurse over dir contents  
+ *     // Recurse over dir contents 
  *
  *     [guide emergedFromDirectory: (DirectoryItem *)fileItemToUse];
  *   }

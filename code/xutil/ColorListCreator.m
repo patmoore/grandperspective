@@ -112,7 +112,7 @@ NSColor* colorForHexString(NSString* hexColor) {
   [self createColorFile: @"Monaco" hexColors: colors];}
 
 
-+ (void) createWarmFall {  
++ (void) createWarmFall { 
   NSArray  *colors = 
     [NSArray arrayWithObjects: @"CCCC00", @"999900", @"666600", @"333300",
                @"CC6600", @"996600", @"663300", @"FF6600", @"FF9900", @"FFCC00",

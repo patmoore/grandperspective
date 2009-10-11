@@ -313,7 +313,7 @@ NSString  *AttributeNameKey = @"name";
     dirsArrayPool = [[MutableArrayPool alloc] 
                         initWithCapacity: 16 
                         initialArrayCapacity: INITIAL_DIRS_CAPACITY * 4];
-    filesArrayPool = [[MutableArrayPool alloc]  
+    filesArrayPool = [[MutableArrayPool alloc] 
                         initWithCapacity: 16 
                         initialArrayCapacity: INITIAL_FILES_CAPACITY * 4];
   }
@@ -326,7 +326,7 @@ NSString  *AttributeNameKey = @"name";
   
   [testRepository release];
 
-  [tree release];  
+  [tree release]; 
   [error release];
   [unboundTests release];
   
@@ -594,7 +594,7 @@ NSString  *AttributeNameKey = @"name";
   
   [callback handler: self failedParsingElement: parseError];
 
-  [handler release];  
+  [handler release]; 
 }
 
 - (void) handler: (ElementHandler *)handler 
@@ -658,7 +658,7 @@ NSString  *AttributeNameKey = @"name";
 
   if (value != nil) {
     return value;
-  }  
+  } 
 
   NSException  *ex = 
     [[[AttributeParseException alloc]
@@ -728,7 +728,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (BOOL) getBooleanAttributeValue: (NSString *)name 
-           from: (NSDictionary *)attribs defaultValue: (BOOL) defVal {  
+           from: (NSDictionary *)attribs defaultValue: (BOOL) defVal { 
   NSString  *stringValue = [attribs objectForKey: name];
   
   return ( (stringValue != nil)
@@ -931,7 +931,7 @@ NSString  *AttributeNameKey = @"name";
       @throw ex;
     }
   
-    tree = [[TreeContext alloc]  
+    tree = [[TreeContext alloc] 
                initWithVolumePath: volumePath
                fileSizeMeasure: sizeMeasure
                volumeSize: volumeSize 
@@ -1006,8 +1006,8 @@ NSString  *AttributeNameKey = @"name";
            finishedParsingFilterSetElement: (FilterSet *)filterSet {
   TreeContext  *oldTree = tree;
 
-  // Replace tree by new one that also contains the given filter set.  
-  tree = [[TreeContext alloc]  
+  // Replace tree by new one that also contains the given filter set. 
+  tree = [[TreeContext alloc] 
              initWithVolumePath: [[oldTree volumeTree] name]
              fileSizeMeasure: [oldTree fileSizeMeasure]
              volumeSize: [oldTree volumeSize] 

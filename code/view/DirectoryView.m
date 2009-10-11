@@ -48,7 +48,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 - (void) updateSelectedItem: (NSPoint) point;
 
-@end  
+@end 
 
 
 @implementation DirectoryView
@@ -237,7 +237,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 
 - (void) moveFocusUp {
-  [pathModelView moveSelectionUp];  
+  [pathModelView moveSelectionUp]; 
 }
 
 - (void) moveFocusDown {
@@ -399,7 +399,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     if ( [pathModel lastFileItem] != [pathModel visibleTree] ) {
       // The path changed. Do not toggle the locking. This mouse click was
       // used to make the view the first responder, ensuring that the visible 
-      // path is following the mouse pointer.  
+      // path is following the mouse pointer. 
       return;
     }
   }
@@ -615,7 +615,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
          [[self treeDrawerSettings] copyWithColorMapper: 
                                       [observedColorMapping fileItemMapping]]];
 
-  [self postColorMappingChanged];   
+  [self postColorMappingChanged]; 
 }
 
 

@@ -150,7 +150,7 @@
 @implementation EditFilterTestWindowControl
 
 + (id) defaultInstance {
-  EditFilterTestWindowControl  
+  EditFilterTestWindowControl 
     *defaultEditFilterTestWindowControlInstance = nil;
 
   if (defaultEditFilterTestWindowControlInstance == nil) {
@@ -163,7 +163,7 @@
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) init {         
+- (id) init { 
   if (self = [super initWithWindowNibName:@"EditFilterTestWindow" owner:self]) {
     // void
   }
@@ -257,7 +257,7 @@
   else {
     // It is a stand-alone test.
     [self updateStateBasedOnTest:test];
-  }  
+  } 
 
   [self updateEnabledState:nil];
 }
@@ -398,7 +398,7 @@
   }
 }
 
-- (IBAction) upperBoundCheckBoxChanged:(id)sender {  
+- (IBAction) upperBoundCheckBoxChanged:(id)sender { 
   [self updateEnabledState:sender];
   
   if ([sender state]==NSOnState) {
@@ -577,7 +577,7 @@
       }
     }
     
-    [sizeLowerBoundCheckBox setState:NSOnState];    
+    [sizeLowerBoundCheckBox setState:NSOnState]; 
     [sizeLowerBoundField setIntValue:bound];
     [sizeLowerBoundUnits selectItemAtIndex:i]; 
   }
@@ -716,7 +716,7 @@
   }
   
   if (flagsMask) {
-    return [[[ItemFlagsTest alloc] initWithFlagsMask: flagsMask  
+    return [[[ItemFlagsTest alloc] initWithFlagsMask: flagsMask 
                                      desiredResult: desiredResult] autorelease];
   }
   else {
@@ -757,7 +757,7 @@
     matchTargets = [[NSMutableArray alloc] initWithCapacity: 4];
     
     [targetsView setDataSource: self];
-    [targetsView setDelegate: self];    
+    [targetsView setDelegate: self]; 
   }
   
   return self;

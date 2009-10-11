@@ -88,7 +88,7 @@
                              MAX(MINIMUM_SIZE, [heightCell intValue]));
 
   // Get a filename for the image.
-  NSSavePanel  *savePanel = [NSSavePanel savePanel];  
+  NSSavePanel  *savePanel = [NSSavePanel savePanel]; 
   [savePanel setRequiredFileType: @"tiff"];
   [savePanel setTitle: 
      NSLocalizedString( @"Save image", @"Title of save panel") ];

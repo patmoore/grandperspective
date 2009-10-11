@@ -309,7 +309,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   if ([relativePath isAbsolutePath]) {
     // Strip leading slash.
     relativePath = [relativePath substringFromIndex: 1];
-  }     
+  } 
        
   if ([relativePath length] > 0) {
     NSLog(@"Scanning volume %@ [%@], starting at %@", volumePath, 
@@ -582,7 +582,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
     
     if (*systemPath == nil) {
       // Lazily create the system path
-      *systemPath = [self systemPathStringForFileRef: fileRef];      
+      *systemPath = [self systemPathStringForFileRef: fileRef]; 
     }
     if (*systemPath == CouldNotEstablishSystemPath) {
       NSLog(@"Excluding hard-linked file item w/o a system path.");
@@ -624,7 +624,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   
   // It's physical per definition (otherwise it would not have an FSRef).
 
-  // Is it hard-linked?  
+  // Is it hard-linked? 
   FSCatalogInfo  *catalogInfo = catalogInfoArray; // Use first entry in array
   OSStatus  result = FSGetCatalogInfo( fileRef, kFSCatInfoNodeFlags, 
                                        catalogInfo, NULL, NULL, NULL );

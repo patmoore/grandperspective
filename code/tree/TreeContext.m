@@ -211,11 +211,11 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   return scanTime;
 }
 
-- (NSString *)stringForScanTime {  
+- (NSString *)stringForScanTime { 
   NSString  *timeFormat =
     NSLocalizedString( @"%H:%M:%S", @"Time format (for scan time)" );
   NSString  *dateFormat =
-    NSLocalizedString( @"%d/%m/%y", @"Date format (for scan time)" );  
+    NSLocalizedString( @"%d/%m/%y", @"Date format (for scan time)" ); 
     
   NSString  *timeString = [scanTime descriptionWithCalendarFormat: timeFormat 
                                       timeZone: nil locale: nil];
@@ -240,7 +240,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   NSAssert(replacedItem == nil, @"Replaced item not nil.");
   NSAssert(replacingItem == nil, @"Replacing item not nil.");
   
-  replacedItem = [[pathModelView selectedFileItemInTree] retain];  
+  replacedItem = [[pathModelView selectedFileItemInTree] retain]; 
   replacingItem =
     [[FileItem alloc] initWithName: FreedSpace
                         parent: [replacedItem parentDirectory] 
@@ -271,7 +271,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
                @"Selected item not found.");
     
     [dirItem replaceDirectoryContents: replacingItem];
-  }  
+  } 
   [self releaseWriteLock];
   
   [self updateFreedSpaceForDeletedItem: replacedItem];
@@ -383,7 +383,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
 }
 
 - (void) releaseWriteLock {
-  [mutex lock];  
+  [mutex lock]; 
 
   if (numWaitingReaders > 0) {
     [lock unlockWithCondition: READING];
@@ -414,7 +414,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
     i--;
   }
 
-  // Found the item. Return the one just above it in the path.  
+  // Found the item. Return the one just above it in the path. 
   return [itemsInPath objectAtIndex: i-1];
 }
 
@@ -431,7 +431,7 @@ NSString  *FileItemDeletedHandledEvent = @"fileItemDeletedHandled";
   replacedItem = nil;
   
   [replacingItem release];
-  replacingItem = nil;  
+  replacingItem = nil; 
 }
 
 - (void) updateFreedSpaceForDeletedItem:(Item *)item; {

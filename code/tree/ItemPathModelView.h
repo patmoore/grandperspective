@@ -50,7 +50,7 @@
   
   
   // Relative to the visible tree root.
-  unsigned  preferredSelectionDepth;  
+  unsigned  preferredSelectionDepth; 
 
   // Controls if the selection should be made to automatically stick to the
   // end point, when the end-point is reached when explicitly moving the

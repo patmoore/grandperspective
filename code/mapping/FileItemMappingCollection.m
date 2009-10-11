@@ -68,7 +68,7 @@
                              @"Legend for Level mapping scheme.");
   }
   else {
-    NSString  
+    NSString 
       *fmt = NSLocalizedString(@"Level %d", 
                                @"Legend for Level mapping scheme.");
     return [NSString stringWithFormat: fmt, hash];
@@ -132,7 +132,7 @@
     return [[item name] hash];
   }
   
-  DirectoryItem  *dir = [item parentDirectory];  
+  DirectoryItem  *dir = [item parentDirectory]; 
   DirectoryItem  *oldDir = dir;
   while (dir != treeRoot) {
     oldDir = dir;
@@ -149,7 +149,7 @@
 @implementation FileItemMappingCollection
 
 + (FileItemMappingCollection*) defaultFileItemMappingCollection {
-  static  FileItemMappingCollection  
+  static  FileItemMappingCollection 
     *defaultFileItemMappingCollectionInstance = nil;
 
   if (defaultFileItemMappingCollectionInstance==nil) {

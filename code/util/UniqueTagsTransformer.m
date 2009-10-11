@@ -8,7 +8,7 @@
 }
 
 + (BOOL) allowsReverseTransformation {
-  return YES;   
+  return YES; 
 }
 
 
