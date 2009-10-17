@@ -191,7 +191,7 @@
 		<dict>
 			<key>class</key>
 			<string>SelectiveItemTest</string>
-			<key>name</key>
+			<key>onlyFiles</key>
 			<true/>
 			<key>subTest</key>
 			<dict>
