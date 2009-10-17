@@ -39,22 +39,22 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @interface DirectoryViewControl (PrivateMethods)
 
-- (void) informativeAlertDidEnd: (NSAlert *)alert 
-           returnCode: (int) returnCode contextInfo: (void *)contextInfo;
+- (void) informativeAlertDidEnd:(NSAlert *)alert 
+           returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
-- (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
-           returnCode: (int) returnCode contextInfo: (void *)contextInfo;
+- (void) confirmDeleteSelectedFileAlertDidEnd:(NSAlert *)alert 
+           returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 - (void) deleteSelectedFile;
-- (void) fileItemDeleted: (NSNotification *)notification;
+- (void) fileItemDeleted:(NSNotification *)notification;
 
 - (void) createEditMaskFilterWindow;
 
-- (void) selectedItemChanged: (NSNotification *)notification;
-- (void) visibleTreeChanged: (NSNotification *)notification;
-- (void) visiblePathLockingChanged: (NSNotification *)notification;
+- (void) selectedItemChanged:(NSNotification *)notification;
+- (void) visibleTreeChanged:(NSNotification *)notification;
+- (void) visiblePathLockingChanged:(NSNotification *)notification;
 
-- (NSString *) updateSelectionInStatusbar;
-- (void) updateSelectionInFocusPanel: (NSString *)itemSizeString;
+- (NSString *)updateSelectionInStatusbar;
+- (void) updateSelectionInFocusPanel:(NSString *)itemSizeString;
 - (void) validateControls;
 
 - (void) maskChanged;
@@ -62,10 +62,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (void) updateFileDeletionSupport;
 
-- (void) maskWindowApplyAction:(NSNotification*)notification;
-- (void) maskWindowCancelAction:(NSNotification*)notification;
-- (void) maskWindowOkAction:(NSNotification*)notification;
-- (void) maskWindowDidBecomeKey:(NSNotification*)notification;
+- (void) maskWindowApplyAction:(NSNotification *)notification;
+- (void) maskWindowCancelAction:(NSNotification *)notification;
+- (void) maskWindowOkAction:(NSNotification *)notification;
+- (void) maskWindowDidBecomeKey:(NSNotification *)notification;
 
 @end
 
@@ -79,10 +79,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   NSTextField  *sizeField;
 }
 
-- (id) initWithPathTextView: (NSTextView *)textView 
-         titleField: (NSTextField *)titleField
-         exactSizeField: (NSTextField *)exactSizeField
-         sizeField: (NSTextField *)sizeField;
+- (id) initWithPathTextView:(NSTextView *)textView 
+         titleField:(NSTextField *)titleField
+         exactSizeField:(NSTextField *)exactSizeField
+         sizeField:(NSTextField *)sizeField;
 
 
 /* Clears the controls.
@@ -91,7 +91,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 /* Show the details of the given item.
  */
-- (void) showFileItem: (FileItem *)item;
+- (void) showFileItem:(FileItem *)item;
 
 /* Show the details of the given item. The provided "pathString" and 
  * "sizeString" provided will be used (if -showFileItem: is invoked instead, 
@@ -99,12 +99,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
  * directly is useful in cases where these have been constructed already (to 
  * avoid having to do so twice).
  */
-- (void) showFileItem: (FileItem *)item itemPath: (NSString *)pathString
-           sizeString: (NSString *)sizeString;
+- (void) showFileItem:(FileItem *)item itemPath:(NSString *)pathString
+           sizeString:(NSString *)sizeString;
 
 /* Abstract method. Override to return title for the given item.
  */
-- (NSString *) titleForFileItem: (FileItem *)item;
+- (NSString *)titleForFileItem:(FileItem *)item;
 
 @end
 
@@ -125,7 +125,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation DirectoryViewControl
 
-- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)annTreeContext {
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)annTreeContext {
   ItemPathModel  *pathModel = 
     [[[ItemPathModel alloc] initWithTreeContext: 
                               [annTreeContext treeContext]] autorelease];
@@ -142,10 +142,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)annTreeContext
-         pathModel: (ItemPathModel *)pathModel
-         settings: (DirectoryViewControlSettings *)settings {
-  if (self = [super initWithWindowNibName:@"DirectoryViewWindow" owner:self]) {
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)annTreeContext
+         pathModel:(ItemPathModel *)pathModel
+         settings:(DirectoryViewControlSettings *)settings {
+  if (self = [super initWithWindowNibName: @"DirectoryViewWindow"
+                      owner: self]) {
     treeContext = [[annTreeContext treeContext] retain];
     NSAssert([pathModel volumeTree] == [treeContext volumeTree], 
                @"Tree mismatch");
@@ -160,8 +161,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
        
     colorMappings = 
       [[FileItemMappingCollection defaultFileItemMappingCollection] retain];
-    colorPalettes = 
-      [[ColorListCollection defaultColorListCollection] retain];
+    colorPalettes = [[ColorListCollection defaultColorListCollection] retain];
   }
 
   return self;
@@ -169,7 +169,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 - (void) dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
   
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   [userDefaults removeObserver: self forKeyPath: FileDeletionTargetsKey];
@@ -198,19 +198,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (Filter *) fileItemMask {
+- (Filter *)fileItemMask {
   return mask;
 }
 
-- (ItemPathModelView *) pathModelView {
+- (ItemPathModelView *)pathModelView {
   return pathModelView;
 }
 
-- (DirectoryView*) directoryView {
+- (DirectoryView*)directoryView {
   return mainView;
 }
 
-- (DirectoryViewControlSettings*) directoryViewControlSettings {
+- (DirectoryViewControlSettings *)directoryViewControlSettings {
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   NSString  *colorMappingKey = 
@@ -230,11 +230,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
          autorelease];
 }
 
-- (TreeContext *) treeContext {
+- (TreeContext *)treeContext {
   return treeContext;
 }
 
-- (AnnotatedTreeContext *) annotatedTreeContext {
+- (AnnotatedTreeContext *)annotatedTreeContext {
   return [AnnotatedTreeContext annotatedTreeContext: treeContext 
                                  comments: [commentsTextView string]];
 }
@@ -322,19 +322,19 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   unsigned long long  miscUsedSpace = volumeSize - freeSpace - scanTreeSize;
 
   [volumeSizeField setStringValue: 
-                            [FileItem stringForFileItemSize: volumeSize]]; 
+       [FileItem stringForFileItemSize: volumeSize]]; 
   [treeSizeField setStringValue: 
-                            [FileItem stringForFileItemSize: scanTreeSize]];
+       [FileItem stringForFileItemSize: scanTreeSize]];
   [miscUsedSpaceField setStringValue: 
-                            [FileItem stringForFileItemSize: miscUsedSpace]];
+       [FileItem stringForFileItemSize: miscUsedSpace]];
   [freeSpaceField setStringValue: 
-                            [FileItem stringForFileItemSize: freeSpace]];
+       [FileItem stringForFileItemSize: freeSpace]];
   [freedSpaceField setStringValue: 
-                   [FileItem stringForFileItemSize: [treeContext freedSpace]]];
+       [FileItem stringForFileItemSize: [treeContext freedSpace]]];
   [numScannedFilesField setStringValue: 
-                [NSString stringWithFormat: @"%qu", [scanTree numFiles]]];
+       [NSString stringWithFormat: @"%qu", [scanTree numFiles]]];
   [numDeletedFilesField setStringValue:
-                [NSString stringWithFormat: @"%qu", [treeContext freedFiles]]];
+       [NSString stringWithFormat: @"%qu", [treeContext freedFiles]]];
 
                    
   //---------------------------------------------------------------- 
@@ -403,7 +403,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 // Invoked because the controller is the delegate for the window.
-- (void) windowDidBecomeMain: (NSNotification *)notification {
+- (void) windowDidBecomeMain:(NSNotification *)notification {
   if (editMaskFilterWindowControl != nil &&
       [[editMaskFilterWindowControl window] isVisible]) {
     [[editMaskFilterWindowControl window] 
@@ -414,7 +414,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [[self window] setBackgroundColor: [NSColor lightGrayColor]]; 
 }
 
-- (void) windowDidResignMain: (NSNotification *)notification {
+- (void) windowDidResignMain:(NSNotification *)notification {
   float  h, s, b, a;
   
   [[[[self window] backgroundColor] 
@@ -430,12 +430,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 // Invoked because the controller is the delegate for the window.
-- (void) windowWillClose:(NSNotification*)notification {
+- (void) windowWillClose:(NSNotification *)notification {
   [self autorelease];
 }
 
 // Invoked because the controller is the delegate for the window.
-- (void) windowDidResize:(NSNotification*)notification {
+- (void) windowDidResize:(NSNotification *)notification {
   if (! [[self window] isZoomed]) {
     // Keep track of the user-state size of the window, as this will be uses as
     // the initial size of derived views.
@@ -444,8 +444,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) observeValueForKeyPath: (NSString *)keyPath ofObject: (id) object 
-           change: (NSDictionary *)change context: (void *)context {
+- (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id) object 
+           change:(NSDictionary *)change context:(void *)context {
   if (object == [NSUserDefaults standardUserDefaults]) {
     if ([keyPath isEqualToString: FileDeletionTargetsKey] ||
         [keyPath isEqualToString: ConfirmFileDeletionKey]) {
@@ -455,7 +455,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) openFile: (id) sender {
+- (IBAction) openFile:(id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -501,7 +501,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) revealFileInFinder: (id) sender {
+- (IBAction) revealFileInFinder:(id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
   
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
@@ -569,7 +569,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) deleteFile: (id) sender {
+- (IBAction) deleteFile:(id) sender {
   FileItem  *selectedFile = [pathModelView selectedFileItem];
   BOOL  isDir = [selectedFile isDirectory];
   BOOL  isPackage = [selectedFile isPackage];
@@ -644,16 +644,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) toggleDrawer: (id) sender {
+- (IBAction) toggleDrawer:(id) sender {
   [drawer toggle: sender];
 }
 
 
-- (IBAction) maskCheckBoxChanged:(id)sender {
+- (IBAction) maskCheckBoxChanged:(id) sender {
   [self updateMask];
 }
 
-- (IBAction) editMask:(id)sender {
+- (IBAction) editMask:(id) sender {
   if (editMaskFilterWindowControl == nil) {
     // Lazily create the "edit mask" window.
     
@@ -670,7 +670,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) colorMappingChanged: (id) sender {
+- (IBAction) colorMappingChanged:(id) sender {
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
 
@@ -687,7 +687,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 }
 
-- (IBAction) colorPaletteChanged: (id) sender {
+- (IBAction) colorPaletteChanged:(id) sender {
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   NSString  *name = 
@@ -700,11 +700,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   }
 }
 
-- (IBAction) showEntireVolumeCheckBoxChanged: (id) sender {
+- (IBAction) showEntireVolumeCheckBoxChanged:(id) sender {
   [mainView setShowEntireVolume: [showEntireVolumeCheckBox state]==NSOnState];
 }
 
-- (IBAction) showPackageContentsCheckBoxChanged: (id) sender {
+- (IBAction) showPackageContentsCheckBoxChanged:(id) sender {
   BOOL  showPackageContents = [showPackageContentsCheckBox state]==NSOnState;
   
   [mainView setTreeDrawerSettings: 
@@ -762,7 +762,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-+ (NSArray *) fileDeletionTargetNames {
++ (NSArray *)fileDeletionTargetNames {
   static NSArray  *fileDeletionTargetNames = nil;
   
   if (fileDeletionTargetNames == nil) {
@@ -779,14 +779,14 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation DirectoryViewControl (PrivateMethods)
 
-- (void) informativeAlertDidEnd: (NSAlert *)alert 
-           returnCode: (int) returnCode contextInfo: (void *)contextInfo {
+- (void) informativeAlertDidEnd:(NSAlert *)alert 
+           returnCode:(int) returnCode contextInfo:(void *)contextInfo {
   [[alert window] orderOut: self];
 }
 
 
-- (void) confirmDeleteSelectedFileAlertDidEnd: (NSAlert *)alert 
-           returnCode: (int) returnCode contextInfo: (void *)contextInfo {
+- (void) confirmDeleteSelectedFileAlertDidEnd:(NSAlert *)alert 
+           returnCode:(int) returnCode contextInfo:(void *)contextInfo {
   // Let the alert disappear, so that it is gone before the file is being
   // deleted as this can trigger another alert (namely when it fails).
   [[alert window] orderOut: self];
@@ -841,7 +841,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
            contextInfo: nil];
 }
 
-- (void) fileItemDeleted: (NSNotification *)notification {
+- (void) fileItemDeleted:(NSNotification *)notification {
   [freedSpaceField setStringValue: 
                    [FileItem stringForFileItemSize: [treeContext freedSpace]]];
   [numDeletedFilesField setStringValue:
@@ -872,7 +872,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) visibleTreeChanged: (NSNotification *)notification {
+- (void) visibleTreeChanged:(NSNotification *)notification {
   FileItem  *visibleTree = [pathModelView visibleTree];
   
   [invisiblePathName release];
@@ -886,12 +886,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [self updateSelectionInStatusbar];
 }
 
-- (void) visiblePathLockingChanged: (NSNotification *)notification {
+- (void) visiblePathLockingChanged:(NSNotification *)notification {
   [self validateControls];
 }
 
 
-- (void) selectedItemChanged: (NSNotification *)notification {
+- (void) selectedItemChanged:(NSNotification *)notification {
   NSString  *itemSizeString = [self updateSelectionInStatusbar];
   [self updateSelectionInFocusPanel: itemSizeString];
   
@@ -904,7 +904,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (NSString *) updateSelectionInStatusbar {
+- (NSString *)updateSelectionInStatusbar {
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem == nil ) {
@@ -972,7 +972,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 // Note: For efficiency taking already constructed itemSizeString from 
 // elsewhere, as opposed to constructing it again. 
-- (void) updateSelectionInFocusPanel: (NSString *)itemSizeString {
+- (void) updateSelectionInFocusPanel:(NSString *)itemSizeString {
   FileItem  *selectedItem = [pathModelView selectedFileItem];
 
   if ( selectedItem != nil ) {
@@ -1086,7 +1086,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) maskWindowApplyAction:(NSNotification*)notification {
+- (void) maskWindowApplyAction:(NSNotification *)notification {
   [mask release];
   
   mask = [[editMaskFilterWindowControl filter] retain];
@@ -1099,18 +1099,18 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [self maskChanged];
 }
 
-- (void) maskWindowCancelAction:(NSNotification*)notification {
+- (void) maskWindowCancelAction:(NSNotification *)notification {
   [[editMaskFilterWindowControl window] close];
 }
 
-- (void) maskWindowOkAction:(NSNotification*)notification {
+- (void) maskWindowOkAction:(NSNotification *)notification {
   [[editMaskFilterWindowControl window] close];
   
   // Other than closing the window, the action is same as the "apply" one.
   [self maskWindowApplyAction:notification];
 }
 
-- (void) maskWindowDidBecomeKey:(NSNotification*)notification {
+- (void) maskWindowDidBecomeKey:(NSNotification *)notification {
   [[self window] orderWindow:NSWindowBelow
                relativeTo:[[editMaskFilterWindowControl window] windowNumber]];
   [[self window] makeMainWindow];
@@ -1121,10 +1121,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation ItemInFocusControls
 
-- (id) initWithPathTextView: (NSTextView *)pathTextViewVal
-         titleField: (NSTextField *)titleFieldVal
-         exactSizeField: (NSTextField *)exactSizeFieldVal
-         sizeField: (NSTextField *)sizeFieldVal {
+- (id) initWithPathTextView:(NSTextView *)pathTextViewVal
+         titleField:(NSTextField *)titleFieldVal
+         exactSizeField:(NSTextField *)exactSizeFieldVal
+         sizeField:(NSTextField *)sizeFieldVal {
   if (self = [super init]) {
     pathTextView = [pathTextViewVal retain];
     titleField = [titleFieldVal retain];
@@ -1153,7 +1153,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) showFileItem: (FileItem *)item {
+- (void) showFileItem:(FileItem *)item {
   NSString  *sizeString = [FileItem stringForFileItemSize: [item itemSize]];
   NSString  *itemPath = 
     ( [item isPhysical]
@@ -1165,8 +1165,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) showFileItem: (FileItem *)item itemPath: (NSString *)pathString
-           sizeString: (NSString *)sizeString {
+- (void) showFileItem:(FileItem *)item itemPath:(NSString *)pathString
+           sizeString:(NSString *)sizeString {
   [titleField setStringValue: [self titleForFileItem: item]];
   
   [pathTextView setString: pathString];
@@ -1192,7 +1192,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation FolderInViewFocusControls
 
-- (NSString *) titleForFileItem: (FileItem *)item {
+- (NSString *)titleForFileItem:(FileItem *)item {
   if ( ! [item isPhysical] ) {
     return NSLocalizedString( @"Area in view:", "Label in Focus panel" );
   }
@@ -1212,7 +1212,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @implementation SelectedItemFocusControls
 
-- (NSString *) titleForFileItem: (FileItem *)item {
+- (NSString *)titleForFileItem:(FileItem *)item {
   if ( ! [item isPhysical] ) {
     return NSLocalizedString( @"Selected area:", "Label in Focus panel" );
   }

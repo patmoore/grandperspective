@@ -32,17 +32,17 @@ NSString  *MatchColumn = @"match";
   BOOL  done;
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControl 
-         existingTests:(NSDictionary*)allTests;
-- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControl 
-         existingTests:(NSDictionary*)allTests 
-         allowedName:(NSString*)name;
+- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControl 
+         existingTests:(NSDictionary *)allTests;
+- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControl 
+         existingTests:(NSDictionary *)allTests 
+         allowedName:(NSString *)name;
 
-- (void) windowClosing:(NSNotification*)notification;
-- (void) cancelAction:(NSNotification*)notification;
-- (void) okAction:(NSNotification*)notification;
+- (void) windowClosing:(NSNotification *)notification;
+- (void) cancelAction:(NSNotification *)notification;
+- (void) okAction:(NSNotification *)notification;
 
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int)returnCode 
+- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode 
            contextInfo:(void *)contextInfo;
 
 @end // EditFilterTestWindowTerminationControl
@@ -87,7 +87,7 @@ NSString  *MatchColumn = @"match";
 
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
-- (id) initWithTestRepository: (FilterTestRepository *)testRepositoryVal {
+- (id) initWithTestRepository:(FilterTestRepository *)testRepositoryVal {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
     testRepository = [testRepositoryVal retain];
     repositoryTestsByName = 
@@ -162,7 +162,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (void) setAllowEmptyFilter: (BOOL) flag {
+- (void) setAllowEmptyFilter:(BOOL) flag {
   allowEmptyFilter = flag;
 }
 
@@ -171,7 +171,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (void)windowDidBecomeKey:(NSNotification *)aNotification {
+- (void)windowDidBecomeKey:(NSNotification *)notification {
   finalNotificationFired = NO;
 
   if ([filterTestsView selectedRow] != -1) {
@@ -182,7 +182,7 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (void) windowWillClose:(NSNotification*)notification {
+- (void) windowWillClose:(NSNotification *)notification {
   if (! finalNotificationFired ) {
     // The window is closing while no "okPerformed" or "cancelPerformed" has
     // been fired yet. This means that the user is closing the window using
@@ -193,12 +193,12 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (IBAction) applyAction:(id)sender {
+- (IBAction) applyAction:(id) sender {
   [[NSNotificationCenter defaultCenter] 
       postNotificationName: ApplyPerformedEvent object: self];
 }
 
-- (IBAction) cancelAction:(id)sender {
+- (IBAction) cancelAction:(id) sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
 
   finalNotificationFired = YES;
@@ -206,7 +206,7 @@ NSString  *MatchColumn = @"match";
       postNotificationName: CancelPerformedEvent object: self];
 }
 
-- (IBAction) okAction:(id)sender {
+- (IBAction) okAction:(id) sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
 
   finalNotificationFired = YES;
@@ -215,7 +215,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (IBAction) removeTestFromRepository: (id)sender {
+- (IBAction) removeTestFromRepository:(id) sender {
   NSString  *testName = [self selectedAvailableTestName];
   
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
@@ -247,7 +247,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (IBAction) addTestToRepository:(id)sender {
+- (IBAction) addTestToRepository:(id) sender {
   EditFilterTestWindowControl  *editTestWindowControl = 
     [EditFilterTestWindowControl defaultInstance];
   
@@ -356,7 +356,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (IBAction) addTestToFilter:(id)sender {
+- (IBAction) addTestToFilter:(id) sender {
   NSString  *testName = [self selectedAvailableTestName];
   
   if (testName != nil) {
@@ -377,7 +377,7 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (IBAction) removeTestFromFilter:(id)sender {
+- (IBAction) removeTestFromFilter:(id) sender {
   int  index = [filterTestsView selectedRow];
   
   if (index >= 0) {
@@ -399,7 +399,7 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (IBAction) removeAllTestsFromFilter:(id)sender {
+- (IBAction) removeAllTestsFromFilter:(id) sender {
   [filterTests removeAllObjects];
   
   [filterTestsView reloadData];
@@ -408,7 +408,7 @@ NSString  *MatchColumn = @"match";
   [self updateWindowState: nil];
 }
 
-- (IBAction) showTestDescriptionChanged:(id)sender {
+- (IBAction) showTestDescriptionChanged:(id) sender {
   NSButton  *button = sender;
   if ([button state] == NSOffState) {
     [testDescriptionDrawer close];
@@ -418,7 +418,7 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (IBAction) testDoubleClicked:(id)sender {
+- (IBAction) testDoubleClicked:(id) sender {
   FilterTestRef  *filterTest = [self selectedFilterTest];
   if (filterTest != nil && [filterTest canToggleInverted]) {
     [filterTest toggleInverted];
@@ -430,7 +430,7 @@ NSString  *MatchColumn = @"match";
 //----------------------------------------------------------------------------
 // NSTableSource
 
-- (int) numberOfRowsInTableView: (NSTableView *)tableView {
+- (int) numberOfRowsInTableView:(NSTableView *)tableView {
   if (tableView == filterTestsView) {
     return [filterTests count];
   }
@@ -442,8 +442,8 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (id) tableView: (NSTableView *)tableView 
-         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
+- (id) tableView:(NSTableView *)tableView 
+         objectValueForTableColumn:(NSTableColumn *)column row:(int) row {
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == filterTestsView) {
@@ -471,8 +471,8 @@ NSString  *MatchColumn = @"match";
 //-----------------------------------------------------------------------------
 // Delegate methods for NSTableView
 
-- (void) tableView:(NSTableView *)tableView willDisplayCell: (id) cell 
-           forTableColumn: (NSTableColumn *)column row: (int) row {
+- (void) tableView:(NSTableView *)tableView willDisplayCell:(id) cell 
+           forTableColumn:(NSTableColumn *)column row:(int) row {
   NSBundle  *mainBundle = [NSBundle mainBundle];
   
   if (tableView == availableTestsView) {
@@ -482,7 +482,7 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (void) tableViewSelectionDidChange: (NSNotification *) notification {
+- (void) tableViewSelectionDidChange:(NSNotification *)notification {
   [self updateWindowState: nil];
 }
 
@@ -821,15 +821,15 @@ NSString  *MatchColumn = @"match";
   NSAssert(NO, @"Use initWithWindowControl:existingTests: instead.");
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControlVal
-         existingTests:(NSDictionary*)allTestsVal {
-  return [self initWithWindowControl:windowControlVal
-                 existingTests:allTestsVal allowedName:nil];
+- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControlVal
+         existingTests:(NSDictionary *)allTestsVal {
+  return [self initWithWindowControl: windowControlVal
+                 existingTests: allTestsVal allowedName: nil];
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl*)windowControlVal 
-         existingTests:(NSDictionary*)allTestsVal
-         allowedName:(NSString*)name {
+- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControlVal 
+         existingTests:(NSDictionary *)allTestsVal
+         allowedName:(NSString *)name {
   if (self = [super init]) {
     windowControl = [windowControlVal retain];
     allTests = [allTestsVal retain];
@@ -854,27 +854,27 @@ NSString  *MatchColumn = @"match";
   [allTests release];
   [allowedName release];
 
-  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
 
   [super dealloc];
 }
 
 
-- (void) windowClosing:(NSNotification*)notification {
+- (void) windowClosing:(NSNotification *)notification {
   if (!done) {
     [NSApp abortModal];
     done = YES;
   }
 }
 
-- (void) cancelAction:(NSNotification*)notification {
+- (void) cancelAction:(NSNotification *)notification {
   NSAssert(!done, @"Already done.");
 
   [NSApp abortModal];
   done = YES;
 }
 
-- (void) okAction:(NSNotification*)notification {
+- (void) okAction:(NSNotification *)notification {
   NSString*  newName = [windowControl fileItemTestName];
   NSString*  errorText = nil;
 

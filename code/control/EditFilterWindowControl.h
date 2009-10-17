@@ -66,21 +66,21 @@ extern NSString  *OkPerformedEvent;
   BOOL  allowEmptyFilter;
 }
 
-- (IBAction) applyAction:(id)sender;
-- (IBAction) cancelAction:(id)sender;
-- (IBAction) okAction:(id)sender;
+- (IBAction) applyAction:(id) sender;
+- (IBAction) cancelAction:(id) sender;
+- (IBAction) okAction:(id) sender;
 
-- (IBAction) addTestToRepository:(id)sender;
-- (IBAction) removeTestFromRepository:(id)sender;
-- (IBAction) editTestInRepository:(id)sender;
+- (IBAction) addTestToRepository:(id) sender;
+- (IBAction) removeTestFromRepository:(id) sender;
+- (IBAction) editTestInRepository:(id) sender;
 
-- (IBAction) addTestToFilter:(id)sender;
-- (IBAction) removeTestFromFilter:(id)sender;
-- (IBAction) removeAllTestsFromFilter:(id)sender;
+- (IBAction) addTestToFilter:(id) sender;
+- (IBAction) removeTestFromFilter:(id) sender;
+- (IBAction) removeAllTestsFromFilter:(id) sender;
 
-- (IBAction) showTestDescriptionChanged:(id)sender;
+- (IBAction) showTestDescriptionChanged:(id) sender;
 
-- (IBAction) testDoubleClicked:(id)sender;
+- (IBAction) testDoubleClicked:(id) sender;
 
 - (id) initWithTestRepository:(FilterTestRepository *)testRepository;
 

@@ -85,14 +85,14 @@
   BOOL  enabled;
 }
 
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsView
-         addTargetButton: (NSButton *)addTargetButton
-         removeTargetButton: (NSButton *)removeTargetButton;
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsView
+         addTargetButton:(NSButton *)addTargetButton
+         removeTargetButton:(NSButton *)removeTargetButton;
 
 - (void) resetState;
 
-- (void) setEnabled: (BOOL)enabled;
+- (void) setEnabled:(BOOL) enabled;
 
 - (BOOL) hasTargets;
 - (void) addTarget;
@@ -117,22 +117,22 @@
   BOOL  editInProgress;
 }
  
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsView
-         caseInsensitiveCheckBox: (NSButton *)caseCheckBox
-         addTargetButton: (NSButton *)addTargetButton
-         removeTargetButton: (NSButton *)removeTargetButton;
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsView
+         caseInsensitiveCheckBox:(NSButton *)caseCheckBox
+         addTargetButton:(NSButton *)addTargetButton
+         removeTargetButton:(NSButton *)removeTargetButton;
 
-- (void) updateStateBasedOnStringTest: (MultiMatchStringTest *)test;
-- (MultiMatchStringTest *) stringTestBasedOnState;
+- (void) updateStateBasedOnStringTest:(MultiMatchStringTest *)test;
+- (MultiMatchStringTest *)stringTestBasedOnState;
 
 @end // @interface StringMatchControls
 
 
 @interface StringMatchControls (PrivateMethods)
 
-- (void) didBeginEditing: (NSNotification *)notification;
-- (void) didEndEditing: (NSNotification *)notification;
+- (void) didBeginEditing:(NSNotification *)notification;
+- (void) didEndEditing:(NSNotification *)notification;
 
 @end // @interface StringMatchControls (PrivateMethods)
 
@@ -141,8 +141,8 @@
 
 }
 
-- (void) updateStateBasedOnItemTypeTest: (ItemTypeTest *)test;
-- (ItemTypeTest *) itemTypeTestBasedOnState;
+- (void) updateStateBasedOnItemTypeTest:(ItemTypeTest *)test;
+- (ItemTypeTest *)itemTypeTestBasedOnState;
 
 @end
 
@@ -205,7 +205,7 @@
 }
 
 
-- (NSString*) fileItemTestName {
+- (NSString *)fileItemTestName {
   if ([testNameField isEnabled]) {
     // No fixed "visible" name was set, so get the name from the text field.
     return [testNameField stringValue];
@@ -313,14 +313,14 @@
                        fileItemTest: test];
 }
 
-- (void) setVisibleName: (NSString *)name {
+- (void) setVisibleName:(NSString *)name {
   [testNameField setStringValue: name];
   [testNameField setEnabled: NO];
 }
 
 
 
-- (IBAction) cancelAction:(id)sender {
+- (IBAction) cancelAction:(id) sender {
   // Note: The window's Cancel key should have the Escape key as equivalent to
   // ensure that this method also gets invoked when the Escape key is pressed.
   // Otherwise, the Escape key will immediately close the window.
@@ -341,7 +341,7 @@
   }
 }
 
-- (IBAction) okAction:(id)sender {
+- (IBAction) okAction:(id) sender {
   if ([[self window] makeFirstResponder: [self window]]) {
     // Only respond to the action when the window can obtain first responder
     // status (see cancelAction:).
@@ -354,7 +354,7 @@
 
 // Auto-corrects the lower/upper bound fields so that they contain a valid
 // numeric value.
-- (IBAction)valueEntered:(id)sender {
+- (IBAction)valueEntered:(id) sender {
   int  value = [sender intValue];
   
   if (value < 0) {
@@ -365,80 +365,80 @@
 }
 
 
-- (IBAction) targetPopUpChanged:(id)sender {
-  [self updateEnabledState:sender];
-}
-
-
-- (IBAction) nameCheckBoxChanged:(id)sender {
-  [self updateEnabledState:sender];
-}
-
-- (IBAction) pathCheckBoxChanged:(id)sender {
-  [self updateEnabledState:sender];
-}
-
-- (IBAction) hardLinkCheckBoxChanged: (id)sender {
+- (IBAction) targetPopUpChanged:(id) sender {
   [self updateEnabledState: sender];
 }
 
-- (IBAction) packageCheckBoxChanged: (id)sender {
+
+- (IBAction) nameCheckBoxChanged:(id) sender {
   [self updateEnabledState: sender];
 }
 
-- (IBAction) typeCheckBoxChanged:(id)sender {
+- (IBAction) pathCheckBoxChanged:(id) sender {
   [self updateEnabledState: sender];
 }
 
-- (IBAction) lowerBoundCheckBoxChanged:(id)sender {
-  [self updateEnabledState:sender];
+- (IBAction) hardLinkCheckBoxChanged:(id) sender {
+  [self updateEnabledState: sender];
+}
+
+- (IBAction) packageCheckBoxChanged:(id) sender {
+  [self updateEnabledState: sender];
+}
+
+- (IBAction) typeCheckBoxChanged:(id) sender {
+  [self updateEnabledState: sender];
+}
+
+- (IBAction) lowerBoundCheckBoxChanged:(id) sender {
+  [self updateEnabledState: sender];
   
   if ([sender state]==NSOnState) {
-    [[self window] makeFirstResponder:sizeLowerBoundField];
+    [[self window] makeFirstResponder: sizeLowerBoundField];
   }
 }
 
-- (IBAction) upperBoundCheckBoxChanged:(id)sender { 
-  [self updateEnabledState:sender];
+- (IBAction) upperBoundCheckBoxChanged:(id) sender { 
+  [self updateEnabledState: sender];
   
   if ([sender state]==NSOnState) {
-    [[self window] makeFirstResponder:sizeUpperBoundField];
+    [[self window] makeFirstResponder: sizeUpperBoundField];
   }
 }
 
 
-- (IBAction) addNameTarget: (id) sender {
+- (IBAction) addNameTarget:(id) sender {
   [nameTestControls addTarget];
   [self updateEnabledState: nil];
 }
 
-- (IBAction) removeNameTarget: (id) sender {
+- (IBAction) removeNameTarget:(id) sender {
   [nameTestControls removeTarget];
   [self updateEnabledState: nil];
 }
 
-- (IBAction) addPathTarget: (id) sender {
+- (IBAction) addPathTarget:(id) sender {
   [pathTestControls addTarget];
   [self updateEnabledState: nil];
 }
 
-- (IBAction) removePathTarget: (id) sender {
+- (IBAction) removePathTarget:(id) sender {
   [pathTestControls removeTarget];
   [self updateEnabledState: nil];
 }
 
-- (IBAction) addTypeTarget: (id) sender {
+- (IBAction) addTypeTarget:(id) sender {
   [typeTestControls addTarget];
   [self updateEnabledState: nil];
 }
 
-- (IBAction) removeTypeTarget: (id) sender {
+- (IBAction) removeTypeTarget:(id) sender {
   [typeTestControls removeTarget];
   [self updateEnabledState: nil];
 }
 
 
-- (IBAction) updateEnabledState:(id)sender {
+- (IBAction) updateEnabledState:(id) sender {
   // Note: "sender" is ignored. Always updating all.
   
   BOOL  targetsOnlyFiles = 
@@ -543,7 +543,7 @@
 }
 
 
-- (void) updateStateBasedOnItemNameTest: (ItemNameTest *)test {
+- (void) updateStateBasedOnItemNameTest:(ItemNameTest *)test {
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
   [nameTestControls updateStateBasedOnStringTest: stringTest];
@@ -551,7 +551,7 @@
 }
 
 
-- (void) updateStateBasedOnItemPathTest: (ItemPathTest *)test {
+- (void) updateStateBasedOnItemPathTest:(ItemPathTest *)test {
   MultiMatchStringTest  *stringTest = (MultiMatchStringTest*)[test stringTest];
   
   [pathTestControls updateStateBasedOnStringTest: stringTest];
@@ -559,13 +559,13 @@
 }
 
 
-- (void) updateStateBasedOnItemTypeTest: (ItemTypeTest *)test {
+- (void) updateStateBasedOnItemTypeTest:(ItemTypeTest *)test {
   [typeTestControls updateStateBasedOnItemTypeTest: test];
   [typeCheckBox setState: NSOnState];
 }
 
 
-- (void) updateStateBasedOnItemSizeTest: (ItemSizeTest *)test {
+- (void) updateStateBasedOnItemSizeTest:(ItemSizeTest *)test {
   if ([test hasLowerBound]) {
     ITEM_SIZE  bound = [test lowerBound];
     int  i = POPUP_BYTES;
@@ -577,9 +577,9 @@
       }
     }
     
-    [sizeLowerBoundCheckBox setState:NSOnState]; 
-    [sizeLowerBoundField setIntValue:bound];
-    [sizeLowerBoundUnits selectItemAtIndex:i]; 
+    [sizeLowerBoundCheckBox setState: NSOnState]; 
+    [sizeLowerBoundField setIntValue: bound];
+    [sizeLowerBoundUnits selectItemAtIndex: i]; 
   }
 
   if ([test hasUpperBound]) {
@@ -593,14 +593,14 @@
       }
     }
     
-    [sizeUpperBoundCheckBox setState:NSOnState];
-    [sizeUpperBoundField setIntValue:bound];
-    [sizeUpperBoundUnits selectItemAtIndex:i];
+    [sizeUpperBoundCheckBox setState: NSOnState];
+    [sizeUpperBoundField setIntValue: bound];
+    [sizeUpperBoundUnits selectItemAtIndex: i];
   }
 }
 
 
-- (void) updateStateBasedOnItemFlagsTest: (ItemFlagsTest *)test {
+- (void) updateStateBasedOnItemFlagsTest:(ItemFlagsTest *)test {
   if ([test flagsMask] & FILE_IS_HARDLINKED) {
     [hardLinkCheckBox setState: NSOnState];
     
@@ -744,10 +744,10 @@
 
 @implementation MultiMatchControls
 
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsTableViewVal
-         addTargetButton: (NSButton *)addButton
-         removeTargetButton: (NSButton *)removeButton {
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsTableViewVal
+         addTargetButton:(NSButton *)addButton
+         removeTargetButton:(NSButton *)removeButton {
   if (self = [super init]) {
     matchPopUpButton = [popUpButton retain];
     targetsView = [targetsTableViewVal retain];
@@ -784,7 +784,7 @@
 }
 
 
-- (void) setEnabled: (BOOL)enabledVal {
+- (void) setEnabled:(BOOL) enabledVal {
   enabled = enabledVal;
   
   [self updateEnabledState];
@@ -814,7 +814,7 @@
 //----------------------------------------------------------------------------
 // Delegate methods for NSTable
 
-- (void) tableViewSelectionDidChange: (NSNotification *)notification {
+- (void) tableViewSelectionDidChange:(NSNotification *)notification {
   [self updateEnabledState];
 }
 
@@ -822,12 +822,12 @@
 //----------------------------------------------------------------------------
 // NSTableSource
 
-- (int) numberOfRowsInTableView: (NSTableView *)tableView {
+- (int) numberOfRowsInTableView:(NSTableView *)tableView {
   return [matchTargets count];
 }
 
-- (id) tableView: (NSTableView *)tableView 
-         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
+- (id) tableView:(NSTableView *)tableView 
+         objectValueForTableColumn:(NSTableColumn *)column row:(int) row {
   return [matchTargets objectAtIndex: row];
 }
 
@@ -850,18 +850,18 @@
 @implementation StringMatchControls
 
 // Overrides designated initialiser
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsTableViewVal
-         addTargetButton: (NSButton *)addButton
-         removeTargetButton: (NSButton *)removeButton {
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsTableViewVal
+         addTargetButton:(NSButton *)addButton
+         removeTargetButton:(NSButton *)removeButton {
   NSAssert(NO, @"Use other initialiser.");
 }
 
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsTableViewVal
-         caseInsensitiveCheckBox: (NSButton *)caseCheckBox
-         addTargetButton: (NSButton *)addButton
-         removeTargetButton: (NSButton *)removeButton {
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsTableViewVal
+         caseInsensitiveCheckBox:(NSButton *)caseCheckBox
+         addTargetButton:(NSButton *)addButton
+         removeTargetButton:(NSButton *)removeButton {
   if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton
@@ -923,19 +923,19 @@
 }
 
 
-- (void) updateStateBasedOnStringTest: (MultiMatchStringTest *)test {
+- (void) updateStateBasedOnStringTest:(MultiMatchStringTest *)test {
   int  index = -1;
     
-  if ([test isKindOfClass:[StringEqualityTest class]]) {
+  if ([test isKindOfClass: [StringEqualityTest class]]) {
     index = POPUP_STRING_IS;
   }
-  else if ([test isKindOfClass:[StringContainmentTest class]]) {
+  else if ([test isKindOfClass: [StringContainmentTest class]]) {
     index = POPUP_STRING_CONTAINS;
   }
-  else if ([test isKindOfClass:[StringPrefixTest class]]) {
+  else if ([test isKindOfClass: [StringPrefixTest class]]) {
     index = POPUP_STRING_STARTS_WITH;
   }
-  else if ([test isKindOfClass:[StringSuffixTest class]]) {
+  else if ([test isKindOfClass: [StringSuffixTest class]]) {
     index = POPUP_STRING_ENDS_WITH;
   }
   else {
@@ -952,7 +952,7 @@
 }
 
 
-- (MultiMatchStringTest*) stringTestBasedOnState {
+- (MultiMatchStringTest *)stringTestBasedOnState {
   if (! [self hasTargets]) {
     return nil;
   }
@@ -985,7 +985,7 @@
 //----------------------------------------------------------------------------
 // Delegate methods for NSTable
 
-- (BOOL) control: (NSControl *)control textShouldEndEditing: (NSText *)editor {
+- (BOOL) control:(NSControl *)control textShouldEndEditing:(NSText *)editor {
   return [[editor string] length] > 0;
 }
 
@@ -993,13 +993,13 @@
 //----------------------------------------------------------------------------
 // NSTableSource
 
-- (void) tableView: (NSTableView *)tableView setObjectValue: (id) object 
-           forTableColumn: (NSTableColumn *)column row: (int) row {
+- (void) tableView:(NSTableView *)tableView setObjectValue:(id) object 
+           forTableColumn:(NSTableColumn *)column row:(int) row {
   [matchTargets replaceObjectAtIndex: row withObject: object];
 }
 
-- (BOOL) tableView: (NSTableView *)tableView 
-           shouldEditTableColumn: (NSTableColumn *)column row: (int) row {
+- (BOOL) tableView:(NSTableView *)tableView 
+           shouldEditTableColumn:(NSTableColumn *)column row:(int) row {
   // Switch to "edit in progress" mode immediately. If not done here, the
   // notification is only sent when the first change is made to the text.
   // However, we like to disable the Remove button as soon as the field editor
@@ -1029,13 +1029,13 @@
 }
 
 
-- (void) didBeginEditing: (NSNotification *)notification {
+- (void) didBeginEditing:(NSNotification *)notification {
   editInProgress = YES;
   
   [self updateEnabledState];
 }
 
-- (void) didEndEditing: (NSNotification *)notification {
+- (void) didEndEditing:(NSNotification *)notification {
   editInProgress = NO;
 
   [self updateEnabledState];
@@ -1046,10 +1046,10 @@
 
 @implementation TypeMatchControls
 
-- (id) initWithMatchModePopUpButton: (NSPopUpButton *)popUpButton
-         targetsView: (NSTableView *)targetsTableViewVal
-         addTargetButton: (NSButton *)addButton
-         removeTargetButton: (NSButton *)removeButton {
+- (id) initWithMatchModePopUpButton:(NSPopUpButton *)popUpButton
+         targetsView:(NSTableView *)targetsTableViewVal
+         addTargetButton:(NSButton *)addButton
+         removeTargetButton:(NSButton *)removeButton {
   if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton
@@ -1119,7 +1119,7 @@
   [targetsView reloadData];
 }
 
-- (ItemTypeTest *) itemTypeTestBasedOnState {
+- (ItemTypeTest *)itemTypeTestBasedOnState {
   if (! [self hasTargets]) {
     return nil;
   }
@@ -1134,8 +1134,8 @@
 //----------------------------------------------------------------------------
 // NSTableSource
 
-- (id) tableView: (NSTableView *)tableView 
-         objectValueForTableColumn: (NSTableColumn *)column row: (int) row {
+- (id) tableView:(NSTableView *)tableView 
+         objectValueForTableColumn:(NSTableColumn *)column row:(int) row {
   return [[matchTargets objectAtIndex: row] uniformTypeIdentifier];
 }
 

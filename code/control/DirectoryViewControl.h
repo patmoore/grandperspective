@@ -100,42 +100,42 @@ extern NSString  *DeleteFilesAndFolders;
   NSSize  unzoomedViewSize;
 }
 
-- (IBAction) openFile: (id) sender;
-- (IBAction) revealFileInFinder: (id) sender;
-- (IBAction) deleteFile: (id) sender;
-- (IBAction) toggleDrawer: (id) sender;
+- (IBAction) openFile:(id) sender;
+- (IBAction) revealFileInFinder:(id) sender;
+- (IBAction) deleteFile:(id) sender;
+- (IBAction) toggleDrawer:(id) sender;
 
-- (IBAction) maskCheckBoxChanged: (id) sender;
-- (IBAction) editMask: (id) sender;
+- (IBAction) maskCheckBoxChanged:(id) sender;
+- (IBAction) editMask:(id) sender;
 
-- (IBAction) colorMappingChanged: (id) sender;
-- (IBAction) colorPaletteChanged: (id) sender;
-- (IBAction) showEntireVolumeCheckBoxChanged: (id) sender;
-- (IBAction) showPackageContentsCheckBoxChanged: (id) sender;
+- (IBAction) colorMappingChanged:(id) sender;
+- (IBAction) colorPaletteChanged:(id) sender;
+- (IBAction) showEntireVolumeCheckBoxChanged:(id) sender;
+- (IBAction) showPackageContentsCheckBoxChanged:(id) sender;
 
-- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)treeContext;
-- (id) initWithAnnotatedTreeContext: (AnnotatedTreeContext *)treeContext
-         pathModel: (ItemPathModel *)itemPathModel
-         settings: (DirectoryViewControlSettings *)settings;
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)treeContext;
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)treeContext
+         pathModel:(ItemPathModel *)itemPathModel
+         settings:(DirectoryViewControlSettings *)settings;
 
-- (Filter *) fileItemMask;
+- (Filter *)fileItemMask;
 
-- (ItemPathModelView *) pathModelView;
+- (ItemPathModelView *)pathModelView;
 
-- (DirectoryView*) directoryView;
+- (DirectoryView *)directoryView;
 
 /* Returns a newly created object that represents the current settings of the
  * view. It can subsequently be safely modified. This will not affect the view.
  */
 - (DirectoryViewControlSettings *)directoryViewControlSettings;
 
-- (TreeContext*) treeContext;
-- (AnnotatedTreeContext *) annotatedTreeContext;
+- (TreeContext *)treeContext;
+- (AnnotatedTreeContext *)annotatedTreeContext;
 
 - (BOOL) canOpenSelectedFile;
 - (BOOL) canRevealSelectedFile;
 - (BOOL) canDeleteSelectedFile;
 
-+ (NSArray *) fileDeletionTargetNames;
++ (NSArray *)fileDeletionTargetNames;
 
 @end

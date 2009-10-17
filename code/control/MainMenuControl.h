@@ -20,27 +20,27 @@
 
 + (MainMenuControl *)singletonInstance;
 
-+ (NSArray *) rescanBehaviourNames;
++ (NSArray *)rescanBehaviourNames;
 
 + (void) reportUnboundTests:(NSArray *)unboundTests;
 
-- (IBAction) scanDirectoryView: (id) sender;
-- (IBAction) scanFilteredDirectoryView: (id) sender;
-- (IBAction) rescanDirectoryView: (id) sender;
-- (IBAction) filterDirectoryView: (id) sender;
-- (IBAction) duplicateDirectoryView: (id) sender;
-- (IBAction) twinDirectoryView: (id) sender;
+- (IBAction) scanDirectoryView:(id) sender;
+- (IBAction) scanFilteredDirectoryView:(id) sender;
+- (IBAction) rescanDirectoryView:(id) sender;
+- (IBAction) filterDirectoryView:(id) sender;
+- (IBAction) duplicateDirectoryView:(id) sender;
+- (IBAction) twinDirectoryView:(id) sender;
 
-- (IBAction) saveScanData: (id) sender;
-- (IBAction) loadScanData: (id) sender;
+- (IBAction) saveScanData:(id) sender;
+- (IBAction) loadScanData:(id) sender;
 
-- (IBAction) saveDirectoryViewImage: (id) sender;
+- (IBAction) saveDirectoryViewImage:(id) sender;
 
-- (IBAction) editPreferences: (id) sender;
+- (IBAction) editPreferences:(id) sender;
 
-- (IBAction) toggleToolbarShown: (id) sender;
-- (IBAction) customizeToolbar: (id) sender;
+- (IBAction) toggleToolbarShown:(id) sender;
+- (IBAction) customizeToolbar:(id) sender;
 
-- (IBAction) openWebsite: (id) sender;
+- (IBAction) openWebsite:(id) sender;
 
 @end

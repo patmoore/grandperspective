@@ -52,8 +52,8 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 @interface ModalityTerminator : NSObject {
 }
 
-- (void) abortModalAction: (NSNotification *)notification;
-- (void) stopModalAction: (NSNotification *)notification;
+- (void) abortModalAction:(NSNotification *)notification;
+- (void) stopModalAction:(NSNotification *)notification;
 
 @end
 
@@ -63,10 +63,10 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
   ReadTaskInput  *taskInput;
 }
 
-- (id) initWithWindowManager: (WindowManager *)windowManager 
-         readTaskInput: (ReadTaskInput *)taskInput;
+- (id) initWithWindowManager:(WindowManager *)windowManager 
+         readTaskInput:(ReadTaskInput *)taskInput;
 
-- (void) readTaskCompleted: (TreeReader *)treeReader;
+- (void) readTaskCompleted:(TreeReader *)treeReader;
 
 @end // @interface ReadTaskCallback
 
@@ -75,9 +75,9 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
   WriteTaskInput  *taskInput;
 }
 
-- (id) initWithWriteTaskInput: (WriteTaskInput *)taskInput;
+- (id) initWithWriteTaskInput:(WriteTaskInput *)taskInput;
 
-- (void) writeTaskCompleted: (id) result;
+- (void) writeTaskCompleted:(id) result;
 
 @end // @interface WriteTaskCallback
 
@@ -86,13 +86,13 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
   WindowManager  *windowManager;
 }
 
-- (id) initWithWindowManager: (WindowManager *)windowManager;
+- (id) initWithWindowManager:(WindowManager *)windowManager;
 
-- (void) createWindowForTree: (TreeContext *)treeContext;
-- (void) createWindowForAnnotatedTree: (AnnotatedTreeContext *)annTreeContext;
+- (void) createWindowForTree:(TreeContext *)treeContext;
+- (void) createWindowForAnnotatedTree:(AnnotatedTreeContext *)annTreeContext;
 
-- (DirectoryViewControl *) createDirectoryViewControlForAnnotatedTree: 
-                             (AnnotatedTreeContext *)annTreeContext;
+- (DirectoryViewControl *)createDirectoryViewControlForAnnotatedTree: 
+                            (AnnotatedTreeContext *)annTreeContext;
 
 @end // @interface FreshDirViewWindowCreator
 
@@ -102,28 +102,28 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
   DirectoryViewControlSettings  *settings;
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManager
-         targetPath: (ItemPathModel *)targetPath
-         settings: (DirectoryViewControlSettings *)settings;
+- (id) initWithWindowManager:(WindowManager *)windowManager
+         targetPath:(ItemPathModel *)targetPath
+         settings:(DirectoryViewControlSettings *)settings;
 
 @end // @interface DerivedDirViewWindowCreator
 
 
 @interface MainMenuControl (PrivateMethods)
 
-- (void) scanFolderUsingFilter: (BOOL) useFilter;
+- (void) scanFolderUsingFilter:(BOOL) useFilter;
 - (void) scanFolder:(NSString *)path filter:(Filter *)filter;
 - (void) scanFolder:(NSString *)path filterSet:(FilterSet *)filterSet;
 
 - (void) loadScanDataFromFile:(NSString *)path;
 
-- (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel;
+- (void) duplicateCurrentWindowSharingPath:(BOOL) sharePathModel;
 
-- (Filter *) getFilter:(Filter *)initialFilter;
+- (Filter *)getFilter:(Filter *)initialFilter;
 
 /* Creates window title based on scan location, scan time and filter (if any).
  */
-+ (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control;
++ (NSString *)windowTitleForDirectoryView:(DirectoryViewControl *)control;
 
 @end // @interface MainMenuControl (PrivateMethods)
 
@@ -342,16 +342,16 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) scanDirectoryView: (id) sender {
+- (IBAction) scanDirectoryView:(id) sender {
   [self scanFolderUsingFilter: NO];
 }
 
-- (IBAction) scanFilteredDirectoryView: (id) sender {
+- (IBAction) scanFilteredDirectoryView:(id) sender {
   [self scanFolderUsingFilter: YES];
 }
 
 
-- (IBAction) rescanDirectoryView:(id)sender {
+- (IBAction) rescanDirectoryView:(id) sender {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -398,7 +398,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) filterDirectoryView:(id)sender {
+- (IBAction) filterDirectoryView:(id) sender {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -449,16 +449,16 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) duplicateDirectoryView:(id)sender {
-  [self duplicateCurrentWindowSharingPath:NO];
+- (IBAction) duplicateDirectoryView:(id) sender {
+  [self duplicateCurrentWindowSharingPath: NO];
 }
 
-- (IBAction) twinDirectoryView:(id)sender {
-  [self duplicateCurrentWindowSharingPath:YES];
+- (IBAction) twinDirectoryView:(id) sender {
+  [self duplicateCurrentWindowSharingPath: YES];
 }
 
 
-- (IBAction) saveScanData: (id) sender {
+- (IBAction) saveScanData:(id) sender {
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
     
@@ -486,7 +486,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) loadScanData: (id) sender {
+- (IBAction) loadScanData:(id) sender {
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
     
@@ -503,7 +503,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) saveDirectoryViewImage:(id)sender {
+- (IBAction) saveDirectoryViewImage:(id) sender {
   DirectoryViewControl  *dirViewControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -513,7 +513,7 @@ static MainMenuControl  *singletonInstance = nil;
         initWithDirectoryViewControl: dirViewControl];
 }
 
-- (IBAction) editPreferences:(id)sender {
+- (IBAction) editPreferences:(id) sender {
   if (preferencesPanelControl == nil) {
     // Lazily create the panel
     preferencesPanelControl = [[PreferencesPanelControl alloc] init];
@@ -523,17 +523,17 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (IBAction) toggleToolbarShown: (id) sender {
+- (IBAction) toggleToolbarShown:(id) sender {
   [[[NSApplication sharedApplication] mainWindow] toggleToolbarShown: sender];
 }
 
-- (IBAction) customizeToolbar: (id) sender {
+- (IBAction) customizeToolbar:(id) sender {
   [[[NSApplication sharedApplication] mainWindow] 
        runToolbarCustomizationPalette: sender];
 }
 
 
-- (IBAction) openWebsite: (id) sender {
+- (IBAction) openWebsite:(id) sender {
   NSBundle  *bundle = [NSBundle mainBundle];
 
   NSURL  *url = [NSURL URLWithString: 
@@ -547,7 +547,7 @@ static MainMenuControl  *singletonInstance = nil;
 
 @implementation MainMenuControl (PrivateMethods)
 
-- (void) scanFolderUsingFilter: (BOOL) useFilter {
+- (void) scanFolderUsingFilter:(BOOL) useFilter {
   NSOpenPanel  *openPanel = [NSOpenPanel openPanel];
   [openPanel setCanChooseFiles: NO];
   [openPanel setCanChooseDirectories: YES];
@@ -621,7 +621,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) duplicateCurrentWindowSharingPath: (BOOL) sharePathModel {
+- (void) duplicateCurrentWindowSharingPath:(BOOL) sharePathModel {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
@@ -640,8 +640,8 @@ static MainMenuControl  *singletonInstance = nil;
   // Note: The control should auto-release itself when its window closes
     
   // Force loading (and showing) of the window.
-  [windowManager addWindow:[newControl window] 
-                   usingTitle:[[oldControl window] title]];
+  [windowManager addWindow: [newControl window] 
+                   usingTitle: [[oldControl window] title]];
 }
 
 
@@ -682,7 +682,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-+ (NSString*) windowTitleForDirectoryView: (DirectoryViewControl *)control {
++ (NSString *)windowTitleForDirectoryView:(DirectoryViewControl *)control {
   TreeContext  *treeContext = [control treeContext];
   NSString  *scanPath = [[treeContext scanTree] path];
 
@@ -705,11 +705,11 @@ static MainMenuControl  *singletonInstance = nil;
 
 @implementation ModalityTerminator
 
-- (void) abortModalAction: (NSNotification *)notification {
+- (void) abortModalAction:(NSNotification *)notification {
   [NSApp abortModal];
 }
 
-- (void) stopModalAction: (NSNotification *)notification {
+- (void) stopModalAction:(NSNotification *)notification {
   [NSApp stopModal];
 }
 
@@ -723,8 +723,8 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(NO, @"Use initWithReadTaskInput: instead.");
 }
 
-- (id) initWithWindowManager: (WindowManager *)windowManagerVal 
-         readTaskInput: (ReadTaskInput *)taskInputVal {
+- (id) initWithWindowManager:(WindowManager *)windowManagerVal 
+         readTaskInput:(ReadTaskInput *)taskInputVal {
   if (self = [super init]) {
     windowManager = [windowManagerVal retain];
     taskInput = [taskInputVal retain];
@@ -741,7 +741,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) readTaskCompleted: (TreeReader *) treeReader {
+- (void) readTaskCompleted:(TreeReader *) treeReader {
   if ([treeReader aborted]) {
     // Reading was aborted. Silently ignore.
     return;
@@ -785,7 +785,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(NO, @"Use initWithWriteTaskInput: instead.");
 }
 
-- (id) initWithWriteTaskInput: (WriteTaskInput *)taskInputVal {
+- (id) initWithWriteTaskInput:(WriteTaskInput *)taskInputVal {
   if (self = [super init]) {
     taskInput = [taskInputVal retain];
   }
@@ -800,7 +800,7 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) writeTaskCompleted: (id) result {
+- (void) writeTaskCompleted:(id) result {
   NSAlert  *alert = [[[NSAlert alloc] init] autorelease];
   NSString  *msgFormat = nil;
 
@@ -844,7 +844,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(NO, @"Use initWithWindowManager: instead.");
 }
 
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal {
+- (id) initWithWindowManager:(WindowManager *)windowManagerVal {
   if (self = [super init]) {
     windowManager = [windowManagerVal retain];
   }
@@ -858,12 +858,12 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (void) createWindowForTree: (TreeContext *)treeContext {
+- (void) createWindowForTree:(TreeContext *)treeContext {
   [self createWindowForAnnotatedTree: 
           [AnnotatedTreeContext annotatedTreeContext: treeContext]]; 
 }
 
-- (void) createWindowForAnnotatedTree: (AnnotatedTreeContext *)annTreeContext {
+- (void) createWindowForAnnotatedTree:(AnnotatedTreeContext *)annTreeContext {
   if (annTreeContext == nil) {
     // Reading failed or cancelled. Don't create a window.
     return;
@@ -892,14 +892,14 @@ static MainMenuControl  *singletonInstance = nil;
 @implementation DerivedDirViewWindowCreator
 
 // Overrides designated initialiser.
-- (id) initWithWindowManager:(WindowManager*)windowManagerVal {
+- (id) initWithWindowManager:(WindowManager *)windowManagerVal {
   NSAssert(NO, 
     @"Use initWithWindowManager:targetPath:settings instead.");
 }
 
-- (id) initWithWindowManager: (WindowManager *)windowManagerVal
-         targetPath: (ItemPathModel *)targetPathVal
-         settings: (DirectoryViewControlSettings *)settingsVal {
+- (id) initWithWindowManager:(WindowManager *)windowManagerVal
+         targetPath:(ItemPathModel *)targetPathVal
+         settings:(DirectoryViewControlSettings *)settingsVal {
          
   if (self = [super initWithWindowManager: windowManagerVal]) {
     targetPath = [targetPathVal retain];
@@ -921,8 +921,8 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (DirectoryViewControl *) createDirectoryViewControlForAnnotatedTree:
-                             (AnnotatedTreeContext *)annTreeContext {
+- (DirectoryViewControl *)createDirectoryViewControlForAnnotatedTree:
+                            (AnnotatedTreeContext *)annTreeContext {
   // Try to match the path.
   ItemPathModel  *path = 
     [ItemPathModel pathWithTreeContext: [annTreeContext treeContext]];
