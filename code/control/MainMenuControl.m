@@ -418,22 +418,29 @@ static MainMenuControl  *singletonInstance = nil;
   FilterSet  *filterSet = 
     [[[oldControl treeContext] filterSet] filterSetWithNewFilter: filter];
       
-  ItemPathModel  *oldPathModel = [[oldControl pathModelView] pathModel];
-  DirectoryViewControlSettings  *oldSettings = 
+  ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
+  DirectoryViewControlSettings  *settings = 
     [oldControl directoryViewControlSettings];
+  if ([[filter name] isEqualToString: [[settings fileItemMask] name]]) {
+    // Don't retain the mask if it has the filter has the same name. It is
+    // likely that the filter is the same as the mask, or if not, is at least
+    // a modified version of it. It therefore does not make sense to retain
+    // the mask. This is only confusing.
+    [settings setFileItemMask: nil];
+  }
 
   DerivedDirViewWindowCreator  *windowCreator =
     [[[DerivedDirViewWindowCreator alloc] 
-         initWithWindowManager: windowManager
-           targetPath: oldPathModel
-           settings: oldSettings]
+         initWithWindowManager: windowManager 
+           targetPath: pathModel 
+           settings: settings]
          autorelease];
 
   FilterTaskInput  *input = 
     [[[FilterTaskInput alloc] 
          initWithTreeContext: [oldControl treeContext]
            filterSet: filterSet
-           packagesAsFiles: ! [oldSettings showPackageContents]]
+           packagesAsFiles: ! [settings showPackageContents]]
          autorelease];
 
   [filterTaskManager asynchronouslyRunTaskWithInput: input

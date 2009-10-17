@@ -12,11 +12,12 @@
  * The subtests are referenced by name, which means that changes to their
  * implementation after they have been added to the filter will affect the
  * implementation of the filter's overall test returned by 
- * -createFileItemTestFromRepository:.
+ * -createFileItemTestFromRepository:. This method can be invoked multiple
+ * times (and at any time) for a given filter, which means that its file item
+ * test can change during its lifetime.
  */
 @interface Filter : NSObject {
   NSString  *name;
-  BOOL  hasAutomaticName;
   
   // Array containing FilterTestRefs
   NSMutableArray  *filterTests;
@@ -27,13 +28,23 @@
   FileItemTest  *fileItemTest;
 }
 
-/* Initialises the filter with a generic name.
++ (id) filter;
++ (id) filterWithName:(NSString *)name;
++ (id) filterWithFilterTests:(NSArray *)filterTests;
++ (id) filterWithName:(NSString *)name filterTests:(NSArray *)filterTests;
++ (id) filterWithFilter:(Filter *)filter;
+
+/* Initialises an empty filter with an automatically generated name.
  */
 - (id) init;
 
 /* Initialises the filter with the given name.
  */
 - (id) initWithName:(NSString *)name;
+
+- (id) initWithFilterTests:(NSArray *)filterTests;
+
+- (id) initWithName:(NSString *)name filterTests:(NSArray *)filterTests;
 
 /* Initialises the filter based on the provided one. The newly created filter
  * will, however, not yet have an instantiated file item test. When the test is
@@ -55,10 +66,6 @@
 - (FilterTestRef *)filterTestAtIndex:(int) index;
 - (FilterTestRef *)filterTestWithName:(NSString *)name;
 - (int) indexOfFilterTest:(FilterTestRef *)test;
-
-- (void) removeAllFilterTests;
-- (void) removeFilterTestAtIndex:(int) index;
-- (void) addFilterTest:(FilterTestRef *)test;
 
 /* Creates the test object that represents the filter given the tests 
  * currently in the test repository. Returns the test that has been created,
@@ -84,15 +91,3 @@
 - (FileItemTest *)fileItemTest;
 
 @end // @interface Filter
-
-
-@interface Filter (ProtectedMethods)
-
-/* Designated initialiser. It should not be called directly. Use the public
- * initialiser methods instead.
- */
-- (id) initWithName:(NSString *)name 
-         automaticName:(BOOL) automaticName
-         filterTests:(NSArray *)filterTests;
-
-@end // @interface Filter (ProtectedMethods)

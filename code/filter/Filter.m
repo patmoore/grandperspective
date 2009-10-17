@@ -10,25 +10,60 @@
 
 @implementation Filter
 
++ (id) filter {
+  return [[[Filter alloc] init] autorelease];
+}
+
++ (id) filterWithName:(NSString *)name {
+  return [[[Filter alloc] initWithName: name] autorelease];
+}
+
++ (id) filterWithFilterTests:(NSArray *)filterTests {
+  return [[[Filter alloc] initWithFilterTests: filterTests] autorelease];
+}
+
++ (id) filterWithName:(NSString *)name filterTests:(NSArray *)filterTests {
+  return [[[Filter alloc] initWithName: name filterTests: filterTests] 
+              autorelease];
+}
+
++ (id) filterWithFilter:(Filter *)filter {
+  return [[[Filter alloc] initWithFilter: filter] autorelease];
+}
+
+
 - (id) init {
-  static int  nextFilterId = 1;
-
-  NSString  *autoName = [NSString stringWithFormat: @"#%d", nextFilterId++];
-
-  return [self initWithName: autoName
-                 automaticName: YES
-                 filterTests: [NSArray array]];
+  return [self initWithName: nil filterTests: [NSArray array]];
 }
 
 - (id) initWithName:(NSString *)nameVal {
-  return [self initWithName: nameVal 
-                 automaticName: NO 
-                 filterTests: [NSArray array]];
+  return [self initWithName: nameVal filterTests: [NSArray array]];
+}
+
+- (id) initWithFilterTests:(NSArray *)filterTestsVal {
+  return [self initWithName: nil filterTests: filterTestsVal];
+}
+
+- (id) initWithName:(NSString *)nameVal 
+         filterTests:(NSArray *)filterTestsVal {
+  static int  nextFilterId = 1;
+
+  if (self = [super init]) {
+    if (nameVal == nil) {
+      nameVal = [NSString stringWithFormat: @"#%d", nextFilterId++];
+    }
+  
+    name = [nameVal retain];
+    
+    filterTests = [[NSArray alloc] initWithArray: filterTestsVal];    
+    fileItemTest = nil;
+  }
+
+  return self;
 }
 
 - (id) initWithFilter:(Filter *)filter {
   return [self initWithName: [filter name] 
-                 automaticName: [filter hasAutomaticName] 
                  filterTests: [filter filterTests]];
 }
 
@@ -50,13 +85,11 @@
   if (name != nameVal) {
     [name release];
     name = [nameVal retain];
-    
-    hasAutomaticName = NO;
   }
 }
 
 - (BOOL) hasAutomaticName {
-  return hasAutomaticName;
+  return [name hasPrefix: @"#"];
 }
 
 - (int) numFilterTests {
@@ -85,18 +118,6 @@
 
 - (int) indexOfFilterTest:(FilterTestRef *)test {
   return [filterTests indexOfObject: test];
-}
-
-- (void) removeAllFilterTests {
-  [filterTests removeAllObjects];
-}
-
-- (void) removeFilterTestAtIndex:(int) index {
-  [filterTests removeObjectAtIndex: index];
-}
-
-- (void) addFilterTest:(FilterTestRef *)test {
-  [filterTests addObject: test];
 }
 
 
@@ -152,27 +173,3 @@
 }
 
 @end // @implementation Filter
-
-
-@implementation Filter (ProtectedMethods)
-
-/* Designated initialiser. It should not be called directly. Use the public
- * initialiser methods instead.
- */
-- (id) initWithName:(NSString *)nameVal 
-         automaticName:(BOOL) automaticName
-         filterTests:(NSArray *)filterTestsVal {
-  if (self = [super init]) {
-    name = [nameVal retain];
-    hasAutomaticName = automaticName;
-    
-    filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
-    [filterTests addObjectsFromArray: filterTestsVal];
-    
-    fileItemTest = nil;
-  }
-
-  return self;
-}
-
-@end // @implementation Filter (ProtectedMethods)

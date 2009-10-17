@@ -44,6 +44,8 @@
 				<string>NSTableView</string>
 				<key>editTestInRepositoryButton</key>
 				<string>NSButton</string>
+				<key>filterNameField</key>
+				<string>NSTextField</string>
 				<key>filterTestsView</key>
 				<string>NSTableView</string>
 				<key>okButton</key>

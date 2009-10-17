@@ -24,6 +24,8 @@ extern NSString  *OkPerformedEvent;
  */
 @interface EditFilterWindowControl : NSWindowController {
 
+  IBOutlet NSTextField  *filterNameField;
+
   IBOutlet NSTextView  *testDescriptionView;
   IBOutlet NSDrawer  *testDescriptionDrawer;
   
@@ -43,8 +45,11 @@ extern NSString  *OkPerformedEvent;
   FilterTestRepository  *testRepository;
   
   NotifyingDictionary  *repositoryTestsByName;
-    
-  Filter  *filter;
+
+  // Non-localized name of the filter.
+  NSString  *filterName;
+
+  NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
 
   // Non-localized name of currently selected test.
@@ -83,6 +88,10 @@ extern NSString  *OkPerformedEvent;
 
 - (void) setAllowEmptyFilter:(BOOL) flag;
 - (BOOL) allowEmptyFilter;
+
+/* Returns the name of the filter, given the current window state.
+ */
+- (NSString *)filterName;
 
 /* Configures the window to represent the given filter. It copies the state of
  * the original filter (as far as possible, given that some filter tests may

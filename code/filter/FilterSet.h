@@ -4,7 +4,9 @@
 @class FilterTestRepository;
 @class FileItemTest;
 
-/* Set of file item filters.
+/* Set of file item filters. The file item test representing the set of filters
+ * is determined when the set is initialised and remains fixed. It is not
+ * affected by changes to the file item tests of any of its filters.
  */
 @interface FilterSet : NSObject {
   // Array of Filters

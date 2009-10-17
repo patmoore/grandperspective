@@ -53,7 +53,7 @@
   Filter  *filter;
 
   while (filter = [filterEnum nextObject]) {
-    Filter  *newFilter = [[[Filter alloc] initWithFilter: filter] autorelease];
+    Filter  *newFilter = [Filter filterWithFilter: filter];
        
     FileItemTest  *filterTest = 
       [newFilter createFileItemTestFromRepository: repository

@@ -219,7 +219,8 @@ NSString  *AttributeNameKey = @"name";
 
 
 @interface FilterElementHandler : ElementHandler {
-  Filter  *filter;
+  NSMutableArray  *filterTests;
+  NSString  *name;
 }
 
 - (void) handler: (ElementHandler *)handler 
@@ -1125,14 +1126,16 @@ NSString  *AttributeNameKey = @"name";
          onSuccess: (SEL) successSelectorVal {
   if (self = [super initWithElement: elementNameVal reader: readerVal 
                       callback: callbackVal onSuccess: successSelectorVal]) {
-    filter = nil;
+    filterTests = [[NSMutableArray alloc] initWithCapacity: 8];;
+    name = nil;
   }
   
   return self;
 }
 
 - (void) dealloc {
-  [filter release];
+  [name release];
+  [filterTests release];
   
   [super dealloc];
 }
@@ -1140,15 +1143,8 @@ NSString  *AttributeNameKey = @"name";
 
 - (void) handleAttributes: (NSDictionary *)attribs {
   @try {
-    NSString  *name = [self getStringAttributeValue: NameAttr from: attribs
-                              defaultValue: nil];
-
-    if (name != nil) {
-      filter = [[Filter alloc] initWithName: name];
-    }
-    else {
-      filter = [[Filter alloc] init];
-    }
+    name = [[self getStringAttributeValue: NameAttr from: attribs
+                    defaultValue: nil] retain];
   }
   @catch (AttributeParseException *ex) {
     [self handlerAttributeParseError: ex];
@@ -1169,12 +1165,14 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  return filter;
+  return ( (name != nil)
+           ? [Filter filterWithName: name filterTests: filterTests]
+           : [Filter filterWithFilterTests: filterTests] );
 }
 
 - (void) handler: (ElementHandler *)handler 
            finishedParsingFilterTestElement: (FilterTestRef *) filterTest {
-  [filter addFilterTest: filterTest];
+  [filterTests addObject: filterTest];
   
   [self handler: handler finishedParsingElement: filterTest];
 }

@@ -124,8 +124,10 @@ extern NSString  *DeleteFilesAndFolders;
 
 - (DirectoryView*) directoryView;
 
-// Returns the current settings of the view.
-- (DirectoryViewControlSettings*) directoryViewControlSettings;
+/* Returns a newly created object that represents the current settings of the
+ * view. It can subsequently be safely modified. This will not affect the view.
+ */
+- (DirectoryViewControlSettings *)directoryViewControlSettings;
 
 - (TreeContext*) treeContext;
 - (AnnotatedTreeContext *) annotatedTreeContext;
