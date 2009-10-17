@@ -44,6 +44,10 @@
   return [self initWithName: nil filterTests: filterTestsVal];
 }
 
+- (id) initWithFilter:(Filter *)filter {
+  return [self initWithName: [filter name] filterTests: [filter filterTests]];
+}
+
 - (id) initWithName:(NSString *)nameVal 
          filterTests:(NSArray *)filterTestsVal {
   static int  nextFilterId = 1;
@@ -60,11 +64,6 @@
   }
 
   return self;
-}
-
-- (id) initWithFilter:(Filter *)filter {
-  return [self initWithName: [filter name] 
-                 filterTests: [filter filterTests]];
 }
 
 
@@ -129,8 +128,7 @@
 - (FileItemTest *)createFileItemTestFromRepository: 
                     (FilterTestRepository *)repository
                     unboundTests:(NSMutableArray *)unboundTests {
-  [fileItemTest release];
-  fileItemTest = nil;
+  NSAssert(fileItemTest == nil, @"File item test already set.");
 
   NSMutableArray  *subTests = 
     [NSMutableArray arrayWithCapacity: [filterTests count]];

@@ -12,15 +12,13 @@
  * The subtests are referenced by name, which means that changes to their
  * implementation after they have been added to the filter will affect the
  * implementation of the filter's overall test returned by 
- * -createFileItemTestFromRepository:. This method can be invoked multiple
- * times (and at any time) for a given filter, which means that its file item
- * test can change during its lifetime.
+ * -createFileItemTestFromRepository:.
  */
 @interface Filter : NSObject {
   NSString  *name;
   
   // Array containing FilterTestRefs
-  NSMutableArray  *filterTests;
+  NSArray  *filterTests;
  
   /* The filter test. Only valid after -createFileItemTestFromRepository: has
    * been called.
@@ -42,9 +40,10 @@
  */
 - (id) initWithName:(NSString *)name;
 
+/* Initialises the filter with the given filter tests. The tests should be
+ * instances of FilterTestRef.
+ */
 - (id) initWithFilterTests:(NSArray *)filterTests;
-
-- (id) initWithName:(NSString *)name filterTests:(NSArray *)filterTests;
 
 /* Initialises the filter based on the provided one. The newly created filter
  * will, however, not yet have an instantiated file item test. When the test is
@@ -52,6 +51,11 @@
  * based on the tests as then defined in the repository.
  */
 - (id) initWithFilter:(Filter *)filter;
+
+/* Initialises the filter with the given name and  filter tests. The tests
+ * should be instances of FilterTestRef.
+ */
+- (id) initWithName:(NSString *)name filterTests:(NSArray *)filterTests;
 
 
 - (NSString *)name;
@@ -70,6 +74,10 @@
 /* Creates the test object that represents the filter given the tests 
  * currently in the test repository. Returns the test that has been created,
  * which if it was non-nil can also be retrieved using -fileItemTest.
+ *
+ * Once a file item test has been created, it does not change anymore. To 
+ * update the test invoke this method on a copy of this filter, which can be 
+ * obtained using +filterWithFilter:.
  */
 - (FileItemTest *)createFileItemTestFromRepository: 
                     (FilterTestRepository *)repository;

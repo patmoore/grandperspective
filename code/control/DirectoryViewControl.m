@@ -1038,14 +1038,21 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
   
 - (void) updateMask {
-  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-
   Filter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
 
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  if ( newMask != nil 
+       && [userDefaults boolForKey: UpdateFiltersBeforeUse] ) {
+    // Create a new filter (so that the file item test can be updated)
+    newMask = [Filter filterWithFilter: newMask];
+    
+    // Replace the old mask by the new one
+    [mask release];
+    mask = [newMask retain];
+  }
+
   FileItemTest  *newMaskTest = [newMask fileItemTest]; 
-  if ( newMask != nil
-       && ( newMaskTest == nil
-            || [userDefaults boolForKey: UpdateFiltersBeforeUse] ) ) {
+  if ( newMask != nil && newMaskTest == nil ) {
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
     newMaskTest =
       [newMask createFileItemTestFromRepository:
