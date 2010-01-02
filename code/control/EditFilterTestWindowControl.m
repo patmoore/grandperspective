@@ -22,7 +22,7 @@
 #import "UniformType.h"
 #import "UniformTypeInventory.h"
 
-#import "EditFilterWindowControl.h"
+#import "ControlConstants.h"
 
 
 // testTargetPopUp choices
@@ -319,33 +319,49 @@
 }
 
 
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+  finalNotificationFired = NO;
+}
+
+- (BOOL) windowShouldClose:(id) window {
+  // Only allow closing of the window when it can obtain first responder 
+  // status. If this fails, it means that a field editor is being used that 
+  // does not want to give up its first responder status because its delegate 
+  // tells it not to (because its text value is still invalid).
+  //
+  // The field editor can be made to give up its first responder status by 
+  // "brute force" using endEditingFor:. However, this then requires extra work
+  // to ensure the state is consistent, and does not seem worth the effort.
+  return ([[self window] makeFirstResponder: [self window]]);
+}
+
+- (void) windowWillClose:(NSNotification *)notification {
+  if ( !finalNotificationFired ) {
+    // The window is closing while no "okPerformed" or "cancelPerformed" has
+    // been fired yet. This means that the user is closing the window using
+    // the window's red close button.
+    
+    finalNotificationFired = YES;
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName: ClosePerformedEvent object: self];
+  }
+}
 
 - (IBAction) cancelAction:(id) sender {
   // Note: The window's Cancel key should have the Escape key as equivalent to
   // ensure that this method also gets invoked when the Escape key is pressed.
   // Otherwise, the Escape key will immediately close the window.
 
-  if ([[self window] makeFirstResponder: [self window]]) {
-    // Only respond to the cancel action when the window can obtain first
-    // responder status. If this fails, it means that a field editor is being
-    // used that does not want to give up its first responder status because
-    // its delegate tells it not to (because its text value is still invalid).
-    //
-    // The field editor can be made to give up its first responder status
-    // by "brute force" using endEditingFor:. However, this then requires
-    // extra work to ensure the state is consistent, and does not seem worth
-    // the effort.
-  
+  if ( [self windowShouldClose: [self window]] ) {
+    finalNotificationFired = YES;
     [[NSNotificationCenter defaultCenter] 
         postNotificationName: CancelPerformedEvent object: self];
   }
 }
 
 - (IBAction) okAction:(id) sender {
-  if ([[self window] makeFirstResponder: [self window]]) {
-    // Only respond to the action when the window can obtain first responder
-    // status (see cancelAction:).
-  
+  if ( [self windowShouldClose: [self window]] ) {
+    finalNotificationFired = YES;
     [[NSNotificationCenter defaultCenter] 
         postNotificationName: OkPerformedEvent object: self];
   }

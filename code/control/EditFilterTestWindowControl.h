@@ -48,6 +48,10 @@
   
   NSString  *testName;
   
+  // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
+  // notification has been fired already.
+  BOOL  finalNotificationFired;
+  
   TypeMatchControls  *typeTestControls;
   StringMatchControls  *nameTestControls;
   StringMatchControls  *pathTestControls;

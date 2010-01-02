@@ -13,11 +13,6 @@
 #import "EditFilterTestWindowControl.h"
 
 
-NSString  *ClosePerformedEvent = @"closePerformed";
-NSString  *ApplyPerformedEvent = @"applyPerformed";
-NSString  *CancelPerformedEvent = @"cancelPerformed";
-NSString  *OkPerformedEvent = @"okPerformed";
-
 NSString  *NameColumn = @"name";
 NSString  *MatchColumn = @"match";
 

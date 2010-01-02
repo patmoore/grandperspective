@@ -1,12 +1,5 @@
 #import <Cocoa/Cocoa.h>
 
-
-extern NSString  *ClosePerformedEvent;
-extern NSString  *ApplyPerformedEvent;
-extern NSString  *CancelPerformedEvent;
-extern NSString  *OkPerformedEvent;
-
-
 @class EditFilterTestWindowControl;
 @class NotifyingDictionary;
 @class FilterTestRepository;
