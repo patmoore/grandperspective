@@ -10,6 +10,9 @@
 #import "FilterTest.h"
 #import "FilterTestRef.h"
 
+#import "NameValidator.h"
+#import "ModalityTerminator.h"
+
 #import "EditFilterTestWindowControl.h"
 
 
@@ -17,30 +20,19 @@ NSString  *NameColumn = @"name";
 NSString  *MatchColumn = @"match";
 
 
-/* Handles closing of the "Edit Filter Test Window", including a validity
- * check before the window is closed.
+/* Performs a validity check on the name of filter tests (before the window is 
+ * closed using the OK button).
  */
-@interface EditFilterTestWindowTerminationControl : NSObject {
-  EditFilterTestWindowControl  *windowControl;
+@interface FilterTestNameValidator : NSObject <NameValidator> {
   NSDictionary  *allTests;
   NSString  *allowedName;
-  BOOL  done;
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControl 
-         existingTests:(NSDictionary *)allTests;
-- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControl 
-         existingTests:(NSDictionary *)allTests 
+- (id) initWithExistingTests:(NSDictionary *)allTests;
+- (id) initWithExistingTests:(NSDictionary *)allTests 
          allowedName:(NSString *)name;
 
-- (void) windowClosing:(NSNotification *)notification;
-- (void) cancelAction:(NSNotification *)notification;
-- (void) okAction:(NSNotification *)notification;
-
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode 
-           contextInfo:(void *)contextInfo;
-
-@end // EditFilterTestWindowTerminationControl
+@end // @interface FilterTestNameValidator
 
 
 @interface EditFilterWindowControl (PrivateMethods)
@@ -70,7 +62,7 @@ NSString  *MatchColumn = @"match";
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
-@end // EditFilterWindowControl (PrivateMethods)
+@end // @interface EditFilterWindowControl (PrivateMethods)
 
 
 @implementation EditFilterWindowControl
@@ -249,13 +241,15 @@ NSString  *MatchColumn = @"match";
   // Ensure window is loaded before configuring its contents
   NSWindow  *editTestWindow = [editTestWindowControl window]; 
 
-  EditFilterTestWindowTerminationControl  *terminationControl = 
-    [[[EditFilterTestWindowTerminationControl alloc]
-        initWithWindowControl: editTestWindowControl
-          existingTests: ((NSDictionary *)repositoryTestsByName)] autorelease];
-
+  FilterTestNameValidator  *nameValidator = 
+    [[[FilterTestNameValidator alloc]
+        initWithExistingTests: ((NSDictionary *)repositoryTestsByName)] 
+          autorelease];
+  
+  [editTestWindowControl setNameValidator: nameValidator];
   [editTestWindowControl representFilterTest: nil];
 
+  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
   int  status = [NSApp runModalForWindow: editTestWindow];
   [editTestWindow close];
 
@@ -265,7 +259,7 @@ NSString  *MatchColumn = @"match";
     if (filterTest != nil) {
       NSString  *name = [filterTest name];
 
-      // The terminationControl should have ensured that this check succeeds.
+      // The nameValidator should have ensured that this check succeeds.
       NSAssert( 
         [((NSDictionary *)repositoryTestsByName) objectForKey: name] == nil,
         @"Duplicate name check failed.");
@@ -310,12 +304,14 @@ NSString  *MatchColumn = @"match";
     [editTestWindowControl setVisibleName: localizedName];
   }
   
-  EditFilterTestWindowTerminationControl  *terminationControl = 
-    [[[EditFilterTestWindowTerminationControl alloc]
-        initWithWindowControl: editTestWindowControl
-          existingTests: ((NSDictionary *)repositoryTestsByName)
-          allowedName: oldName] autorelease];
-
+  FilterTestNameValidator  *nameValidator = 
+    [[[FilterTestNameValidator alloc]
+        initWithExistingTests: ((NSDictionary *)repositoryTestsByName)
+        allowedName: oldName] autorelease];
+  
+  [editTestWindowControl setNameValidator: nameValidator];
+  
+  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
   int  status = [NSApp runModalForWindow: editTestWindow];
   [editTestWindow close];
     
@@ -806,108 +802,55 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-@end
+@end // @implementation EditFilterWindowControl (PrivateMethods)
 
 
-@implementation EditFilterTestWindowTerminationControl
+@implementation FilterTestNameValidator
 
 // Overrides designated initialiser.
 - (id) init {
-  NSAssert(NO, @"Use initWithWindowControl:existingTests: instead.");
+  NSAssert(NO, @"Use initWithExistingTests: instead.");
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControlVal
-         existingTests:(NSDictionary *)allTestsVal {
-  return [self initWithWindowControl: windowControlVal
-                 existingTests: allTestsVal allowedName: nil];
+- (id) initWithExistingTests:(NSDictionary *)allTestsVal {
+  return [self initWithExistingTests: allTestsVal allowedName: nil];
 }
 
-- (id) initWithWindowControl:(EditFilterTestWindowControl *)windowControlVal 
-         existingTests:(NSDictionary *)allTestsVal
+- (id) initWithExistingTests:(NSDictionary *)allTestsVal
          allowedName:(NSString *)name {
   if (self = [super init]) {
-    windowControl = [windowControlVal retain];
     allTests = [allTestsVal retain];
-    allowedName = [name retain];
-    
-    done = NO;
-    
-    NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-    [nc addObserver: self selector: @selector(cancelAction:)
-          name: CancelPerformedEvent object:windowControl];
-    [nc addObserver: self selector: @selector(okAction:)
-          name: OkPerformedEvent object:windowControl];
-    [nc addObserver: self selector: @selector(windowClosing:)
-          name: NSWindowWillCloseNotification object: [windowControl window]];
+    allowedName = [name retain];    
   }
   
   return self;
 }
 
 - (void) dealloc {
-  [windowControl release];
   [allTests release];
   [allowedName release];
-
-  [[NSNotificationCenter defaultCenter] removeObserver: self];
 
   [super dealloc];
 }
 
 
-- (void) windowClosing:(NSNotification *)notification {
-  if (!done) {
-    [NSApp abortModal];
-    done = YES;
-  }
-}
-
-- (void) cancelAction:(NSNotification *)notification {
-  NSAssert(!done, @"Already done.");
-
-  [NSApp abortModal];
-  done = YES;
-}
-
-- (void) okAction:(NSNotification *)notification {
-  NSString*  newName = [windowControl fileItemTestName];
+- (NSString *)checkNameIsValid:(NSString *)name {
   NSString*  errorText = nil;
 
-  if ([newName isEqualToString:@""]) {
-    errorText = NSLocalizedString( @"The test must have a name.",
-                                   @"Alert message" );
+  if ([name isEqualToString:@""]) {
+    return NSLocalizedString( @"The test must have a name.",
+                              @"Alert message" );
   }
-  else if ( ![allowedName isEqualToString:newName] &&
-            [allTests objectForKey:newName] != nil) {
+  else if ( ![allowedName isEqualToString: name] &&
+            [allTests objectForKey: name] != nil) {
     NSString  *fmt = NSLocalizedString( @"A test named \"%@\" already exists.",
                                         @"Alert message" );
-            
-    errorText = [NSString stringWithFormat: fmt, newName];
+    return [NSString stringWithFormat: fmt, name];
   }
- 
-  if (errorText != nil) {
-    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
   
-    [alert addButtonWithTitle: OK_BUTTON_TITLE];
-    [alert setMessageText: errorText];
-
-    [alert beginSheetModalForWindow:[windowControl window]
-             modalDelegate:self 
-             didEndSelector:@selector(alertDidEnd:returnCode:contextInfo:) 
-             contextInfo:nil];
-  }
-  else {
-    NSAssert(!done, @"Already done.");
-
-    done = YES;
-    [NSApp stopModal];
-  }
+  // All OK
+  return nil;
 }
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
-          contextInfo:(void *)contextInfo {
-  // void
-}
-
-@end // @implementation EditFilterTestWindowTerminationControl
+@end // @implementation FilterTestNameValidator
 

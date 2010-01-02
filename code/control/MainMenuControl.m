@@ -4,6 +4,8 @@
 
 #import "ControlConstants.h"
 #import "LocalizableStrings.h"
+#import "ModalityTerminator.h"
+#import "NameValidator.h"
 
 #import "DirectoryViewControl.h"
 #import "DirectoryViewControlSettings.h"
@@ -47,15 +49,6 @@
 NSString  *RescanClosesOldWindow = @"close old window";
 NSString  *RescanKeepsOldWindow = @"keep old window";
 NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
-
-
-@interface ModalityTerminator : NSObject {
-}
-
-- (void) abortModalAction:(NSNotification *)notification;
-- (void) stopModalAction:(NSNotification *)notification;
-
-@end
 
 
 @interface ReadTaskCallback : NSObject {
@@ -107,6 +100,18 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
          settings:(DirectoryViewControlSettings *)settings;
 
 @end // @interface DerivedDirViewWindowCreator
+
+
+@interface FilterNameValidator : NSObject <NameValidator> {
+  NSDictionary  *allFilters;
+  NSString  *allowedName;
+}
+
+- (id) initWithExistingFilters:(NSDictionary *)allFilters;
+- (id) initWithExistingFilters:(NSDictionary *)allFilters 
+         allowedName:(NSString *)name;
+
+@end // @interface FilterNameValidator
 
 
 @interface MainMenuControl (PrivateMethods)
@@ -646,31 +651,17 @@ static MainMenuControl  *singletonInstance = nil;
 
 
 - (Filter *) getFilter:(Filter *)initialFilter {
-  EditFilterWindowControl  *editFilterWindowControl = 
+  EditFilterWindowControl  *windowControl = 
     [[[EditFilterWindowControl alloc] init] autorelease];
 
-  [[editFilterWindowControl window] setTitle: 
+  [[windowControl window] setTitle: 
       NSLocalizedString( @"Apply filter", @"Window title" ) ];
-  [editFilterWindowControl removeApplyButton];
-  [editFilterWindowControl representFilter: initialFilter];
+  [windowControl removeApplyButton];
+  [windowControl representFilter: initialFilter];
 
-  ModalityTerminator  *stopModal = 
-    [[[ModalityTerminator alloc] init] autorelease];
-    
-  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver: stopModal selector: @selector(abortModalAction:)
-        name: CancelPerformedEvent object: editFilterWindowControl];
-  [nc addObserver: stopModal selector: @selector(abortModalAction:)
-        name: ClosePerformedEvent object: editFilterWindowControl];
-        // Closing a window can be considered the same as cancelling.
-  [nc addObserver: stopModal selector: @selector(stopModalAction:)
-        name: OkPerformedEvent object: editFilterWindowControl];
-
-  int  status = [NSApp runModalForWindow: [editFilterWindowControl window]];
-
-  [nc removeObserver: stopModal];
-  
-  [[editFilterWindowControl window] close];
+  [ModalityTerminator modalityTerminatorForEventSource: windowControl];    
+  int  status = [NSApp runModalForWindow: [windowControl window]];
+  [[windowControl window] close];
 
   if (status ==  NSRunAbortedResponse) {
     return nil; // Aborted
@@ -678,7 +669,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
   
   // Get filter from window
-  return [editFilterWindowControl filter];
+  return [windowControl filter];
 }
 
 
@@ -701,19 +692,6 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 @end // @implementation MainMenuControl (PrivateMethods)
-
-
-@implementation ModalityTerminator
-
-- (void) abortModalAction:(NSNotification *)notification {
-  [NSApp abortModal];
-}
-
-- (void) stopModalAction:(NSNotification *)notification {
-  [NSApp stopModal];
-}
-
-@end // @implementation ModalityTerminator
 
 
 @implementation ReadTaskCallback
@@ -993,3 +971,53 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 @end // @implementation DerivedDirViewWindowCreator
+
+
+@implementation FilterNameValidator
+
+// Overrides designated initialiser.
+- (id) init {
+  NSAssert(NO, @"Use initWithExistingFilters: instead.");
+}
+
+- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal {
+  return [self initWithExistingFilters: allFiltersVal allowedName: nil];
+}
+
+- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal
+         allowedName:(NSString *)name {
+  if (self = [super init]) {
+    allFilters = [allFiltersVal retain];
+    allowedName = [name retain];    
+  }
+  
+  return self;
+}
+
+- (void) dealloc {
+  [allFilters release];
+  [allowedName release];
+
+  [super dealloc];
+}
+
+
+- (NSString *)checkNameIsValid:(NSString *)name {
+  NSString*  errorText = nil;
+
+  if ([name isEqualToString:@""]) {
+    return NSLocalizedString(@"The filter must have a name.",
+                             @"Alert message" );
+  }
+  else if ( ![allowedName isEqualToString: name] &&
+            [allFilters objectForKey: name] != nil) {
+    NSString  *fmt = NSLocalizedString(@"A filter named \"%@\" already exists.",
+                                       @"Alert message");
+    return [NSString stringWithFormat: fmt, name];
+  }
+  
+  // All OK
+  return nil;
+}
+
+@end // @implementation FilterNameValidator

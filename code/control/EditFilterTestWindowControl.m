@@ -23,6 +23,7 @@
 #import "UniformTypeInventory.h"
 
 #import "ControlConstants.h"
+#import "NameValidator.h"
 
 
 // testTargetPopUp choices
@@ -72,6 +73,11 @@
 - (ItemFlagsTest *)itemFlagsTestBasedOnState;
 - (FileItemTest *)selectiveItemTestBasedOnState:(FileItemTest *)subTest;
 
+- (BOOL) tryStopFieldEditor;
+
+- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+           contextInfo:(void *)contextInfo;
+
 @end // @interface EditFilterTestWindowControl (PrivateMethods)
 
 
@@ -110,6 +116,7 @@
 
 @interface StringMatchControls : MultiMatchControls {
   NSButton  *caseInsensitiveCheckBox;
+  EditFilterTestWindowControl  *windowControl;
   
   /* Tracks if an edit of a match is in progress. If so, the list of matches
    * should not be manipulated, or the table ends up in an inconsistent state.
@@ -121,7 +128,8 @@
          targetsView:(NSTableView *)targetsView
          caseInsensitiveCheckBox:(NSButton *)caseCheckBox
          addTargetButton:(NSButton *)addTargetButton
-         removeTargetButton:(NSButton *)removeTargetButton;
+         removeTargetButton:(NSButton *)removeTargetButton
+         windowControl:(EditFilterTestWindowControl *)windowControl;
 
 - (void) updateStateBasedOnStringTest:(MultiMatchStringTest *)test;
 - (MultiMatchStringTest *)stringTestBasedOnState;
@@ -165,7 +173,8 @@
 // NSWindowController's case
 - (id) init { 
   if (self = [super initWithWindowNibName:@"EditFilterTestWindow" owner:self]) {
-    // void
+    testName = nil;
+    nameValidator = nil;
   }
   return self;
 }
@@ -177,6 +186,7 @@
   [typeTestControls release];
   
   [testName release];
+  [nameValidator release];
 
   [super dealloc];
 }
@@ -188,13 +198,15 @@
                          targetsView: nameTargetsView
                          caseInsensitiveCheckBox: nameCaseInsensitiveCheckBox
                          addTargetButton: addNameTargetButton
-                         removeTargetButton: removeNameTargetButton];
+                         removeTargetButton: removeNameTargetButton
+                         windowControl: self];
   pathTestControls = [[StringMatchControls alloc]
                          initWithMatchModePopUpButton: pathMatchPopUpButton
                          targetsView: pathTargetsView
                          caseInsensitiveCheckBox: pathCaseInsensitiveCheckBox
                          addTargetButton: addPathTargetButton
-                         removeTargetButton: removePathTargetButton];
+                         removeTargetButton: removePathTargetButton
+                         windowControl: self];
   typeTestControls = [[TypeMatchControls alloc]
                          initWithMatchModePopUpButton: typeMatchPopUpButton
                          targetsView: typeTargetsView
@@ -216,6 +228,15 @@
     return testName;
   }
 }
+
+
+- (void) setNameValidator:(NSObject<NameValidator> *)validator {
+  if (validator != nameValidator) {
+    [nameValidator release];
+    nameValidator = [validator retain];
+  }
+}
+
 
 // Configures the window to represent the given test.
 - (void) representFilterTest:(FilterTest *)filterTest {
@@ -324,15 +345,7 @@
 }
 
 - (BOOL) windowShouldClose:(id) window {
-  // Only allow closing of the window when it can obtain first responder 
-  // status. If this fails, it means that a field editor is being used that 
-  // does not want to give up its first responder status because its delegate 
-  // tells it not to (because its text value is still invalid).
-  //
-  // The field editor can be made to give up its first responder status by 
-  // "brute force" using endEditingFor:. However, this then requires extra work
-  // to ensure the state is consistent, and does not seem worth the effort.
-  return ([[self window] makeFirstResponder: [self window]]);
+  return [self tryStopFieldEditor];
 }
 
 - (void) windowWillClose:(NSNotification *)notification {
@@ -352,7 +365,7 @@
   // ensure that this method also gets invoked when the Escape key is pressed.
   // Otherwise, the Escape key will immediately close the window.
 
-  if ( [self windowShouldClose: [self window]] ) {
+  if ([self tryStopFieldEditor]) {
     finalNotificationFired = YES;
     [[NSNotificationCenter defaultCenter] 
         postNotificationName: CancelPerformedEvent object: self];
@@ -360,10 +373,30 @@
 }
 
 - (IBAction) okAction:(id) sender {
-  if ( [self windowShouldClose: [self window]] ) {
-    finalNotificationFired = YES;
-    [[NSNotificationCenter defaultCenter] 
-        postNotificationName: OkPerformedEvent object: self];
+  if ([self tryStopFieldEditor]) {
+    // If the field editor was active, it resigned its first responder status,
+    // meaning that the window can be closed.
+
+    // Check if the name of the test is okay as well.
+    NSString  *errorMsg = 
+      [nameValidator checkNameIsValid: [self fileItemTestName]];
+      
+    if (errorMsg != nil) {
+      NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+  
+      [alert addButtonWithTitle: OK_BUTTON_TITLE];
+      [alert setMessageText: errorMsg];
+
+      [alert beginSheetModalForWindow: [self window]
+               modalDelegate: self 
+               didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:) 
+               contextInfo: nil];
+    }
+    else {
+      finalNotificationFired = YES;
+      [[NSNotificationCenter defaultCenter] 
+          postNotificationName: OkPerformedEvent object: self];
+    }
   }
 }
 
@@ -498,7 +531,7 @@
           || packageTestUsed) ];
 }
 
-@end
+@end // @implementation EditFilterTestWindowControl
 
 
 @implementation EditFilterTestWindowControl (PrivateMethods) 
@@ -755,7 +788,26 @@
   } 
 }
 
-@end
+
+- (BOOL) tryStopFieldEditor {
+  // Try making the window first responder. If this fails, it means that a 
+  // field editor is being used that does not want to give up its first 
+  // responder status because its delegate tells it not to (because its text 
+  // value is still invalid).
+  //
+  // The field editor can be made to give up its first responder status by 
+  // "brute force" using endEditingFor:. However, this then requires extra work
+  // to ensure the state is consistent, and does not seem worth the effort.
+  return ([[self window] makeFirstResponder: [self window]]);
+}
+
+
+- (void)alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+          contextInfo:(void *)contextInfo {
+  // void
+}
+
+@end // @implementation EditFilterTestWindowControl (PrivateMethods) 
 
 
 @implementation MultiMatchControls
@@ -877,12 +929,14 @@
          targetsView:(NSTableView *)targetsTableViewVal
          caseInsensitiveCheckBox:(NSButton *)caseCheckBox
          addTargetButton:(NSButton *)addButton
-         removeTargetButton:(NSButton *)removeButton {
+         removeTargetButton:(NSButton *)removeButton 
+         windowControl:(EditFilterTestWindowControl *)windowControlVal {
   if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton
                       removeTargetButton: removeButton]) {
     caseInsensitiveCheckBox = [caseCheckBox retain];
+    windowControl = [windowControlVal retain];
     
     editInProgress = NO;
     
@@ -891,7 +945,7 @@
     [nc addObserver: self selector: @selector(didBeginEditing:)
           name: NSControlTextDidBeginEditingNotification object: targetsView];
     [nc addObserver: self selector: @selector(didEndEditing:)
-        name: NSControlTextDidEndEditingNotification object: targetsView];
+          name: NSControlTextDidEndEditingNotification object: targetsView];
   }
   
   return self;
@@ -902,6 +956,7 @@
   [[NSNotificationCenter defaultCenter] removeObserver: self];
 
   [caseInsensitiveCheckBox release];
+  [windowControl release];
 
   [super dealloc];
 }
@@ -917,6 +972,12 @@
 
 - (void) addTarget {
   NSAssert(!editInProgress, @"Cannot edit target while edit in progress.");
+
+  if (![windowControl tryStopFieldEditor]) {
+    // Another field editor is already active and does not want to resign
+    // first responder status.
+    return;
+  }
 
   int  newRow =  [matchTargets count];
   
@@ -1016,6 +1077,11 @@
 
 - (BOOL) tableView:(NSTableView *)tableView 
            shouldEditTableColumn:(NSTableColumn *)column row:(int) row {
+  if (![tableView isEnabled] || 
+      ![windowControl tryStopFieldEditor]) {
+    return NO;
+  }
+           
   // Switch to "edit in progress" mode immediately. If not done here, the
   // notification is only sent when the first change is made to the text.
   // However, we like to disable the Remove button as soon as the field editor

@@ -3,6 +3,7 @@
 @class FilterTest;
 @class StringMatchControls;
 @class TypeMatchControls;
+@protocol NameValidator;
 
 @interface EditFilterTestWindowControl : NSWindowController {
 
@@ -47,6 +48,7 @@
   IBOutlet NSButton  *doneButton;
   
   NSString  *testName;
+  NSObject <NameValidator>  *nameValidator;
   
   // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
   // notification has been fired already.
@@ -86,6 +88,8 @@
 - (IBAction) okAction:(id) sender;
 
 - (NSString *)fileItemTestName;
+
+- (void) setNameValidator:(NSObject<NameValidator> *)validator;
 
 /* Configures the window to represent the given test.
  */
