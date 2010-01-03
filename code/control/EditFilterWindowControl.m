@@ -8,7 +8,7 @@
 #import "FilterTestRepository.h"
 #import "Filter.h"
 #import "FilterTest.h"
-#import "FilterTestRef.h"
+#import "MutableFilterTestRef.h"
 
 #import "NameValidator.h"
 #import "ModalityTerminator.h"
@@ -43,14 +43,14 @@ NSString  *MatchColumn = @"match";
 - (NSString *)selectedAvailableTestName;
 
 // Returns the selected filter test (if any).
-- (FilterTestRef *)selectedFilterTest;
+- (MutableFilterTestRef *)selectedFilterTest;
 
 - (int) indexOfTestInFilterNamed:(NSString *)name;
 
 /* Helper method for creating FilterTests to be added to the filter. It sets
  * the inverted and canToggleInverted flags correctly.
  */
-- (FilterTestRef *)filterTestForTestNamed:(NSString *)name; 
+- (MutableFilterTestRef *)filterTestForTestNamed:(NSString *)name; 
 
 - (void) testAddedToRepository:(NSNotification *)notification;
 - (void) testRemovedFromRepository:(NSNotification *)notification;
@@ -410,7 +410,7 @@ NSString  *MatchColumn = @"match";
 }
 
 - (IBAction) testDoubleClicked:(id) sender {
-  FilterTestRef  *filterTest = [self selectedFilterTest];
+  MutableFilterTestRef  *filterTest = [self selectedFilterTest];
   if (filterTest != nil && [filterTest canToggleInverted]) {
     [filterTest toggleInverted];
     [filterTestsView reloadData];
@@ -505,7 +505,7 @@ NSString  *MatchColumn = @"match";
     FilterTestRef  *orgFilterTest = [filterVal filterTestAtIndex: i];
     NSString  *name = [orgFilterTest name];
     
-    FilterTestRef  *newFilterTest = [self filterTestForTestNamed: name];
+    MutableFilterTestRef  *newFilterTest = [self filterTestForTestNamed: name];
     if (newFilterTest != nil) {
       if ( [newFilterTest canToggleInverted] &&
            [newFilterTest isInverted] != [orgFilterTest isInverted] ) {
@@ -559,7 +559,7 @@ NSString  *MatchColumn = @"match";
 }
 
 // Returns the selected filter test (if any).
-- (FilterTestRef *)selectedFilterTest {
+- (MutableFilterTestRef *)selectedFilterTest {
   int  index = [filterTestsView selectedRow];
   
   return (index < 0) ? nil : [filterTests objectAtIndex: index];
@@ -578,7 +578,7 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (FilterTestRef *)filterTestForTestNamed:(NSString *)name {
+- (MutableFilterTestRef *)filterTestForTestNamed:(NSString *)name {
   FileItemTest  *test = 
     [((NSDictionary *)repositoryTestsByName) objectForKey: name];
 
@@ -586,7 +586,8 @@ NSString  *MatchColumn = @"match";
     return nil;
   }
 
-  FilterTestRef  *filterTest = [FilterTestRef filterTestWithName: name];
+  MutableFilterTestRef  *filterTest = 
+    [[MutableFilterTestRef alloc] initWithName: name];
 
   if ([test appliesToDirectories]) {
     // Fix "inverted" state of the filter test. 

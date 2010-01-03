@@ -139,8 +139,6 @@
                 <string>Hard-linked items</string>
                 <key>inverted</key>
                 <true/>
-                <key>canToggleInverted</key>
-                <false/>
             </dict>
         </array>
 		<key>Exclude version control</key>
@@ -150,8 +148,6 @@
                 <string>Version control</string>
                 <key>inverted</key>
                 <true/>
-                <key>canToggleInverted</key>
-                <false/>
             </dict>
         </array>
 	</dict>
