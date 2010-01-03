@@ -26,6 +26,7 @@
 		AA2B4A0A104B122900B10262 /* AnnotatedTreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2B4A09104B122900B10262 /* AnnotatedTreeContext.m */; };
 		AA2B4B9410EF820D0088EA1C /* ControlConstants.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2B4B9310EF820D0088EA1C /* ControlConstants.m */; };
 		AA2B4BAD10EFB0DA0088EA1C /* ModalityTerminator.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2B4BAC10EFB0DA0088EA1C /* ModalityTerminator.m */; };
+		AA2B4C2E10F09A630088EA1C /* FilterRepository.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2B4C2D10F09A630088EA1C /* FilterRepository.m */; };
 		AA3B38E00D17EEF60070E889 /* CompoundItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38D80D17EEF60070E889 /* CompoundItem.m */; };
 		AA3B38E20D17EEF60070E889 /* DirectoryItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DA0D17EEF60070E889 /* DirectoryItem.m */; };
 		AA3B38E40D17EEF60070E889 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DC0D17EEF60070E889 /* FileItem.m */; };
@@ -173,6 +174,8 @@
 		AA2B4BAA10EFACB10088EA1C /* NameValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NameValidator.h; path = control/NameValidator.h; sourceTree = "<group>"; };
 		AA2B4BAB10EFB0DA0088EA1C /* ModalityTerminator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ModalityTerminator.h; path = util/ModalityTerminator.h; sourceTree = "<group>"; };
 		AA2B4BAC10EFB0DA0088EA1C /* ModalityTerminator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ModalityTerminator.m; path = util/ModalityTerminator.m; sourceTree = "<group>"; };
+		AA2B4C2C10F09A630088EA1C /* FilterRepository.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterRepository.h; path = filter/FilterRepository.h; sourceTree = "<group>"; };
+		AA2B4C2D10F09A630088EA1C /* FilterRepository.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterRepository.m; path = filter/FilterRepository.m; sourceTree = "<group>"; };
 		AA311D380B88B48900BD4132 /* nl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = nl; path = nl.lproj/GrandPerspectiveHelp; sourceTree = "<group>"; };
 		AA3B38D70D17EEF60070E889 /* CompoundItem.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = CompoundItem.h; path = tree/CompoundItem.h; sourceTree = "<group>"; };
 		AA3B38D80D17EEF60070E889 /* CompoundItem.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = CompoundItem.m; path = tree/CompoundItem.m; sourceTree = "<group>"; };
@@ -750,6 +753,8 @@
 				AAEF43A61081FC2E00468832 /* FilterTest.m */,
 				AAEF43751081E0EE00468832 /* FilterTestRef.h */,
 				AAEF43761081E0EE00468832 /* FilterTestRef.m */,
+				AA2B4C2C10F09A630088EA1C /* FilterRepository.h */,
+				AA2B4C2D10F09A630088EA1C /* FilterRepository.m */,
 				AAEF440A10821A3800468832 /* FilterTestRepository.h */,
 				AAEF440B10821A3800468832 /* FilterTestRepository.m */,
 			);
@@ -1000,6 +1005,7 @@
 				AAA28136108262EB00229112 /* EditFilterTestWindowControl.m in Sources */,
 				AA2B4B9410EF820D0088EA1C /* ControlConstants.m in Sources */,
 				AA2B4BAD10EFB0DA0088EA1C /* ModalityTerminator.m in Sources */,
+				AA2B4C2E10F09A630088EA1C /* FilterRepository.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

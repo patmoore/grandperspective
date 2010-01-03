@@ -2,7 +2,6 @@
 
 @class NotifyingDictionary;
 @class FileItemTest;
-@protocol StringTest;
 
 @interface FilterTestRepository : NSObject {
   NotifyingDictionary  *testsByName;

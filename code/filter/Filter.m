@@ -32,6 +32,27 @@
 }
 
 
++ (Filter *)filterFromDictionary:(NSDictionary *)dict {
+  NSArray  *storedFilterTests = [dict objectForKey: @"tests"];
+  NSMutableArray  *testRefs = 
+    [NSMutableArray arrayWithCapacity: [storedFilterTests count]];
+    
+  NSEnumerator  *testEnum = [storedFilterTests objectEnumerator];
+  NSDictionary  *storedFilterTest;
+  while (storedFilterTest = [testEnum nextObject]) {
+    FilterTestRef  *testRef = 
+      [FilterTestRef filterTestRefFromDictionary: storedFilterTest];
+    [testRefs addObject: testRef];
+  }
+  
+  // TODO: Remove. Don't include name in basic filter object. Maybe add a
+  // NamedFilter wrapper instead.
+  NSString  *name = [dict objectForKey: @"name"];
+
+  return [Filter filterWithName: name filterTests: testRefs];
+}
+
+
 - (id) init {
   return [self initWithName: nil filterTests: [NSArray array]];
 }
@@ -168,6 +189,21 @@
 
 - (FileItemTest *)fileItemTest {
   return fileItemTest;
+}
+
+- (NSDictionary *)dictionaryForObject {
+  NSMutableArray  *storedTests = 
+    [NSMutableArray arrayWithCapacity: [filterTests count]];
+  NSEnumerator  *testEnum = [filterTests objectEnumerator];
+  FilterTestRef  *testRef;
+  while (testRef = [testEnum nextObject]) {
+    [storedTests addObject: [testRef dictionaryForObject]];
+  }
+  
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+                         name, @"name",
+                         storedTests, @"tests",
+                         nil];
 }
 
 @end // @implementation Filter

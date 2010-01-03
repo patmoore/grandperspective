@@ -38,6 +38,7 @@
 #import "WriteTaskInput.h"
 #import "WriteTaskExecutor.h"
 
+#import "FilterRepository.h"
 #import "FilterTestRepository.h"
 #import "Filter.h"
 #import "FilterSet.h"
@@ -306,6 +307,8 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
+  [[FilterRepository defaultFilterRepository]
+       storeUserCreatedFilters];
   [[FilterTestRepository defaultFilterTestRepository]
        storeUserCreatedTests];
        

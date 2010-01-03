@@ -130,6 +130,31 @@
 		<key>defaultViewWindowHeight</key>
 		<real>480</real>
 	</dict>
+	<key>GPDefaultFilters</key>
+	<dict>
+		<key>Exclude hard-linked items</key>
+		<array>
+			<dict>
+                <key>name</key>
+                <string>Hard-linked items</string>
+                <key>inverted</key>
+                <true/>
+                <key>canToggleInverted</key>
+                <false/>
+            </dict>
+        </array>
+		<key>Exclude version control</key>
+		<array>
+			<dict>
+                <key>name</key>
+                <string>Version control</string>
+                <key>inverted</key>
+                <true/>
+                <key>canToggleInverted</key>
+                <false/>
+            </dict>
+        </array>
+	</dict>
 	<key>GPDefaultFilterTests</key>
 	<dict>
 		<key>Hard-linked items</key>

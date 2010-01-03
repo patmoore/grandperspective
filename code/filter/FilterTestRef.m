@@ -8,6 +8,22 @@
 }
 
 
++ (FilterTestRef *)filterTestRefFromDictionary:(NSDictionary *)dict {
+  FilterTestRef  *testRef = 
+    [FilterTestRef filterTestWithName: [dict objectForKey: @"name"]];
+  
+  if ([testRef isInverted] != [[dict objectForKey: @"inverted"] boolValue]) {
+    [testRef setCanToggleInverted: YES];
+    [testRef toggleInverted];
+  }
+  
+  [testRef setCanToggleInverted: 
+             [[dict objectForKey: @"canToggleInverted"] boolValue]];
+
+  return testRef;
+}
+
+
 // Overrides designated initialiser.
 - (id) init {
   NSAssert(NO, @"Use initWithName: instead.");
@@ -55,6 +71,18 @@
 - (void) toggleInverted {
   NSAssert([self canToggleInverted], @"Cannot toggle test.");
   inverted = !inverted;
+}
+
+
+- (NSDictionary *)dictionaryForObject {
+  // TODO: Remove canToggleInverted from object. It should not be stored. 
+  // Add MutableFilterTestRef, for use within EditFilterWindowControl only?
+  return [NSDictionary dictionaryWithObjectsAndKeys:
+                         [NSNumber numberWithBool: inverted], @"inverted",
+                         [NSNumber numberWithBool: canToggleInverted], 
+                            @"canToggleInverted", 
+                         name, @"name",
+                         nil];
 }
 
 @end // @implementation FilterTestRef

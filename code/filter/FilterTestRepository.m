@@ -20,13 +20,13 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
 
 @interface FilterTestRepository (PrivateMethods) 
 
-- (void) addTestDictsFromDictionary:(NSDictionary *)testDicts
-           toTestDictionary:(NSMutableDictionary *)testsByName;
+- (void) addStoredTestsFromDictionary:(NSDictionary *)testDicts
+           toLiveTests:(NSMutableDictionary *)testsByName;
 
 /* Handles reading of tests from old user preferences (pre 1.1.1)
  */
-- (void) addTestDictsFromArray:(NSArray *)testDicts
-           toTestDictionary:(NSMutableDictionary *)testsByName;
+- (void) addStoredTestsFromArray:(NSArray *)testDicts
+           toLiveTests:(NSMutableDictionary *)testsByName;
 
 @end
 
@@ -52,20 +52,20 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
     // Load application-provided tests from the information properties file.
     NSBundle  *bundle = [NSBundle mainBundle];
       
-    [self addTestDictsFromDictionary: 
+    [self addStoredTestsFromDictionary: 
               [bundle objectForInfoDictionaryKey: AppTestsKey]
-            toTestDictionary: initialTestDictionary];
+            toLiveTests: initialTestDictionary];
     applicationProvidedTests = 
       [[NSDictionary alloc] initWithDictionary: initialTestDictionary];
 
     // Load additional user-created tests from preferences.
     NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-    [self addTestDictsFromDictionary: 
+    [self addStoredTestsFromDictionary: 
               [userDefaults dictionaryForKey: UserTestsKey]
-            toTestDictionary: initialTestDictionary];
-    [self addTestDictsFromArray: 
+            toLiveTests: initialTestDictionary];
+    [self addStoredTestsFromArray: 
               [userDefaults arrayForKey: UserTestsKey_Array]
-            toTestDictionary: initialTestDictionary];
+            toLiveTests: initialTestDictionary];
 
     // Store tests in a NotifyingDictionary
     testsByName = [[NotifyingDictionary alloc] 
@@ -124,13 +124,13 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
   [userDefaults synchronize];
 }
 
-@end // FilterTestRepository
+@end // @implementation FilterTestRepository
 
 
 @implementation FilterTestRepository (PrivateMethods) 
 
-- (void) addTestDictsFromDictionary:(NSDictionary *)testDicts
-           toTestDictionary:(NSMutableDictionary *)testsByNameVal {
+- (void) addStoredTestsFromDictionary:(NSDictionary *)testDicts
+           toLiveTests:(NSMutableDictionary *)testsByNameVal {
   NSString  *name;
   NSEnumerator  *nameEnum = [testDicts keyEnumerator];
 
@@ -144,8 +144,8 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
 }
 
 
-- (void) addTestDictsFromArray:(NSArray *)testDicts
-           toTestDictionary:(NSMutableDictionary *)testsByNameVal {
+- (void) addStoredTestsFromArray:(NSArray *)testDicts
+           toLiveTests:(NSMutableDictionary *)testsByNameVal {
   NSDictionary  *fileItemTestDict;
   NSEnumerator  *fileItemTestDictEnum = [testDicts objectEnumerator];
   
@@ -181,4 +181,4 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
   }
 }
 
-@end // FilterTestRepository (PrivateMethods) 
+@end // @implementation FilterTestRepository (PrivateMethods) 
