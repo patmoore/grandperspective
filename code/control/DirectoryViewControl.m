@@ -9,6 +9,7 @@
 #import "FileItemMappingCollection.h"
 #import "ColorListCollection.h"
 #import "DirectoryViewControlSettings.h"
+#import "NamedFilter.h"
 #import "Filter.h"
 #import "FilterTestRepository.h"
 #import "TreeContext.h"
@@ -198,7 +199,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (Filter *)fileItemMask {
+- (NamedFilter *)fileItemMask {
   return mask;
 }
 
@@ -660,7 +661,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [self createEditMaskFilterWindow];
   }
   
-  [editMaskFilterWindowControl representFilter: mask];
+  if (mask != nil) {
+    [editMaskFilterWindowControl representNamedFilter: mask];
+  }
+  else {
+    [editMaskFilterWindowControl representEmptyFilter];
+  }
 
   // Note: First order it to front, then make it key. This ensures that
   // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
@@ -1038,26 +1044,27 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
   
 - (void) updateMask {
-  Filter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
+  NamedFilter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   if ( newMask != nil 
        && [userDefaults boolForKey: UpdateFiltersBeforeUse] ) {
     // Create a new filter (so that the file item test can be updated)
-    newMask = [Filter filterWithFilter: newMask];
+    Filter  *newFilter = [Filter filterWithFilter: [mask filter]];
+    newMask = [NamedFilter namedFilter: newFilter name: [mask name]];
     
     // Replace the old mask by the new one
     [mask release];
     mask = [newMask retain];
   }
 
-  FileItemTest  *newMaskTest = [newMask fileItemTest]; 
+  FileItemTest  *newMaskTest = [[newMask filter] fileItemTest]; 
   if ( newMask != nil && newMaskTest == nil ) {
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
     newMaskTest =
-      [newMask createFileItemTestFromRepository:
-                 [FilterTestRepository defaultFilterTestRepository]
-                 unboundTests: unboundTests];
+      [[newMask filter] createFileItemTestFromRepository:
+                            [FilterTestRepository defaultFilterTestRepository]
+                          unboundTests: unboundTests];
     [MainMenuControl reportUnboundTests: unboundTests];
   }
 
@@ -1089,7 +1096,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) maskWindowApplyAction:(NSNotification *)notification {
   [mask release];
   
-  mask = [[editMaskFilterWindowControl filter] retain];
+  mask = [[editMaskFilterWindowControl createNamedFilter] retain];
 
   if (mask != nil) {
     // Automatically enable mask.

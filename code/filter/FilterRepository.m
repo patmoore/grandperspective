@@ -75,6 +75,10 @@ NSString  *AppFiltersKey = @"GPDefaultFilters";
   return filtersByName;
 }
 
+- (NSDictionary *)filtersByName {
+  return (NSDictionary *)filtersByName;
+}
+
 
 - (Filter *)filterForName:(NSString *)name {
   return [((NSDictionary *)filtersByName) objectForKey: name];

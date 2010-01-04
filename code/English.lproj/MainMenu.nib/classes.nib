@@ -19,6 +19,8 @@
 				<string>id</string>
 				<key>duplicateDirectoryView</key>
 				<string>id</string>
+				<key>editFilters</key>
+				<string>id</string>
 				<key>editPreferences</key>
 				<string>id</string>
 				<key>filterDirectoryView</key>

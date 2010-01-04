@@ -9,6 +9,7 @@
 #import "CompoundItem.h"
 
 #import "Filter.h"
+#import "NamedFilter.h"
 #import "FilterSet.h"
 #import "FilterTestRef.h"
 #import "FilterTestRepository.h"
@@ -213,7 +214,7 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterElement: (Filter *) filter;
+           finishedParsingFilterElement: (NamedFilter *) filter;
  
 @end // @interface FilterSetElementHandler
 
@@ -1101,14 +1102,14 @@ NSString  *AttributeNameKey = @"name";
   return filterSet;
 }
 
-- (void) handler: (ElementHandler *)handler 
-           finishedParsingFilterElement: (Filter *) filter {
+- (void) handler:(ElementHandler *)handler 
+           finishedParsingFilterElement:(NamedFilter *)namedFilter {
+  Filter  *filter = [namedFilter filter];
   if ( [filter createFileItemTestFromRepository: [reader filterTestRepository]
                  unboundTests: [reader mutableUnboundFilterTests]] != nil) {
     FilterSet  *oldFilterSet = filterSet;
-  
-    filterSet = [[oldFilterSet filterSetWithNewFilter: filter] retain];
-  
+    filterSet = 
+      [[oldFilterSet filterSetWithAddedNamedFilter: namedFilter] retain];
     [oldFilterSet release];
   }
   
@@ -1165,9 +1166,8 @@ NSString  *AttributeNameKey = @"name";
 }
 
 - (id) objectForElement {
-  return ( (name != nil)
-           ? [Filter filterWithName: name filterTests: filterTests]
-           : [Filter filterWithFilterTests: filterTests] );
+  Filter  *filter = [Filter filterWithFilterTests: filterTests];
+  return [NamedFilter namedFilter: filter name: name];
 }
 
 - (void) handler: (ElementHandler *)handler 

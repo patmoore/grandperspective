@@ -7,6 +7,7 @@
 
 #import "FilterTestRepository.h"
 #import "Filter.h"
+#import "NamedFilter.h"
 #import "FilterTest.h"
 #import "MutableFilterTestRef.h"
 
@@ -62,6 +63,9 @@ NSString  *MatchColumn = @"match";
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
+- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+           contextInfo:(void *)contextInfo;
+
 @end // @interface EditFilterWindowControl (PrivateMethods)
 
 
@@ -93,12 +97,14 @@ NSString  *MatchColumn = @"match";
 
     filterName = nil;
     filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
-
+    
     availableTests = [[NSMutableArray alloc] 
       initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];
     [availableTests
        addObjectsFromArray: [((NSDictionary *)repositoryTestsByName) allKeys]];
     [availableTests sortUsingSelector: @selector(compare:)];
+
+    nameValidator = nil;
        
     allowEmptyFilter = NO; // Default
   }
@@ -115,6 +121,8 @@ NSString  *MatchColumn = @"match";
   [filterName release];
   [filterTests release];
   [availableTests release];
+  
+  [nameValidator release];
   
   [selectedTestName release];
   [testNameToSelect release];
@@ -196,9 +204,25 @@ NSString  *MatchColumn = @"match";
 - (IBAction) okAction:(id) sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
 
-  finalNotificationFired = YES;
-  [[NSNotificationCenter defaultCenter] 
-      postNotificationName: OkPerformedEvent object: self];
+  // Check if the name of the test is okay.
+  NSString  *errorMsg = [nameValidator checkNameIsValid: [self filterName]];
+      
+  if (errorMsg != nil) {
+    NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+  
+    [alert addButtonWithTitle: OK_BUTTON_TITLE];
+    [alert setMessageText: errorMsg];
+
+    [alert beginSheetModalForWindow: [self window]
+             modalDelegate: self 
+             didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:) 
+             contextInfo: nil];
+  }
+  else {
+    finalNotificationFired = YES;
+    [[NSNotificationCenter defaultCenter] 
+        postNotificationName: OkPerformedEvent object: self];
+  }
 }
 
 
@@ -241,12 +265,12 @@ NSString  *MatchColumn = @"match";
   // Ensure window is loaded before configuring its contents
   NSWindow  *editTestWindow = [editTestWindowControl window]; 
 
-  FilterTestNameValidator  *nameValidator = 
+  FilterTestNameValidator  *testNameValidator = 
     [[[FilterTestNameValidator alloc]
         initWithExistingTests: ((NSDictionary *)repositoryTestsByName)] 
           autorelease];
   
-  [editTestWindowControl setNameValidator: nameValidator];
+  [editTestWindowControl setNameValidator: testNameValidator];
   [editTestWindowControl representFilterTest: nil];
 
   [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
@@ -304,12 +328,12 @@ NSString  *MatchColumn = @"match";
     [editTestWindowControl setVisibleName: localizedName];
   }
   
-  FilterTestNameValidator  *nameValidator = 
+  FilterTestNameValidator  *testNameValidator = 
     [[[FilterTestNameValidator alloc]
         initWithExistingTests: ((NSDictionary *)repositoryTestsByName)
         allowedName: oldName] autorelease];
   
-  [editTestWindowControl setNameValidator: nameValidator];
+  [editTestWindowControl setNameValidator: testNameValidator];
   
   [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
   int  status = [NSApp runModalForWindow: editTestWindow];
@@ -491,18 +515,31 @@ NSString  *MatchColumn = @"match";
 }
 
 
-// Configures the window to represent the given filter.
-- (void) representFilter:(Filter *)filterVal {
-  if (filterVal == nil) {
-    filterVal = [Filter filter]; 
+- (void) setNameValidator:(NSObject<NameValidator> *)validator {
+  if (validator != nameValidator) {
+    [nameValidator release];
+    nameValidator = [validator retain];
   }
+}
 
+
+- (void) representEmptyFilter {
+  NamedFilter  *emptyFilter = [NamedFilter emptyFilterWithName: @""];
+  [self representNamedFilter: emptyFilter];
+}
+
+
+// Configures the window to represent the given filter.
+- (void) representNamedFilter:(NamedFilter *)namedFilter {
+  NSAssert(namedFilter != nil, @"Filter should not be nil.");
+  
+  Filter  *filter = [namedFilter filter];
   [filterTests removeAllObjects];
   
   int  i = 0;
-  int  max = [filterVal numFilterTests];
+  int  max = [filter numFilterTests];
   while (i < max) {
-    FilterTestRef  *orgFilterTest = [filterVal filterTestAtIndex: i];
+    FilterTestRef  *orgFilterTest = [filter filterTestAtIndex: i];
     NSString  *name = [orgFilterTest name];
     
     MutableFilterTestRef  *newFilterTest = [self filterTestForTestNamed: name];
@@ -526,9 +563,9 @@ NSString  *MatchColumn = @"match";
   [filterTestsView reloadData];
   [availableTestsView reloadData];
   
-  if (filterName != [filterVal name]) {
+  if (filterName != [namedFilter name]) {
     [filterName release];
-    filterName = [[filterVal name] retain];
+    filterName = [[namedFilter name] retain];
   }
   [filterNameField setStringValue: filterName];
   [filterNameField setEnabled: YES];
@@ -537,9 +574,15 @@ NSString  *MatchColumn = @"match";
 }
 
 // Returns the filter that represents the current window state.
-- (Filter *)filter {
-  // Create a copy
-  return [Filter filterWithName: [self filterName] filterTests: filterTests];
+- (NamedFilter *)createNamedFilter {
+  Filter  *filter = [Filter filterWithFilterTests: filterTests];
+  return [NamedFilter namedFilter: filter name: [self filterName]];
+}
+
+
+- (void) setVisibleName:(NSString *)name {
+  [filterNameField setStringValue: name];
+  [filterNameField setEnabled: NO];
 }
 
 @end // @implementation EditFilterWindowControl
@@ -801,6 +844,11 @@ NSString  *MatchColumn = @"match";
 
     // Rest of delete handled in response to notification event.
   }
+}
+
+- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+           contextInfo:(void *)contextInfo {
+  // void
 }
 
 @end // @implementation EditFilterWindowControl (PrivateMethods)

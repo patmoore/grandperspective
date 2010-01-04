@@ -88,6 +88,10 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
   return testsByName;
 }
 
+- (NSDictionary *)testsByName {
+  return (NSDictionary *)testsByName;
+}
+
 
 - (FileItemTest *)fileItemTestForName:(NSString *)name {
   return [((NSDictionary *)testsByName) objectForKey: name];

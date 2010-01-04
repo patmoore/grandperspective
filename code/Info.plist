@@ -40,8 +40,8 @@
 				<string>net.sourceforge.grandperspectiv.scandump</string>
 			</array>
 			<!-- For redundancy, also declare icon and file
-                             extension here, even though it is also done 
-                             by UTExportedTypeDeclarations. -->
+							 extension here, even though it is also done 
+							 by UTExportedTypeDeclarations. -->
 			<key>CFBundleTypeIconFile</key>
 			<string>GrandPerspectiveScan.icns</string>
 			<key>CFBundleTypeExtensions</key>
@@ -133,23 +133,29 @@
 	<key>GPDefaultFilters</key>
 	<dict>
 		<key>Exclude hard-linked items</key>
-		<array>
-			<dict>
-                <key>name</key>
-                <string>Hard-linked items</string>
-                <key>inverted</key>
-                <true/>
-            </dict>
-        </array>
+		<dict>
+			<key>tests</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>Hard-linked items</string>
+					<key>inverted</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
 		<key>Exclude version control</key>
-		<array>
-			<dict>
-                <key>name</key>
-                <string>Version control</string>
-                <key>inverted</key>
-                <true/>
-            </dict>
-        </array>
+		<dict>
+			<key>tests</key>
+			<array>
+				<dict>
+					<key>name</key>
+					<string>Version control</string>
+					<key>inverted</key>
+					<true/>
+				</dict>
+			</array>
+		</dict>
 	</dict>
 	<key>GPDefaultFilterTests</key>
 	<dict>

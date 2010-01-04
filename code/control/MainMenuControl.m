@@ -4,14 +4,11 @@
 
 #import "ControlConstants.h"
 #import "LocalizableStrings.h"
-#import "ModalityTerminator.h"
-#import "NameValidator.h"
-
 #import "DirectoryViewControl.h"
 #import "DirectoryViewControlSettings.h"
 #import "SaveImageDialogControl.h"
-#import "EditFilterWindowControl.h"
 #import "PreferencesPanelControl.h"
+#import "EditFiltersWindowControl.h"
 
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
@@ -40,8 +37,9 @@
 
 #import "FilterRepository.h"
 #import "FilterTestRepository.h"
-#import "Filter.h"
+#import "NamedFilter.h"
 #import "FilterSet.h"
+#import "Filter.h"
 
 #import "UniformTypeRanking.h"
 #import "UniformTypeInventory.h"
@@ -103,29 +101,17 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 @end // @interface DerivedDirViewWindowCreator
 
 
-@interface FilterNameValidator : NSObject <NameValidator> {
-  NSDictionary  *allFilters;
-  NSString  *allowedName;
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFilters;
-- (id) initWithExistingFilters:(NSDictionary *)allFilters 
-         allowedName:(NSString *)name;
-
-@end // @interface FilterNameValidator
-
-
 @interface MainMenuControl (PrivateMethods)
 
 - (void) scanFolderUsingFilter:(BOOL) useFilter;
-- (void) scanFolder:(NSString *)path filter:(Filter *)filter;
+- (void) scanFolder:(NSString *)path namedFilter:(NamedFilter *)filter;
 - (void) scanFolder:(NSString *)path filterSet:(FilterSet *)filterSet;
 
 - (void) loadScanDataFromFile:(NSString *)path;
 
 - (void) duplicateCurrentWindowSharingPath:(BOOL) sharePathModel;
 
-- (Filter *)getFilter:(Filter *)initialFilter;
+- (NamedFilter *)getNamedFilter:(NamedFilter *)initialFilter;
 
 /* Creates window title based on scan location, scan time and filter (if any).
  */
@@ -256,7 +242,10 @@ static MainMenuControl  *singletonInstance = nil;
     readTaskManager =
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: readProgressPanelControl];
-          
+    
+    preferencesPanelControl = nil;
+    editFiltersWindowControl = nil;
+    
     scanAfterLaunch = YES; // Default
   }
   
@@ -283,6 +272,7 @@ static MainMenuControl  *singletonInstance = nil;
   [readTaskManager release];
   
   [preferencesPanelControl release];
+  [editFiltersWindowControl release];
   
   [super dealloc];
 }
@@ -290,7 +280,7 @@ static MainMenuControl  *singletonInstance = nil;
 - (BOOL) application:(NSApplication *)theApplication 
            openFile:(NSString *)filename {
   if ([TreeBuilder pathIsDirectory:filename]) {
-    [self scanFolder: filename filter: nil];
+    [self scanFolder: filename namedFilter: nil];
     scanAfterLaunch = NO;
   }
   else if ([[[filename pathExtension] lowercaseString] 
@@ -410,11 +400,12 @@ static MainMenuControl  *singletonInstance = nil;
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  Filter  *filter = [self getFilter: [oldControl fileItemMask]];
-  if (filter == nil) {
+  NamedFilter  *namedFilter = [self getNamedFilter: [oldControl fileItemMask]];
+  if (namedFilter == nil) {
     return;
   }
   
+  Filter  *filter = [namedFilter filter];
   FileItemTest  *filterTest =
     [filter createFileItemTestFromRepository:
               [FilterTestRepository defaultFilterTestRepository]];
@@ -424,12 +415,13 @@ static MainMenuControl  *singletonInstance = nil;
   }
   
   FilterSet  *filterSet = 
-    [[[oldControl treeContext] filterSet] filterSetWithNewFilter: filter];
+    [[[oldControl treeContext] filterSet]
+         filterSetWithAddedNamedFilter: namedFilter];
       
   ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
   DirectoryViewControlSettings  *settings = 
     [oldControl directoryViewControlSettings];
-  if ([[filter name] isEqualToString: [[settings fileItemMask] name]]) {
+  if ([[namedFilter name] isEqualToString: [[settings fileItemMask] name]]) {
     // Don't retain the mask if it has the filter has the same name. It is
     // likely that the filter is the same as the mask, or if not, is at least
     // a modified version of it. It therefore does not make sense to retain
@@ -530,6 +522,15 @@ static MainMenuControl  *singletonInstance = nil;
   [[preferencesPanelControl window] makeKeyAndOrderFront: self];
 }
 
+- (IBAction) editFilters:(id) sender {
+  if (editFiltersWindowControl == nil) {
+    // Lazily create the window
+    editFiltersWindowControl = [[EditFiltersWindowControl alloc] init];
+  }
+  
+  [[editFiltersWindowControl window] makeKeyAndOrderFront: self];
+}
+
 
 - (IBAction) toggleToolbarShown:(id) sender {
   [[[NSApplication sharedApplication] mainWindow] toggleToolbarShown: sender];
@@ -574,23 +575,24 @@ static MainMenuControl  *singletonInstance = nil;
   } 
 
   NSString  *pathToScan = [[openPanel filenames] objectAtIndex: 0];
-  Filter  *filter = nil;
+  NamedFilter  *namedFilter = nil;
   if (useFilter) {
-    filter = [self getFilter: nil];
+    namedFilter = [self getNamedFilter: nil];
     
     // Instantiate the test
-    [filter createFileItemTestFromRepository: 
-              [FilterTestRepository defaultFilterTestRepository]];
+    [[namedFilter filter] createFileItemTestFromRepository: 
+                            [FilterTestRepository defaultFilterTestRepository]];
   }
 
-  [self scanFolder: pathToScan filter: filter];
+  [self scanFolder: pathToScan namedFilter: namedFilter];
 }
 
-- (void) scanFolder:(NSString *)path filter:(Filter *)filter {
-  NSAssert(filter==nil || [filter fileItemTest] != nil, 
+- (void) scanFolder:(NSString *)path namedFilter:(NamedFilter *)namedFilter {
+  NSAssert(namedFilter==nil || [[namedFilter filter] fileItemTest] != nil, 
            @"Filter must be nil or instantiated.");
   FilterSet  *filterSet =
-    (filter != nil) ? [FilterSet filterSetWithFilter: filter] : nil;
+    (namedFilter != nil) 
+       ? [FilterSet filterSetWithNamedFilter: namedFilter] : nil;
 
   [self scanFolder: path filterSet: filterSet];
 }
@@ -653,26 +655,9 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (Filter *) getFilter:(Filter *)initialFilter {
-  EditFilterWindowControl  *windowControl = 
-    [[[EditFilterWindowControl alloc] init] autorelease];
-
-  [[windowControl window] setTitle: 
-      NSLocalizedString( @"Apply filter", @"Window title" ) ];
-  [windowControl removeApplyButton];
-  [windowControl representFilter: initialFilter];
-
-  [ModalityTerminator modalityTerminatorForEventSource: windowControl];    
-  int  status = [NSApp runModalForWindow: [windowControl window]];
-  [[windowControl window] close];
-
-  if (status ==  NSRunAbortedResponse) {
-    return nil; // Aborted
-  }
-  NSAssert(status == NSRunStoppedResponse, @"Unexpected status.");
-  
-  // Get filter from window
-  return [windowControl filter];
+- (NamedFilter *) getNamedFilter:(NamedFilter *)initialFilter {
+  // TEMP: Need to use SelectFilterWindow (to be created).
+  return nil;
 }
 
 
@@ -974,53 +959,3 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 @end // @implementation DerivedDirViewWindowCreator
-
-
-@implementation FilterNameValidator
-
-// Overrides designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use initWithExistingFilters: instead.");
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal {
-  return [self initWithExistingFilters: allFiltersVal allowedName: nil];
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal
-         allowedName:(NSString *)name {
-  if (self = [super init]) {
-    allFilters = [allFiltersVal retain];
-    allowedName = [name retain];    
-  }
-  
-  return self;
-}
-
-- (void) dealloc {
-  [allFilters release];
-  [allowedName release];
-
-  [super dealloc];
-}
-
-
-- (NSString *)checkNameIsValid:(NSString *)name {
-  NSString*  errorText = nil;
-
-  if ([name isEqualToString:@""]) {
-    return NSLocalizedString(@"The filter must have a name.",
-                             @"Alert message" );
-  }
-  else if ( ![allowedName isEqualToString: name] &&
-            [allFilters objectForKey: name] != nil) {
-    NSString  *fmt = NSLocalizedString(@"A filter named \"%@\" already exists.",
-                                       @"Alert message");
-    return [NSString stringWithFormat: fmt, name];
-  }
-  
-  // All OK
-  return nil;
-}
-
-@end // @implementation FilterNameValidator

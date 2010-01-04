@@ -14,17 +14,8 @@
   return [[[Filter alloc] init] autorelease];
 }
 
-+ (id) filterWithName:(NSString *)name {
-  return [[[Filter alloc] initWithName: name] autorelease];
-}
-
 + (id) filterWithFilterTests:(NSArray *)filterTests {
   return [[[Filter alloc] initWithFilterTests: filterTests] autorelease];
-}
-
-+ (id) filterWithName:(NSString *)name filterTests:(NSArray *)filterTests {
-  return [[[Filter alloc] initWithName: name filterTests: filterTests] 
-              autorelease];
 }
 
 + (id) filterWithFilter:(Filter *)filter {
@@ -45,41 +36,20 @@
     [testRefs addObject: testRef];
   }
   
-  // TODO: Remove. Don't include name in basic filter object. Maybe add a
-  // NamedFilter wrapper instead.
-  NSString  *name = [dict objectForKey: @"name"];
-
-  return [Filter filterWithName: name filterTests: testRefs];
+  return [Filter filterWithFilterTests: testRefs];
 }
 
 
 - (id) init {
-  return [self initWithName: nil filterTests: [NSArray array]];
-}
-
-- (id) initWithName:(NSString *)nameVal {
-  return [self initWithName: nameVal filterTests: [NSArray array]];
-}
-
-- (id) initWithFilterTests:(NSArray *)filterTestsVal {
-  return [self initWithName: nil filterTests: filterTestsVal];
+  return [self initWithFilterTests: [NSArray array]];
 }
 
 - (id) initWithFilter:(Filter *)filter {
-  return [self initWithName: [filter name] filterTests: [filter filterTests]];
+  return [self initWithFilterTests: [filter filterTests]];
 }
 
-- (id) initWithName:(NSString *)nameVal 
-         filterTests:(NSArray *)filterTestsVal {
-  static int  nextFilterId = 1;
-
+- (id) initWithFilterTests:(NSArray *)filterTestsVal {
   if (self = [super init]) {
-    if (nameVal == nil) {
-      nameVal = [NSString stringWithFormat: @"#%d", nextFilterId++];
-    }
-  
-    name = [nameVal retain];
-    
     filterTests = [[NSArray alloc] initWithArray: filterTestsVal];    
     fileItemTest = nil;
   }
@@ -89,28 +59,12 @@
 
 
 - (void) dealloc {
-  [name release];
   [filterTests release];
   [fileItemTest release];
   
   [super dealloc];
 }
 
-
-- (NSString *)name {
-  return name;
-}
-
-- (void) setName:(NSString *)nameVal {
-  if (name != nameVal) {
-    [name release];
-    name = [nameVal retain];
-  }
-}
-
-- (BOOL) hasAutomaticName {
-  return [name hasPrefix: @"#"];
-}
 
 - (int) numFilterTests {
   return [filterTests count];
@@ -201,7 +155,6 @@
   }
   
   return [NSDictionary dictionaryWithObjectsAndKeys:
-                         name, @"name",
                          storedTests, @"tests",
                          nil];
 }

@@ -1,11 +1,12 @@
 #import "FilterSet.h"
 
 #import "Filter.h"
+#import "NamedFilter.h"
 #import "CompoundAndItemTest.h"
 
 @interface FilterSet (PrivateMethods)
 
-+ (id) filterSetWithFilters:(NSArray *)filters;
++ (id) filterSetWithNamedFilters:(NSArray *)filters;
 
 @end // @interface FilterSet (PrivateMethods)
 
@@ -16,18 +17,18 @@
   return [[[FilterSet alloc] init] autorelease];
 }
 
-+ (id) filterSetWithFilter:(Filter *)filter {
-  return [[[FilterSet alloc] initWithFilter: filter] autorelease];
++ (id) filterSetWithNamedFilter:(NamedFilter *)filter {
+  return [[[FilterSet alloc] initWithNamedFilter: filter] autorelease];
 }
 
 
 // Overrides designated initialiser.
 - (id) init {
-  return [self initWithFilters: [NSArray array]];
+  return [self initWithNamedFilters: [NSArray array]];
 }
 
-- (id) initWithFilter:(Filter *)filter {
-  return [self initWithFilters: [NSArray arrayWithObject: filter]];
+- (id) initWithNamedFilter:(NamedFilter *)filter {
+  return [self initWithNamedFilters: [NSArray arrayWithObject: filter]];
 }
 
 - (void) dealloc {
@@ -50,9 +51,10 @@
     [NSMutableArray arrayWithCapacity: [filters count]];
   
   NSEnumerator  *filterEnum = [filters objectEnumerator];
-  Filter  *filter;
+  NamedFilter  *namedFilter;
 
-  while (filter = [filterEnum nextObject]) {
+  while (namedFilter = [filterEnum nextObject]) {
+    Filter  *filter = [namedFilter filter];
     Filter  *newFilter = [Filter filterWithFilter: filter];
        
     FileItemTest  *filterTest = 
@@ -62,24 +64,27 @@
     if (filterTest != nil) {
       // Only add filters for which a tests still exists.
       
-      [newFilters addObject: newFilter];
+      NamedFilter  *newNamedFilter = 
+        [NamedFilter namedFilter: filter name: [namedFilter name]];
+      [newFilters addObject: newNamedFilter];
     }
     else {
-      NSLog(@"Filter \"%@\" does not have a test anymore.", [filter name]);
+      NSLog(@"Filter \"%@\" does not have a test anymore.", 
+                [namedFilter name]);
     }
   }
   
-  return [FilterSet filterSetWithFilters: newFilters];
+  return [FilterSet filterSetWithNamedFilters: newFilters];
 }
 
-- (FilterSet *)filterSetWithNewFilter:(Filter *)filter {
+- (FilterSet *)filterSetWithAddedNamedFilter:(NamedFilter *)filter {
   NSMutableArray  *newFilters =
     [NSMutableArray arrayWithCapacity: [filters count]+1];
     
   [newFilters addObjectsFromArray: filters];
   [newFilters addObject: filter];
   
-  return [FilterSet filterSetWithFilters: newFilters];
+  return [FilterSet filterSetWithNamedFilters: newFilters];
 }
 
 - (FileItemTest *)fileItemTest {
@@ -100,14 +105,14 @@
   NSMutableString  *descr = [NSMutableString stringWithCapacity: 32];
   
   NSEnumerator  *filterEnum = [filters objectEnumerator];
-  Filter  *filter;
+  NamedFilter  *namedFilter;
 
-  while (filter = [filterEnum nextObject]) {
+  while (namedFilter = [filterEnum nextObject]) {
     // TODO: I18N?
     if ([descr length] > 0) {
       [descr appendString: @", "];
     }
-    [descr appendString: [filter name]];
+    [descr appendString: [namedFilter name]];
   }
   
   return descr;
@@ -120,7 +125,7 @@
 
 /* Designated initialiser.
  */
-- (id) initWithFilters:(NSArray *)filtersVal {
+- (id) initWithNamedFilters:(NSArray *)filtersVal {
   if (self = [super init]) {
     filters = [filtersVal retain];
 
@@ -129,9 +134,9 @@
       [NSMutableArray arrayWithCapacity: [filters count]];
   
     NSEnumerator  *filterEnum = [filters objectEnumerator];
-    Filter  *filter;
-
-    while (filter = [filterEnum nextObject]) {
+    NamedFilter  *namedFilter;
+    while (namedFilter = [filterEnum nextObject]) {
+      Filter  *filter = [namedFilter filter];
       FileItemTest  *filterTest = [filter fileItemTest];
 
       NSAssert(filterTest != nil, @"Filter not instantiated.");
@@ -157,8 +162,8 @@
 
 @implementation FilterSet (PrivateMethods)
 
-+ (id) filterSetWithFilters:(NSArray *)filters {
-  return [[[FilterSet alloc] initWithFilters:
++ (id) filterSetWithNamedFilters:(NSArray *)filters {
+  return [[[FilterSet alloc] initWithNamedFilters:
               [NSArray arrayWithArray: filters]] autorelease];
 }
 

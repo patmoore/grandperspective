@@ -82,6 +82,9 @@
 		AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837DBE0E29ECE5005384E0 /* TreeWriter.m */; };
 		AA837E740E2D171D005384E0 /* TreeReader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837E730E2D171D005384E0 /* TreeReader.m */; };
 		AA83A34010F0D329002542E4 /* MutableFilterTestRef.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A33F10F0D329002542E4 /* MutableFilterTestRef.m */; };
+		AA83A3A410F0DD5D002542E4 /* EditFiltersWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */; };
+		AA83A46F10F14280002542E4 /* NamedFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A46E10F14280002542E4 /* NamedFilter.m */; };
+		AA83A51510F294AB002542E4 /* EditFiltersWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
 		AA8A38080D7B437300DB872C /* FileItemMappingCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FD0D7B437300DB872C /* FileItemMappingCollection.m */; };
 		AA8A380A0D7B437300DB872C /* FileItemMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FF0D7B437300DB872C /* FileItemMappingScheme.m */; };
@@ -282,6 +285,11 @@
 		AA837E730E2D171D005384E0 /* TreeReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeReader.m; path = tree/TreeReader.m; sourceTree = "<group>"; };
 		AA83A33E10F0D329002542E4 /* MutableFilterTestRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutableFilterTestRef.h; path = filter/MutableFilterTestRef.h; sourceTree = "<group>"; };
 		AA83A33F10F0D329002542E4 /* MutableFilterTestRef.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutableFilterTestRef.m; path = filter/MutableFilterTestRef.m; sourceTree = "<group>"; };
+		AA83A3A210F0DD5D002542E4 /* EditFiltersWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditFiltersWindowControl.h; path = control/EditFiltersWindowControl.h; sourceTree = "<group>"; };
+		AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditFiltersWindowControl.m; path = control/EditFiltersWindowControl.m; sourceTree = "<group>"; };
+		AA83A46D10F14280002542E4 /* NamedFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NamedFilter.h; path = filter/NamedFilter.h; sourceTree = "<group>"; };
+		AA83A46E10F14280002542E4 /* NamedFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NamedFilter.m; path = filter/NamedFilter.m; sourceTree = "<group>"; };
+		AA83A51410F294AB002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFiltersWindow.xib; sourceTree = "<group>"; };
 		AA84171A088E5BD40074E92A /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/DirectoryViewWindow.nib; sourceTree = "<group>"; };
 		AA8877E80D0C0E3500F52571 /* TreeContext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeContext.h; path = tree/TreeContext.h; sourceTree = "<group>"; };
 		AA8877E90D0C0E3500F52571 /* TreeContext.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TreeContext.m; path = tree/TreeContext.m; sourceTree = "<group>"; };
@@ -498,6 +506,7 @@
 				AAD8DFC60B077FCF0060DADA /* PreferencesPanel.nib */,
 				AAB35D3F0A33057E006535FF /* EditFilterWindow.nib */,
 				AAA281381082645E00229112 /* EditFilterTestWindow.nib */,
+				AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */,
 				AA5D629D0982E72600DD76E8 /* SaveImageDialog.nib */,
 				AA49218108DC10C9003E1652 /* DirectoryViewWindow.nib */,
 				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
@@ -728,6 +737,8 @@
 				AA402FEC0A5B01A6004EAAF3 /* SaveImageDialogControl.m */,
 				AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */,
 				AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */,
+				AA83A3A210F0DD5D002542E4 /* EditFiltersWindowControl.h */,
+				AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */,
 				AA402FF30A5B01A6004EAAF3 /* EditFilterWindowControl.h */,
 				AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */,
 				AAA28134108262EB00229112 /* EditFilterTestWindowControl.h */,
@@ -750,6 +761,8 @@
 			children = (
 				AAA28098108252C900229112 /* Filter.h */,
 				AAA28099108252C900229112 /* Filter.m */,
+				AA83A46D10F14280002542E4 /* NamedFilter.h */,
+				AA83A46E10F14280002542E4 /* NamedFilter.m */,
 				AAA2809A108252C900229112 /* FilterSet.h */,
 				AAA2809B108252C900229112 /* FilterSet.m */,
 				AAEF43A51081FC2E00468832 /* FilterTest.h */,
@@ -899,6 +912,7 @@
 				AA13FCE81077318700AE3B23 /* Cross.png in Resources */,
 				AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */,
 				AAA2813A1082645E00229112 /* EditFilterTestWindow.nib in Resources */,
+				AA83A51510F294AB002542E4 /* EditFiltersWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1012,6 +1026,8 @@
 				AA2B4BAD10EFB0DA0088EA1C /* ModalityTerminator.m in Sources */,
 				AA2B4C2E10F09A630088EA1C /* FilterRepository.m in Sources */,
 				AA83A34010F0D329002542E4 /* MutableFilterTestRef.m in Sources */,
+				AA83A3A410F0DD5D002542E4 /* EditFiltersWindowControl.m in Sources */,
+				AA83A46F10F14280002542E4 /* NamedFilter.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1097,6 +1113,14 @@
 				AA6E27D00D7B02BE00D5FBBA /* nl */,
 			);
 			name = EditUniformTypeRankingWindow.nib;
+			sourceTree = "<group>";
+		};
+		AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA83A51410F294AB002542E4 /* English */,
+			);
+			name = EditFiltersWindow.xib;
 			sourceTree = "<group>";
 		};
 		AA8FEB290B6CC2D80049FF42 /* Names.strings */ = {

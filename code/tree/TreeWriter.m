@@ -8,6 +8,7 @@
 
 #import "FilterTestRef.h"
 #import "Filter.h"
+#import "NamedFilter.h"
 #import "FilterSet.h"
 
 #import "ProgressTracker.h"
@@ -133,7 +134,7 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
 - (void) appendScanInfoElement: (AnnotatedTreeContext *)tree;
 - (void) appendScanCommentsElement: (NSString *)comments;
 - (void) appendFilterSetElement: (FilterSet *)filterSet;
-- (void) appendFilterElement: (Filter *)filter;
+- (void) appendFilterElement: (NamedFilter *)filter;
 - (void) appendFilterTestElement: (FilterTestRef *)filterTest;
 - (void) appendFolderElement: (DirectoryItem *)dirItem;
 - (void) appendFileElement: (FileItem *)fileItem;
@@ -290,31 +291,25 @@ NSString *escapedXML(NSString *s, int escapeCharMask) {
   [self appendString: [NSString stringWithFormat: @"<%@>\n", FilterSetElem]];
 
   NSEnumerator  *filterEnum = [[filterSet filters] objectEnumerator];
-  Filter  *filter;
-  while (filter = [filterEnum nextObject]) {
-    [self appendFilterElement: filter];
+  NamedFilter  *namedFilter;
+  while (namedFilter = [filterEnum nextObject]) {
+    [self appendFilterElement: namedFilter];
   }
 
   [self appendString: [NSString stringWithFormat: @"</%@>\n", FilterSetElem]];
 }
 
 
-- (void) appendFilterElement: (Filter *)filter {
+- (void) appendFilterElement:(NamedFilter *)namedFilter {
+  Filter  *filter = [namedFilter filter];
   if ([filter numFilterTests] == 0) {
     return;
   }
   
-  NSString  *openElem;
-  if ([filter hasAutomaticName]) {
-    openElem = [NSString stringWithFormat: @"<%@>\n", FilterElem];
-  }
-  else {
-    NSString  *nameVal = escapedXML([filter name], ATTRIBUTE_ESCAPE_CHARS);
-
-    openElem = [NSString stringWithFormat: @"<%@ %@=\"%@\">\n", 
+  NSString  *nameVal = escapedXML([namedFilter name], ATTRIBUTE_ESCAPE_CHARS);
+  NSString  *openElem = [NSString stringWithFormat: @"<%@ %@=\"%@\">\n", 
                            FilterElem,
                            NameAttr, nameVal];
-  }
   [self appendString: openElem];
 
   NSEnumerator  *testEnum = [[filter filterTests] objectEnumerator];

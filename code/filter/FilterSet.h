@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@class Filter;
+@class NamedFilter;
 @class FilterTestRepository;
 @class FileItemTest;
 
@@ -9,14 +9,14 @@
  * affected by changes to the file item tests of any of its filters.
  */
 @interface FilterSet : NSObject {
-  // Array of Filters
+  // Array of NamedFilters
   NSArray  *filters;
   
   FileItemTest  *fileItemTest;
 }
 
 + (id) filterSet;
-+ (id) filterSetWithFilter:(Filter *)filter;
++ (id) filterSetWithNamedFilter:(NamedFilter *)filter;
 
 /* Initialises an empty filter set.
  */
@@ -25,7 +25,7 @@
 /* Initialises the set to contain the given filter. The filter's test should
  * have been instantiated already.
  */
-- (id) initWithFilter:(Filter *)filter;
+- (id) initWithNamedFilter:(NamedFilter *)filter;
 
 /* Creates an updated set of filters. Each of the filters is re-instantiated
  * so that it is based on the tests currently defined in the test repository.
@@ -46,9 +46,12 @@
 /* Creates a new set with an extra filter. The existing filters are taken
  * over directly (they are not re-instantiated).
  */
-- (FilterSet *)filterSetWithNewFilter:(Filter *)filter;
+- (FilterSet *)filterSetWithAddedNamedFilter:(NamedFilter *)filter;
 
 - (int) numFilters;
+
+/* Returns an array of NamedFilters.
+ */
 - (NSArray *)filters;
 
 - (FileItemTest *)fileItemTest;
@@ -61,6 +64,6 @@
 /* Designated initialiser. It should not be called directly. Use the public
  * initialiser methods and factory methods instead.
  */
-- (id) initWithFilters:(NSArray *)filters;
+- (id) initWithNamedFilters:(NSArray *)filters;
 
 @end // @interface FilterSet (ProtectedMethods)

@@ -3,7 +3,8 @@
 @class EditFilterTestWindowControl;
 @class NotifyingDictionary;
 @class FilterTestRepository;
-@class Filter;
+@class NamedFilter;
+@protocol NameValidator;
 
 /**
  * A control for an EditFilterWindow.
@@ -38,6 +39,8 @@
   FilterTestRepository  *testRepository;
   
   NotifyingDictionary  *repositoryTestsByName;
+
+  NSObject <NameValidator>  *nameValidator;
 
   // Non-localized name of the filter.
   NSString  *filterName;
@@ -86,14 +89,26 @@
  */
 - (NSString *)filterName;
 
+- (void) setNameValidator:(NSObject<NameValidator> *)validator;
+
+/* Configures the window to represent an empty filter.
+ */
+- (void) representEmptyFilter;
+
 /* Configures the window to represent the given filter. It copies the state of
  * the original filter (as far as possible, given that some filter tests may
  * not exist anymore) and leaves the provided filter unchanged.
  */
-- (void) representFilter:(Filter *)filterVal;
+- (void) representNamedFilter:(NamedFilter *)filterVal;
 
-/* Returns the filter that represents the current window state.
+/* Returns a filter that represents the current window state.
  */
-- (Filter *)filter;
+- (NamedFilter *)createNamedFilter;
+
+/* Sets the name of the filter as it is shown in the window. This may be
+ * different from the actual name  (in particular, the visible name may be
+ * localized). Once a visible name is set, it cannot be changed.
+ */
+- (void) setVisibleName:(NSString *)name;
 
 @end

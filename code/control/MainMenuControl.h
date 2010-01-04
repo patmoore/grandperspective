@@ -2,7 +2,7 @@
 
 @class WindowManager;
 @class VisibleAsynchronousTaskManager;
-@class EditFilterWindowControl;
+@class EditFiltersWindowControl;
 @class PreferencesPanelControl;
 
 @interface MainMenuControl : NSObject {
@@ -14,6 +14,7 @@
   VisibleAsynchronousTaskManager  *readTaskManager;
   
   PreferencesPanelControl  *preferencesPanelControl;
+  EditFiltersWindowControl  *editFiltersWindowControl;
   
   BOOL  scanAfterLaunch;
 }
@@ -37,6 +38,7 @@
 - (IBAction) saveDirectoryViewImage:(id) sender;
 
 - (IBAction) editPreferences:(id) sender;
+- (IBAction) editFilters:(id) sender;
 
 - (IBAction) toggleToolbarShown:(id) sender;
 - (IBAction) customizeToolbar:(id) sender;

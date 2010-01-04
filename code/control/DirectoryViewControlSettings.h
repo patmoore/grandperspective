@@ -1,13 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class Filter;
-
+@class NamedFilter;
 
 @interface DirectoryViewControlSettings : NSObject {
   NSString  *colorMappingKey;
   NSString  *colorPaletteKey;
-  Filter  *mask;
+  NamedFilter  *mask;
   BOOL  maskEnabled;
   BOOL  showEntireVolume;
   BOOL  showPackageContents;
@@ -18,33 +17,33 @@
   NSSize  unzoomedViewSize;
 }
 
-- (id) initWithColorMappingKey: (NSString *)colorMappingKey 
-         colorPaletteKey: (NSString *)colorPaletteKey
-         mask: (Filter *)mask
-         maskEnabled: (BOOL) maskEnabled
-         showEntireVolume: (BOOL) showEntireVolume
-         showPackageContents: (BOOL) showPackageContents
-         unzoomedViewSize: (NSSize) viewSize;
+- (id) initWithColorMappingKey:(NSString *)colorMappingKey 
+         colorPaletteKey:(NSString *)colorPaletteKey
+         mask:(NamedFilter *)mask
+         maskEnabled:(BOOL) maskEnabled
+         showEntireVolume:(BOOL) showEntireVolume
+         showPackageContents:(BOOL) showPackageContents
+         unzoomedViewSize:(NSSize) viewSize;
 
-- (NSString*) colorMappingKey;
-- (void) setColorMappingKey: (NSString *)key;
+- (NSString *)colorMappingKey;
+- (void) setColorMappingKey:(NSString *)key;
 
-- (NSString*) colorPaletteKey;
-- (void) setColorPaletteKey: (NSString *)key;
+- (NSString *)colorPaletteKey;
+- (void) setColorPaletteKey:(NSString *)key;
 
-- (Filter *) fileItemMask;
-- (void) setFileItemMask:(Filter *)mask;
+- (NamedFilter *)fileItemMask;
+- (void) setFileItemMask:(NamedFilter *)mask;
 
 - (BOOL) fileItemMaskEnabled;
-- (void) setFileItemMaskEnabled: (BOOL)flag;
+- (void) setFileItemMaskEnabled:(BOOL) flag;
 
 - (BOOL) showEntireVolume;
-- (void) setShowEntireVolume: (BOOL)flag;
+- (void) setShowEntireVolume:(BOOL) flag;
 
 - (BOOL) showPackageContents;
-- (void) setShowPackageContents: (BOOL)flag;
+- (void) setShowPackageContents:(BOOL) flag;
 
 - (NSSize) unzoomedViewSize;
-- (void) setunzoomedViewSize: (NSSize) size;
+- (void) setunzoomedViewSize:(NSSize) size;
 
 @end

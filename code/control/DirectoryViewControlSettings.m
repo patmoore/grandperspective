@@ -25,13 +25,13 @@
             ];
 }
 
-- (id) initWithColorMappingKey: (NSString *)colorMappingKeyVal 
-         colorPaletteKey: (NSString *)colorPaletteKeyVal
-         mask: (Filter *)maskVal
-         maskEnabled: (BOOL) maskEnabledVal 
-         showEntireVolume: (BOOL) showEntireVolumeVal
-         showPackageContents: (BOOL) showPackageContentsVal
-         unzoomedViewSize: (NSSize) unzoomedViewSizeVal {
+- (id) initWithColorMappingKey:(NSString *)colorMappingKeyVal 
+         colorPaletteKey:(NSString *)colorPaletteKeyVal
+         mask:(NamedFilter *)maskVal
+         maskEnabled:(BOOL) maskEnabledVal 
+         showEntireVolume:(BOOL) showEntireVolumeVal
+         showPackageContents:(BOOL) showPackageContentsVal
+         unzoomedViewSize:(NSSize) unzoomedViewSizeVal {
   if (self = [super init]) {
     colorMappingKey = [colorMappingKeyVal retain];
     colorPaletteKey = [colorPaletteKeyVal retain];
@@ -54,11 +54,11 @@
 }
 
 
-- (NSString*) colorMappingKey {
+- (NSString *)colorMappingKey {
   return colorMappingKey;
 }
 
-- (void) setColorMappingKey: (NSString *)key {
+- (void) setColorMappingKey:(NSString *)key {
   if (key != colorMappingKey) {
     [colorMappingKey release];
     colorMappingKey = [key retain];
@@ -66,10 +66,10 @@
 }
 
 
-- (NSString*) colorPaletteKey {
+- (NSString *)colorPaletteKey {
   return colorPaletteKey;
 }
-- (void) setColorPaletteKey: (NSString *)key {
+- (void) setColorPaletteKey:(NSString *)key {
   if (key != colorPaletteKey) {
     [colorPaletteKey release];
     colorPaletteKey = [key retain];
@@ -77,11 +77,11 @@
 }
 
 
-- (Filter *) fileItemMask {
+- (NamedFilter *)fileItemMask {
   return mask;
 }
 
-- (void) setFileItemMask:(Filter *)maskVal {
+- (void) setFileItemMask:(NamedFilter *)maskVal {
   if (maskVal != mask) {
     [mask release];
     mask = [maskVal retain];
@@ -93,7 +93,7 @@
   return maskEnabled;
 }
 
-- (void) setFileItemMaskEnabled: (BOOL)flag {
+- (void) setFileItemMaskEnabled:(BOOL) flag {
   maskEnabled = flag;
 }
 
@@ -102,7 +102,7 @@
   return showEntireVolume;
 }
 
-- (void) setShowEntireVolume: (BOOL)flag {
+- (void) setShowEntireVolume:(BOOL) flag {
   showEntireVolume = flag;
 }
 
@@ -111,7 +111,7 @@
   return showPackageContents;
 }
 
-- (void) setShowPackageContents: (BOOL)flag {
+- (void) setShowPackageContents:(BOOL) flag {
   showPackageContents = flag;
 }
 
@@ -120,7 +120,7 @@
   return unzoomedViewSize;
 }
 
-- (void) setunzoomedViewSize: (NSSize) size {
+- (void) setunzoomedViewSize:(NSSize) size {
   unzoomedViewSize = size;
 }
 
