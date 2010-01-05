@@ -6,7 +6,6 @@
 #define DELETE_BUTTON_TITLE NSLocalizedString(@"Delete", @"Alert panel button")
 
 extern NSString  *ClosePerformedEvent;
-extern NSString  *ApplyPerformedEvent;
 extern NSString  *CancelPerformedEvent;
 extern NSString  *OkPerformedEvent;
 

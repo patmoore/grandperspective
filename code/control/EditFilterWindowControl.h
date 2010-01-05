@@ -22,8 +22,7 @@
 
   IBOutlet NSTextView  *testDescriptionView;
   IBOutlet NSDrawer  *testDescriptionDrawer;
-  
-  IBOutlet NSButton  *applyButton;
+
   IBOutlet NSButton  *okButton;
 
   IBOutlet NSButton  *removeTestFromRepositoryButton;
@@ -62,7 +61,6 @@
   BOOL  allowEmptyFilter;
 }
 
-- (IBAction) applyAction:(id) sender;
 - (IBAction) cancelAction:(id) sender;
 - (IBAction) okAction:(id) sender;
 
@@ -79,8 +77,6 @@
 - (IBAction) testDoubleClicked:(id) sender;
 
 - (id) initWithTestRepository:(FilterTestRepository *)testRepository;
-
-- (void) removeApplyButton;
 
 - (void) setAllowEmptyFilter:(BOOL) flag;
 - (BOOL) allowEmptyFilter;

@@ -147,15 +147,6 @@ NSString  *MatchColumn = @"match";
 }
 
 
-- (void) removeApplyButton {
-  if (applyButton != nil) {
-    [applyButton removeFromSuperviewWithoutNeedingDisplay];
-    // [applyButton release];
-    applyButton = nil;
-  }
-}
-
-
 - (void) setAllowEmptyFilter:(BOOL) flag {
   allowEmptyFilter = flag;
 }
@@ -185,11 +176,6 @@ NSString  *MatchColumn = @"match";
     [[NSNotificationCenter defaultCenter] 
         postNotificationName: ClosePerformedEvent object: self];
   }
-}
-
-- (IBAction) applyAction:(id) sender {
-  [[NSNotificationCenter defaultCenter] 
-      postNotificationName: ApplyPerformedEvent object: self];
 }
 
 - (IBAction) cancelAction:(id) sender {
@@ -819,7 +805,6 @@ NSString  *MatchColumn = @"match";
 
   [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
   
-  [applyButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
   [okButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
 }
 
