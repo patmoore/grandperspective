@@ -287,8 +287,8 @@ NSString  *AttributeNameKey = @"name";
 @implementation TreeReader
 
 - (id) init {
-  return [self initWithFilterTestRepository:
-                 [FilterTestRepository defaultFilterTestRepository]];
+  return [self initWithFilterTestRepository: 
+                 [FilterTestRepository defaultInstance]];
 }
 
 - (id) initWithFilterTestRepository:(FilterTestRepository *)repository {

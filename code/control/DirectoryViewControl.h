@@ -12,13 +12,14 @@ extern NSString  *DeleteFilesAndFolders;
 @class ItemPathModelView;
 @class FileItemMappingCollection;
 @class ColorListCollection;
-@class EditFilterWindowControl;
 @class ColorLegendTableViewControl;
 @class DirectoryViewControlSettings;
 @class TreeContext;
 @class AnnotatedTreeContext;
 @class ItemInFocusControls;
+@class Filter;
 @class NamedFilter;
+@class FilterRepository;
 
 @interface DirectoryViewControl : NSWindowController {
 
@@ -32,6 +33,7 @@ extern NSString  *DeleteFilesAndFolders;
   // "Display" drawer panel
   IBOutlet NSPopUpButton  *colorMappingPopUp;
   IBOutlet NSPopUpButton  *colorPalettePopUp;
+  IBOutlet NSPopUpButton  *maskPopUp;
   IBOutlet NSTableView  *colorLegendTable;
   IBOutlet NSButton  *maskCheckBox;
   IBOutlet NSButton  *showEntireVolumeCheckBox;
@@ -70,6 +72,8 @@ extern NSString  *DeleteFilesAndFolders;
 
   ItemPathModelView  *pathModelView;
   TreeContext  *treeContext;
+  
+  FilterRepository  *filterRepository;
 
   // The "initialSettings" and "initialComments" fields are only used between
   // initialization and subsequent creation of the window. The are subsequently
@@ -77,8 +81,6 @@ extern NSString  *DeleteFilesAndFolders;
   DirectoryViewControlSettings  *initialSettings;
   NSString  *initialComments;
 
-  NamedFilter  *mask;
-  
   BOOL  canDeleteFiles;
   BOOL  canDeleteFolders;
   BOOL  confirmFileDeletion;
@@ -87,8 +89,6 @@ extern NSString  *DeleteFilesAndFolders;
   FileItemMappingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   ColorLegendTableViewControl  *colorLegendControl;
-  
-  EditFilterWindowControl  *editMaskFilterWindowControl;
   
   // The (absolute) path of the scan tree.
   NSString  *scanPathName;
@@ -106,10 +106,10 @@ extern NSString  *DeleteFilesAndFolders;
 - (IBAction) toggleDrawer:(id) sender;
 
 - (IBAction) maskCheckBoxChanged:(id) sender;
-- (IBAction) editMask:(id) sender;
 
 - (IBAction) colorMappingChanged:(id) sender;
 - (IBAction) colorPaletteChanged:(id) sender;
+- (IBAction) maskChanged:(id) sender;
 - (IBAction) showEntireVolumeCheckBoxChanged:(id) sender;
 - (IBAction) showPackageContentsCheckBoxChanged:(id) sender;
 
@@ -117,8 +117,13 @@ extern NSString  *DeleteFilesAndFolders;
 - (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)treeContext
          pathModel:(ItemPathModel *)itemPathModel
          settings:(DirectoryViewControlSettings *)settings;
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)treeContext
+         pathModel:(ItemPathModel *)itemPathModel
+         settings:(DirectoryViewControlSettings *)settings
+         filterRepository:(FilterRepository *)filterRepository;
 
-- (NamedFilter *)fileItemMask;
+- (Filter *)mask;
+- (NamedFilter *)namedMask;
 
 - (ItemPathModelView *)pathModelView;
 

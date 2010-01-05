@@ -132,7 +132,7 @@
 	</dict>
 	<key>GPDefaultFilters</key>
 	<dict>
-		<key>Exclude hard-linked items</key>
+		<key>No hard-links</key>
 		<dict>
 			<key>tests</key>
 			<array>
@@ -144,7 +144,7 @@
 				</dict>
 			</array>
 		</dict>
-		<key>Exclude version control</key>
+		<key>No version control</key>
 		<dict>
 			<key>tests</key>
 			<array>

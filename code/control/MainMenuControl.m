@@ -297,10 +297,8 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 - (void) applicationWillTerminate:(NSNotification *)notification {
-  [[FilterRepository defaultFilterRepository]
-       storeUserCreatedFilters];
-  [[FilterTestRepository defaultFilterTestRepository]
-       storeUserCreatedTests];
+  [[FilterRepository defaultInstance] storeUserCreatedFilters];
+  [[FilterTestRepository defaultInstance] storeUserCreatedTests];
        
   [[UniformTypeRanking defaultUniformTypeRanking] storeRanking];
        
@@ -376,10 +374,9 @@ static MainMenuControl  *singletonInstance = nil;
   FilterSet  *filterSet = [oldContext filterSet];
   if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
-    filterSet = 
-      [filterSet updatedFilterSetUsingRepository:
-                   [FilterTestRepository defaultFilterTestRepository]
-                   unboundTests: unboundTests];
+    filterSet = [filterSet updatedFilterSetUsingRepository:
+                               [FilterTestRepository defaultInstance]
+                             unboundTests: unboundTests];
     [MainMenuControl reportUnboundTests: unboundTests];
   }
   
@@ -400,7 +397,7 @@ static MainMenuControl  *singletonInstance = nil;
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
 
-  NamedFilter  *namedFilter = [self getNamedFilter: [oldControl fileItemMask]];
+  NamedFilter  *namedFilter = [self getNamedFilter: [oldControl namedMask]];
   if (namedFilter == nil) {
     return;
   }
@@ -408,7 +405,7 @@ static MainMenuControl  *singletonInstance = nil;
   Filter  *filter = [namedFilter filter];
   FileItemTest  *filterTest =
     [filter createFileItemTestFromRepository:
-              [FilterTestRepository defaultFilterTestRepository]];
+              [FilterTestRepository defaultInstance]];
   if (filterTest == nil) {
     NSLog(@"Filter test of new filter is nil.");
     return;
@@ -421,12 +418,12 @@ static MainMenuControl  *singletonInstance = nil;
   ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
   DirectoryViewControlSettings  *settings = 
     [oldControl directoryViewControlSettings];
-  if ([[namedFilter name] isEqualToString: [[settings fileItemMask] name]]) {
+  if ([[namedFilter name] isEqualToString: [settings maskName]]) {
     // Don't retain the mask if it has the filter has the same name. It is
     // likely that the filter is the same as the mask, or if not, is at least
     // a modified version of it. It therefore does not make sense to retain
     // the mask. This is only confusing.
-    [settings setFileItemMask: nil];
+    [settings setMaskName: nil];
   }
 
   DerivedDirViewWindowCreator  *windowCreator =
@@ -581,7 +578,7 @@ static MainMenuControl  *singletonInstance = nil;
     
     // Instantiate the test
     [[namedFilter filter] createFileItemTestFromRepository: 
-                            [FilterTestRepository defaultFilterTestRepository]];
+                            [FilterTestRepository defaultInstance]];
   }
 
   [self scanFolder: pathToScan namedFilter: namedFilter];

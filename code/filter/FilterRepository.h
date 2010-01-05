@@ -10,7 +10,7 @@
   NSDictionary  *applicationProvidedFilters;
 }
 
-+ (FilterRepository *)defaultFilterRepository;
++ (id) defaultInstance;
 
 /* Returns dictionary which can subsequently be modified.
  */

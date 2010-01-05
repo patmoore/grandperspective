@@ -11,11 +11,11 @@
 #import "DirectoryViewControlSettings.h"
 #import "NamedFilter.h"
 #import "Filter.h"
+#import "FilterRepository.h"
 #import "FilterTestRepository.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 
-#import "EditFilterWindowControl.h"
 #import "ColorLegendTableViewControl.h"
 #import "PreferencesPanelControl.h"
 #import "MainMenuControl.h"
@@ -48,8 +48,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) deleteSelectedFile;
 - (void) fileItemDeleted:(NSNotification *)notification;
 
-- (void) createEditMaskFilterWindow;
-
 - (void) selectedItemChanged:(NSNotification *)notification;
 - (void) visibleTreeChanged:(NSNotification *)notification;
 - (void) visiblePathLockingChanged:(NSNotification *)notification;
@@ -58,15 +56,10 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) updateSelectionInFocusPanel:(NSString *)itemSizeString;
 - (void) validateControls;
 
-- (void) maskChanged;
+- (NSString *)maskName;
 - (void) updateMask;
 
 - (void) updateFileDeletionSupport;
-
-- (void) maskWindowApplyAction:(NSNotification *)notification;
-- (void) maskWindowCancelAction:(NSNotification *)notification;
-- (void) maskWindowOkAction:(NSNotification *)notification;
-- (void) maskWindowDidBecomeKey:(NSNotification *)notification;
 
 @end
 
@@ -146,6 +139,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)annTreeContext
          pathModel:(ItemPathModel *)pathModel
          settings:(DirectoryViewControlSettings *)settings {
+  return [self initWithAnnotatedTreeContext: annTreeContext
+                 pathModel: pathModel 
+                 settings: settings
+                 filterRepository: [FilterRepository defaultInstance]];
+}
+         
+- (id) initWithAnnotatedTreeContext:(AnnotatedTreeContext *)annTreeContext
+         pathModel:(ItemPathModel *)pathModel
+         settings:(DirectoryViewControlSettings *)settings
+         filterRepository:(FilterRepository *)filterRepositoryVal {        
   if (self = [super initWithWindowNibName: @"DirectoryViewWindow"
                       owner: self]) {
     treeContext = [[annTreeContext treeContext] retain];
@@ -155,6 +158,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     
     pathModelView = [[ItemPathModelView alloc] initWithPathModel: pathModel];
     initialSettings = [settings retain];
+    
+    filterRepository = [filterRepositoryVal retain];
 
     scanPathName = [[[treeContext scanTree] path] retain];
     
@@ -184,13 +189,9 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [initialSettings release];
   [initialComments release];
   
-  [mask release];
-  
   [colorMappings release];
   [colorPalettes release];
   [colorLegendControl release];
-  
-  [editMaskFilterWindowControl release];
 
   [scanPathName release];
   [invisiblePathName release];
@@ -199,15 +200,31 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (NamedFilter *)fileItemMask {
-  return mask;
+- (Filter *)mask {
+  if ([maskCheckBox state]==NSOnState) {
+    NSString  *maskName = [self maskName];
+    return [[filterRepository filtersByName] objectForKey: maskName];
+  }
+  else {
+    return nil;
+  }
+}
+
+- (NamedFilter *)namedMask {
+  Filter  *mask = [self mask];
+  if (mask == nil) {
+    return nil;
+  }
+  else {
+    return [NamedFilter namedFilter: mask name: [self maskName]];
+  }
 }
 
 - (ItemPathModelView *)pathModelView {
   return pathModelView;
 }
 
-- (DirectoryView*)directoryView {
+- (DirectoryView *)directoryView {
   return mainView;
 }
 
@@ -218,12 +235,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [tagMaker nameForTag: [[colorMappingPopUp selectedItem] tag]];
   NSString  *colorPaletteKey = 
     [tagMaker nameForTag: [[colorPalettePopUp selectedItem] tag]];
+  NSString  *maskName = [tagMaker nameForTag: [[maskPopUp selectedItem] tag]];
 
   return 
     [[[DirectoryViewControlSettings alloc]
          initWithColorMappingKey: colorMappingKey
            colorPaletteKey: colorPaletteKey
-           mask: mask
+           maskName: maskName
            maskEnabled: [maskCheckBox state]==NSOnState
            showEntireVolume: [showEntireVolumeCheckBox state]==NSOnState
            showPackageContents: [showPackageContentsCheckBox state]==NSOnState
@@ -268,17 +286,21 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
               table: @"Names"];
   [self colorPaletteChanged: nil];
   
+  [maskPopUp removeAllItems];
+  [tagMaker addLocalisedNamesToPopUp: maskPopUp
+              names: [[filterRepository filtersByName] allKeys]
+              select: [initialSettings maskName]
+              table: @"Names"];
+  [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
+                              ? NSOnState : NSOffState ) ];
+  [self updateMask];
+  
   // NSTableView apparently does not retain its data source, so keeping a
   // reference here so that it can be released.
   colorLegendControl = 
     [[ColorLegendTableViewControl alloc] initWithDirectoryView: mainView 
                                            tableView: colorLegendTable];
-  
-  mask = [[initialSettings fileItemMask] retain];
-  [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
-                              ? NSOnState : NSOffState ) ];
-  [self maskChanged];
-  
+    
   [showEntireVolumeCheckBox setState: 
      ( [initialSettings showEntireVolume] ? NSOnState : NSOffState ) ]; 
   [showPackageContentsCheckBox setState: 
@@ -405,12 +427,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 // Invoked because the controller is the delegate for the window.
 - (void) windowDidBecomeMain:(NSNotification *)notification {
-  if (editMaskFilterWindowControl != nil &&
-      [[editMaskFilterWindowControl window] isVisible]) {
-    [[editMaskFilterWindowControl window] 
-        orderWindow:NSWindowBelow relativeTo:[[self window] windowNumber]];
-  }
-  
   // Change window's background color (which should only affect the statusbar)
   [[self window] setBackgroundColor: [NSColor lightGrayColor]]; 
 }
@@ -650,32 +666,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (IBAction) maskCheckBoxChanged:(id) sender {
-  [self updateMask];
-}
-
-- (IBAction) editMask:(id) sender {
-  if (editMaskFilterWindowControl == nil) {
-    // Lazily create the "edit mask" window.
-    
-    [self createEditMaskFilterWindow];
-  }
-  
-  if (mask != nil) {
-    [editMaskFilterWindowControl representNamedFilter: mask];
-  }
-  else {
-    [editMaskFilterWindowControl representEmptyFilter];
-  }
-
-  // Note: First order it to front, then make it key. This ensures that
-  // the maskWindowDidBecomeKey: does not move the DirectoryViewWindow to
-  // the back.
-  [[editMaskFilterWindowControl window] orderFront:self];
-  [[editMaskFilterWindowControl window] makeKeyWindow];
-}
-
-
 - (IBAction) colorMappingChanged:(id) sender {
   UniqueTagsTransformer  *tagMaker = 
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
@@ -705,6 +695,18 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       [[mainView treeDrawerSettings] copyWithColorPalette: palette]];
   }
 }
+
+- (IBAction) maskChanged:(id) sender {
+  // Automatically enable the mask
+  [maskCheckBox setState: NSOnState];
+    
+  [self updateMask];
+}
+
+- (IBAction) maskCheckBoxChanged:(id) sender {
+  [self updateMask];
+}
+
 
 - (IBAction) showEntireVolumeCheckBoxChanged:(id) sender {
   [mainView setShowEntireVolume: [showEntireVolumeCheckBox state]==NSOnState];
@@ -852,29 +854,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
                    [FileItem stringForFileItemSize: [treeContext freedSpace]]];
   [numDeletedFilesField setStringValue:
                 [NSString stringWithFormat: @"%qu", [treeContext freedFiles]]];
-}
-
-
-- (void) createEditMaskFilterWindow { 
-  editMaskFilterWindowControl = [[EditFilterWindowControl alloc] init];
-
-  [editMaskFilterWindowControl setAllowEmptyFilter: YES];
-
-  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver:self selector: @selector(maskWindowApplyAction:)
-        name: ApplyPerformedEvent object: editMaskFilterWindowControl];
-  [nc addObserver:self selector: @selector(maskWindowCancelAction:)
-        name: CancelPerformedEvent object: editMaskFilterWindowControl];
-  [nc addObserver:self selector: @selector(maskWindowOkAction:)
-        name: OkPerformedEvent object: editMaskFilterWindowControl];
-  // Note: the ClosePerformedEvent notification can be ignored here.
-
-  [nc addObserver:self selector:@selector(maskWindowDidBecomeKey:)
-        name: NSWindowDidBecomeKeyNotification
-        object: [editMaskFilterWindowControl window]];
-
-  [[editMaskFilterWindowControl window] setTitle: 
-      NSLocalizedString( @"Edit mask", @"Window title" ) ];
 }
 
 
@@ -1031,45 +1010,33 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (void) maskChanged {
-  if (mask != nil) {
-    [maskCheckBox setEnabled: YES];
-  }
-  else {
-    [maskCheckBox setEnabled: NO];
-    [maskCheckBox setState: NSOffState];
-  }
-  
-  [self updateMask];
+- (NSString *)maskName {
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  return [tagMaker nameForTag: [[maskPopUp selectedItem] tag]];
 }
-  
-- (void) updateMask {
-  NamedFilter  *newMask = [maskCheckBox state]==NSOnState ? mask : nil;
 
+- (void) updateMask {
+  Filter  *mask = [self mask];
+  
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
-  if ( newMask != nil 
+  if ( mask != nil 
        && [userDefaults boolForKey: UpdateFiltersBeforeUse] ) {
     // Create a new filter (so that the file item test can be updated)
-    Filter  *newFilter = [Filter filterWithFilter: [mask filter]];
-    newMask = [NamedFilter namedFilter: newFilter name: [mask name]];
-    
-    // Replace the old mask by the new one
-    [mask release];
-    mask = [newMask retain];
+    mask = [Filter filterWithFilter: mask];
   }
 
-  FileItemTest  *newMaskTest = [[newMask filter] fileItemTest]; 
-  if ( newMask != nil && newMaskTest == nil ) {
+  FileItemTest  *maskTest = [mask fileItemTest]; 
+  if ( mask != nil && maskTest == nil ) {
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
-    newMaskTest =
-      [[newMask filter] createFileItemTestFromRepository:
-                            [FilterTestRepository defaultFilterTestRepository]
-                          unboundTests: unboundTests];
+    maskTest = [mask createFileItemTestFromRepository: 
+                         [FilterTestRepository defaultInstance]
+                       unboundTests: unboundTests];
     [MainMenuControl reportUnboundTests: unboundTests];
   }
 
   [mainView setTreeDrawerSettings: 
-    [[mainView treeDrawerSettings] copyWithMaskTest: newMaskTest]];
+    [[mainView treeDrawerSettings] copyWithMaskTest: maskTest]];
 }
 
 
@@ -1090,37 +1057,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [[userDefaults objectForKey: ConfirmFolderDeletionKey] boolValue];
 
   [self validateControls];
-}
-
-
-- (void) maskWindowApplyAction:(NSNotification *)notification {
-  [mask release];
-  
-  mask = [[editMaskFilterWindowControl createNamedFilter] retain];
-
-  if (mask != nil) {
-    // Automatically enable mask.
-    [maskCheckBox setState: NSOnState];
-  }
-  
-  [self maskChanged];
-}
-
-- (void) maskWindowCancelAction:(NSNotification *)notification {
-  [[editMaskFilterWindowControl window] close];
-}
-
-- (void) maskWindowOkAction:(NSNotification *)notification {
-  [[editMaskFilterWindowControl window] close];
-  
-  // Other than closing the window, the action is same as the "apply" one.
-  [self maskWindowApplyAction:notification];
-}
-
-- (void) maskWindowDidBecomeKey:(NSNotification *)notification {
-  [[self window] orderWindow:NSWindowBelow
-               relativeTo:[[editMaskFilterWindowControl window] windowNumber]];
-  [[self window] makeMainWindow];
 }
 
 @end // @implementation DirectoryViewControl (PrivateMethods)

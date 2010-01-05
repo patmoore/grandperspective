@@ -17,6 +17,7 @@ NSString  *RescanBehaviourKey = @"rescanBehaviour";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";
 NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
+NSString  *DefaultMaskName = @"defaultMask";
 NSString  *ShowPackageContentsByDefaultKey = @"showPackageContentsByDefault";
 
 

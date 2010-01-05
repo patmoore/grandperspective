@@ -33,14 +33,14 @@ NSString  *AppTestsKey = @"GPDefaultFilterTests";
 
 @implementation FilterTestRepository
 
-+ (FilterTestRepository *)defaultFilterTestRepository {
-  static FilterTestRepository  *defaultFilterTestRepository = nil;
++ (id) defaultInstance {
+  static FilterTestRepository  *defaultInstance = nil;
 
-  if (defaultFilterTestRepository == nil) {
-    defaultFilterTestRepository = [[FilterTestRepository alloc] init];
+  if (defaultInstance == nil) {
+    defaultInstance = [[FilterTestRepository alloc] init];
   }
   
-  return defaultFilterTestRepository;
+  return defaultInstance;
 }
 
 

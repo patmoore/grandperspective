@@ -72,8 +72,7 @@ NSString  *MatchColumn = @"match";
 @implementation EditFilterWindowControl
 
 - (id) init {
-  return [self initWithTestRepository:
-                 [FilterTestRepository defaultFilterTestRepository]];
+  return [self initWithTestRepository: [FilterTestRepository defaultInstance]];
 }
 
 // Special case: should not cover (override) super's designated initialiser in

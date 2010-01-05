@@ -25,7 +25,7 @@ NSString  *AppFiltersKey = @"GPDefaultFilters";
 
 @implementation FilterRepository
 
-+ (FilterRepository *)defaultFilterRepository {
++ (id) defaultInstance {
   static FilterRepository  *defaultInstance = nil;
 
   if (defaultInstance == nil) {

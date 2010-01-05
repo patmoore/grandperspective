@@ -1,7 +1,6 @@
 #import "DirectoryViewControlSettings.h"
 
 #import "PreferencesPanelControl.h"
-#import "Filter.h"
 
 @implementation DirectoryViewControlSettings
 
@@ -13,7 +12,7 @@
               [userDefaults stringForKey: DefaultColorMappingKey]
             colorPaletteKey: 
               [userDefaults stringForKey: DefaultColorPaletteKey] 
-            mask: nil 
+            maskName: [userDefaults stringForKey: DefaultMaskName]
             maskEnabled: NO 
             showEntireVolume: NO 
             showPackageContents: 
@@ -27,7 +26,7 @@
 
 - (id) initWithColorMappingKey:(NSString *)colorMappingKeyVal 
          colorPaletteKey:(NSString *)colorPaletteKeyVal
-         mask:(NamedFilter *)maskVal
+         maskName:(NSString *)maskNameVal
          maskEnabled:(BOOL) maskEnabledVal 
          showEntireVolume:(BOOL) showEntireVolumeVal
          showPackageContents:(BOOL) showPackageContentsVal
@@ -35,7 +34,7 @@
   if (self = [super init]) {
     colorMappingKey = [colorMappingKeyVal retain];
     colorPaletteKey = [colorPaletteKeyVal retain];
-    mask = [maskVal retain];
+    maskName = [maskNameVal retain];
     maskEnabled = maskEnabledVal;
     showEntireVolume = showEntireVolumeVal;
     showPackageContents = showPackageContentsVal;
@@ -48,7 +47,7 @@
 - (void) dealloc {
   [colorMappingKey release];
   [colorPaletteKey release];
-  [mask release];
+  [maskName release];
 
   [super dealloc];
 }
@@ -77,14 +76,14 @@
 }
 
 
-- (NamedFilter *)fileItemMask {
-  return mask;
+- (NSString *)maskName {
+  return maskName;
 }
 
-- (void) setFileItemMask:(NamedFilter *)maskVal {
-  if (maskVal != mask) {
-    [mask release];
-    mask = [maskVal retain];
+- (void) setMaskName:(NSString *)maskNameVal {
+  if (maskNameVal != maskName) {
+    [maskName release];
+    maskName = [maskNameVal retain];
   }
 }
 

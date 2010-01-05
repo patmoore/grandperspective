@@ -10,7 +10,7 @@
   NSDictionary  *applicationProvidedTests;
 }
 
-+ (FilterTestRepository *)defaultFilterTestRepository;
++ (id) defaultInstance;
 
 /* Returns the tests in a dictionary that can subsequently be modified.
  */

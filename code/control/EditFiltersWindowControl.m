@@ -47,8 +47,7 @@
 @implementation EditFiltersWindowControl
 
 - (id) init {
-  return [self initWithFilterRepository:
-                 [FilterRepository defaultFilterRepository]];
+  return [self initWithFilterRepository: [FilterRepository defaultInstance]];
 }
 
 // Special case: should not cover (override) super's designated initialiser in
