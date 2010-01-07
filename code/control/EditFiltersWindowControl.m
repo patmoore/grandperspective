@@ -1,35 +1,20 @@
 #import "EditFiltersWindowControl.h"
 
 #import "ControlConstants.h"
-#import "NameValidator.h"
-#import "ModalityTerminator.h"
 #import "NotifyingDictionary.h"
 
 #import "Filter.h"
 #import "NamedFilter.h"
+#import "FilterEditor.h"
 #import "FilterRepository.h"
-
-#import "EditFilterWindowControl.h"
-
-
-@interface FilterNameValidator : NSObject <NameValidator> {
-  NSDictionary  *allFilters;
-  NSString  *allowedName;
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFilters;
-- (id) initWithExistingFilters:(NSDictionary *)allFilters 
-         allowedName:(NSString *)name;
-
-@end // @interface FilterNameValidator
 
 
 @interface EditFiltersWindowControl (PrivateMethods)
 
-- (NSWindow *)loadEditFilterWindow;
-
 // Returns the non-localized name of the selected available filter (if any).
 - (NSString *)selectedFilterName;
+
+- (void) selectFilterNamed:(NSString *)name;
 
 - (void) updateWindowState;
 
@@ -54,12 +39,13 @@
 // NSWindowController's case
 - (id) initWithFilterRepository:(FilterRepository *)filterRepositoryVal {
   if (self = [super initWithWindowNibName: @"EditFiltersWindow" owner: self]) {
-    editFilterWindowControl = nil; // Load it lazily
-  
     filterRepository = [filterRepositoryVal retain];
-    repositoryFiltersByName = 
-      [[filterRepository filtersByNameAsNotifyingDictionary] retain];
 
+    filterEditor = 
+      [[FilterEditor alloc] initWithFilterRepository: filterRepository];
+
+    NotifyingDictionary  *repositoryFiltersByName = 
+      [filterRepository filtersByNameAsNotifyingDictionary];
     NSNotificationCenter  *nc = [repositoryFiltersByName notificationCenter];
     
     [nc addObserver: self selector: @selector(filterAddedToRepository:) 
@@ -83,11 +69,14 @@
 }
 
 - (void) dealloc {
-  [editFilterWindowControl release];
-
+  NSNotificationCenter  *nc = 
+    [[filterRepository filtersByNameAsNotifyingDictionary] notificationCenter];
+  [nc removeObserver: self];
+    
   [filterRepository release];
-  [repositoryFiltersByName release];
   
+  [filterEditor release];
+
   [filterNames release];
   [filterNameToSelect release];
   
@@ -101,106 +90,15 @@
 
 
 - (IBAction) addFilterToRepository:(id) sender {
-  NSWindow  *editFilterWindow = [self loadEditFilterWindow];
+  NamedFilter  *newFilter = [filterEditor newNamedFilter];
   
-  FilterNameValidator  *nameValidator = 
-    [[[FilterNameValidator alloc]
-        initWithExistingFilters: [filterRepository filtersByName]]
-          autorelease];
-  
-  [editFilterWindowControl setNameValidator: nameValidator];
-  [editFilterWindowControl representEmptyFilter];
-
-  [ModalityTerminator 
-     modalityTerminatorForEventSource: editFilterWindowControl];
-  int  status = [NSApp runModalForWindow: editFilterWindow];
-  [editFilterWindow close];
-
-  if (status == NSRunStoppedResponse) {
-    NamedFilter  *namedFilter = [editFilterWindowControl createNamedFilter];
-    
-    if (namedFilter != nil) {
-      NSString  *name = [namedFilter name];
-
-      // The nameValidator should have ensured that this check succeeds.
-      NSAssert( [[filterRepository filtersByName] objectForKey: name] == nil,
-                @"Duplicate name check failed.");
-
-      [filterNameToSelect release];
-      filterNameToSelect = [name retain];
-
-      [[filterRepository filtersByNameAsNotifyingDictionary]
-          addObject: [namedFilter filter] forKey: name];
-        
-      // Rest of addition handled in response to notification event.
-    }
-  }
-  else {
-    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }  
+  [self selectFilterNamed: [newFilter name]];
+  [[self window] makeFirstResponder: filterView];
 }
 
 - (IBAction) editFilterInRepository:(id) sender {
-  NSWindow  *editFilterWindow = [self loadEditFilterWindow];
-
   NSString  *oldName = [self selectedFilterName];
-  Filter  *oldFilter = [[filterRepository filtersByName] objectForKey: oldName];
-
-  NamedFilter  *oldNamedFilter = 
-    [NamedFilter namedFilter: oldFilter name: oldName];
-  [editFilterWindowControl representNamedFilter: oldNamedFilter];
-
-  if ([filterRepository applicationProvidedFilterForName: oldName] != nil) {
-    // The filter's name equals that of an application provided filter. Show 
-    // the localized version of the name (which implicitly prevents the name
-    // from being changed).  
-    NSBundle  *mainBundle = [NSBundle mainBundle];
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
-      
-    [editFilterWindowControl setVisibleName: localizedName];
-  }
-  
-  FilterNameValidator  *testNameValidator = 
-    [[[FilterNameValidator alloc]
-        initWithExistingFilters: [filterRepository filtersByName]
-          allowedName: oldName] autorelease];
-  [editFilterWindowControl setNameValidator: testNameValidator];
-  
-  [ModalityTerminator
-     modalityTerminatorForEventSource: editFilterWindowControl];
-  int  status = [NSApp runModalForWindow: editFilterWindow];
-  [editFilterWindow close];
-    
-  if (status == NSRunStoppedResponse) {
-    NamedFilter  *newNamedFilter = [editFilterWindowControl createNamedFilter];
-    
-    if (newNamedFilter != nil) {
-      NSString  *newName = [newNamedFilter name];
-
-      // The testNameValidator should have ensured that this check succeeds.
-      NSAssert( 
-        [newName isEqualToString: oldName] ||
-        [[filterRepository filtersByName] objectForKey: newName] == nil,
-        @"Duplicate name check failed.");
-
-      if (! [newName isEqualToString: oldName]) {
-        // Handle name change.
-        [repositoryFiltersByName moveObjectFromKey: oldName toKey: newName];
-          
-        // Rest of rename handled in response to update notification event.
-      }
-        
-      // Filter itself has changed as well.
-      Filter  *newFilter = [newNamedFilter filter];
-      [repositoryFiltersByName updateObject: newFilter forKey: newName];
-
-      // Rest of update handled in response to update notification event.
-    }
-  }
-  else {
-    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }  
+  NamedFilter  *updatedFilter = [filterEditor editFilterNamed: oldName];
 }
 
 - (IBAction) removeFilterFromRepository:(id) sender {
@@ -265,18 +163,20 @@
 
 @implementation EditFiltersWindowControl (PrivateMethods)
 
-- (NSWindow *)loadEditFilterWindow {
-  if (editFilterWindowControl == nil) {
-    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
-  }
-  // Return its window. This also ensure that it is loaded before its control 
-  // is used.
-  return [editFilterWindowControl window];
-}
-
 - (NSString *)selectedFilterName {
   int  index = [filterView selectedRow];
   return (index < 0) ? nil : [filterNames objectAtIndex: index];
+}
+
+
+- (void) selectFilterNamed:(NSString *)name {
+  int  row = [filterNames indexOfObject: name];
+  if (row >= 0) {
+    [filterView selectRow: row byExtendingSelection: NO];
+  }
+  else {
+    [filterView deselectAll: self];
+  }
 }
 
 - (void) updateWindowState {
@@ -291,7 +191,7 @@
 }
 
 
-- (void) filterAddedToRepository:(NSNotification *)notification { 
+- (void) filterAddedToRepository:(NSNotification *)notification {
   NSString  *name = [[notification userInfo] objectForKey: @"key"];
   NSString  *selectedName = [self selectedFilterName];
 
@@ -301,19 +201,9 @@
   [filterNames sortUsingSelector: @selector(compare:)];
   [filterView reloadData];
         
-  if ([filterNameToSelect isEqualToString: name]) { 
-    // Select the newly added test.
-    [filterView selectRow: [filterNames indexOfObject: name]
-                              byExtendingSelection: NO];
-    [[self window] makeFirstResponder: filterView];
-
-    [filterNameToSelect release];
-    filterNameToSelect = nil;
-  }
-  else if (selectedName != nil) {
+  if (selectedName != nil) {
     // Make sure that the same filter is still selected.
-    [filterView selectRow: [filterNames indexOfObject: selectedName]
-                              byExtendingSelection: NO];
+    [self selectFilterNamed: selectedName];
   }
                 
   [self updateWindowState];
@@ -335,9 +225,8 @@
     [filterView deselectAll: self];
   }
   else if (selectedName != nil) {
-    // Make sure that the same filter is still selected. 
-    [filterView selectRow: [filterNames indexOfObject: selectedName]
-                  byExtendingSelection: NO];
+    // Make sure that the same filter is still selected.
+    [self selectFilterNamed: selectedName];
   }
 
   [self updateWindowState];
@@ -367,9 +256,8 @@
     selectedName = newName;
   }
   if (selectedName != nil) {
-    // Make sure that the same test is still selected. 
-    [filterView selectRow: [filterNames indexOfObject: selectedName]
-                  byExtendingSelection: NO];
+    // Make sure that the same test is still selected.
+    [self selectFilterNamed: selectedName];
   }
 }
 
@@ -381,6 +269,8 @@
     
     Filter  *defaultFilter = 
       [filterRepository applicationProvidedFilterForName: filterName];
+    NotifyingDictionary  *repositoryFiltersByName = 
+      [filterRepository filtersByNameAsNotifyingDictionary];
     
     if (defaultFilter == nil) {
       [repositoryFiltersByName removeObjectForKey: filterName];
@@ -397,52 +287,3 @@
 
 @end // @implementation EditFiltersWindowControl (PrivateMethods)
 
-
-@implementation FilterNameValidator
-
-// Overrides designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use initWithExistingFilters: instead.");
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal {
-  return [self initWithExistingFilters: allFiltersVal allowedName: nil];
-}
-
-- (id) initWithExistingFilters:(NSDictionary *)allFiltersVal
-         allowedName:(NSString *)name {
-  if (self = [super init]) {
-    allFilters = [allFiltersVal retain];
-    allowedName = [name retain];    
-  }
-  
-  return self;
-}
-
-- (void) dealloc {
-  [allFilters release];
-  [allowedName release];
-
-  [super dealloc];
-}
-
-
-- (NSString *)checkNameIsValid:(NSString *)name {
-  NSString*  errorText = nil;
-
-  if ([name isEqualToString:@""]) {
-    return NSLocalizedString(@"The filter must have a name.",
-                             @"Alert message" );
-  }
-  else if ( ![allowedName isEqualToString: name] &&
-            [allFilters objectForKey: name] != nil) {
-    NSString  *fmt = NSLocalizedString(@"A filter named \"%@\" already exists.",
-                                       @"Alert message");
-    return [NSString stringWithFormat: fmt, name];
-  }
-  
-  // All OK
-  return nil;
-}
-
-@end // @implementation FilterNameValidator

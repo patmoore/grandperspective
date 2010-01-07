@@ -1,8 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
-@class EditFilterWindowControl;
 @class FilterRepository;
-@class NotifyingDictionary;
+@class FilterEditor;
 
 @interface EditFiltersWindowControl : NSWindowController {
 
@@ -11,10 +10,9 @@
 
   IBOutlet NSTableView  *filterView;
   
-  EditFilterWindowControl  *editFilterWindowControl;
-  
   FilterRepository  *filterRepository;
-  NotifyingDictionary  *repositoryFiltersByName;
+  
+  FilterEditor  *filterEditor;
   
   // The data in the table view (names of the filters as NSString)
   NSMutableArray  *filterNames;

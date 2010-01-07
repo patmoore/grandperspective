@@ -12,7 +12,7 @@
               [userDefaults stringForKey: DefaultColorMappingKey]
             colorPaletteKey: 
               [userDefaults stringForKey: DefaultColorPaletteKey] 
-            maskName: [userDefaults stringForKey: DefaultMaskName]
+            maskName: [userDefaults stringForKey: DefaultFilterName]
             maskEnabled: NO 
             showEntireVolume: NO 
             showPackageContents: 

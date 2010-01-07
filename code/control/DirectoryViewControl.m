@@ -13,6 +13,7 @@
 #import "Filter.h"
 #import "FilterRepository.h"
 #import "FilterTestRepository.h"
+#import "FilterPopUpControl.h"
 #import "TreeContext.h"
 #import "AnnotatedTreeContext.h"
 
@@ -52,11 +53,13 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 - (void) visibleTreeChanged:(NSNotification *)notification;
 - (void) visiblePathLockingChanged:(NSNotification *)notification;
 
+- (void) maskRemoved:(NSNotification *)notification;
+- (void) maskUpdated:(NSNotification *)notification;
+
 - (NSString *)updateSelectionInStatusbar;
 - (void) updateSelectionInFocusPanel:(NSString *)itemSizeString;
 - (void) validateControls;
 
-- (NSString *)maskName;
 - (void) updateMask;
 
 - (void) updateFileDeletionSupport;
@@ -192,6 +195,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [colorMappings release];
   [colorPalettes release];
   [colorLegendControl release];
+  [maskPopUpControl release];
 
   [scanPathName release];
   [invisiblePathName release];
@@ -202,7 +206,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (Filter *)mask {
   if ([maskCheckBox state]==NSOnState) {
-    NSString  *maskName = [self maskName];
+    NSString  *maskName = [maskPopUpControl selectedFilterName];
     return [[filterRepository filtersByName] objectForKey: maskName];
   }
   else {
@@ -216,7 +220,8 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     return nil;
   }
   else {
-    return [NamedFilter namedFilter: mask name: [self maskName]];
+    return [NamedFilter namedFilter: mask 
+                          name: [maskPopUpControl selectedFilterName]];
   }
 }
 
@@ -273,24 +278,27 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     [UniqueTagsTransformer defaultUniqueTagsTransformer];
   
   [colorMappingPopUp removeAllItems]; 
-  [tagMaker addLocalisedNamesToPopUp: colorMappingPopUp
-              names: [colorMappings allKeys]
+  [tagMaker addLocalisedNames: [colorMappings allKeys]
+              toPopUp: colorMappingPopUp
               select: [initialSettings colorMappingKey]
               table: @"Names"];
   [self colorMappingChanged: nil];
   
   [colorPalettePopUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: colorPalettePopUp
-              names: [colorPalettes allKeys]
+  [tagMaker addLocalisedNames: [colorPalettes allKeys]
+              toPopUp: colorPalettePopUp
               select: [initialSettings colorPaletteKey] 
               table: @"Names"];
   [self colorPaletteChanged: nil];
   
-  [maskPopUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: maskPopUp
-              names: [[filterRepository filtersByName] allKeys]
-              select: [initialSettings maskName]
-              table: @"Names"];
+  maskPopUpControl = 
+    [[FilterPopUpControl alloc] initWithPopUpButton: maskPopUp
+                                  filterRepository: filterRepository];
+  NSNotificationCenter  *nc = [maskPopUpControl notificationCenter];
+  [nc addObserver: self selector: @selector(maskRemoved:) 
+          name: SelectedFilterRemoved object: maskPopUpControl];
+  [nc addObserver: self selector: @selector(maskUpdated:) 
+          name: SelectedFilterUpdated object: maskPopUpControl];  
   [maskCheckBox setState: ( [initialSettings fileItemMaskEnabled]
                               ? NSOnState : NSOffState ) ];
   [self updateMask];
@@ -389,7 +397,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [self showEntireVolumeCheckBoxChanged: nil];
   [self showPackageContentsCheckBoxChanged: nil];
 
-  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  nc = [NSNotificationCenter defaultCenter];
 
   [nc addObserver:self selector: @selector(selectedItemChanged:)
         name: SelectedItemChangedEvent object: pathModelView];
@@ -885,7 +893,17 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
     // affect the state of the controls.
     [self validateControls];
   }
+}
 
+
+- (void) maskRemoved:(NSNotification *)notification {
+  [maskCheckBox setState: NSOffState];
+    
+  [self updateMask];
+}
+
+- (void) maskUpdated:(NSNotification *)notification {
+  [self updateMask];
 }
 
 
@@ -1009,12 +1027,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [mainView setDeleteFileEnabled: [self canDeleteSelectedFile]];
 }
 
-
-- (NSString *)maskName {
-  UniqueTagsTransformer  *tagMaker = 
-    [UniqueTagsTransformer defaultUniqueTagsTransformer];
-  return [tagMaker nameForTag: [[maskPopUp selectedItem] tag]];
-}
 
 - (void) updateMask {
   Filter  *mask = [self mask];

@@ -20,6 +20,7 @@ extern NSString  *DeleteFilesAndFolders;
 @class Filter;
 @class NamedFilter;
 @class FilterRepository;
+@class FilterPopUpControl;
 
 @interface DirectoryViewControl : NSWindowController {
 
@@ -89,6 +90,7 @@ extern NSString  *DeleteFilesAndFolders;
   FileItemMappingCollection  *colorMappings;
   ColorListCollection  *colorPalettes;
   ColorLegendTableViewControl  *colorLegendControl;
+  FilterPopUpControl  *maskPopUpControl;
   
   // The (absolute) path of the scan tree.
   NSString  *scanPathName;

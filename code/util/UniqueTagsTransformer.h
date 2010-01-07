@@ -35,15 +35,24 @@
  * tag associated with it that allows easy mapping back to the original, 
  * locale-independent name.
  */
-- (void) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
-           names: (NSArray *)names
-           select: (NSString *)selectName
-           table: (NSString *)tableName;
+- (void) addLocalisedNames:(NSArray *)names
+           toPopUp:(NSPopUpButton *)popUp
+           select:(NSString *)selectName
+           table:(NSString *)tableName;
+
+- (void) addLocalisedName:(NSString *)name 
+           toPopUp:(NSPopUpButton *)popUp
+           select:(BOOL) select
+           table:(NSString *)tableName;
 
 /* Returns the locale-independent name for the given item. This works as long
  * as the item was created by this transformer using the
  * -addLocalisedNamesToPopUp:names:select:table method.
  */
-- (NSString *) nameForTag: (int) tag;
+- (NSString *)nameForTag:(int) tag;
+
+/* Returns the tag for the locale-independent name.
+ */
+- (int) tagForName:(NSString *)name;
 
 @end

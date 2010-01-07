@@ -64,38 +64,47 @@
 }
 
 
-
-- (void) addLocalisedNamesToPopUp: (NSPopUpButton *)popUp
-           names: (NSArray *)names
-           select: (NSString *)selectName
-           table: (NSString *)tableName {
-  NSBundle  *mainBundle = [NSBundle mainBundle];
-
-  NSEnumerator  *enumerator = [names objectEnumerator];
+- (void) addLocalisedNames:(NSArray *)names 
+           toPopUp:(NSPopUpButton *)popUp
+           select:(NSString *)selectName
+           table:(NSString *)tableName {
+  NSEnumerator  *nameEnum = [names objectEnumerator];
   NSString  *name;
-  NSString  *localizedSelect = nil;
   
-  while (name = [enumerator nextObject]) {
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: name value: nil table: tableName];
-
-    if ([name isEqualToString: selectName]) {
-      localizedSelect = localizedName;
-    }
-    
-    int  tag = [[self transformedValue: name] intValue];
-    
-    [popUp addItemWithTitle: localizedName];
-    [[popUp lastItem] setTag: tag];
-  }
-  
-  if (localizedSelect != nil) {
-    [popUp selectItemWithTitle: localizedSelect];
+  while (name = [nameEnum nextObject]) {
+    [self addLocalisedName: name 
+            toPopUp: popUp
+            select: [name isEqualToString: selectName]
+            table: tableName];
   }
 }
 
+- (void) addLocalisedName:(NSString *)name 
+           toPopUp:(NSPopUpButton *)popUp
+           select:(BOOL) select
+           table:(NSString *)tableName {
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  NSString  *localizedName = 
+    [mainBundle localizedStringForKey: name value: nil table: tableName];
+
+  int  tag = [[self transformedValue: name] intValue];
+  [popUp addItemWithTitle: localizedName];
+  [[popUp lastItem] setTag: tag];
+  
+  if (select) {
+    [popUp selectItemAtIndex: [popUp numberOfItems] - 1];
+  }
+}
+
+
 - (NSString *) nameForTag: (int) tag {
   return [self reverseTransformedValue: [NSNumber numberWithInt: tag]];
+}
+
+/* Returns the tag for the locale-independent name.
+ */
+- (int) tagForName:(NSString *)name {
+  return [[self transformedValue: name] intValue];
 }
 
 @end

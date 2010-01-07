@@ -8,7 +8,7 @@ extern NSString  *RescanBehaviourKey;
 extern NSString  *FileSizeMeasureKey;
 extern NSString  *DefaultColorMappingKey;
 extern NSString  *DefaultColorPaletteKey;
-extern NSString  *DefaultMaskName;
+extern NSString  *DefaultFilterName;
 extern NSString  *DefaultColorGradient;
 extern NSString  *ShowPackageContentsByDefaultKey;
 extern NSString  *ProgressPanelRefreshRateKey;

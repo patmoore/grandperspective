@@ -86,6 +86,8 @@
 		AA83A51510F294AB002542E4 /* EditFiltersWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */; };
 		AA83A54E10F3D061002542E4 /* DirectoryViewWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A54C10F3D061002542E4 /* DirectoryViewWindow.xib */; };
 		AA83A5C910F3EDB4002542E4 /* EditFilterWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A5C710F3EDB4002542E4 /* EditFilterWindow.xib */; };
+		AA83A5D710F52716002542E4 /* FilterEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A5D610F52716002542E4 /* FilterEditor.m */; };
+		AA83A65410F67A2E002542E4 /* FilterPopUpControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A65310F67A2E002542E4 /* FilterPopUpControl.m */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
 		AA8A38080D7B437300DB872C /* FileItemMappingCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FD0D7B437300DB872C /* FileItemMappingCollection.m */; };
 		AA8A380A0D7B437300DB872C /* FileItemMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FF0D7B437300DB872C /* FileItemMappingScheme.m */; };
@@ -291,6 +293,10 @@
 		AA83A51410F294AB002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFiltersWindow.xib; sourceTree = "<group>"; };
 		AA83A54D10F3D061002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DirectoryViewWindow.xib; sourceTree = "<group>"; };
 		AA83A5C810F3EDB4002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFilterWindow.xib; sourceTree = "<group>"; };
+		AA83A5D510F52716002542E4 /* FilterEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterEditor.h; path = control/FilterEditor.h; sourceTree = "<group>"; };
+		AA83A5D610F52716002542E4 /* FilterEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterEditor.m; path = control/FilterEditor.m; sourceTree = "<group>"; };
+		AA83A65210F67A2E002542E4 /* FilterPopUpControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterPopUpControl.h; path = control/FilterPopUpControl.h; sourceTree = "<group>"; };
+		AA83A65310F67A2E002542E4 /* FilterPopUpControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterPopUpControl.m; path = control/FilterPopUpControl.m; sourceTree = "<group>"; };
 		AA8877E80D0C0E3500F52571 /* TreeContext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeContext.h; path = tree/TreeContext.h; sourceTree = "<group>"; };
 		AA8877E90D0C0E3500F52571 /* TreeContext.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TreeContext.m; path = tree/TreeContext.m; sourceTree = "<group>"; };
 		AA8A37FB0D7B437300DB872C /* FileItemMapping.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileItemMapping.h; sourceTree = "<group>"; };
@@ -750,6 +756,10 @@
 				AA7DEC8B0D6EDE820057F5F8 /* UniformTypeRanking.h */,
 				AA7DEC8C0D6EDE820057F5F8 /* UniformTypeRanking.m */,
 				AA2B4BAA10EFACB10088EA1C /* NameValidator.h */,
+				AA83A5D510F52716002542E4 /* FilterEditor.h */,
+				AA83A5D610F52716002542E4 /* FilterEditor.m */,
+				AA83A65210F67A2E002542E4 /* FilterPopUpControl.h */,
+				AA83A65310F67A2E002542E4 /* FilterPopUpControl.m */,
 			);
 			name = control;
 			sourceTree = "<group>";
@@ -1026,6 +1036,8 @@
 				AA83A34010F0D329002542E4 /* MutableFilterTestRef.m in Sources */,
 				AA83A3A410F0DD5D002542E4 /* EditFiltersWindowControl.m in Sources */,
 				AA83A46F10F14280002542E4 /* NamedFilter.m in Sources */,
+				AA83A5D710F52716002542E4 /* FilterEditor.m in Sources */,
+				AA83A65410F67A2E002542E4 /* FilterPopUpControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

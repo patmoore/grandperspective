@@ -17,7 +17,7 @@ NSString  *RescanBehaviourKey = @"rescanBehaviour";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";
 NSString  *DefaultColorPaletteKey = @"defaultColorPalette";
-NSString  *DefaultMaskName = @"defaultMask";
+NSString  *DefaultFilterName = @"defaultFilter";
 NSString  *ShowPackageContentsByDefaultKey = @"showPackageContentsByDefault";
 
 
@@ -155,7 +155,7 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
 
   // Initialise the pop-up with its (localized) content
   [popUp removeAllItems];
-  [tagMaker addLocalisedNamesToPopUp: popUp names: names
+  [tagMaker addLocalisedNames: names toPopUp: popUp 
               select: [userDefaults stringForKey: key] table: @"Names"];
 }
 
