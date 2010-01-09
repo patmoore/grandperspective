@@ -7,6 +7,7 @@
 #import "TreeBuilder.h"
 
 #import "EditUniformTypeRankingWindowControl.h"
+#import "FilterPopUpControl.h"
 
 #import "UniqueTagsTransformer.h"
 
@@ -59,6 +60,7 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
 
 - (void) dealloc {
   [uniformTypeWindowControl release];
+  [filterPopUpControl release];
   
   [super dealloc];
 }
@@ -79,6 +81,18 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
                         defaultFileItemMappingCollection] allKeys]];
   [self setupPopUp: defaultColorPalettePopUp key: DefaultColorPaletteKey
           content: [[ColorListCollection defaultColorListCollection] allKeys]];
+
+  // The filter pop-up uses its own control that keeps it up to date. Its
+  // entries can change when filters are added/removed.
+  filterPopUpControl =
+    [[FilterPopUpControl alloc] initWithPopUpButton: defaultFilterPopUp];
+  [filterPopUpControl selectFilterNamed: 
+     [userDefaults stringForKey: DefaultFilterName]];
+
+  UniqueTagsTransformer  *tagMaker = 
+    [UniqueTagsTransformer defaultUniqueTagsTransformer];
+  [defaultFilterPopUp setTag: 
+     [[tagMaker transformedValue: DefaultFilterName] intValue]];
   
   [fileDeletionConfirmationCheckBox setState: 
      ([userDefaults boolForKey: ConfirmFileDeletionKey]

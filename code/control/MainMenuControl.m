@@ -518,6 +518,8 @@ static MainMenuControl  *singletonInstance = nil;
   if (preferencesPanelControl == nil) {
     // Lazily create the panel
     preferencesPanelControl = [[PreferencesPanelControl alloc] init];
+    
+    [[preferencesPanelControl window] center];
   }
 
   [[preferencesPanelControl window] makeKeyAndOrderFront: self];

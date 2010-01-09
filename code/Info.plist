@@ -93,6 +93,8 @@
 		<real>0.5</real>
 		<key>defaultColorMapping</key>
 		<string>folder</string>
+		<key>defaultFilter</key>
+		<string>No hard-links</string>
 		<key>fileSizeMeasure</key>
 		<string>logical</string>
 		<key>uniformTypesRanking</key>

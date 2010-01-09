@@ -21,6 +21,8 @@ extern NSString  *SelectedFilterUpdated;
   NSNotificationCenter  *notificationCenter;
 }
 
+- (id) initWithPopUpButton:(NSPopUpButton *)popUpButton;
+
 - (id) initWithPopUpButton:(NSPopUpButton *)popUpButton 
          filterRepository:(FilterRepository *)filterRepository;
 

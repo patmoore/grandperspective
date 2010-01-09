@@ -19,6 +19,7 @@ extern NSString  *CustomFileRevealApplication;
 extern NSString  *UpdateFiltersBeforeUse;
 
 @class EditUniformTypeRankingWindowControl;
+@class FilterPopUpControl;
 
 @interface PreferencesPanelControl : NSWindowController {
 
@@ -31,10 +32,12 @@ extern NSString  *UpdateFiltersBeforeUse;
 
   IBOutlet NSPopUpButton  *defaultColorMappingPopUp;
   IBOutlet NSPopUpButton  *defaultColorPalettePopUp;
+  IBOutlet NSPopUpButton  *defaultFilterPopUp;
   
   IBOutlet NSButton  *showPackageContentsByDefaultCheckBox;
   
   EditUniformTypeRankingWindowControl  *uniformTypeWindowControl;
+  FilterPopUpControl  *filterPopUpControl;
 }
 
 - (IBAction) popUpValueChanged: (id)sender;

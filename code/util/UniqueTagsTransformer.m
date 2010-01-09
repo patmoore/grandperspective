@@ -42,7 +42,12 @@
 }
 
 
-- (id) transformedValue: (id) value {
+- (id) transformedValue:(id) value {
+  if (value == nil) {
+    // Gracefully handle nil values.
+    return nil;
+  }
+
   id  tag = [valueToTag objectForKey: value];
  
   if (tag == nil) {
