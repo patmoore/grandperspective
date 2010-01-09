@@ -527,6 +527,9 @@ static MainMenuControl  *singletonInstance = nil;
   if (editFiltersWindowControl == nil) {
     // Lazily create the window
     editFiltersWindowControl = [[EditFiltersWindowControl alloc] init];
+
+    // Initially center it, subsequently keep position as chosen by user
+    [[editFiltersWindowControl window] center];
   }
   
   [[editFiltersWindowControl window] makeKeyAndOrderFront: self];
