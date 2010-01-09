@@ -1,6 +1,7 @@
 #import "EditFilterWindowControl.h"
 
 #import "ControlConstants.h"
+#import "NameValidator.h"
 #import "NotifyingDictionary.h"
 
 #import "FileItemTest.h"
@@ -11,29 +12,11 @@
 #import "FilterTest.h"
 #import "MutableFilterTestRef.h"
 
-#import "NameValidator.h"
-#import "ModalityTerminator.h"
-
-#import "EditFilterTestWindowControl.h"
+#import "FilterTestEditor.h"
 
 
 NSString  *NameColumn = @"name";
 NSString  *MatchColumn = @"match";
-
-
-/* Performs a validity check on the name of filter tests (before the window is 
- * closed using the OK button).
- */
-@interface FilterTestNameValidator : NSObject <NameValidator> {
-  NSDictionary  *allTests;
-  NSString  *allowedName;
-}
-
-- (id) initWithExistingTests:(NSDictionary *)allTests;
-- (id) initWithExistingTests:(NSDictionary *)allTests 
-         allowedName:(NSString *)name;
-
-@end // @interface FilterTestNameValidator
 
 
 @interface EditFilterWindowControl (PrivateMethods)
@@ -80,8 +63,8 @@ NSString  *MatchColumn = @"match";
 - (id) initWithTestRepository:(FilterTestRepository *)testRepositoryVal {
   if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
     testRepository = [testRepositoryVal retain];
-    repositoryTestsByName = 
-      [[testRepository testsByNameAsNotifyingDictionary] retain];
+    NotifyingDictionary  *repositoryTestsByName = 
+      [testRepository testsByNameAsNotifyingDictionary];
 
     NSNotificationCenter  *nc = [repositoryTestsByName notificationCenter];
     
@@ -98,11 +81,14 @@ NSString  *MatchColumn = @"match";
     filterTests = [[NSMutableArray alloc] initWithCapacity: 8];
     
     availableTests = [[NSMutableArray alloc] 
-      initWithCapacity: [((NSDictionary *)repositoryTestsByName) count] + 8];
+      initWithCapacity: [[testRepository testsByName]count] + 8];
     [availableTests
-       addObjectsFromArray: [((NSDictionary *)repositoryTestsByName) allKeys]];
+       addObjectsFromArray: [[testRepository testsByName] allKeys]];
     [availableTests sortUsingSelector: @selector(compare:)];
 
+    testEditor = 
+      [[FilterTestEditor alloc] initWithFilterTestRepository: testRepository];
+    
     nameValidator = nil;
        
     allowEmptyFilter = NO; // Default
@@ -111,12 +97,12 @@ NSString  *MatchColumn = @"match";
 }
 
 - (void) dealloc {
+  [[[testRepository testsByNameAsNotifyingDictionary] notificationCenter] 
+       removeObserver: self];
   [testRepository release];
 
-  [[repositoryTestsByName notificationCenter] removeObserver:self];
+  [testEditor release];
 
-  [repositoryTestsByName release];
-  
   [filterName release];
   [filterTests release];
   [availableTests release];
@@ -124,7 +110,6 @@ NSString  *MatchColumn = @"match";
   [nameValidator release];
   
   [selectedTestName release];
-  [testNameToSelect release];
   
   [super dealloc];
 }
@@ -244,115 +229,18 @@ NSString  *MatchColumn = @"match";
 
 
 - (IBAction) addTestToRepository:(id) sender {
-  EditFilterTestWindowControl  *editTestWindowControl = 
-    [EditFilterTestWindowControl defaultInstance];
+  FilterTest  *newTest = [testEditor newFilterTest];
   
-  // Ensure window is loaded before configuring its contents
-  NSWindow  *editTestWindow = [editTestWindowControl window]; 
-
-  FilterTestNameValidator  *testNameValidator = 
-    [[[FilterTestNameValidator alloc]
-        initWithExistingTests: ((NSDictionary *)repositoryTestsByName)] 
-          autorelease];
-  
-  [editTestWindowControl setNameValidator: testNameValidator];
-  [editTestWindowControl representFilterTest: nil];
-
-  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
-  int  status = [NSApp runModalForWindow: editTestWindow];
-  [editTestWindow close];
-
-  if (status == NSRunStoppedResponse) {
-    FilterTest  *filterTest = [editTestWindowControl createFilterTest];
-    
-    if (filterTest != nil) {
-      NSString  *name = [filterTest name];
-
-      // The nameValidator should have ensured that this check succeeds.
-      NSAssert( 
-        [((NSDictionary *)repositoryTestsByName) objectForKey: name] == nil,
-        @"Duplicate name check failed.");
-
-      [testNameToSelect release];
-      testNameToSelect = [name retain];
-
-      [repositoryTestsByName addObject: [filterTest fileItemTest] forKey: name];
-        
-      // Rest of addition handled in response to notification event.
-    }
-  }
-  else {
-    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }
+  [availableTestsView selectRow: [availableTests indexOfObject: [newTest name]]
+                        byExtendingSelection: NO];
+  [[self window] makeFirstResponder: availableTestsView];
+  [self updateWindowState: nil];
 }
 
 
 - (IBAction) editTestInRepository:(id) sender {
-  EditFilterTestWindowControl  *editTestWindowControl = 
-    [EditFilterTestWindowControl defaultInstance];
-
   NSString  *oldName = [self selectedAvailableTestName];
-  FileItemTest  *oldTest = 
-    [((NSDictionary *)repositoryTestsByName) objectForKey: oldName];
-
-  // Ensure window is loaded before configuring its contents
-  NSWindow  *editTestWindow = [editTestWindowControl window];
-
-  [editTestWindowControl representFilterTest: 
-     [FilterTest filterTestWithName: oldName fileItemTest: oldTest]];
-
-  if ([testRepository applicationProvidedTestForName: oldName] != nil) {
-    // The test's name equals that of an application provided test. Show the
-    // localized version of the name (which implicitly prevents the name from
-    // being changed).
-  
-    NSBundle  *mainBundle = [NSBundle mainBundle];
-    NSString  *localizedName = 
-      [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
-      
-    [editTestWindowControl setVisibleName: localizedName];
-  }
-  
-  FilterTestNameValidator  *testNameValidator = 
-    [[[FilterTestNameValidator alloc]
-        initWithExistingTests: ((NSDictionary *)repositoryTestsByName)
-        allowedName: oldName] autorelease];
-  
-  [editTestWindowControl setNameValidator: testNameValidator];
-  
-  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
-  int  status = [NSApp runModalForWindow: editTestWindow];
-  [editTestWindow close];
-    
-  if (status == NSRunStoppedResponse) {
-    FilterTest  *newFilterTest = [editTestWindowControl createFilterTest];
-    
-    if (newFilterTest != nil) {
-      NSString  *newName = [newFilterTest name];
-
-      // The terminationControl should have ensured that this check succeeds.
-      NSAssert( 
-        [newName isEqualToString: oldName] ||
-        [((NSDictionary *)repositoryTestsByName) objectForKey: newName] == nil,
-        @"Duplicate name check failed.");
-
-      if (! [newName isEqualToString: oldName]) {
-        // Handle name change.
-        [repositoryTestsByName moveObjectFromKey: oldName toKey: newName];
-          
-        // Rest of rename handled in response to update notification event.
-      }
-        
-      // Test itself has changed as well.
-      [repositoryTestsByName updateObject: [newFilterTest fileItemTest] 
-                               forKey: newName];
-
-      // Rest of update handled in response to update notification event.
-    }
-  }
-  else {
-    NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
-  }
+  FilterTest  *updatedTest = [testEditor editFilterTestNamed: oldName];
 }
 
 
@@ -607,8 +495,7 @@ NSString  *MatchColumn = @"match";
 
 
 - (MutableFilterTestRef *)filterTestForTestNamed:(NSString *)name {
-  FileItemTest  *test = 
-    [((NSDictionary *)repositoryTestsByName) objectForKey: name];
+  FileItemTest  *test = [[testRepository testsByName] objectForKey: name];
 
   if (test == nil) {
     return nil;
@@ -640,22 +527,13 @@ NSString  *MatchColumn = @"match";
   [availableTests sortUsingSelector: @selector(compare:)];
   [availableTestsView reloadData];
         
-  if ([testNameToSelect isEqualToString: testName]) { 
-    // Select the newly added test.
-    [availableTestsView selectRow: [availableTests indexOfObject: testName]
-                          byExtendingSelection: NO];
-    [[self window] makeFirstResponder: availableTestsView];
-
-    [testNameToSelect release];
-    testNameToSelect = nil;
-  }
-  else if (selectedName != nil) {
+  if (selectedName != nil) {
     // Make sure that the same test is still selected.
     [availableTestsView selectRow: [availableTests indexOfObject: selectedName]
                           byExtendingSelection: NO];
   }
                 
-  [self updateWindowState:nil];
+  [self updateWindowState: nil];
 }
 
 
@@ -769,8 +647,7 @@ NSString  *MatchColumn = @"match";
   }
   
   FileItemTest  *newSelectedTest = 
-    [((NSDictionary *)repositoryTestsByName) 
-                        objectForKey: newSelectedTestName];
+    [[testRepository testsByName] objectForKey: newSelectedTestName];
 
   // If highlighted test changed, update the description text view
   if (newSelectedTestName != selectedTestName) { 
@@ -816,6 +693,8 @@ NSString  *MatchColumn = @"match";
     
     FileItemTest  *defaultTest = 
       [testRepository applicationProvidedTestForName: testName];
+    NotifyingDictionary  *repositoryTestsByName =
+      [testRepository testsByNameAsNotifyingDictionary];
     
     if (defaultTest == nil) {
       [repositoryTestsByName removeObjectForKey: testName];
@@ -836,54 +715,3 @@ NSString  *MatchColumn = @"match";
 }
 
 @end // @implementation EditFilterWindowControl (PrivateMethods)
-
-
-@implementation FilterTestNameValidator
-
-// Overrides designated initialiser.
-- (id) init {
-  NSAssert(NO, @"Use initWithExistingTests: instead.");
-}
-
-- (id) initWithExistingTests:(NSDictionary *)allTestsVal {
-  return [self initWithExistingTests: allTestsVal allowedName: nil];
-}
-
-- (id) initWithExistingTests:(NSDictionary *)allTestsVal
-         allowedName:(NSString *)name {
-  if (self = [super init]) {
-    allTests = [allTestsVal retain];
-    allowedName = [name retain];    
-  }
-  
-  return self;
-}
-
-- (void) dealloc {
-  [allTests release];
-  [allowedName release];
-
-  [super dealloc];
-}
-
-
-- (NSString *)checkNameIsValid:(NSString *)name {
-  NSString*  errorText = nil;
-
-  if ([name isEqualToString:@""]) {
-    return NSLocalizedString( @"The test must have a name.",
-                              @"Alert message" );
-  }
-  else if ( ![allowedName isEqualToString: name] &&
-            [allTests objectForKey: name] != nil) {
-    NSString  *fmt = NSLocalizedString( @"A test named \"%@\" already exists.",
-                                        @"Alert message" );
-    return [NSString stringWithFormat: fmt, name];
-  }
-  
-  // All OK
-  return nil;
-}
-
-@end // @implementation FilterTestNameValidator
-

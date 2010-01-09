@@ -1,8 +1,8 @@
 #import <Cocoa/Cocoa.h>
 
 @class EditFilterTestWindowControl;
-@class NotifyingDictionary;
 @class FilterTestRepository;
+@class FilterTestEditor;
 @class NamedFilter;
 @protocol NameValidator;
 
@@ -36,9 +36,8 @@
   IBOutlet NSTableView  *availableTestsView;
   
   FilterTestRepository  *testRepository;
+  FilterTestEditor  *testEditor;
   
-  NotifyingDictionary  *repositoryTestsByName;
-
   NSObject <NameValidator>  *nameValidator;
 
   // Non-localized name of the filter.
@@ -47,11 +46,8 @@
   NSMutableArray  *filterTests;
   NSMutableArray  *availableTests;
 
-  // Non-localized name of currently selected test.
+  // Locale-independent name of currently selected test.
   NSString  *selectedTestName;
-  
-  // Non-localized name of test to select.
-  NSString  *testNameToSelect;
   
   // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
   // notification has been fired already.

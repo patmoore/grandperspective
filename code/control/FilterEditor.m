@@ -89,6 +89,8 @@
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
+    
+    return nil;
   }    
 }
 
@@ -154,6 +156,8 @@
   }
   else {
     NSAssert(status == NSRunAbortedResponse, @"Unexpected status.");
+    
+    return nil;
   }
 }
 
