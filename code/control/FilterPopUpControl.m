@@ -95,6 +95,11 @@ NSString  *SelectedFilterUpdated = @"selectedFilterUpdated";
   return [tagMaker nameForTag: [[popUpButton selectedItem] tag]];
 }
 
+- (void) selectFilterNamed:(NSString *)name {
+  int  tag = [tagMaker tagForName: name];
+  [popUpButton selectItemAtIndex: [popUpButton indexOfItemWithTag: tag]];
+}
+
 @end // @implementation FilterPopUpControl
 
 

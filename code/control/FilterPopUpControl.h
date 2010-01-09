@@ -27,8 +27,12 @@ extern NSString  *SelectedFilterUpdated;
 - (NSNotificationCenter *)notificationCenter; 
 - (void) setNotificationCenter:(NSNotificationCenter *)notificationCenter; 
 
-/* Returns the non-localized name of the selected filter.
+/* Returns the locale-independent name of the selected filter.
  */
 - (NSString *)selectedFilterName;
+
+/* Selects the filter with the given locale-independent name.
+ */
+- (void) selectFilterNamed:(NSString *)name;
 
 @end

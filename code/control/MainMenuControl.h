@@ -3,6 +3,7 @@
 @class WindowManager;
 @class VisibleAsynchronousTaskManager;
 @class EditFiltersWindowControl;
+@class SelectFilterPanelControl;
 @class PreferencesPanelControl;
 
 @interface MainMenuControl : NSObject {
@@ -14,6 +15,7 @@
   VisibleAsynchronousTaskManager  *readTaskManager;
   
   PreferencesPanelControl  *preferencesPanelControl;
+  SelectFilterPanelControl  *selectFilterPanelControl;
   EditFiltersWindowControl  *editFiltersWindowControl;
   
   BOOL  scanAfterLaunch;

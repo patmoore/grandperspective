@@ -9,6 +9,7 @@
 #import "SaveImageDialogControl.h"
 #import "PreferencesPanelControl.h"
 #import "EditFiltersWindowControl.h"
+#import "SelectFilterPanelControl.h"
 
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
@@ -243,7 +244,9 @@ static MainMenuControl  *singletonInstance = nil;
       [[VisibleAsynchronousTaskManager alloc] 
           initWithProgressPanel: readProgressPanelControl];
     
+    // Lazily load the optional panels and windows
     preferencesPanelControl = nil;
+    selectFilterPanelControl = nil;
     editFiltersWindowControl = nil;
     
     scanAfterLaunch = YES; // Default
@@ -272,6 +275,7 @@ static MainMenuControl  *singletonInstance = nil;
   [readTaskManager release];
   
   [preferencesPanelControl release];
+  [selectFilterPanelControl release];
   [editFiltersWindowControl release];
   
   [super dealloc];
@@ -575,10 +579,17 @@ static MainMenuControl  *singletonInstance = nil;
   NamedFilter  *namedFilter = nil;
   if (useFilter) {
     namedFilter = [self getNamedFilter: nil];
+
+    // Copy the filter, so that its test can be reinstantiated (it may already
+    // have been instantiated)
+    Filter  *filter = [Filter filterWithFilter: [namedFilter filter]];
     
     // Instantiate the test
-    [[namedFilter filter] createFileItemTestFromRepository: 
-                            [FilterTestRepository defaultInstance]];
+    [filter createFileItemTestFromRepository: 
+              [FilterTestRepository defaultInstance]];
+
+    // Use the updated filter instead
+    namedFilter = [NamedFilter namedFilter: filter name: [namedFilter name]];
   }
 
   [self scanFolder: pathToScan namedFilter: namedFilter];
@@ -652,8 +663,22 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
-- (NamedFilter *) getNamedFilter:(NamedFilter *)initialFilter {
-  // TEMP: Need to use SelectFilterWindow (to be created).
+- (NamedFilter *)getNamedFilter:(NamedFilter *)initialFilter {
+  if (selectFilterPanelControl == nil) {
+    selectFilterPanelControl = [[SelectFilterPanelControl alloc] init];
+  }
+
+  if (initialFilter != nil) {
+    [selectFilterPanelControl selectFilterNamed: [initialFilter name]];
+  }
+  
+  NSWindow  *selectFilterWindow = [selectFilterPanelControl window];
+  int  status = [NSApp runModalForWindow: selectFilterWindow];
+  [selectFilterWindow close];
+  
+  if (status == NSRunStoppedResponse) {
+    return [selectFilterPanelControl selectedNamedFilter];
+  }
   return nil;
 }
 
