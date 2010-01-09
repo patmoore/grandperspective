@@ -114,6 +114,11 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 
 - (NamedFilter *)getNamedFilter:(NamedFilter *)initialFilter;
 
+/* Helper method for reporting the names of unbound filters or filter tests.
+ */
++ (void) reportUnbound:(NSArray *)unboundNames messageFormat:(NSString *)format
+           infoText:(NSString *)infoText;
+
 /* Creates window title based on scan location, scan time and filter (if any).
  */
 + (NSString *)windowTitleForDirectoryView:(DirectoryViewControl *)control;
@@ -167,38 +172,24 @@ static MainMenuControl  *singletonInstance = nil;
                                     RescanKeepsOldWindow, nil];
 }
 
++ (void) reportUnboundFilters:(NSArray *)unboundFilters {
+  NSString  *format = 
+    NSLocalizedString( @"Failed to update one or more filters:\n%@", 
+                       @"Alert message" );
+  NSString  *infoText = 
+    NSLocalizedString( @"These filters do not exist anymore. Their old definition is used instead.", 
+                       @"Alert informative text" );
+  [self reportUnbound: unboundFilters messageFormat: format infoText: infoText];
+}
+
 + (void) reportUnboundTests:(NSArray *)unboundTests {
-  if ([unboundTests count] == 0) {
-    // No unbound tests. Nothing to report.
-    return;
-  }
-
-  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
-
   NSString  *format = 
     NSLocalizedString( @"Failed to bind one or more filter tests:\n%@", 
                        @"Alert message" );
-
-  // Quote the names of the tests.
-  NSMutableArray  *quotedTestNames =
-    [NSMutableArray arrayWithCapacity: [unboundTests count]];
-  NSEnumerator  *testEnum = [unboundTests objectEnumerator];
-  NSString  *testName;
-  while (testName = [testEnum nextObject]) {
-    [quotedTestNames addObject: 
-                       [NSString stringWithFormat: @"\"%@\"", testName]];
-  }
-    
-  NSString  *testList =
-    [LocalizableStrings localizedAndEnumerationString: quotedTestNames]; 
   NSString  *infoText = 
-    NSLocalizedString( @"The unbound tests have been omitted from the filter set.", 
+    NSLocalizedString( @"The unbound tests have been omitted from the filter.", 
                        @"Alert informative text" );
-  [alert addButtonWithTitle: OK_BUTTON_TITLE];
-  [alert setMessageText: [NSString stringWithFormat: format, testList]];
-  [alert setInformativeText: infoText];
-
-  [alert runModal];
+  [self reportUnbound: unboundTests messageFormat: format infoText: infoText];
 }
 
 
@@ -377,10 +368,11 @@ static MainMenuControl  *singletonInstance = nil;
   TreeContext  *oldContext = [oldControl treeContext];
   FilterSet  *filterSet = [oldContext filterSet];
   if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
+    NSMutableArray  *unboundFilters = [NSMutableArray arrayWithCapacity: 8];
     NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
-    filterSet = [filterSet updatedFilterSetUsingRepository:
-                               [FilterTestRepository defaultInstance]
+    filterSet = [filterSet updatedFilterSetUnboundFilters: unboundFilters
                              unboundTests: unboundTests];
+    [MainMenuControl reportUnboundFilters: unboundFilters];
     [MainMenuControl reportUnboundTests: unboundTests];
   }
   
@@ -685,6 +677,35 @@ static MainMenuControl  *singletonInstance = nil;
     return [selectFilterPanelControl selectedNamedFilter];
   }
   return nil;
+}
+
+
++ (void) reportUnbound:(NSArray *)unboundNames messageFormat:(NSString *)format
+           infoText:(NSString *)infoText {
+  if ([unboundNames count] == 0) {
+    // No unbound items. Nothing to report.
+    return;
+  }
+
+  NSAlert *alert = [[[NSAlert alloc] init] autorelease];
+
+  // Quote the names
+  NSMutableArray  *quotedNames =
+    [NSMutableArray arrayWithCapacity: [unboundNames count]];
+  NSEnumerator  *nameEnum = [unboundNames objectEnumerator];
+  NSString  *name;
+  while (name = [nameEnum nextObject]) {
+    [quotedNames addObject: [NSString stringWithFormat: @"\"%@\"", name]];
+  }
+    
+  NSString  *nameList =
+    [LocalizableStrings localizedAndEnumerationString: quotedNames]; 
+
+  [alert addButtonWithTitle: OK_BUTTON_TITLE];
+  [alert setMessageText: [NSString stringWithFormat: format, nameList]];
+  [alert setInformativeText: infoText];
+
+  [alert runModal];
 }
 
 

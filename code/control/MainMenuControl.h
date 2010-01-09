@@ -25,6 +25,7 @@
 
 + (NSArray *)rescanBehaviourNames;
 
++ (void) reportUnboundFilters:(NSArray *)unboundFilters;
 + (void) reportUnboundTests:(NSArray *)unboundTests;
 
 - (IBAction) scanDirectoryView:(id) sender;

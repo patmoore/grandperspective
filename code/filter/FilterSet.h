@@ -1,6 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 @class NamedFilter;
+@class FilterRepository;
 @class FilterTestRepository;
 @class FileItemTest;
 
@@ -27,20 +28,35 @@
  */
 - (id) initWithNamedFilter:(NamedFilter *)filter;
 
-/* Creates an updated set of filters. Each of the filters is re-instantiated
- * so that it is based on the tests currently defined in the test repository.
+/* Creates an updated set of filters. See 
+ * updatedFilterSetUsingFilterRepository:testRepository:unboundFilters:unboundTests.
  */
-- (FilterSet *)updatedFilterSetUsingRepository: 
-                 (FilterTestRepository *)repository;
+- (FilterSet *)updatedFilterSetUnboundFilters:(NSMutableArray *)unboundFilters
+                 unboundTests:(NSMutableArray *)unboundTests;
+ 
+/* Creates an updated set of filters. See 
+ * updatedFilterSetUsingFilterRepository:testRepository:unboundFilters:unboundTests.
+ */
+- (FilterSet *)updatedFilterSetUsingFilterRepository:
+                   (FilterRepository *)filterRepository
+                 testRepository:(FilterTestRepository *)testRepository;
 
-/* Creates an updated set of filters. Each of the filters is re-instantiated
- * so that it is based on the tests currently defined in the test repository.
+/* Creates an updated set of filters. First, each filter is updated to its
+ * current specification in the filter repository. If the filter, however, does
+ * not exist anymore, its original definition is used. Subsequently, all filter
+ * tests are re-instantiated so that it is based on the tests as they are
+ * currently defined in the test repository.
  *
- * If any test cannot be found in the repository its name will be added to
+ * If any filter could not be found in the filter repository, its name will be
+ * added to "unboundFilters".
+ *
+ * If any test cannot be found in the test repository its name will be added to
  * "unboundTests".
  */
-- (FilterSet *)updatedFilterSetUsingRepository: 
-                 (FilterTestRepository *)repository
+- (FilterSet *)updatedFilterSetUsingFilterRepository:
+                   (FilterRepository *)filterRepository
+                 testRepository: (FilterTestRepository *)testRepository
+                 unboundFilters:(NSMutableArray *)unboundFilters
                  unboundTests:(NSMutableArray *)unboundTests;
                                 
 /* Creates a new set with an extra filter. The existing filters are taken

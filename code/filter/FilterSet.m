@@ -4,6 +4,9 @@
 #import "NamedFilter.h"
 #import "CompoundAndItemTest.h"
 
+#import "FilterRepository.h"
+#import "FilterTestRepository.h"
+
 @interface FilterSet (PrivateMethods)
 
 + (id) filterSetWithNamedFilters:(NSArray *)filters;
@@ -39,13 +42,28 @@
 }
 
 
-- (FilterSet *)updatedFilterSetUsingRepository: 
-                 (FilterTestRepository *)repository {
-  return [self updatedFilterSetUsingRepository: repository unboundTests: nil];
+- (FilterSet *)updatedFilterSetUnboundFilters:(NSMutableArray *)unboundFilters
+                 unboundTests:(NSMutableArray *)unboundTests {
+  return [self updatedFilterSetUsingFilterRepository: 
+                   [FilterRepository defaultInstance]
+                  testRepository: [FilterTestRepository defaultInstance]
+                  unboundFilters: unboundFilters
+                  unboundTests: unboundTests];
 }
 
-- (FilterSet *)updatedFilterSetUsingRepository: 
-                 (FilterTestRepository *)repository
+- (FilterSet *)updatedFilterSetUsingFilterRepository:
+                   (FilterRepository *)filterRepository
+                 testRepository:(FilterTestRepository *)testRepository {
+  return [self updatedFilterSetUsingFilterRepository: filterRepository 
+                 testRepository: testRepository
+                 unboundFilters: nil
+                 unboundTests: nil];
+}
+
+- (FilterSet *)updatedFilterSetUsingFilterRepository:
+                   (FilterRepository *)filterRepository
+                 testRepository:(FilterTestRepository *)testRepository
+                 unboundFilters:(NSMutableArray *)unboundFilters
                  unboundTests:(NSMutableArray *)unboundTests {
   NSMutableArray  *newFilters = 
     [NSMutableArray arrayWithCapacity: [filters count]];
@@ -54,18 +72,26 @@
   NamedFilter  *namedFilter;
 
   while (namedFilter = [filterEnum nextObject]) {
-    Filter  *filter = [namedFilter filter];
-    Filter  *newFilter = [Filter filterWithFilter: filter];
-       
+    Filter  *filter =
+      [[filterRepository filtersByName] objectForKey: [namedFilter name]];
+    if (filter == nil) {
+      // The filter with this name does not exist anymore in the repository.
+      [unboundFilters addObject: [namedFilter name]];
+
+      // Use the original filter.
+      filter = [namedFilter filter];
+    }
+    
+    Filter  *newFilter = [Filter filterWithFilter: filter];       
     FileItemTest  *filterTest = 
-      [newFilter createFileItemTestFromRepository: repository
+      [newFilter createFileItemTestFromRepository: testRepository
                    unboundTests: unboundTests];
       
     if (filterTest != nil) {
       // Only add filters for which a tests still exists.
       
       NamedFilter  *newNamedFilter = 
-        [NamedFilter namedFilter: filter name: [namedFilter name]];
+        [NamedFilter namedFilter: newFilter name: [namedFilter name]];
       [newFilters addObject: newNamedFilter];
     }
     else {
