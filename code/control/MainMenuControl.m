@@ -716,7 +716,7 @@ static MainMenuControl  *singletonInstance = nil;
   NSString  *scanTimeString = [treeContext stringForScanTime]; 
   FilterSet  *filterSet = [treeContext filterSet];
 
-  if (filterSet == nil) {
+  if ([filterSet numFilters] == 0) {
     return [NSString stringWithFormat: @"%@ - %@", 
                                          scanPath, scanTimeString];
   }
