@@ -39,8 +39,8 @@
   FilterTestEditor  *testEditor;
   
   NSObject <NameValidator>  *nameValidator;
-  // Indicates if the name if known to be invalid (by the user).
-  BOOL  invalidName;
+  // Set to the last name (if any) that has been reported invalid.
+  NSString  *invalidName;
 
   // Non-localized name of the filter.
   NSString  *filterName;

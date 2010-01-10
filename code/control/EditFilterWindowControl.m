@@ -43,8 +43,10 @@ NSString  *MatchColumn = @"match";
 
 - (void) updateWindowState:(NSNotification *)notification;
 
-- (void) textEditingStateChanged:(NSNotification *)notification;
-- (void) enableOkButtonKeyEquivalent;
+- (void) textEditingStarted:(NSNotification *)notification;
+- (void) textEditingStopped:(NSNotification *)notification;
+
+- (BOOL) isNameKnownInvalid;
 
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
@@ -93,6 +95,7 @@ NSString  *MatchColumn = @"match";
       [[FilterTestEditor alloc] initWithFilterTestRepository: testRepository];
     
     nameValidator = nil;
+    invalidName = nil;
        
     allowEmptyFilter = NO; // Default
   }
@@ -113,6 +116,7 @@ NSString  *MatchColumn = @"match";
   [availableTests release];
   
   [nameValidator release];
+  [invalidName release];
   
   [selectedTestName release];
   
@@ -136,9 +140,9 @@ NSString  *MatchColumn = @"match";
   [self updateWindowState: nil];
   
   NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
-  [nc addObserver: self selector: @selector(textEditingStateChanged:) 
+  [nc addObserver: self selector: @selector(textEditingStarted:) 
           name: NSTextDidBeginEditingNotification object: nil];
-  [nc addObserver: self selector: @selector(textEditingStateChanged:) 
+  [nc addObserver: self selector: @selector(textEditingStopped:) 
           name: NSTextDidEndEditingNotification object: nil];
 }
 
@@ -156,7 +160,7 @@ NSString  *MatchColumn = @"match";
   finalNotificationFired = NO;
 
   NSResponder  *initialFirstResponder = nil;
-  if (invalidName) {
+  if ([self isNameKnownInvalid]) {
     initialFirstResponder = filterNameField;
   }
   else if ([filterTestsView selectedRow] != -1) {
@@ -166,8 +170,6 @@ NSString  *MatchColumn = @"match";
     initialFirstResponder = availableTestsView;
   }
   [[self window] makeFirstResponder: initialFirstResponder];
-  
-  [self enableOkButtonKeyEquivalent];
 }
 
 - (void) windowWillClose:(NSNotification *)notification {
@@ -207,6 +209,8 @@ NSString  *MatchColumn = @"match";
              didEndSelector: 
                @selector(invalidNameAlertDidEnd:returnCode:contextInfo:) 
              contextInfo: nil];
+    [invalidName release];
+    invalidName = [[self filterName] retain];
   }
   else {
     finalNotificationFired = YES;
@@ -467,9 +471,11 @@ NSString  *MatchColumn = @"match";
   }
   [filterNameField setStringValue: filterName];
   [filterNameField setEnabled: YES];
+
+  // Forget about any previously reported invalid names.
+  [invalidName release];
+  invalidName = nil;
             
-  invalidName = ([filterName length] == 0);
-  
   [self updateWindowState: nil];
 }
 
@@ -710,40 +716,40 @@ NSString  *MatchColumn = @"match";
   [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
   
   [okButton setEnabled: ( (nonEmptyFilter || allowEmptyFilter) &&
-                          !invalidName )];
+                          ![self isNameKnownInvalid] )];
 }
 
 
-- (void) textEditingStateChanged:(NSNotification *)notification {
+- (void) textEditingStarted:(NSNotification *)notification {
   NSWindow  *window = [self window];
   BOOL  nameFieldIsFirstResponder =
-    ( [[ window firstResponder] isKindOfClass: [NSTextView class]] &&
+    ( [[window firstResponder] isKindOfClass: [NSTextView class]] &&
       [window fieldEditor: NO forObject: nil] != nil &&
       [((NSTextView *)[window firstResponder]) delegate] == filterNameField );
 
-  if (nameFieldIsFirstResponder) {
+  if (nameFieldIsFirstResponder) { 
     // Disable Return key equivalent for OK button while editing is in 
     // progress. When the field is non-empty, Return should signal the end of
     // the edit session and enable the OK button, but not directly invoke it. 
     [okButton setKeyEquivalent: @""];
   }
-  else {
-    // Reenable the Return key equivalent again. It is done after a short delay
-    // as otherwise it will still handle the Return key press that may have
-    // triggered this event.
-    [self performSelector: @selector(enableOkButtonKeyEquivalent)
-            withObject: nil afterDelay: 0.1
-            inModes: [NSArray arrayWithObjects: NSModalPanelRunLoopMode, 
-                                                NSDefaultRunLoopMode, nil]];
-  }
+}
 
-  // Assume the filter name is valid again as long as it is not empty.
-  invalidName = ([[filterNameField stringValue] length] == 0);
+- (void) textEditingStopped:(NSNotification *)notification {
+  // Reenable the Return key equivalent again. It is done after a short delay
+  // as otherwise it will still handle the Return key press that may have
+  // triggered this event.
+  [okButton performSelector: @selector(setKeyEquivalent:)
+              withObject: @"\r" afterDelay: 0.1
+              inModes: [NSArray arrayWithObjects: NSModalPanelRunLoopMode, 
+                                                  NSDefaultRunLoopMode, nil]];
 }
 
 
-- (void) enableOkButtonKeyEquivalent {
-  [okButton setKeyEquivalent: @"\r"];
+- (BOOL) isNameKnownInvalid {
+  NSString  *currentName = [filterNameField stringValue];
+  return ( [currentName length] == 0 ||
+           [currentName isEqualToString: invalidName] );
 }
 
 
@@ -772,8 +778,6 @@ NSString  *MatchColumn = @"match";
 
 - (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo {
-  // Mark the name as invalid, so that the name field gets focus.
-  invalidName = YES;
 }
 
 @end // @implementation EditFilterWindowControl (PrivateMethods)
