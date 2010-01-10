@@ -39,6 +39,8 @@
   FilterTestEditor  *testEditor;
   
   NSObject <NameValidator>  *nameValidator;
+  // Indicates if the name if known to be invalid (by the user).
+  BOOL  invalidName;
 
   // Non-localized name of the filter.
   NSString  *filterName;
@@ -59,6 +61,8 @@
 
 - (IBAction) cancelAction:(id) sender;
 - (IBAction) okAction:(id) sender;
+
+- (IBAction) filterNameChanged:(id) sender;
 
 - (IBAction) addTestToRepository:(id) sender;
 - (IBAction) removeTestFromRepository:(id) sender;

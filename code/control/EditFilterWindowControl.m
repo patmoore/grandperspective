@@ -43,10 +43,13 @@ NSString  *MatchColumn = @"match";
 
 - (void) updateWindowState:(NSNotification *)notification;
 
+- (void) textEditingStateChanged:(NSNotification *)notification;
+- (void) enableOkButtonKeyEquivalent;
+
 - (void) confirmTestRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+- (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo;
 
 @end // @interface EditFilterWindowControl (PrivateMethods)
@@ -100,6 +103,8 @@ NSString  *MatchColumn = @"match";
   [[[testRepository testsByNameAsNotifyingDictionary] notificationCenter] 
        removeObserver: self];
   [testRepository release];
+  
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
 
   [testEditor release];
 
@@ -128,7 +133,13 @@ NSString  *MatchColumn = @"match";
   [[[filterTestsView tableColumnWithIdentifier: MatchColumn] dataCell]
        setImageAlignment: NSImageAlignRight];
     
-  [self updateWindowState:nil];
+  [self updateWindowState: nil];
+  
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver: self selector: @selector(textEditingStateChanged:) 
+          name: NSTextDidBeginEditingNotification object: nil];
+  [nc addObserver: self selector: @selector(textEditingStateChanged:) 
+          name: NSTextDidEndEditingNotification object: nil];
 }
 
 
@@ -144,12 +155,19 @@ NSString  *MatchColumn = @"match";
 - (void)windowDidBecomeKey:(NSNotification *)notification {
   finalNotificationFired = NO;
 
-  if ([filterTestsView selectedRow] != -1) {
-    [[self window] makeFirstResponder: filterTestsView];
+  NSResponder  *initialFirstResponder = nil;
+  if (invalidName) {
+    initialFirstResponder = filterNameField;
+  }
+  else if ([filterTestsView selectedRow] != -1) {
+    initialFirstResponder =  filterTestsView;
   }
   else {
-    [[self window] makeFirstResponder: availableTestsView];
+    initialFirstResponder = availableTestsView;
   }
+  [[self window] makeFirstResponder: initialFirstResponder];
+  
+  [self enableOkButtonKeyEquivalent];
 }
 
 - (void) windowWillClose:(NSNotification *)notification {
@@ -162,6 +180,7 @@ NSString  *MatchColumn = @"match";
         postNotificationName: ClosePerformedEvent object: self];
   }
 }
+
 
 - (IBAction) cancelAction:(id) sender {
   NSAssert( !finalNotificationFired, @"Final notification already fired." );
@@ -185,7 +204,8 @@ NSString  *MatchColumn = @"match";
 
     [alert beginSheetModalForWindow: [self window]
              modalDelegate: self 
-             didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:) 
+             didEndSelector: 
+               @selector(invalidNameAlertDidEnd:returnCode:contextInfo:) 
              contextInfo: nil];
   }
   else {
@@ -193,6 +213,11 @@ NSString  *MatchColumn = @"match";
     [[NSNotificationCenter defaultCenter] 
         postNotificationName: OkPerformedEvent object: self];
   }
+}
+
+
+- (IBAction) filterNameChanged:(id) sender {
+  [self updateWindowState: nil];
 }
 
 
@@ -442,6 +467,8 @@ NSString  *MatchColumn = @"match";
   }
   [filterNameField setStringValue: filterName];
   [filterNameField setEnabled: YES];
+            
+  invalidName = ([filterName length] == 0);
   
   [self updateWindowState: nil];
 }
@@ -682,7 +709,41 @@ NSString  *MatchColumn = @"match";
 
   [removeAllTestsFromFilterButton setEnabled: nonEmptyFilter];
   
-  [okButton setEnabled: (nonEmptyFilter || allowEmptyFilter)];
+  [okButton setEnabled: ( (nonEmptyFilter || allowEmptyFilter) &&
+                          !invalidName )];
+}
+
+
+- (void) textEditingStateChanged:(NSNotification *)notification {
+  NSWindow  *window = [self window];
+  BOOL  nameFieldIsFirstResponder =
+    ( [[ window firstResponder] isKindOfClass: [NSTextView class]] &&
+      [window fieldEditor: NO forObject: nil] != nil &&
+      [((NSTextView *)[window firstResponder]) delegate] == filterNameField );
+
+  if (nameFieldIsFirstResponder) {
+    // Disable Return key equivalent for OK button while editing is in 
+    // progress. When the field is non-empty, Return should signal the end of
+    // the edit session and enable the OK button, but not directly invoke it. 
+    [okButton setKeyEquivalent: @""];
+  }
+  else {
+    // Reenable the Return key equivalent again. It is done after a short delay
+    // as otherwise it will still handle the Return key press that may have
+    // triggered this event.
+    [self performSelector: @selector(enableOkButtonKeyEquivalent)
+            withObject: nil afterDelay: 0.1
+            inModes: [NSArray arrayWithObjects: NSModalPanelRunLoopMode, 
+                                                NSDefaultRunLoopMode, nil]];
+  }
+
+  // Assume the filter name is valid again as long as it is not empty.
+  invalidName = ([[filterNameField stringValue] length] == 0);
+}
+
+
+- (void) enableOkButtonKeyEquivalent {
+  [okButton setKeyEquivalent: @"\r"];
 }
 
 
@@ -709,9 +770,10 @@ NSString  *MatchColumn = @"match";
   }
 }
 
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+- (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo {
-  // void
+  // Mark the name as invalid, so that the name field gets focus.
+  invalidName = YES;
 }
 
 @end // @implementation EditFilterWindowControl (PrivateMethods)
