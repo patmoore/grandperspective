@@ -72,9 +72,9 @@ When scanning the other back-up folders, most hard-linked files will have been e
 The folder that was scanned first is actually the least interesting.
 It simply shows the contents of your hard-drive at the time of the scan (minus the files that you have chosen to exclude from your Time Machine back-ups).
 So let's exclude it from the view.
-Start by editing the view's <a href="MasksAndFilters.html">mask</a>.
-You need to <a href="EditingMaskAndFilterRules.html">create a new rule</a>.
-Name the rule "Main back-up", apply it to "files and folders", and let it include the Path test, matching paths that start with "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
+Start by creating a new <a href="MasksAndFilters.html">filter</a>.
+You need to create a new <a href="EditingFilterTests.html">filter test</a>.
+Name it "Main back-up", apply it to "files and folders", and let it include the Path sub-test, matching paths that start with "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/<em>2008-08-08-888888</em>". 
 The parts in italics will be different in your case. 
 You can get the path string you need from the <a href="ViewFocusPanel.html">Focus panel</a>.
 First in the view select any file from the largest back-up folder, 
@@ -82,9 +82,11 @@ First in the view select any file from the largest back-up folder,
 </p>
 
 <p>
-After having created the "Main back-up" rule, set the mask as follows: "Do not show: Main back-up".
+Add the newly created "Main back-up" test to your new filter.
+The test will automatically be inverted (as it should).
+After having created the filter, you can select it as a mask from the <a href="ViewDisplayPanel.html">Display panel</a>.
 You should see that the main back-up is now masked. 
-If this is not the case, you did not specify the mask correctly.
+If this is not the case, you did not specify the filter correctly.
 Edit it again until it works.
 </p>
 
@@ -104,9 +106,9 @@ If you spot files that should not be backed up, update your Time Machine prefere
 <p>
 Initiate a <b>Filtered Scan</b>.
 As the folder to scan, pick "<em>Backup Volume</em>/Backups.backupdb/<em>My Computer</em>/Latest".
-Apply the following filter: "Do not show: hard-linked items".
+Apply the "No hard-links" default filter.
 The result is a view showing the files that are new in the latest back-up.
-The view excludes all files that appeared in the earlier back-ups.
+The view excludes all files that appeared in earlier back-ups.
 </p>
 
 <p>

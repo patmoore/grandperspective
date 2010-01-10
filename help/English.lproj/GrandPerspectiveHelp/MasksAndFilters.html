@@ -2,8 +2,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
 <link href="HelpStyle.css" rel="stylesheet" media="all">
-<title>Masks and filters</title>
-<meta name="description" content="Explains what masks and filters are, and how to use them.">
+<title>Filters and masks</title>
+<meta name="description" content="Explains what filters and masks are, and how to use them.">
 <meta name="keywords" content="mask, filter, hide, hidden, file">
 </head>
 <body>
@@ -12,32 +12,38 @@
 <img src="images/GrandPerspectiveIcon32.png" alt="GrandPerspective icon" height="32" width="32">
 </div>
 <div id="pagetitle">
-<h1>Masks and filters</h1>
+<h1>Filters and masks</h1>
 </div>
 
 <p>
-You can hide files in a view by applying a mask or a filter.
-In both cases, you use one or more rules to specify which files should be hidden.
-</p>
+You can hide files in a view by applying a filter or mask:
 
-<p>
-When you use a mask, hidden files are not shown, but still take up space in the view.
-A mask is always applied to an existing view.
-You can apply a mask from the view's <a href="ViewDisplayPanel.html">Display panel</a>.
-
-<p>
-When you use a filter, hidden files are entirely omitted from the view.
+<ul>
+<li>
+A filter entirely omits files from the view.
+Files that do not pass a filter are excluded from the view.
 A filter always <a href="CreatingViews.html">creates a new view</a>.
-You apply a filter on an existing view using the <b>Filter</b> command from the "Window" menu.
+You apply a filter to an existing view using the <b>Filter</b> command from the "Window" menu.
 Alternatively, you can apply a filter when scanning a new folder using the <b>Filtered scan</b> command from the "File" menu.
+</li>
+
+<li>
+A mask is also a filter, but it is used differently.
+A mask is always applied to an existing view.
+When you use a mask, hidden files are not shown, but still take up space in the view.
+You can apply a mask from the view's <a href="ViewDisplayPanel.html">Display panel</a>.
+</li>
+
+</ul>
 </p>
 
 <h2>Find out more</h2>
 
 <p>
 <ul>
-<li><a href="EditingMasksAndFilters.html">Editing masks and filters</a></li>
-<li><a href="EditingMaskAndFilterRules.html">Editing mask and filter rules</a></li>
+<li><a href="EditingFilters.html">Editing filters</a></li>
+<li><a href="EditingFilterTests.html">Editing filter tests</a></li>
+<li><a href="HowToAnalyseTimeMachineBackups.html">How to analyse Time Machine back-ups</a> - Filters can be used to good effect to analyse your Time Machine back-ups.</li>
 </ul>
 </p>
 
