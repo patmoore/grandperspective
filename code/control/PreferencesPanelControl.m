@@ -6,7 +6,6 @@
 #import "ColorListCollection.h"
 #import "TreeBuilder.h"
 
-#import "EditUniformTypeRankingWindowControl.h"
 #import "FilterPopUpControl.h"
 
 #import "UniqueTagsTransformer.h"
@@ -59,7 +58,6 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
 }
 
 - (void) dealloc {
-  [uniformTypeWindowControl release];
   [filterPopUpControl release];
   
   [super dealloc];
@@ -140,18 +138,6 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
     NSAssert(NO, @"Unexpected sender for -valueChanged.");
   }
 }
-
-- (IBAction) editUniformTypeRanking: (id) sender {
-  if (uniformTypeWindowControl == nil) {
-    // Lazily construct the window
-    uniformTypeWindowControl = 
-      [[EditUniformTypeRankingWindowControl alloc] init];
-  }
-  
-  // [uniformTypeWindowControl refreshTypeList];
-  [[uniformTypeWindowControl window] makeKeyAndOrderFront: self];
-}
-
 
 @end // @implementation PreferencesPanelControl
 

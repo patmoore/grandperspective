@@ -75,7 +75,6 @@
 		AA7DEC1B0D6CD38E0057F5F8 /* PlainFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEC190D6CD38E0057F5F8 /* PlainFileItem.m */; };
 		AA7DEC8E0D6EDE820057F5F8 /* UniformTypeRanking.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEC8C0D6EDE820057F5F8 /* UniformTypeRanking.m */; };
 		AA7DEDB60D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */; };
-		AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */ = {isa = PBXBuildFile; fileRef = AA7DEF4A0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib */; };
 		AA7DF3240D79BEA80057F5F8 /* GradientRectangleDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */; };
 		AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837DBE0E29ECE5005384E0 /* TreeWriter.m */; };
 		AA837E740E2D171D005384E0 /* TreeReader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837E730E2D171D005384E0 /* TreeReader.m */; };
@@ -92,6 +91,7 @@
 		AA83A70F10F8AE5E002542E4 /* FilterTestEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A70E10F8AE5E002542E4 /* FilterTestEditor.m */; };
 		AA83A76410F91791002542E4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A76210F91791002542E4 /* MainMenu.xib */; };
 		AA83A79910F922B8002542E4 /* PreferencesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A79710F922B8002542E4 /* PreferencesPanel.xib */; };
+		AA83A7EB10F9D65E002542E4 /* EditUniformTypeRankingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
 		AA8A38080D7B437300DB872C /* FileItemMappingCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FD0D7B437300DB872C /* FileItemMappingCollection.m */; };
 		AA8A380A0D7B437300DB872C /* FileItemMappingScheme.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8A37FF0D7B437300DB872C /* FileItemMappingScheme.m */; };
@@ -234,7 +234,6 @@
 		AA6814850A07D6FC00802D88 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/ProgressPanel.nib; sourceTree = "<group>"; };
 		AA6E27A10D7AE95E00D5FBBA /* ColorLegendTableViewControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ColorLegendTableViewControl.h; path = control/ColorLegendTableViewControl.h; sourceTree = "<group>"; };
 		AA6E27A20D7AE95E00D5FBBA /* ColorLegendTableViewControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ColorLegendTableViewControl.m; path = control/ColorLegendTableViewControl.m; sourceTree = "<group>"; };
-		AA6E27D00D7B02BE00D5FBBA /* nl */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = nl; path = nl.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
 		AA7A7E0B0E4EE29D00EB366E /* WriteTaskInput.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteTaskInput.h; path = task/WriteTaskInput.h; sourceTree = "<group>"; };
 		AA7A7E0C0E4EE29D00EB366E /* WriteTaskInput.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WriteTaskInput.m; path = task/WriteTaskInput.m; sourceTree = "<group>"; };
 		AA7A7E0F0E4EE3DA00EB366E /* WriteTaskExecutor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WriteTaskExecutor.h; path = task/WriteTaskExecutor.h; sourceTree = "<group>"; };
@@ -278,7 +277,6 @@
 		AA7DEC8C0D6EDE820057F5F8 /* UniformTypeRanking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UniformTypeRanking.m; path = control/UniformTypeRanking.m; sourceTree = "<group>"; };
 		AA7DEDB30D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditUniformTypeRankingWindowControl.h; path = control/EditUniformTypeRankingWindowControl.h; sourceTree = "<group>"; };
 		AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditUniformTypeRankingWindowControl.m; path = control/EditUniformTypeRankingWindowControl.m; sourceTree = "<group>"; };
-		AA7DEF480D7175D50057F5F8 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/EditUniformTypeRankingWindow.nib; sourceTree = "<group>"; };
 		AA7DF3210D79BEA80057F5F8 /* GradientRectangleDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientRectangleDrawer.h; path = view/GradientRectangleDrawer.h; sourceTree = "<group>"; };
 		AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GradientRectangleDrawer.m; path = view/GradientRectangleDrawer.m; sourceTree = "<group>"; };
 		AA837DBD0E29ECE5005384E0 /* TreeWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeWriter.h; path = tree/TreeWriter.h; sourceTree = "<group>"; };
@@ -305,6 +303,7 @@
 		AA83A70E10F8AE5E002542E4 /* FilterTestEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTestEditor.m; path = control/FilterTestEditor.m; sourceTree = "<group>"; };
 		AA83A76310F91791002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		AA83A79810F922B8002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PreferencesPanel.xib; sourceTree = "<group>"; };
+		AA83A7EA10F9D65E002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditUniformTypeRankingWindow.xib; sourceTree = "<group>"; };
 		AA8877E80D0C0E3500F52571 /* TreeContext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeContext.h; path = tree/TreeContext.h; sourceTree = "<group>"; };
 		AA8877E90D0C0E3500F52571 /* TreeContext.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = TreeContext.m; path = tree/TreeContext.m; sourceTree = "<group>"; };
 		AA8A37FB0D7B437300DB872C /* FileItemMapping.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = FileItemMapping.h; sourceTree = "<group>"; };
@@ -520,9 +519,9 @@
 				AA83A5C710F3EDB4002542E4 /* EditFilterWindow.xib */,
 				AA83A6E410F883EA002542E4 /* SelectFilterPanel.xib */,
 				AA83A79710F922B8002542E4 /* PreferencesPanel.xib */,
+				AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */,
 				AA5D629D0982E72600DD76E8 /* SaveImageDialog.nib */,
 				AA6814840A07D6FC00802D88 /* ProgressPanel.nib */,
-				AA7DEF4A0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib */,
 				AA13BA8D0B8A5746000AEAA9 /* Palettes */,
 				AAC9B6340B7FA94A002B3ECE /* GrandPerspectiveHelp */,
 			);
@@ -911,7 +910,6 @@
 				AAC9B6490B7FA94A002B3ECE /* GrandPerspectiveHelp in Resources */,
 				AA13BAD30B8A5747000AEAA9 /* Palettes in Resources */,
 				AADD34930B8B902000AC2C97 /* Tests.strings in Resources */,
-				AA7DEF4B0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib in Resources */,
 				AAF952CD0EE043C900844FD5 /* ZoomOut.png in Resources */,
 				AAF952CE0EE043C900844FD5 /* ZoomIn.png in Resources */,
 				AA14A8620EE1401F009CBD3E /* FocusDown.png in Resources */,
@@ -933,6 +931,7 @@
 				AA83A6E610F883EA002542E4 /* SelectFilterPanel.xib in Resources */,
 				AA83A76410F91791002542E4 /* MainMenu.xib in Resources */,
 				AA83A79910F922B8002542E4 /* PreferencesPanel.xib in Resources */,
+				AA83A7EB10F9D65E002542E4 /* EditUniformTypeRankingWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1112,15 +1111,6 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		AA7DEF4A0D7176030057F5F8 /* EditUniformTypeRankingWindow.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA7DEF480D7175D50057F5F8 /* English */,
-				AA6E27D00D7B02BE00D5FBBA /* nl */,
-			);
-			name = EditUniformTypeRankingWindow.nib;
-			sourceTree = "<group>";
-		};
 		AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1167,6 +1157,14 @@
 				AA83A79810F922B8002542E4 /* English */,
 			);
 			name = PreferencesPanel.xib;
+			sourceTree = "<group>";
+		};
+		AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA83A7EA10F9D65E002542E4 /* English */,
+			);
+			name = EditUniformTypeRankingWindow.xib;
 			sourceTree = "<group>";
 		};
 		AA8FEB290B6CC2D80049FF42 /* Names.strings */ = {

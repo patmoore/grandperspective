@@ -9,6 +9,7 @@
 #import "SaveImageDialogControl.h"
 #import "PreferencesPanelControl.h"
 #import "EditFiltersWindowControl.h"
+#import "EditUniformTypeRankingWindowControl.h"
 #import "SelectFilterPanelControl.h"
 
 #import "ItemPathModel.h"
@@ -239,6 +240,7 @@ static MainMenuControl  *singletonInstance = nil;
     preferencesPanelControl = nil;
     selectFilterPanelControl = nil;
     editFiltersWindowControl = nil;
+    uniformTypeWindowControl = nil;
     
     scanAfterLaunch = YES; // Default
   }
@@ -268,6 +270,7 @@ static MainMenuControl  *singletonInstance = nil;
   [preferencesPanelControl release];
   [selectFilterPanelControl release];
   [editFiltersWindowControl release];
+  [uniformTypeWindowControl release];
   
   [super dealloc];
 }
@@ -527,6 +530,17 @@ static MainMenuControl  *singletonInstance = nil;
   }
   
   [[editFiltersWindowControl window] makeKeyAndOrderFront: self];
+}
+
+- (IBAction) editUniformTypeRanking: (id) sender {
+  if (uniformTypeWindowControl == nil) {
+    // Lazily construct the window
+    uniformTypeWindowControl = 
+      [[EditUniformTypeRankingWindowControl alloc] init];
+  }
+  
+  // [uniformTypeWindowControl refreshTypeList];
+  [[uniformTypeWindowControl window] makeKeyAndOrderFront: self];
 }
 
 

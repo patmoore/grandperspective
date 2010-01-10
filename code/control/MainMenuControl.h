@@ -3,6 +3,7 @@
 @class WindowManager;
 @class VisibleAsynchronousTaskManager;
 @class EditFiltersWindowControl;
+@class EditUniformTypeRankingWindowControl;
 @class SelectFilterPanelControl;
 @class PreferencesPanelControl;
 
@@ -17,6 +18,7 @@
   PreferencesPanelControl  *preferencesPanelControl;
   SelectFilterPanelControl  *selectFilterPanelControl;
   EditFiltersWindowControl  *editFiltersWindowControl;
+  EditUniformTypeRankingWindowControl  *uniformTypeWindowControl;
   
   BOOL  scanAfterLaunch;
 }
@@ -42,6 +44,7 @@
 
 - (IBAction) editPreferences:(id) sender;
 - (IBAction) editFilters:(id) sender;
+- (IBAction) editUniformTypeRanking:(id) sender;
 
 - (IBAction) toggleToolbarShown:(id) sender;
 - (IBAction) customizeToolbar:(id) sender;
