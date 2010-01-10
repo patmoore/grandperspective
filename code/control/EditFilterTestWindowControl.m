@@ -75,7 +75,12 @@
 
 - (BOOL) tryStopFieldEditor;
 
-- (void) alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+- (void) textEditingStarted:(NSNotification *)notification;
+- (void) textEditingStopped:(NSNotification *)notification;
+
+- (BOOL) isNameKnownInvalid;
+
+- (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo;
 
 @end // @interface EditFilterTestWindowControl (PrivateMethods)
@@ -175,18 +180,22 @@
   if (self = [super initWithWindowNibName:@"EditFilterTestWindow" owner:self]) {
     testName = nil;
     nameValidator = nil;
+    invalidName = nil;
   }
   return self;
 }
 
 
 - (void) dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver: self];
+  
   [nameTestControls release];
   [pathTestControls release];
   [typeTestControls release];
   
   [testName release];
   [nameValidator release];
+  [invalidName release];
 
   [super dealloc];
 }
@@ -212,6 +221,12 @@
                          targetsView: typeTargetsView
                          addTargetButton: addTypeTargetButton
                          removeTargetButton: removeTypeTargetButton];
+
+  NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
+  [nc addObserver: self selector: @selector(textEditingStarted:) 
+          name: NSTextDidBeginEditingNotification object: nil];
+  [nc addObserver: self selector: @selector(textEditingStopped:) 
+          name: NSTextDidEndEditingNotification object: nil];
 
   [self updateEnabledState: nil];
 }
@@ -250,9 +265,7 @@
   // Remember the original name of the test
   [testName release];
   testName = [[filterTest name] retain];
-  
-  [testNameField setStringValue: testName];
-  
+  [testNameField setStringValue: testName];  
   FileItemTest  *test = [filterTest fileItemTest];
   
   if ([test isKindOfClass: [SelectiveItemTest class]]) {
@@ -341,7 +354,11 @@
 
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
-  finalNotificationFired = NO;
+  finalNotificationFired = NO; 
+  
+  if (invalidName) {
+    [[self window] makeFirstResponder: testNameField];
+  }
 }
 
 - (BOOL) windowShouldClose:(id) window {
@@ -389,8 +406,11 @@
 
       [alert beginSheetModalForWindow: [self window]
                modalDelegate: self 
-               didEndSelector: @selector(alertDidEnd:returnCode:contextInfo:) 
+               didEndSelector: 
+                 @selector(invalidNameAlertDidEnd:returnCode:contextInfo:) 
                contextInfo: nil];
+      [invalidName release];
+      invalidName = [[self fileItemTestName] retain];
     }
     else {
       finalNotificationFired = YES;
@@ -401,9 +421,13 @@
 }
 
 
+- (IBAction) testNameChanged:(id) sender {
+  [self updateEnabledState: nil];
+}
+
 // Auto-corrects the lower/upper bound fields so that they contain a valid
 // numeric value.
-- (IBAction)valueEntered:(id) sender {
+- (IBAction) sizeBoundEntered:(id) sender {
   int  value = [sender intValue];
   
   if (value < 0) {
@@ -520,8 +544,8 @@
   [sizeUpperBoundField setEnabled: upperBoundTestUsed];
   [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
 
-  [doneButton setEnabled:
-     [[testNameField stringValue] length] > 0
+  [okButton setEnabled:
+     ![self isNameKnownInvalid]
      && ( ( nameTestUsed && [nameTestControls hasTargets] )
           || ( pathTestUsed && [pathTestControls hasTargets] )
           || ( typeTestUsed && [typeTestControls hasTargets] )
@@ -539,6 +563,10 @@
 - (void) resetState {
   [testNameField setStringValue: @""];
   [testNameField setEnabled: YES];
+  
+  // Forget about any previously reported invalid names.
+  [invalidName release];
+  invalidName = nil;
   
   [testTargetPopUp selectItemAtIndex: POPUP_FILES];
 
@@ -802,9 +830,40 @@
 }
 
 
-- (void)alertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
-          contextInfo:(void *)contextInfo {
-  // void
+- (void) textEditingStarted:(NSNotification *)notification {
+  NSWindow  *window = [self window];
+  BOOL  nameFieldIsFirstResponder =
+    ( [[window firstResponder] isKindOfClass: [NSTextView class]] &&
+      [window fieldEditor: NO forObject: nil] != nil &&
+      [((NSTextView *)[window firstResponder]) delegate] == testNameField );
+
+  if (nameFieldIsFirstResponder) { 
+    // Disable Return key equivalent for OK button while editing is in 
+    // progress. When the field is non-empty, Return should signal the end of
+    // the edit session and enable the OK button, but not directly invoke it. 
+    [okButton setKeyEquivalent: @""];
+  }
+}
+
+- (void) textEditingStopped:(NSNotification *)notification {
+  // Reenable the Return key equivalent again. It is done after a short delay
+  // as otherwise it will still handle the Return key press that may have
+  // triggered this event.
+  [okButton performSelector: @selector(setKeyEquivalent:)
+              withObject: @"\r" afterDelay: 0.1
+              inModes: [NSArray arrayWithObjects: NSModalPanelRunLoopMode, 
+                                                  NSDefaultRunLoopMode, nil]];
+}
+
+
+- (BOOL) isNameKnownInvalid {
+  NSString  *currentName = [testNameField stringValue];
+  return ( [currentName length] == 0 ||
+           [currentName isEqualToString: invalidName] );
+}
+
+- (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
+           contextInfo:(void *)contextInfo {
 }
 
 @end // @implementation EditFilterTestWindowControl (PrivateMethods) 

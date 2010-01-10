@@ -45,11 +45,13 @@
   IBOutlet NSPopUpButton  *sizeUpperBoundUnits;
 
   IBOutlet NSButton  *cancelButton;
-  IBOutlet NSButton  *doneButton;
+  IBOutlet NSButton  *okButton;
   
   NSString  *testName;
   NSObject <NameValidator>  *nameValidator;
-  
+  // Set to the last name (if any) that has been reported invalid.
+  NSString  *invalidName;
+    
   // Indicates iff an "okPerformed", "cancelPerformed" or "closePerformed"
   // notification has been fired already.
   BOOL  finalNotificationFired;
@@ -61,7 +63,8 @@
 
 + (id) defaultInstance;
 
-- (IBAction) valueEntered:(id) sender;
+- (IBAction) testNameChanged:(id) sender;
+- (IBAction) sizeBoundEntered:(id) sender;
 
 - (IBAction) targetPopUpChanged:(id) sender;
 
