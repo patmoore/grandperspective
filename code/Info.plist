@@ -17,9 +17,9 @@
 	<key>CFBundleSignature</key>
 	<string>GrPe</string>
 	<key>CFBundleVersion</key>
-	<string>23</string>
+	<string>24</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.1.0</string>
+	<string>1.3.0</string>
 	<key>LSHasLocalizedDisplayName</key>
 	<true/>
 	<key>NSMainNibFile</key>
