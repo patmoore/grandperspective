@@ -1,7 +1,7 @@
 #!/bin/bash
 
-VERSION="1.1.0"
-REV=1175
+VERSION="1.3.0"
+REV=1239
 
 if [ $# -ne "1" ]
 then

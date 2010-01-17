@@ -62,7 +62,7 @@ do
   cat $f \
     | sed "1,1 s|^|/* GrandPerspective, Version ${VERSION} \\
  *   A utility for Mac OS X that graphically shows disk usage. \\
- * Copyright (C) 2005-2008, Erwin Bonsma \\
+ * Copyright (C) 2005-2010, Erwin Bonsma \\
  * \\
  * This program is free software; you can redistribute it and/or modify it \\
  * under the terms of the GNU General Public License as published by the Free \\
