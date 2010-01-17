@@ -41,7 +41,9 @@
 <p>
 <ul>
 
-<li><p><b>26 Sep 2009</b> GrandPerspective 1.1.0 has been released and is available for <a href="#download">download</a>. It includes many minor improvements. Just read the <a href="https://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.1.0/RELEASENOTES.txt/download">release notes</a> for details.</li>
+<li><p><b>17 Jan 2010</b> GrandPerspective 1.3.0 has been released and is available for <a href="#download">download</a>. It significantly improves the way filters and masks can be used. Details can be found in the <a href="https://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.3.0/RELEASENOTES.txt/download">release notes</a>.</p></li>
+
+<li><p><b>26 Sep 2009</b> GrandPerspective 1.1.0 has been released and is available for <a href="#download">download</a>. It includes many minor improvements. Just read the <a href="https://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.1.0/RELEASENOTES.txt/download">release notes</a> for details.</p></li>
 
 <li><p><b>15 Aug 2009</b> Another milestone reached, GrandPerspective has been downloaded over 250.000 times! The application also recently passed the one thousand <a href="http://osx.iusethis.com/app/grandperspective">iusethis</a> users threshold.</p></li> 
 
@@ -81,15 +83,16 @@
   </ul></li>
 <li>Reveal files and folders in the Finder</li>
 <li>Delete files and folders from the view</li>
-<li>User-configurable rules on files and folders:
+<li>Filter files and folders:
   <ul>
-  <li>Construct rules using tests on an item's: name, path, size, file type, hard-link status, and package status</li>
-  <li>Use these rules to:
+  <li>Construct filter tests based an item's name, path, size, file type, hard-link status, and package status</li>
+  <li>Use these filters to:
     <ul>
     <li>Mask files in the view</li>
     <li>Filter files from the view</li>
     <li>Exclude files and folders when scanning a disk</li>
     </ul></li>
+  <li>Filters and filter tests are automatically stored in the user preferences</li>
   </ul></li>
 <li>Multiple view support:
   <ul>
@@ -130,10 +133,10 @@
 <h2>Download it</h2></a>
 
 <p>GrandPerspective has been released as <a href="http://www.opensource.org/">Open Source</a> under the <a href="http://www.gnu.org/licenses/licenses.html#GPL">GNU General Public License</a>. The official release files are available from the <a href="https://sourceforge.net/projects/grandperspectiv/files/">GrandPerspective download area</a>.
-The latest release (Version 1.1.0) consists of three files:
+The latest release (Version 1.3.0) consists of two files:
 
 <ul>
-<li><b><a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.1.0/GrandPerspective-1_1_0.dmg/download">GrandPerspective-1_1_0.dmg</a></b> (English)
+<li><b><a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.3.0/GrandPerspective-1_3_0.dmg/download">GrandPerspective-1_3_0.dmg</a></b> (English)
  
 <p>This is the main release file. It contains all you need to run
 the application. To install the application, open the disk 
@@ -141,24 +144,26 @@ image and drag the application icon onto your Applications
 folder, or wher'ever you want to put it onto your file system.
 Next, run the application by clicking on the icon.</p></li>
 
-<li><b>GrandPerspective-1_0_0-local.dmg</a></b>
- 
-<p>This is the localized version of GrandPerspective. It includes
-support for languages other than English.</p>
-
-<p>The localized version has not yet been released. 
-This will be done once all localized resources have been updated. 
-The target date is four weeks after the main release. 
-In the meantime, here is the link to the most recent localized release:
-<a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.0/GrandPerspective-1_0-local.dmg/download">GrandPerspective-1_0-local.dmg</a></p>
-</li>
-
-<li><a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.1.0/GrandPerspective-1_1_0-src.tgz/download">GrandPerspective-1_1_0-src.tgz</a>
+<li><a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.3.0/GrandPerspective-1_3_0-src.tgz/download">GrandPerspective-1_3_0-src.tgz</a>
 
 <p>This contains the source code of the application. It consists of
 the Objective C source code, as well as various auxiliary files,
 such as the nib files that are used to construct the GUI. You need this file if you want to <a href="#localization">create a localization</a> in a language that is not yet supported.</p></li>
 
+</ul>
+</p>
+
+<h3>Localized application</h3>
+
+<p>From Version 1.0 onwards localized versions of GrandPerspective 
+are released for a subset of releases, those whose second number in
+the version string is even. 
+The latest localized release is:
+
+<ul>
+<li><a href="http://sourceforge.net/projects/grandperspectiv/files/grandperspective/1.0/GrandPerspective-1_0-local.dmg/download">GrandPerspective-1_0_0-local.dmg</a> (English, Dutch, French, Japanese, Spanish)
+
+<p>This is the localized version of GrandPerspective. It includes support for languages other than English.</p></li>
 </ul>
 </p>
 
@@ -326,6 +331,8 @@ So, here's how to make a donation:
 
 <li><a href="http://www.tim-mansfield.com/node/25">Tim-Mansfield.com</a>: "Check it out. Cool tool."</li>
 
+<li><a href="http://www.randrambles.com/featured-app-grandperspective-for-mac/">RandRambles.com</a>: "a very handy app that I use often."</li>
+
 <li><a href="http://theappleblog.com/2007/07/18/whats-eating-my-disk-space/">TheAppleBlog.com</a>: "It's a great little utility, a must have for your laptop."</li>
 
 <li><a href="http://www.rhonabwy.com/wp/2007/10/27/grandperspective/">Rhonabwy.com</a>: "This critter is going to be a fairly constant companion..."</li>
@@ -450,6 +457,7 @@ So, here's how to make a donation:
 <li><a href="http://mac.brothersoft.com/grandperspective.html">Brothersoft.com</a></li>
 <li><a href="http://mac.sofotex.com/download-131466.html">Mac.sofotex.com</a></li>
 <li><a href="http://www.thriftmac.com/grand-perspective">thriftmac.com</a></li>
+<li><a href="http://www.fiberdownload.com/Download/17976/GrandPerspective">Fiberdownload.com</a></li>
 <li><a href="http://www.myosxfreeware.com/grandperspective-0913/">MyOSXFreeware.com</a></li>
 <li><a href="http://grandperspective.en.softonic.com/mac">Softonic.com</a></li>
 <li><a href="http://www.geardownload.com/system/grandperspective.html">GearDownload.com</a></li>
@@ -500,7 +508,7 @@ Retain a sense of control.</p>
 
 <hr>
 
-<p>Copyright 2005-2009, Eriban. Last updated: 12 December 2009</p>
+<p>Copyright 2005-2010, Eriban. Last updated: 17 January 2010</p>
 
 </body>
 </html>
