@@ -5,7 +5,7 @@
 @class FilterEditor;
 @class FilterPopUpControl;
 
-@interface SelectFilterPanelControl : NSWindowController {
+@interface FilterSelectionPanelControl : NSWindowController {
   IBOutlet NSPopUpButton  *filterPopUp;
 
   FilterRepository  *filterRepository;

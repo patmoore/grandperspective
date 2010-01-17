@@ -1,4 +1,4 @@
-#import "EditFilterWindowControl.h"
+#import "FilterWindowControl.h"
 
 #import "ControlConstants.h"
 #import "NameValidator.h"
@@ -19,7 +19,7 @@ NSString  *NameColumn = @"name";
 NSString  *MatchColumn = @"match";
 
 
-@interface EditFilterWindowControl (PrivateMethods)
+@interface FilterWindowControl (PrivateMethods)
 
 - (NSArray *)availableTests;
 
@@ -57,7 +57,7 @@ NSString  *MatchColumn = @"match";
 @end // @interface EditFilterWindowControl (PrivateMethods)
 
 
-@implementation EditFilterWindowControl
+@implementation FilterWindowControl
 
 - (id) init {
   return [self initWithTestRepository: [FilterTestRepository defaultInstance]];
@@ -66,7 +66,7 @@ NSString  *MatchColumn = @"match";
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithTestRepository:(FilterTestRepository *)testRepositoryVal {
-  if (self = [super initWithWindowNibName:@"EditFilterWindow" owner:self]) {
+  if (self = [super initWithWindowNibName: @"FilterWindow" owner: self]) {
     testRepository = [testRepositoryVal retain];
     NotifyingDictionary  *repositoryTestsByName = 
       [testRepository testsByNameAsNotifyingDictionary];
@@ -494,7 +494,7 @@ NSString  *MatchColumn = @"match";
 @end // @implementation EditFilterWindowControl
 
 
-@implementation EditFilterWindowControl (PrivateMethods)
+@implementation FilterWindowControl (PrivateMethods)
 
 - (NSArray *)availableTests {
   return availableTests;

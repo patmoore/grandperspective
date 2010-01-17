@@ -1,4 +1,4 @@
-#import "SelectFilterPanelControl.h"
+#import "FilterSelectionPanelControl.h"
 
 #import "NamedFilter.h"
 #import "FilterRepository.h"
@@ -6,14 +6,14 @@
 #import "FilterPopUpControl.h"
 
 
-@interface SelectFilterPanelControl (PrivateMethods)
+@interface FilterSelectionPanelControl (PrivateMethods)
 
 - (FilterEditor *)filterEditor;
 
 @end // @interface SelectFilterPanelControl
 
 
-@implementation SelectFilterPanelControl
+@implementation FilterSelectionPanelControl
 
 - (id) init {
   return [self initWithFilterRepository: [FilterRepository defaultInstance]];
@@ -22,7 +22,8 @@
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithFilterRepository:(FilterRepository *)filterRepositoryVal {
-  if (self = [super initWithWindowNibName: @"SelectFilterPanel" owner: self]) {
+  if (self = [super initWithWindowNibName: @"FilterSelectionPanel" 
+                      owner: self]) {
     filterRepository = [filterRepositoryVal retain];
 
     filterEditor = nil; // Load it lazily
@@ -80,7 +81,7 @@
 @end // @implementation SelectFilterPanelControl
 
 
-@implementation SelectFilterPanelControl (PrivateMethods)
+@implementation FilterSelectionPanelControl (PrivateMethods)
 
 - (FilterEditor *)filterEditor {
   if (filterEditor == nil) {

@@ -3,7 +3,7 @@
 
 @class UniformTypeRanking;
 
-@interface EditUniformTypeRankingWindowControl : NSWindowController  {
+@interface UniformTypeRankingWindowControl : NSWindowController  {
 
   IBOutlet NSTableView  *typesTable;
 

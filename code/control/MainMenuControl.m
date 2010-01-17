@@ -8,9 +8,9 @@
 #import "DirectoryViewControlSettings.h"
 #import "SaveImageDialogControl.h"
 #import "PreferencesPanelControl.h"
-#import "EditFiltersWindowControl.h"
-#import "EditUniformTypeRankingWindowControl.h"
-#import "SelectFilterPanelControl.h"
+#import "FiltersWindowControl.h"
+#import "UniformTypeRankingWindowControl.h"
+#import "FilterSelectionPanelControl.h"
 
 #import "ItemPathModel.h"
 #import "ItemPathModelView.h"
@@ -238,8 +238,8 @@ static MainMenuControl  *singletonInstance = nil;
     
     // Lazily load the optional panels and windows
     preferencesPanelControl = nil;
-    selectFilterPanelControl = nil;
-    editFiltersWindowControl = nil;
+    filterSelectionPanelControl = nil;
+    filtersWindowControl = nil;
     uniformTypeWindowControl = nil;
     
     scanAfterLaunch = YES; // Default
@@ -268,8 +268,8 @@ static MainMenuControl  *singletonInstance = nil;
   [readTaskManager release];
   
   [preferencesPanelControl release];
-  [selectFilterPanelControl release];
-  [editFiltersWindowControl release];
+  [filterSelectionPanelControl release];
+  [filtersWindowControl release];
   [uniformTypeWindowControl release];
   
   [super dealloc];
@@ -521,22 +521,22 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 - (IBAction) editFilters:(id) sender {
-  if (editFiltersWindowControl == nil) {
+  if (filtersWindowControl == nil) {
     // Lazily create the window
-    editFiltersWindowControl = [[EditFiltersWindowControl alloc] init];
+    filtersWindowControl = [[FiltersWindowControl alloc] init];
 
     // Initially center it, subsequently keep position as chosen by user
-    [[editFiltersWindowControl window] center];
+    [[filtersWindowControl window] center];
   }
   
-  [[editFiltersWindowControl window] makeKeyAndOrderFront: self];
+  [[filtersWindowControl window] makeKeyAndOrderFront: self];
 }
 
 - (IBAction) editUniformTypeRanking: (id) sender {
   if (uniformTypeWindowControl == nil) {
     // Lazily construct the window
     uniformTypeWindowControl = 
-      [[EditUniformTypeRankingWindowControl alloc] init];
+      [[UniformTypeRankingWindowControl alloc] init];
   }
   
   // [uniformTypeWindowControl refreshTypeList];
@@ -675,20 +675,20 @@ static MainMenuControl  *singletonInstance = nil;
 
 
 - (NamedFilter *)getNamedFilter:(NamedFilter *)initialFilter {
-  if (selectFilterPanelControl == nil) {
-    selectFilterPanelControl = [[SelectFilterPanelControl alloc] init];
+  if (filterSelectionPanelControl == nil) {
+    filterSelectionPanelControl = [[FilterSelectionPanelControl alloc] init];
   }
 
   if (initialFilter != nil) {
-    [selectFilterPanelControl selectFilterNamed: [initialFilter name]];
+    [filterSelectionPanelControl selectFilterNamed: [initialFilter name]];
   }
   
-  NSWindow  *selectFilterWindow = [selectFilterPanelControl window];
+  NSWindow  *selectFilterWindow = [filterSelectionPanelControl window];
   int  status = [NSApp runModalForWindow: selectFilterWindow];
   [selectFilterWindow close];
   
   if (status == NSRunStoppedResponse) {
-    return [selectFilterPanelControl selectedNamedFilter];
+    return [filterSelectionPanelControl selectedNamedFilter];
   }
   return nil;
 }

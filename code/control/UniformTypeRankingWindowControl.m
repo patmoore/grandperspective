@@ -1,4 +1,4 @@
-#import "EditUniformTypeRankingWindowControl.h"
+#import "UniformTypeRankingWindowControl.h"
 
 #import "UniformTypeRanking.h"
 #import "UniformType.h"
@@ -21,7 +21,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 @end
 
 
-@interface EditUniformTypeRankingWindowControl (PrivateMethods)
+@interface UniformTypeRankingWindowControl (PrivateMethods)
 
 - (void) fetchCurrentTypeList;
 - (void) commitChangedTypeList;
@@ -39,7 +39,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 @end
 
 
-@implementation EditUniformTypeRankingWindowControl
+@implementation UniformTypeRankingWindowControl
 
 - (id) init {
   return [self initWithUniformTypeRanking:
@@ -49,7 +49,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithUniformTypeRanking: (UniformTypeRanking *)typeRankingVal {
-  if (self = [super initWithWindowNibName: @"EditUniformTypeRankingWindow" 
+  if (self = [super initWithWindowNibName: @"UniformTypeRankingWindow" 
                       owner: self]) {
     typeRanking = [typeRankingVal retain];
     typeCells = [[NSMutableArray arrayWithCapacity: 
@@ -282,7 +282,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 
 
 
-@implementation EditUniformTypeRankingWindowControl (PrivateMethods)
+@implementation UniformTypeRankingWindowControl (PrivateMethods)
 
 // Updates the window state to reflect the state of the uniform type ranking
 - (void) fetchCurrentTypeList {

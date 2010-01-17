@@ -1,7 +1,7 @@
 #import <Cocoa/Cocoa.h>
 
 
-@class EditFilterTestWindowControl;
+@class FilterTestWindowControl;
 @class FilterTestRepository;
 @class FilterTest;
 
@@ -12,7 +12,7 @@
 @interface FilterTestEditor : NSObject {
   FilterTestRepository  *testRepository;
   
-  EditFilterTestWindowControl  *editTestWindowControl;
+  FilterTestWindowControl  *filterTestWindowControl;
 }
 
 - (id) init;

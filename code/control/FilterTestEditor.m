@@ -7,7 +7,7 @@
 #import "FilterTest.h"
 #import "FilterTestRepository.h"
 
-#import "EditFilterTestWindowControl.h"
+#import "FilterTestWindowControl.h"
 
 
 /* Performs a validity check on the name of filter tests (before the window is 
@@ -43,7 +43,7 @@
 
 - (id) initWithFilterTestRepository:(FilterTestRepository *)repository {
   if (self = [super init]) {
-    editTestWindowControl = nil; // Load it lazily
+    filterTestWindowControl = nil; // Load it lazily
   
     testRepository = [repository retain];
   }
@@ -51,7 +51,7 @@
 }
 
 - (void) dealloc {
-  [editTestWindowControl release];
+  [filterTestWindowControl release];
 
   [testRepository release];
   
@@ -66,15 +66,16 @@
     [[[FilterTestNameValidator alloc]
         initWithExistingTests: [testRepository testsByName]] autorelease];
   
-  [editTestWindowControl setNameValidator: testNameValidator];
-  [editTestWindowControl representFilterTest: nil];
+  [filterTestWindowControl setNameValidator: testNameValidator];
+  [filterTestWindowControl representFilterTest: nil];
 
-  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
+  [ModalityTerminator 
+     modalityTerminatorForEventSource: filterTestWindowControl];
   int  status = [NSApp runModalForWindow: editTestWindow];
   [editTestWindow close];
 
   if (status == NSRunStoppedResponse) {
-    FilterTest  *filterTest = [editTestWindowControl createFilterTest];
+    FilterTest  *filterTest = [filterTestWindowControl createFilterTest];
     
     if (filterTest != nil) {
       NSString  *name = [filterTest name];
@@ -105,7 +106,7 @@
   FileItemTest  *oldTest = 
     [[testRepository testsByName] objectForKey: oldName];
 
-  [editTestWindowControl representFilterTest: 
+  [filterTestWindowControl representFilterTest: 
      [FilterTest filterTestWithName: oldName fileItemTest: oldTest]];
 
   if ([testRepository applicationProvidedTestForName: oldName] != nil) {
@@ -117,7 +118,7 @@
     NSString  *localizedName = 
       [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
       
-    [editTestWindowControl setVisibleName: localizedName];
+    [filterTestWindowControl setVisibleName: localizedName];
   }
   
   FilterTestNameValidator  *testNameValidator = 
@@ -125,14 +126,14 @@
         initWithExistingTests: [testRepository testsByName]
         allowedName: oldName] autorelease];
   
-  [editTestWindowControl setNameValidator: testNameValidator];
+  [filterTestWindowControl setNameValidator: testNameValidator];
   
-  [ModalityTerminator modalityTerminatorForEventSource: editTestWindowControl];
+  [ModalityTerminator modalityTerminatorForEventSource: filterTestWindowControl];
   int  status = [NSApp runModalForWindow: editTestWindow];
   [editTestWindow close];
     
   if (status == NSRunStoppedResponse) {
-    FilterTest  *newFilterTest = [editTestWindowControl createFilterTest];
+    FilterTest  *newFilterTest = [filterTestWindowControl createFilterTest];
     
     if (newFilterTest != nil) {
       NSString  *newName = [newFilterTest name];
@@ -173,12 +174,12 @@
 @implementation FilterTestEditor (PrivateMethods)
 
 - (NSWindow *)loadEditFilterTestWindow {
-  if (editTestWindowControl == nil) {
-    editTestWindowControl = [[EditFilterTestWindowControl alloc] init];
+  if (filterTestWindowControl == nil) {
+    filterTestWindowControl = [[FilterTestWindowControl alloc] init];
   }
   // Return its window. This also ensure that it is loaded before its control 
   // is used.
-  return [editTestWindowControl window];
+  return [filterTestWindowControl window];
 }
 
 @end // @implementation FilterTestEditor (PrivateMethods)

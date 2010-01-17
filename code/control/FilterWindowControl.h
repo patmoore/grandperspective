@@ -1,13 +1,12 @@
 #import <Cocoa/Cocoa.h>
 
-@class EditFilterTestWindowControl;
 @class FilterTestRepository;
 @class FilterTestEditor;
 @class NamedFilter;
 @protocol NameValidator;
 
 /**
- * A control for an EditFilterWindow.
+ * A control for a FilterWindow.
  *
  * The control fires "okPerformed", "cancelPerformed", "applyPerformed", and
  * "closePerformed" notifications to signal that respectively the OK, Cancel,
@@ -16,7 +15,7 @@
  * normally (e.g. when used to set/change a mask for a specific directory
  * view window).
  */
-@interface EditFilterWindowControl : NSWindowController {
+@interface FilterWindowControl : NSWindowController {
 
   IBOutlet NSTextField  *filterNameField;
 

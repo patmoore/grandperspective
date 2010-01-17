@@ -1,4 +1,4 @@
-#import "EditFilterTestWindowControl.h"
+#import "FilterTestWindowControl.h"
 
 #import "FileItem.h"
 
@@ -55,7 +55,7 @@
 #define POPUP_GB     3
 
 
-@interface EditFilterTestWindowControl (PrivateMethods) 
+@interface FilterTestWindowControl (PrivateMethods) 
 
 - (void) resetState;
 - (void) updateStateBasedOnTest:(FileItemTest *)test;
@@ -121,7 +121,7 @@
 
 @interface StringMatchControls : MultiMatchControls {
   NSButton  *caseInsensitiveCheckBox;
-  EditFilterTestWindowControl  *windowControl;
+  FilterTestWindowControl  *windowControl;
   
   /* Tracks if an edit of a match is in progress. If so, the list of matches
    * should not be manipulated, or the table ends up in an inconsistent state.
@@ -134,7 +134,7 @@
          caseInsensitiveCheckBox:(NSButton *)caseCheckBox
          addTargetButton:(NSButton *)addTargetButton
          removeTargetButton:(NSButton *)removeTargetButton
-         windowControl:(EditFilterTestWindowControl *)windowControl;
+         windowControl:(FilterTestWindowControl *)windowControl;
 
 - (void) updateStateBasedOnStringTest:(MultiMatchStringTest *)test;
 - (MultiMatchStringTest *)stringTestBasedOnState;
@@ -160,15 +160,15 @@
 @end
 
 
-@implementation EditFilterTestWindowControl
+@implementation FilterTestWindowControl
 
 + (id) defaultInstance {
-  EditFilterTestWindowControl 
+  FilterTestWindowControl 
     *defaultEditFilterTestWindowControlInstance = nil;
 
   if (defaultEditFilterTestWindowControlInstance == nil) {
     defaultEditFilterTestWindowControlInstance = 
-      [[EditFilterTestWindowControl alloc] init];
+      [[FilterTestWindowControl alloc] init];
   }
   
   return defaultEditFilterTestWindowControlInstance;
@@ -177,7 +177,7 @@
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) init { 
-  if (self = [super initWithWindowNibName:@"EditFilterTestWindow" owner:self]) {
+  if (self = [super initWithWindowNibName: @"FilterTestWindow" owner: self]) {
     testName = nil;
     nameValidator = nil;
     invalidName = nil;
@@ -558,7 +558,7 @@
 @end // @implementation EditFilterTestWindowControl
 
 
-@implementation EditFilterTestWindowControl (PrivateMethods) 
+@implementation FilterTestWindowControl (PrivateMethods) 
 
 - (void) resetState {
   [testNameField setStringValue: @""];
@@ -989,7 +989,7 @@
          caseInsensitiveCheckBox:(NSButton *)caseCheckBox
          addTargetButton:(NSButton *)addButton
          removeTargetButton:(NSButton *)removeButton 
-         windowControl:(EditFilterTestWindowControl *)windowControlVal {
+         windowControl:(FilterTestWindowControl *)windowControlVal {
   if (self = [super initWithMatchModePopUpButton: popUpButton
                       targetsView: targetsTableViewVal
                       addTargetButton: addButton

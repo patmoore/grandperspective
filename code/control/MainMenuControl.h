@@ -2,9 +2,9 @@
 
 @class WindowManager;
 @class VisibleAsynchronousTaskManager;
-@class EditFiltersWindowControl;
-@class EditUniformTypeRankingWindowControl;
-@class SelectFilterPanelControl;
+@class FiltersWindowControl;
+@class UniformTypeRankingWindowControl;
+@class FilterSelectionPanelControl;
 @class PreferencesPanelControl;
 
 @interface MainMenuControl : NSObject {
@@ -16,9 +16,9 @@
   VisibleAsynchronousTaskManager  *readTaskManager;
   
   PreferencesPanelControl  *preferencesPanelControl;
-  SelectFilterPanelControl  *selectFilterPanelControl;
-  EditFiltersWindowControl  *editFiltersWindowControl;
-  EditUniformTypeRankingWindowControl  *uniformTypeWindowControl;
+  FilterSelectionPanelControl  *filterSelectionPanelControl;
+  FiltersWindowControl  *filtersWindowControl;
+  UniformTypeRankingWindowControl  *uniformTypeWindowControl;
   
   BOOL  scanAfterLaunch;
 }

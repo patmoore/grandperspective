@@ -31,12 +31,21 @@
 		AA3B38E40D17EEF60070E889 /* FileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DC0D17EEF60070E889 /* FileItem.m */; };
 		AA3B38E60D17EEF60070E889 /* Item.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B38DE0D17EEF60070E889 /* Item.m */; };
 		AA3B40E10D1AF2B70070E889 /* UniqueTagsTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA3B40DF0D1AF2B70070E889 /* UniqueTagsTransformer.m */; };
-		AA402FFB0A5B01A6004EAAF3 /* EditFilterWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */; };
 		AA402FFC0A5B01A6004EAAF3 /* SaveImageDialogControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA402FEC0A5B01A6004EAAF3 /* SaveImageDialogControl.m */; };
 		AA4030000A5B01A6004EAAF3 /* WindowManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA402FF00A5B01A6004EAAF3 /* WindowManager.m */; };
 		AA4030010A5B01A6004EAAF3 /* DirectoryViewControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA402FF10A5B01A6004EAAF3 /* DirectoryViewControl.m */; };
 		AA4030050A5B01A6004EAAF3 /* MainMenuControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA402FF50A5B01A6004EAAF3 /* MainMenuControl.m */; };
 		AA4030330A5B02F1004EAAF3 /* ItemPathModel.m in Sources */ = {isa = PBXBuildFile; fileRef = AA4030310A5B02F1004EAAF3 /* ItemPathModel.m */; };
+		AA524607110201520018897B /* FiltersWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA524605110201520018897B /* FiltersWindow.xib */; };
+		AA52460B110201780018897B /* FilterWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA524609110201780018897B /* FilterWindow.xib */; };
+		AA52460F110201990018897B /* FilterTestWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA52460D110201990018897B /* FilterTestWindow.xib */; };
+		AA524613110201BA0018897B /* UniformTypeRankingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA524611110201BA0018897B /* UniformTypeRankingWindow.xib */; };
+		AA524617110202080018897B /* FilterSelectionPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA524615110202080018897B /* FilterSelectionPanel.xib */; };
+		AA52461D110202F50018897B /* FilterSelectionPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA52461A110202F50018897B /* FilterSelectionPanelControl.m */; };
+		AA52461E110202F50018897B /* FiltersWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA52461C110202F50018897B /* FiltersWindowControl.m */; };
+		AA524627110203070018897B /* FilterTestWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA524624110203070018897B /* FilterTestWindowControl.m */; };
+		AA524628110203070018897B /* FilterWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA524626110203070018897B /* FilterWindowControl.m */; };
+		AA52462F1102031D0018897B /* UniformTypeRankingWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA52462E1102031D0018897B /* UniformTypeRankingWindowControl.m */; };
 		AA5974CA0B31687600EF3248 /* FileItemPathStringCache.m in Sources */ = {isa = PBXBuildFile; fileRef = AA5974C80B31687600EF3248 /* FileItemPathStringCache.m */; };
 		AA6012570A5AF55400DEBCB8 /* AsynchronousTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012550A5AF55400DEBCB8 /* AsynchronousTaskManager.m */; };
 		AA6012690A5AF5A600DEBCB8 /* PeekingEnumerator.m in Sources */ = {isa = PBXBuildFile; fileRef = AA6012670A5AF5A600DEBCB8 /* PeekingEnumerator.m */; };
@@ -72,25 +81,17 @@
 		AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEA080D6718ED0057F5F8 /* UniformType.m */; };
 		AA7DEC1B0D6CD38E0057F5F8 /* PlainFileItem.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEC190D6CD38E0057F5F8 /* PlainFileItem.m */; };
 		AA7DEC8E0D6EDE820057F5F8 /* UniformTypeRanking.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEC8C0D6EDE820057F5F8 /* UniformTypeRanking.m */; };
-		AA7DEDB60D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */; };
 		AA7DF3240D79BEA80057F5F8 /* GradientRectangleDrawer.m in Sources */ = {isa = PBXBuildFile; fileRef = AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */; };
 		AA837DBF0E29ECE5005384E0 /* TreeWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837DBE0E29ECE5005384E0 /* TreeWriter.m */; };
 		AA837E740E2D171D005384E0 /* TreeReader.m in Sources */ = {isa = PBXBuildFile; fileRef = AA837E730E2D171D005384E0 /* TreeReader.m */; };
 		AA83A34010F0D329002542E4 /* MutableFilterTestRef.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A33F10F0D329002542E4 /* MutableFilterTestRef.m */; };
-		AA83A3A410F0DD5D002542E4 /* EditFiltersWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */; };
 		AA83A46F10F14280002542E4 /* NamedFilter.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A46E10F14280002542E4 /* NamedFilter.m */; };
-		AA83A51510F294AB002542E4 /* EditFiltersWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */; };
 		AA83A54E10F3D061002542E4 /* DirectoryViewWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A54C10F3D061002542E4 /* DirectoryViewWindow.xib */; };
-		AA83A5C910F3EDB4002542E4 /* EditFilterWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A5C710F3EDB4002542E4 /* EditFilterWindow.xib */; };
 		AA83A5D710F52716002542E4 /* FilterEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A5D610F52716002542E4 /* FilterEditor.m */; };
 		AA83A65410F67A2E002542E4 /* FilterPopUpControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A65310F67A2E002542E4 /* FilterPopUpControl.m */; };
-		AA83A6BA10F87C0C002542E4 /* SelectFilterPanelControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A6B910F87C0C002542E4 /* SelectFilterPanelControl.m */; };
-		AA83A6E610F883EA002542E4 /* SelectFilterPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A6E410F883EA002542E4 /* SelectFilterPanel.xib */; };
 		AA83A70F10F8AE5E002542E4 /* FilterTestEditor.m in Sources */ = {isa = PBXBuildFile; fileRef = AA83A70E10F8AE5E002542E4 /* FilterTestEditor.m */; };
 		AA83A76410F91791002542E4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A76210F91791002542E4 /* MainMenu.xib */; };
 		AA83A79910F922B8002542E4 /* PreferencesPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A79710F922B8002542E4 /* PreferencesPanel.xib */; };
-		AA83A7EB10F9D65E002542E4 /* EditUniformTypeRankingWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */; };
-		AA83A88A10FA399C002542E4 /* EditFilterTestWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A88810FA399C002542E4 /* EditFilterTestWindow.xib */; };
 		AA83A8E010FA639B002542E4 /* SaveImageDialog.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A8DE10FA639B002542E4 /* SaveImageDialog.xib */; };
 		AA83A8E310FA63A9002542E4 /* ProgressPanel.xib in Resources */ = {isa = PBXBuildFile; fileRef = AA83A8E110FA63A9002542E4 /* ProgressPanel.xib */; };
 		AA8877EB0D0C0E3500F52571 /* TreeContext.m in Sources */ = {isa = PBXBuildFile; fileRef = AA8877E90D0C0E3500F52571 /* TreeContext.m */; };
@@ -124,7 +125,6 @@
 		AAA2800310822DB000229112 /* StringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA2800210822DB000229112 /* StringTest.m */; };
 		AAA2809C108252C900229112 /* Filter.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA28099108252C900229112 /* Filter.m */; };
 		AAA2809D108252C900229112 /* FilterSet.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA2809B108252C900229112 /* FilterSet.m */; };
-		AAA28136108262EB00229112 /* EditFilterTestWindowControl.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA28135108262EB00229112 /* EditFilterTestWindowControl.m */; };
 		AAA6E72D0EFD29CB00B4E71E /* ToolbarSegmentedCell.m in Sources */ = {isa = PBXBuildFile; fileRef = AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */; };
 		AAAB9A700EF3D38F00B3C482 /* RevealInFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6E0EF3D38F00B3C482 /* RevealInFinder.png */; };
 		AAAB9A710EF3D38F00B3C482 /* OpenWithFinder.png in Resources */ = {isa = PBXBuildFile; fileRef = AAAB9A6F0EF3D38F00B3C482 /* OpenWithFinder.png */; };
@@ -195,12 +195,10 @@
 		AA3B40DE0D1AF2B70070E889 /* UniqueTagsTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniqueTagsTransformer.h; path = util/UniqueTagsTransformer.h; sourceTree = "<group>"; };
 		AA3B40DF0D1AF2B70070E889 /* UniqueTagsTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UniqueTagsTransformer.m; path = util/UniqueTagsTransformer.m; sourceTree = "<group>"; };
 		AA402FEA0A5B01A6004EAAF3 /* SaveImageDialogControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = SaveImageDialogControl.h; path = control/SaveImageDialogControl.h; sourceTree = "<group>"; };
-		AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = EditFilterWindowControl.m; path = control/EditFilterWindowControl.m; sourceTree = "<group>"; };
 		AA402FEC0A5B01A6004EAAF3 /* SaveImageDialogControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = SaveImageDialogControl.m; path = control/SaveImageDialogControl.m; sourceTree = "<group>"; };
 		AA402FED0A5B01A6004EAAF3 /* MainMenuControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = MainMenuControl.h; path = control/MainMenuControl.h; sourceTree = "<group>"; };
 		AA402FF00A5B01A6004EAAF3 /* WindowManager.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = WindowManager.m; path = control/WindowManager.m; sourceTree = "<group>"; };
 		AA402FF10A5B01A6004EAAF3 /* DirectoryViewControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = DirectoryViewControl.m; path = control/DirectoryViewControl.m; sourceTree = "<group>"; };
-		AA402FF30A5B01A6004EAAF3 /* EditFilterWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = EditFilterWindowControl.h; path = control/EditFilterWindowControl.h; sourceTree = "<group>"; };
 		AA402FF40A5B01A6004EAAF3 /* WindowManager.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = WindowManager.h; path = control/WindowManager.h; sourceTree = "<group>"; };
 		AA402FF50A5B01A6004EAAF3 /* MainMenuControl.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = MainMenuControl.m; path = control/MainMenuControl.m; sourceTree = "<group>"; };
 		AA402FF60A5B01A6004EAAF3 /* DirectoryViewControl.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = DirectoryViewControl.h; path = control/DirectoryViewControl.h; sourceTree = "<group>"; };
@@ -208,14 +206,29 @@
 		AA4030320A5B02F1004EAAF3 /* ItemPathModel.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = ItemPathModel.h; path = tree/ItemPathModel.h; sourceTree = "<group>"; };
 		AA5245F11101D3090018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		AA5245F91101D3BA0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/DirectoryViewWindow.xib; sourceTree = "<group>"; };
-		AA5245FB1101D3DE0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/EditFiltersWindow.xib; sourceTree = "<group>"; };
-		AA5245FC1101D3ED0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/EditFilterWindow.xib; sourceTree = "<group>"; };
-		AA5245FD1101D3FA0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/EditFilterTestWindow.xib; sourceTree = "<group>"; };
-		AA5245FE1101D4040018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/SelectFilterPanel.xib; sourceTree = "<group>"; };
 		AA5245FF1101D40D0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/PreferencesPanel.xib; sourceTree = "<group>"; };
-		AA5246001101D4180018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/EditUniformTypeRankingWindow.xib; sourceTree = "<group>"; };
 		AA5246011101D4200018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/SaveImageDialog.xib; sourceTree = "<group>"; };
 		AA5246021101D42C0018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/ProgressPanel.xib; sourceTree = "<group>"; };
+		AA524606110201520018897B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FiltersWindow.xib; sourceTree = "<group>"; };
+		AA524608110201650018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/FiltersWindow.xib; sourceTree = "<group>"; };
+		AA52460A110201780018897B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FilterWindow.xib; sourceTree = "<group>"; };
+		AA52460C110201870018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/FilterWindow.xib; sourceTree = "<group>"; };
+		AA52460E110201990018897B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FilterTestWindow.xib; sourceTree = "<group>"; };
+		AA524610110201A30018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/FilterTestWindow.xib; sourceTree = "<group>"; };
+		AA524612110201BA0018897B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/UniformTypeRankingWindow.xib; sourceTree = "<group>"; };
+		AA524614110201C60018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/UniformTypeRankingWindow.xib; sourceTree = "<group>"; };
+		AA524616110202080018897B /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/FilterSelectionPanel.xib; sourceTree = "<group>"; };
+		AA524618110202110018897B /* nl */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = nl; path = nl.lproj/FilterSelectionPanel.xib; sourceTree = "<group>"; };
+		AA524619110202F50018897B /* FilterSelectionPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterSelectionPanelControl.h; path = control/FilterSelectionPanelControl.h; sourceTree = "<group>"; };
+		AA52461A110202F50018897B /* FilterSelectionPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterSelectionPanelControl.m; path = control/FilterSelectionPanelControl.m; sourceTree = "<group>"; };
+		AA52461B110202F50018897B /* FiltersWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FiltersWindowControl.h; path = control/FiltersWindowControl.h; sourceTree = "<group>"; };
+		AA52461C110202F50018897B /* FiltersWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FiltersWindowControl.m; path = control/FiltersWindowControl.m; sourceTree = "<group>"; };
+		AA524623110203070018897B /* FilterTestWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTestWindowControl.h; path = control/FilterTestWindowControl.h; sourceTree = "<group>"; };
+		AA524624110203070018897B /* FilterTestWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTestWindowControl.m; path = control/FilterTestWindowControl.m; sourceTree = "<group>"; };
+		AA524625110203070018897B /* FilterWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterWindowControl.h; path = control/FilterWindowControl.h; sourceTree = "<group>"; };
+		AA524626110203070018897B /* FilterWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterWindowControl.m; path = control/FilterWindowControl.m; sourceTree = "<group>"; };
+		AA52462D1102031D0018897B /* UniformTypeRankingWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniformTypeRankingWindowControl.h; path = control/UniformTypeRankingWindowControl.h; sourceTree = "<group>"; };
+		AA52462E1102031D0018897B /* UniformTypeRankingWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UniformTypeRankingWindowControl.m; path = control/UniformTypeRankingWindowControl.m; sourceTree = "<group>"; };
 		AA5974C70B31687600EF3248 /* FileItemPathStringCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileItemPathStringCache.h; path = util/FileItemPathStringCache.h; sourceTree = "<group>"; };
 		AA5974C80B31687600EF3248 /* FileItemPathStringCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileItemPathStringCache.m; path = util/FileItemPathStringCache.m; sourceTree = "<group>"; };
 		AA6012540A5AF55400DEBCB8 /* AsynchronousTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsynchronousTaskManager.h; path = util/AsynchronousTaskManager.h; sourceTree = "<group>"; };
@@ -282,8 +295,6 @@
 		AA7DEC190D6CD38E0057F5F8 /* PlainFileItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PlainFileItem.m; path = tree/PlainFileItem.m; sourceTree = "<group>"; };
 		AA7DEC8B0D6EDE820057F5F8 /* UniformTypeRanking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UniformTypeRanking.h; path = control/UniformTypeRanking.h; sourceTree = "<group>"; };
 		AA7DEC8C0D6EDE820057F5F8 /* UniformTypeRanking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UniformTypeRanking.m; path = control/UniformTypeRanking.m; sourceTree = "<group>"; };
-		AA7DEDB30D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditUniformTypeRankingWindowControl.h; path = control/EditUniformTypeRankingWindowControl.h; sourceTree = "<group>"; };
-		AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditUniformTypeRankingWindowControl.m; path = control/EditUniformTypeRankingWindowControl.m; sourceTree = "<group>"; };
 		AA7DF3210D79BEA80057F5F8 /* GradientRectangleDrawer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GradientRectangleDrawer.h; path = view/GradientRectangleDrawer.h; sourceTree = "<group>"; };
 		AA7DF3220D79BEA80057F5F8 /* GradientRectangleDrawer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GradientRectangleDrawer.m; path = view/GradientRectangleDrawer.m; sourceTree = "<group>"; };
 		AA837DBD0E29ECE5005384E0 /* TreeWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeWriter.h; path = tree/TreeWriter.h; sourceTree = "<group>"; };
@@ -292,26 +303,17 @@
 		AA837E730E2D171D005384E0 /* TreeReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TreeReader.m; path = tree/TreeReader.m; sourceTree = "<group>"; };
 		AA83A33E10F0D329002542E4 /* MutableFilterTestRef.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MutableFilterTestRef.h; path = filter/MutableFilterTestRef.h; sourceTree = "<group>"; };
 		AA83A33F10F0D329002542E4 /* MutableFilterTestRef.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MutableFilterTestRef.m; path = filter/MutableFilterTestRef.m; sourceTree = "<group>"; };
-		AA83A3A210F0DD5D002542E4 /* EditFiltersWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditFiltersWindowControl.h; path = control/EditFiltersWindowControl.h; sourceTree = "<group>"; };
-		AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditFiltersWindowControl.m; path = control/EditFiltersWindowControl.m; sourceTree = "<group>"; };
 		AA83A46D10F14280002542E4 /* NamedFilter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NamedFilter.h; path = filter/NamedFilter.h; sourceTree = "<group>"; };
 		AA83A46E10F14280002542E4 /* NamedFilter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NamedFilter.m; path = filter/NamedFilter.m; sourceTree = "<group>"; };
-		AA83A51410F294AB002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFiltersWindow.xib; sourceTree = "<group>"; };
 		AA83A54D10F3D061002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/DirectoryViewWindow.xib; sourceTree = "<group>"; };
-		AA83A5C810F3EDB4002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFilterWindow.xib; sourceTree = "<group>"; };
 		AA83A5D510F52716002542E4 /* FilterEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterEditor.h; path = control/FilterEditor.h; sourceTree = "<group>"; };
 		AA83A5D610F52716002542E4 /* FilterEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterEditor.m; path = control/FilterEditor.m; sourceTree = "<group>"; };
 		AA83A65210F67A2E002542E4 /* FilterPopUpControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterPopUpControl.h; path = control/FilterPopUpControl.h; sourceTree = "<group>"; };
 		AA83A65310F67A2E002542E4 /* FilterPopUpControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterPopUpControl.m; path = control/FilterPopUpControl.m; sourceTree = "<group>"; };
-		AA83A6B810F87C0C002542E4 /* SelectFilterPanelControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectFilterPanelControl.h; path = control/SelectFilterPanelControl.h; sourceTree = "<group>"; };
-		AA83A6B910F87C0C002542E4 /* SelectFilterPanelControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectFilterPanelControl.m; path = control/SelectFilterPanelControl.m; sourceTree = "<group>"; };
-		AA83A6E510F883EA002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SelectFilterPanel.xib; sourceTree = "<group>"; };
 		AA83A70D10F8AE5E002542E4 /* FilterTestEditor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterTestEditor.h; path = control/FilterTestEditor.h; sourceTree = "<group>"; };
 		AA83A70E10F8AE5E002542E4 /* FilterTestEditor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterTestEditor.m; path = control/FilterTestEditor.m; sourceTree = "<group>"; };
 		AA83A76310F91791002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		AA83A79810F922B8002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/PreferencesPanel.xib; sourceTree = "<group>"; };
-		AA83A7EA10F9D65E002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditUniformTypeRankingWindow.xib; sourceTree = "<group>"; };
-		AA83A88910FA399C002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/EditFilterTestWindow.xib; sourceTree = "<group>"; };
 		AA83A8DF10FA639B002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/SaveImageDialog.xib; sourceTree = "<group>"; };
 		AA83A8E210FA63A9002542E4 /* English */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = English; path = English.lproj/ProgressPanel.xib; sourceTree = "<group>"; };
 		AA8877E80D0C0E3500F52571 /* TreeContext.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = TreeContext.h; path = tree/TreeContext.h; sourceTree = "<group>"; };
@@ -379,8 +381,6 @@
 		AAA28099108252C900229112 /* Filter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Filter.m; path = filter/Filter.m; sourceTree = "<group>"; };
 		AAA2809A108252C900229112 /* FilterSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FilterSet.h; path = filter/FilterSet.h; sourceTree = "<group>"; };
 		AAA2809B108252C900229112 /* FilterSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FilterSet.m; path = filter/FilterSet.m; sourceTree = "<group>"; };
-		AAA28134108262EB00229112 /* EditFilterTestWindowControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EditFilterTestWindowControl.h; path = control/EditFilterTestWindowControl.h; sourceTree = "<group>"; };
-		AAA28135108262EB00229112 /* EditFilterTestWindowControl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EditFilterTestWindowControl.m; path = control/EditFilterTestWindowControl.m; sourceTree = "<group>"; };
 		AAA6E72B0EFD29CB00B4E71E /* ToolbarSegmentedCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ToolbarSegmentedCell.h; path = util/ToolbarSegmentedCell.h; sourceTree = "<group>"; };
 		AAA6E72C0EFD29CB00B4E71E /* ToolbarSegmentedCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ToolbarSegmentedCell.m; path = util/ToolbarSegmentedCell.m; sourceTree = "<group>"; };
 		AAAB9A3E0EF3C25A00B3C482 /* nl */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = nl; path = nl.lproj/Toolbar.strings; sourceTree = "<group>"; };
@@ -521,12 +521,12 @@
 				AA1222580EF2A822002A178F /* Toolbar.strings */,
 				AA83A76210F91791002542E4 /* MainMenu.xib */,
 				AA83A54C10F3D061002542E4 /* DirectoryViewWindow.xib */,
-				AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */,
-				AA83A5C710F3EDB4002542E4 /* EditFilterWindow.xib */,
-				AA83A88810FA399C002542E4 /* EditFilterTestWindow.xib */,
-				AA83A6E410F883EA002542E4 /* SelectFilterPanel.xib */,
+				AA524605110201520018897B /* FiltersWindow.xib */,
+				AA524609110201780018897B /* FilterWindow.xib */,
+				AA524615110202080018897B /* FilterSelectionPanel.xib */,
+				AA52460D110201990018897B /* FilterTestWindow.xib */,
 				AA83A79710F922B8002542E4 /* PreferencesPanel.xib */,
-				AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */,
+				AA524611110201BA0018897B /* UniformTypeRankingWindow.xib */,
 				AA83A8DE10FA639B002542E4 /* SaveImageDialog.xib */,
 				AA83A8E110FA63A9002542E4 /* ProgressPanel.xib */,
 				AA13BA8D0B8A5746000AEAA9 /* Palettes */,
@@ -748,22 +748,22 @@
 				AA1115C20A84CA320023C5CD /* DirectoryViewControlSettings.m */,
 				AAF951AF0EDEE2E100844FD5 /* DirectoryViewToolbarControl.h */,
 				AAF951B00EDEE2E100844FD5 /* DirectoryViewToolbarControl.m */,
+				AA52461B110202F50018897B /* FiltersWindowControl.h */,
+				AA52461C110202F50018897B /* FiltersWindowControl.m */,
+				AA524625110203070018897B /* FilterWindowControl.h */,
+				AA524626110203070018897B /* FilterWindowControl.m */,
+				AA524623110203070018897B /* FilterTestWindowControl.h */,
+				AA524624110203070018897B /* FilterTestWindowControl.m */,
+				AA524619110202F50018897B /* FilterSelectionPanelControl.h */,
+				AA52461A110202F50018897B /* FilterSelectionPanelControl.m */,
 				AAD8DFB00B077EB90060DADA /* PreferencesPanelControl.h */,
 				AAD8DFB20B077ED20060DADA /* PreferencesPanelControl.m */,
+				AA52462D1102031D0018897B /* UniformTypeRankingWindowControl.h */,
+				AA52462E1102031D0018897B /* UniformTypeRankingWindowControl.m */,
 				AA402FEA0A5B01A6004EAAF3 /* SaveImageDialogControl.h */,
 				AA402FEC0A5B01A6004EAAF3 /* SaveImageDialogControl.m */,
 				AAFDC4990A892AE200DB84D7 /* VisibleAsynchronousTaskManager.h */,
 				AAFDC49A0A892AE200DB84D7 /* VisibleAsynchronousTaskManager.m */,
-				AA83A3A210F0DD5D002542E4 /* EditFiltersWindowControl.h */,
-				AA83A3A310F0DD5D002542E4 /* EditFiltersWindowControl.m */,
-				AA402FF30A5B01A6004EAAF3 /* EditFilterWindowControl.h */,
-				AA402FEB0A5B01A6004EAAF3 /* EditFilterWindowControl.m */,
-				AAA28134108262EB00229112 /* EditFilterTestWindowControl.h */,
-				AAA28135108262EB00229112 /* EditFilterTestWindowControl.m */,
-				AA83A6B810F87C0C002542E4 /* SelectFilterPanelControl.h */,
-				AA83A6B910F87C0C002542E4 /* SelectFilterPanelControl.m */,
-				AA7DEDB30D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.h */,
-				AA7DEDB40D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m */,
 				AA402FF40A5B01A6004EAAF3 /* WindowManager.h */,
 				AA402FF00A5B01A6004EAAF3 /* WindowManager.m */,
 				AAEF604E0B028DD800C7134A /* ColorListCollection.h */,
@@ -929,16 +929,16 @@
 				AA007AEF106AC38900C3B395 /* GrandPerspectiveScan.icns in Resources */,
 				AA13FCE81077318700AE3B23 /* Cross.png in Resources */,
 				AA13FCE91077318700AE3B23 /* Checkmark.png in Resources */,
-				AA83A51510F294AB002542E4 /* EditFiltersWindow.xib in Resources */,
 				AA83A54E10F3D061002542E4 /* DirectoryViewWindow.xib in Resources */,
-				AA83A5C910F3EDB4002542E4 /* EditFilterWindow.xib in Resources */,
-				AA83A6E610F883EA002542E4 /* SelectFilterPanel.xib in Resources */,
 				AA83A76410F91791002542E4 /* MainMenu.xib in Resources */,
 				AA83A79910F922B8002542E4 /* PreferencesPanel.xib in Resources */,
-				AA83A7EB10F9D65E002542E4 /* EditUniformTypeRankingWindow.xib in Resources */,
-				AA83A88A10FA399C002542E4 /* EditFilterTestWindow.xib in Resources */,
 				AA83A8E010FA639B002542E4 /* SaveImageDialog.xib in Resources */,
 				AA83A8E310FA63A9002542E4 /* ProgressPanel.xib in Resources */,
+				AA524607110201520018897B /* FiltersWindow.xib in Resources */,
+				AA52460B110201780018897B /* FilterWindow.xib in Resources */,
+				AA52460F110201990018897B /* FilterTestWindow.xib in Resources */,
+				AA524613110201BA0018897B /* UniformTypeRankingWindow.xib in Resources */,
+				AA524617110202080018897B /* FilterSelectionPanel.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -960,7 +960,6 @@
 				AA6013270A5AFCC500DEBCB8 /* TreeLayoutBuilder.m in Sources */,
 				AA6013290A5AFCC500DEBCB8 /* TreeFilter.m in Sources */,
 				AA60132B0A5AFCC500DEBCB8 /* TreeBuilder.m in Sources */,
-				AA402FFB0A5B01A6004EAAF3 /* EditFilterWindowControl.m in Sources */,
 				AA402FFC0A5B01A6004EAAF3 /* SaveImageDialogControl.m in Sources */,
 				AA4030000A5B01A6004EAAF3 /* WindowManager.m in Sources */,
 				AA4030010A5B01A6004EAAF3 /* DirectoryViewControl.m in Sources */,
@@ -988,7 +987,6 @@
 				AA7DEA0A0D6718ED0057F5F8 /* UniformType.m in Sources */,
 				AA7DEC1B0D6CD38E0057F5F8 /* PlainFileItem.m in Sources */,
 				AA7DEC8E0D6EDE820057F5F8 /* UniformTypeRanking.m in Sources */,
-				AA7DEDB60D6F1E3B0057F5F8 /* EditUniformTypeRankingWindowControl.m in Sources */,
 				AA7DF3240D79BEA80057F5F8 /* GradientRectangleDrawer.m in Sources */,
 				AA6E27A40D7AE95E00D5FBBA /* ColorLegendTableViewControl.m in Sources */,
 				AA8A38080D7B437300DB872C /* FileItemMappingCollection.m in Sources */,
@@ -1047,17 +1045,19 @@
 				AAA2800310822DB000229112 /* StringTest.m in Sources */,
 				AAA2809C108252C900229112 /* Filter.m in Sources */,
 				AAA2809D108252C900229112 /* FilterSet.m in Sources */,
-				AAA28136108262EB00229112 /* EditFilterTestWindowControl.m in Sources */,
 				AA2B4B9410EF820D0088EA1C /* ControlConstants.m in Sources */,
 				AA2B4BAD10EFB0DA0088EA1C /* ModalityTerminator.m in Sources */,
 				AA2B4C2E10F09A630088EA1C /* FilterRepository.m in Sources */,
 				AA83A34010F0D329002542E4 /* MutableFilterTestRef.m in Sources */,
-				AA83A3A410F0DD5D002542E4 /* EditFiltersWindowControl.m in Sources */,
 				AA83A46F10F14280002542E4 /* NamedFilter.m in Sources */,
 				AA83A5D710F52716002542E4 /* FilterEditor.m in Sources */,
 				AA83A65410F67A2E002542E4 /* FilterPopUpControl.m in Sources */,
-				AA83A6BA10F87C0C002542E4 /* SelectFilterPanelControl.m in Sources */,
 				AA83A70F10F8AE5E002542E4 /* FilterTestEditor.m in Sources */,
+				AA52461D110202F50018897B /* FilterSelectionPanelControl.m in Sources */,
+				AA52461E110202F50018897B /* FiltersWindowControl.m in Sources */,
+				AA524627110203070018897B /* FilterTestWindowControl.m in Sources */,
+				AA524628110203070018897B /* FilterWindowControl.m in Sources */,
+				AA52462F1102031D0018897B /* UniformTypeRankingWindowControl.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1091,6 +1091,51 @@
 			name = PopUpMenu.strings;
 			sourceTree = "<group>";
 		};
+		AA524605110201520018897B /* FiltersWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA524606110201520018897B /* English */,
+				AA524608110201650018897B /* nl */,
+			);
+			name = FiltersWindow.xib;
+			sourceTree = "<group>";
+		};
+		AA524609110201780018897B /* FilterWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA52460A110201780018897B /* English */,
+				AA52460C110201870018897B /* nl */,
+			);
+			name = FilterWindow.xib;
+			sourceTree = "<group>";
+		};
+		AA52460D110201990018897B /* FilterTestWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA52460E110201990018897B /* English */,
+				AA524610110201A30018897B /* nl */,
+			);
+			name = FilterTestWindow.xib;
+			sourceTree = "<group>";
+		};
+		AA524611110201BA0018897B /* UniformTypeRankingWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA524612110201BA0018897B /* English */,
+				AA524614110201C60018897B /* nl */,
+			);
+			name = UniformTypeRankingWindow.xib;
+			sourceTree = "<group>";
+		};
+		AA524615110202080018897B /* FilterSelectionPanel.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				AA524616110202080018897B /* English */,
+				AA524618110202110018897B /* nl */,
+			);
+			name = FilterSelectionPanel.xib;
+			sourceTree = "<group>";
+		};
 		AA7C64D50AFE71DC007B8CD2 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1100,15 +1145,6 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		AA83A51310F294AB002542E4 /* EditFiltersWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA83A51410F294AB002542E4 /* English */,
-				AA5245FB1101D3DE0018897B /* nl */,
-			);
-			name = EditFiltersWindow.xib;
-			sourceTree = "<group>";
-		};
 		AA83A54C10F3D061002542E4 /* DirectoryViewWindow.xib */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1116,24 +1152,6 @@
 				AA5245F91101D3BA0018897B /* nl */,
 			);
 			name = DirectoryViewWindow.xib;
-			sourceTree = "<group>";
-		};
-		AA83A5C710F3EDB4002542E4 /* EditFilterWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA83A5C810F3EDB4002542E4 /* English */,
-				AA5245FC1101D3ED0018897B /* nl */,
-			);
-			name = EditFilterWindow.xib;
-			sourceTree = "<group>";
-		};
-		AA83A6E410F883EA002542E4 /* SelectFilterPanel.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA83A6E510F883EA002542E4 /* English */,
-				AA5245FE1101D4040018897B /* nl */,
-			);
-			name = SelectFilterPanel.xib;
 			sourceTree = "<group>";
 		};
 		AA83A76210F91791002542E4 /* MainMenu.xib */ = {
@@ -1152,24 +1170,6 @@
 				AA5245FF1101D40D0018897B /* nl */,
 			);
 			name = PreferencesPanel.xib;
-			sourceTree = "<group>";
-		};
-		AA83A7E910F9D65E002542E4 /* EditUniformTypeRankingWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA83A7EA10F9D65E002542E4 /* English */,
-				AA5246001101D4180018897B /* nl */,
-			);
-			name = EditUniformTypeRankingWindow.xib;
-			sourceTree = "<group>";
-		};
-		AA83A88810FA399C002542E4 /* EditFilterTestWindow.xib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				AA83A88910FA399C002542E4 /* English */,
-				AA5245FD1101D3FA0018897B /* nl */,
-			);
-			name = EditFilterTestWindow.xib;
 			sourceTree = "<group>";
 		};
 		AA83A8DE10FA639B002542E4 /* SaveImageDialog.xib */ = {

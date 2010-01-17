@@ -1,4 +1,4 @@
-#import "EditFiltersWindowControl.h"
+#import "FiltersWindowControl.h"
 
 #import "ControlConstants.h"
 #import "NotifyingDictionary.h"
@@ -9,7 +9,7 @@
 #import "FilterRepository.h"
 
 
-@interface EditFiltersWindowControl (PrivateMethods)
+@interface FiltersWindowControl (PrivateMethods)
 
 // Returns the non-localized name of the selected available filter (if any).
 - (NSString *)selectedFilterName;
@@ -29,7 +29,7 @@
 @end // @interface EditFiltersWindowControl (PrivateMethods)
 
 
-@implementation EditFiltersWindowControl
+@implementation FiltersWindowControl
 
 - (id) init {
   return [self initWithFilterRepository: [FilterRepository defaultInstance]];
@@ -38,7 +38,7 @@
 // Special case: should not cover (override) super's designated initialiser in
 // NSWindowController's case
 - (id) initWithFilterRepository:(FilterRepository *)filterRepositoryVal {
-  if (self = [super initWithWindowNibName: @"EditFiltersWindow" owner: self]) {
+  if (self = [super initWithWindowNibName: @"FiltersWindow" owner: self]) {
     filterRepository = [filterRepositoryVal retain];
 
     filterEditor = 
@@ -161,7 +161,7 @@
 @end // @implementation EditFiltersWindowControl
 
 
-@implementation EditFiltersWindowControl (PrivateMethods)
+@implementation FiltersWindowControl (PrivateMethods)
 
 - (NSString *)selectedFilterName {
   int  index = [filterView selectedRow];

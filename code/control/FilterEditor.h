@@ -1,6 +1,6 @@
 #import <Cocoa/Cocoa.h>
 
-@class EditFilterWindowControl;
+@class FilterWindowControl;
 @class FilterRepository;
 @class NamedFilter;
 
@@ -14,7 +14,7 @@
 @interface FilterEditor : NSObject {
   FilterRepository  *filterRepository;
   
-  EditFilterWindowControl  *editFilterWindowControl;
+  FilterWindowControl  *filterWindowControl;
 }
 
 - (id) init;

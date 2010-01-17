@@ -8,7 +8,7 @@
 #import "NamedFilter.h"
 #import "FilterRepository.h"
 
-#import "EditFilterWindowControl.h"
+#import "FilterWindowControl.h"
 
 
 @interface FilterNameValidator : NSObject <NameValidator> {
@@ -38,7 +38,7 @@
 
 - (id) initWithFilterRepository:(FilterRepository *)filterRepositoryVal {
   if (self = [super init]) {
-    editFilterWindowControl = nil; // Load it lazily
+    filterWindowControl = nil; // Load it lazily
   
     filterRepository = [filterRepositoryVal retain];
   }
@@ -46,7 +46,7 @@
 }
 
 - (void) dealloc {
-  [editFilterWindowControl release];
+  [filterWindowControl release];
 
   [filterRepository release];
   
@@ -62,16 +62,16 @@
         initWithExistingFilters: [filterRepository filtersByName]]
           autorelease];
   
-  [editFilterWindowControl setNameValidator: nameValidator];
-  [editFilterWindowControl representEmptyFilter];
+  [filterWindowControl setNameValidator: nameValidator];
+  [filterWindowControl representEmptyFilter];
 
   [ModalityTerminator 
-     modalityTerminatorForEventSource: editFilterWindowControl];
+     modalityTerminatorForEventSource: filterWindowControl];
   int  status = [NSApp runModalForWindow: editFilterWindow];
   [editFilterWindow close];
 
   if (status == NSRunStoppedResponse) {
-    NamedFilter  *namedFilter = [editFilterWindowControl createNamedFilter];
+    NamedFilter  *namedFilter = [filterWindowControl createNamedFilter];
     
     if (namedFilter != nil) {
       NSString  *name = [namedFilter name];
@@ -102,7 +102,7 @@
 
   NamedFilter  *oldNamedFilter = 
     [NamedFilter namedFilter: oldFilter name: oldName];
-  [editFilterWindowControl representNamedFilter: oldNamedFilter];
+  [filterWindowControl representNamedFilter: oldNamedFilter];
 
   if ([filterRepository applicationProvidedFilterForName: oldName] != nil) {
     // The filter's name equals that of an application provided filter. Show 
@@ -112,22 +112,22 @@
     NSString  *localizedName = 
       [mainBundle localizedStringForKey: oldName value: nil table: @"Names"];
       
-    [editFilterWindowControl setVisibleName: localizedName];
+    [filterWindowControl setVisibleName: localizedName];
   }
   
   FilterNameValidator  *testNameValidator = 
     [[[FilterNameValidator alloc]
         initWithExistingFilters: [filterRepository filtersByName]
           allowedName: oldName] autorelease];
-  [editFilterWindowControl setNameValidator: testNameValidator];
+  [filterWindowControl setNameValidator: testNameValidator];
   
   [ModalityTerminator
-     modalityTerminatorForEventSource: editFilterWindowControl];
+     modalityTerminatorForEventSource: filterWindowControl];
   int  status = [NSApp runModalForWindow: editFilterWindow];
   [editFilterWindow close];
     
   if (status == NSRunStoppedResponse) {
-    NamedFilter  *newNamedFilter = [editFilterWindowControl createNamedFilter];
+    NamedFilter  *newNamedFilter = [filterWindowControl createNamedFilter];
     
     if (newNamedFilter != nil) {
       NSString  *newName = [newNamedFilter name];
@@ -167,12 +167,12 @@
 @implementation FilterEditor (PrivateMethods)
 
 - (NSWindow *)loadEditFilterWindow {
-  if (editFilterWindowControl == nil) {
-    editFilterWindowControl = [[EditFilterWindowControl alloc] init];
+  if (filterWindowControl == nil) {
+    filterWindowControl = [[FilterWindowControl alloc] init];
   }
   // Return its window. This also ensure that it is loaded before its control 
   // is used.
-  return [editFilterWindowControl window];
+  return [filterWindowControl window];
 }
 
 @end // @implementation FilterEditor (PrivateMethods)

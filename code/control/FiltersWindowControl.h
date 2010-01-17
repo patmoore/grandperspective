@@ -3,7 +3,7 @@
 @class FilterRepository;
 @class FilterEditor;
 
-@interface EditFiltersWindowControl : NSWindowController {
+@interface FiltersWindowControl : NSWindowController {
 
   IBOutlet NSButton  *editFilterButton;
   IBOutlet NSButton  *removeFilterButton;
