@@ -18,7 +18,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 - (BOOL) isDominated;
 - (void) setDominated: (BOOL) flag;
 
-@end
+@end // @interface TypeCell
 
 
 @interface UniformTypeRankingWindowControl (PrivateMethods)
@@ -36,7 +36,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
 
 - (int) getRowNumberFromDraggingInfo: (id <NSDraggingInfo>) info;
 
-@end
+@end // @interface UniformTypeRankingWindowControl (PrivateMethods)
 
 
 @implementation UniformTypeRankingWindowControl
@@ -278,8 +278,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
   [self updateWindowState];
 }
 
-@end // @implementation EditUniformTypeRankingWindowControl
-
+@end // @implementation UniformTypeRankingWindowControl
 
 
 @implementation UniformTypeRankingWindowControl (PrivateMethods)
@@ -435,7 +434,7 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
   return [rowNum intValue];
 }
 
-@end // @implementation EditUniformTypeRankingWindowControl (PrivateMethods)
+@end // @implementation UniformTypeRankingWindowControl (PrivateMethods)
 
 
 @implementation TypeCell
@@ -468,4 +467,4 @@ NSString  *InternalTableDragType = @"EditUniformTypeRankingWindowInternalDrag";
   dominated = flag;
 }
 
-@end
+@end // @implementation TypeCell

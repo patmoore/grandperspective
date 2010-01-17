@@ -55,7 +55,7 @@ NSString  *MatchColumn = @"match";
 - (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo;
 
-@end // @interface EditFilterWindowControl (PrivateMethods)
+@end // @interface FilterWindowControl (PrivateMethods)
 
 
 @implementation FilterWindowControl
@@ -495,7 +495,7 @@ NSString  *MatchColumn = @"match";
   [self updateWindowTitle];
 }
 
-@end // @implementation EditFilterWindowControl
+@end // @implementation FilterWindowControl
 
 
 @implementation FilterWindowControl (PrivateMethods)
@@ -797,4 +797,4 @@ NSString  *MatchColumn = @"match";
            contextInfo:(void *)contextInfo {
 }
 
-@end // @implementation EditFilterWindowControl (PrivateMethods)
+@end // @implementation FilterWindowControl (PrivateMethods)

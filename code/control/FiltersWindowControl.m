@@ -26,7 +26,7 @@
 - (void) confirmFilterRemovalAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
-@end // @interface EditFiltersWindowControl (PrivateMethods)
+@end // @interface FiltersWindowControl (PrivateMethods)
 
 
 @implementation FiltersWindowControl
@@ -162,7 +162,7 @@
   [self updateWindowState];
 }
 
-@end // @implementation EditFiltersWindowControl
+@end // @implementation FiltersWindowControl
 
 
 @implementation FiltersWindowControl (PrivateMethods)
@@ -289,5 +289,5 @@
   }
 }
 
-@end // @implementation EditFiltersWindowControl (PrivateMethods)
+@end // @implementation FiltersWindowControl (PrivateMethods)
 

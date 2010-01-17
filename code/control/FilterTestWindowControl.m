@@ -86,7 +86,7 @@
 - (void) invalidNameAlertDidEnd:(NSAlert *)alert returnCode:(int) returnCode
            contextInfo:(void *)contextInfo;
 
-@end // @interface EditFilterTestWindowControl (PrivateMethods)
+@end // @interface FilterTestWindowControl (PrivateMethods)
 
 
 @interface MultiMatchControls : NSObject {
@@ -166,15 +166,13 @@
 @implementation FilterTestWindowControl
 
 + (id) defaultInstance {
-  FilterTestWindowControl 
-    *defaultEditFilterTestWindowControlInstance = nil;
+  FilterTestWindowControl  *defaultInstance = nil;
 
-  if (defaultEditFilterTestWindowControlInstance == nil) {
-    defaultEditFilterTestWindowControlInstance = 
-      [[FilterTestWindowControl alloc] init];
+  if (defaultInstance == nil) {
+    defaultInstance = [[FilterTestWindowControl alloc] init];
   }
   
-  return defaultEditFilterTestWindowControlInstance;
+  return defaultInstance;
 }
 
 // Special case: should not cover (override) super's designated initialiser in
@@ -517,7 +515,7 @@
 }
 
 
-@end // @implementation EditFilterTestWindowControl
+@end // @implementation FilterTestWindowControl
 
 
 @implementation FilterTestWindowControl (PrivateMethods) 
@@ -888,7 +886,7 @@
            contextInfo:(void *)contextInfo {
 }
 
-@end // @implementation EditFilterTestWindowControl (PrivateMethods) 
+@end // @implementation FilterTestWindowControl (PrivateMethods) 
 
 
 @implementation MultiMatchControls

@@ -10,7 +10,7 @@
 
 - (FilterEditor *)filterEditor;
 
-@end // @interface SelectFilterPanelControl
+@end // @interface FilterSelectionPanelControl
 
 
 @implementation FilterSelectionPanelControl
@@ -78,7 +78,7 @@
   return [NamedFilter namedFilter: filter name: name];                        
 }
 
-@end // @implementation SelectFilterPanelControl
+@end // @implementation FilterSelectionPanelControl
 
 
 @implementation FilterSelectionPanelControl (PrivateMethods)
@@ -91,4 +91,4 @@
   return filterEditor;
 }
 
-@end // @implementation SelectFilterPanelControl (PrivateMethods)
+@end // @implementation FilterSelectionPanelControl (PrivateMethods)
