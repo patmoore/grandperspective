@@ -72,9 +72,9 @@ Tijdens het inlezen van de overige reservekopieën zijn de meeste harde links al 
 De map die als eerste is ingelezen is daarom het minst interessant.
 Deze toont "slechts" de inhoud van de harde schijf op een bepaald moment.
 Daarom kan het nuttig zijn deze map niet te tonen in het overzichts venster.
-Begin hiermee door het <a href="MasksAndFilters.html">masker</a> aan te passen.
-Hiervoor is het nodig dat u een <a href="EditingMaskAndFilterRules.html">nieuwe regel maakt</a>.
-Noem de regel "Hoofd kopie", pas deze toe op "bestanden en mappen", en laat deze de Padnaam test bevatten, waarbij padnamen moeten beginnen met "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/<em>2008-08-08-888888</em>". 
+Begin door een nieuw <a href="MasksAndFilters.html">filter</a> aan te maken.
+Hiervoor is het nodig dat u een nieuwe <a href="EditingFilterTests.html">filtertest</a> maakt.
+Noem de test "Hoofd kopie", pas deze toe op "bestanden en mappen", en laat deze de Padnaam deeltest bevatten, waarbij padnamen moeten beginnen met "/Volumes/<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/<em>2008-08-08-888888</em>". 
 De cursieve gedeeltes zullen anders zijn in uw geval. 
 U kunt de string met de padnaam verkrijgen in het <a href="ViewFocusPanel.html">Focus paneel</a>.
 Selecteer eerst een willekeurig bestand in de grootste reservekopie, 
@@ -82,10 +82,12 @@ Selecteer eerst een willekeurig bestand in de grootste reservekopie,
 </p>
 
 <p>
-Nadat u de "Hoofd kopie" regel gemaakt heeft, gebruikt u deze als volgt in het masker: "Toon geen: Hoofd kopie".
+Voeg de nieuwe "Hoofd kopie" test toe aan uw nieuwe filter.
+De test zal automatisch geinverteerd worden.
+Nadat u het filter aangemaakt heeft kunt u het als masker selecteren vanuit het <a href="ViewDisplayPanel.html">Beeld paneel</a>.
 U zult nu zien dat de hoofd kopie gemaskeerd is in het venster. 
-Indien dit niet het geval is heeft u het masker niet juist ingesteld.
-Wijzig het masker totdat het werkt.
+Indien dit niet het geval is heeft u het filter niet juist ingesteld.
+Wijzig het filter totdat het werkt.
 </p>
 
 <p>
@@ -104,9 +106,9 @@ Als u bestanden tegenkomt die niet in de reservekopieën thuis horen kunt u uw Ti
 <p>
 Start het <b>Inlezen map met filter</b>.
 Voor de in te lezen map kies "<em>Backup Volume</em>/Backups.backupdb/<em>Mijn Computer</em>/Latest".
-Pas de volgende filter toe: "Toon geen: harde links".
-Het resultaat is een venster dat alle bestanden toont die nieuw zijn in meest recente reservekopie.
-Alle bestanden die al voorkwamen in een eerdere reservekopie worden niet getoond.
+Pas het "Geen harde links" filter toe.
+Het resultaat is een venster dat alle bestanden toont die nieuw zijn in de meest recente reservekopie.
+Alle bestanden die al voorkwamen in eerdere reservekopieën worden niet getoond.
 </p>
 
 <p>
