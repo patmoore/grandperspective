@@ -42,6 +42,7 @@ NSString  *MatchColumn = @"match";
 - (void) testRenamedInRepository:(NSNotification *)notification;
 
 - (void) updateWindowState:(NSNotification *)notification;
+- (void) updateWindowTitle;
 
 - (void) textEditingStarted:(NSNotification *)notification;
 - (void) textEditingStopped:(NSNotification *)notification;
@@ -221,6 +222,7 @@ NSString  *MatchColumn = @"match";
 
 
 - (IBAction) filterNameChanged:(id) sender {
+  [self updateWindowTitle];
   [self updateWindowState: nil];
 }
 
@@ -475,7 +477,8 @@ NSString  *MatchColumn = @"match";
   // Forget about any previously reported invalid names.
   [invalidName release];
   invalidName = nil;
-            
+
+  [self updateWindowTitle];
   [self updateWindowState: nil];
 }
 
@@ -717,6 +720,19 @@ NSString  *MatchColumn = @"match";
   
   [okButton setEnabled: ( (nonEmptyFilter || allowEmptyFilter) &&
                           ![self isNameKnownInvalid] )];
+}
+
+- (void) updateWindowTitle {
+  NSString  *name = [filterNameField stringValue];
+  NSString  *title;
+  if (name == nil || [name length]==0) {
+    title = NSLocalizedString(@"Unnamed filter", @"Window title");
+  }
+  else {
+    NSString  *format = NSLocalizedString(@"Filter - %@", @"Window title");
+    title = [NSString stringWithFormat: format, name];
+  }
+  [[self window] setTitle: title];
 }
 
 

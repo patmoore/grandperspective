@@ -73,6 +73,9 @@
 - (ItemFlagsTest *)itemFlagsTestBasedOnState;
 - (FileItemTest *)selectiveItemTestBasedOnState:(FileItemTest *)subTest;
 
+- (IBAction) updateEnabledState:(id) sender;
+- (void) updateWindowTitle;
+
 - (BOOL) tryStopFieldEditor;
 
 - (void) textEditingStarted:(NSNotification *)notification;
@@ -293,7 +296,8 @@
     [self updateStateBasedOnTest:test];
   } 
 
-  [self updateEnabledState:nil];
+  [self updateWindowTitle];
+  [self updateEnabledState: nil];
 }
 
 - (FilterTest *)createFilterTest {
@@ -422,6 +426,7 @@
 
 
 - (IBAction) testNameChanged:(id) sender {
+  [self updateWindowTitle];
   [self updateEnabledState: nil];
 }
 
@@ -511,50 +516,6 @@
 }
 
 
-- (IBAction) updateEnabledState:(id) sender {
-  // Note: "sender" is ignored. Always updating all.
-  
-  BOOL  targetsOnlyFiles = 
-          [testTargetPopUp indexOfSelectedItem] == POPUP_FILES;
-  
-  BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
-  BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
-  BOOL  hardLinkTestUsed = [hardLinkCheckBox state]==NSOnState;
-  BOOL  packageTestUsed = [packageCheckBox state]==NSOnState;
-  BOOL  typeTestUsed = ( [typeCheckBox state]==NSOnState && targetsOnlyFiles );
-  BOOL  lowerBoundTestUsed = ( [sizeLowerBoundCheckBox state]==NSOnState
-                               && targetsOnlyFiles );
-  BOOL  upperBoundTestUsed = ( [sizeUpperBoundCheckBox state]==NSOnState
-                               && targetsOnlyFiles );
-  
-  [nameTestControls setEnabled: nameTestUsed];
-  [pathTestControls setEnabled: pathTestUsed];
-
-  [hardLinkStatusPopUp setEnabled: hardLinkTestUsed];
-  [packageStatusPopUp setEnabled: packageTestUsed];
-  
-  [typeCheckBox setEnabled: targetsOnlyFiles];
-  [typeTestControls setEnabled: typeTestUsed];
-  
-  [sizeLowerBoundCheckBox setEnabled: targetsOnlyFiles];
-  [sizeLowerBoundField setEnabled: lowerBoundTestUsed];
-  [sizeLowerBoundUnits setEnabled: lowerBoundTestUsed];
-
-  [sizeUpperBoundCheckBox setEnabled: targetsOnlyFiles];
-  [sizeUpperBoundField setEnabled: upperBoundTestUsed];
-  [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
-
-  [okButton setEnabled:
-     ![self isNameKnownInvalid]
-     && ( ( nameTestUsed && [nameTestControls hasTargets] )
-          || ( pathTestUsed && [pathTestControls hasTargets] )
-          || ( typeTestUsed && [typeTestControls hasTargets] )
-          || lowerBoundTestUsed 
-          || upperBoundTestUsed 
-          || hardLinkTestUsed
-          || packageTestUsed) ];
-}
-
 @end // @implementation EditFilterTestWindowControl
 
 
@@ -593,6 +554,7 @@
   [packageCheckBox setState: NSOffState];
   [packageStatusPopUp selectItemAtIndex: POPUP_FLAG_IS];
   
+  [self updateWindowTitle];
   [self updateEnabledState: nil];
 }
 
@@ -814,6 +776,65 @@
     return [[[SelectiveItemTest alloc] initWithSubItemTest: subTest 
                                          onlyFiles: onlyFiles] autorelease];
   } 
+}
+
+
+- (IBAction) updateEnabledState:(id) sender {
+  // Note: "sender" is ignored. Always updating all.
+  
+  BOOL  targetsOnlyFiles = 
+          [testTargetPopUp indexOfSelectedItem] == POPUP_FILES;
+  
+  BOOL  nameTestUsed = [nameCheckBox state]==NSOnState;
+  BOOL  pathTestUsed = [pathCheckBox state]==NSOnState;
+  BOOL  hardLinkTestUsed = [hardLinkCheckBox state]==NSOnState;
+  BOOL  packageTestUsed = [packageCheckBox state]==NSOnState;
+  BOOL  typeTestUsed = ( [typeCheckBox state]==NSOnState && targetsOnlyFiles );
+  BOOL  lowerBoundTestUsed = ( [sizeLowerBoundCheckBox state]==NSOnState
+                               && targetsOnlyFiles );
+  BOOL  upperBoundTestUsed = ( [sizeUpperBoundCheckBox state]==NSOnState
+                               && targetsOnlyFiles );
+  
+  [nameTestControls setEnabled: nameTestUsed];
+  [pathTestControls setEnabled: pathTestUsed];
+
+  [hardLinkStatusPopUp setEnabled: hardLinkTestUsed];
+  [packageStatusPopUp setEnabled: packageTestUsed];
+  
+  [typeCheckBox setEnabled: targetsOnlyFiles];
+  [typeTestControls setEnabled: typeTestUsed];
+  
+  [sizeLowerBoundCheckBox setEnabled: targetsOnlyFiles];
+  [sizeLowerBoundField setEnabled: lowerBoundTestUsed];
+  [sizeLowerBoundUnits setEnabled: lowerBoundTestUsed];
+
+  [sizeUpperBoundCheckBox setEnabled: targetsOnlyFiles];
+  [sizeUpperBoundField setEnabled: upperBoundTestUsed];
+  [sizeUpperBoundUnits setEnabled: upperBoundTestUsed];
+
+  [okButton setEnabled:
+     ![self isNameKnownInvalid]
+     && ( ( nameTestUsed && [nameTestControls hasTargets] )
+          || ( pathTestUsed && [pathTestControls hasTargets] )
+          || ( typeTestUsed && [typeTestControls hasTargets] )
+          || lowerBoundTestUsed 
+          || upperBoundTestUsed 
+          || hardLinkTestUsed
+          || packageTestUsed) ];
+}
+
+
+- (void) updateWindowTitle {
+  NSString  *name = [testNameField stringValue];
+  NSString  *title;
+  if (name == nil || [name length]==0) {
+    title = NSLocalizedString(@"Unnamed filter test", @"Window title");
+  }
+  else {
+    NSString  *format = NSLocalizedString(@"Filter test - %@", @"Window title");
+    title = [NSString stringWithFormat: format, name];
+  }
+  [[self window] setTitle: title];
 }
 
 

@@ -85,8 +85,6 @@
 - (IBAction) addTypeTarget:(id) sender;
 - (IBAction) removeTypeTarget:(id) sender;
 
-- (IBAction) updateEnabledState:(id) sender;
-
 - (IBAction) cancelAction:(id) sender;
 - (IBAction) okAction:(id) sender;
 
