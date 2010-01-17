@@ -14,7 +14,7 @@ fi
 ENGLISH_PATH=$1
 OTHER_PATH=$2
 
-for f in Localizable.strings Tests.strings Names.strings Toolbar.strings
+for f in Localizable.strings Tests.strings Names.strings PopUpMenu.strings Toolbar.strings
 do
   echo $f
   iconv -f UTF-16 -t UTF-8 $ENGLISH_PATH/$f $OTHER_PATH/$f \
