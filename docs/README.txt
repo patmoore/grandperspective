@@ -25,7 +25,7 @@ rectangles as square as possible.
 
 * CONTENTS
 
-This version of GrandPerspective is released as three separate files:
+This version of GrandPerspective is released as two separate files:
 
   * GrandPerspective-GRANDPERSPECTIVE_SOFTWARE_VERSION_ID.dmg
  
@@ -41,17 +41,11 @@ This version of GrandPerspective is released as three separate files:
       the Objective C source code, as well as various auxiliary files,
       such as the nib files that are used to construct the GUI.
 
-  * GrandPerspective-GRANDPERSPECTIVE_SOFTWARE_VERSION_ID-local.dmg
- 
-      This is the localized version of GrandPerspective. It includes
-      support for languages other than English. The translations have 
-      been provided by various users of GrandPerspective. See the
-      GrandPerspective website for details on how you can help out to 
-      make the application available in your mother tongue.
-
-      Note: The localized version of GrandPerpective is typically 
-      released a short while after the main release in order for the
-      localized resources to be updated as necessary.
+Note: From Version 1.0 onwards localized versions of GrandPerspective 
+are released for a subset of releases, those whose second number in
+the version string is even. These versions do not introduce new
+features. Next to updated translated resources they will only include
+fixes, minor cosmetic changes, and refactoring "behind the scenes". 
 
 
 * LICENSE
