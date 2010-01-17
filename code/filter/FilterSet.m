@@ -134,11 +134,10 @@
   NamedFilter  *namedFilter;
 
   while (namedFilter = [filterEnum nextObject]) {
-    // TODO: I18N?
     if ([descr length] > 0) {
       [descr appendString: @", "];
     }
-    [descr appendString: [namedFilter name]];
+    [descr appendString: [namedFilter localizedName]];
   }
   
   return descr;

@@ -15,5 +15,6 @@
 
 - (Filter *)filter;
 - (NSString *)name;
+- (NSString *)localizedName;
 
 @end

@@ -492,6 +492,7 @@ NSString  *MatchColumn = @"match";
 - (void) setVisibleName:(NSString *)name {
   [filterNameField setStringValue: name];
   [filterNameField setEnabled: NO];
+  [self updateWindowTitle];
 }
 
 @end // @implementation EditFilterWindowControl

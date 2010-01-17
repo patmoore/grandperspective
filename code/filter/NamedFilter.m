@@ -43,4 +43,9 @@
   return name;
 }
 
+- (NSString *)localizedName {
+  return [[NSBundle mainBundle] localizedStringForKey: name 
+                                  value: nil table: @"Names"];
+}
+
 @end

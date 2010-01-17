@@ -354,6 +354,7 @@
 - (void) setVisibleName:(NSString *)name {
   [testNameField setStringValue: name];
   [testNameField setEnabled: NO];
+  [self updateWindowTitle];
 }
 
 
@@ -1063,7 +1064,7 @@
   
   [matchTargets addObject: 
      NSLocalizedString( @"New match", 
-                        @"Initial match value in EditFilterTestWindow" ) ];
+                        @"Initial match value in FilterTestWindow" ) ];
   [targetsView reloadData];
   [targetsView selectRow: newRow byExtendingSelection: NO];
   

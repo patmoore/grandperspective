@@ -147,7 +147,11 @@
 
 - (id) tableView: (NSTableView *)tableView 
          objectValueForTableColumn: (NSTableColumn *)column row: (int)row {
-  return [filterNames objectAtIndex: row];
+  NSString  *filterName = [filterNames objectAtIndex: row];
+  NSBundle  *mainBundle = [NSBundle mainBundle];
+  return 
+    [mainBundle localizedStringForKey: filterName value: nil table: @"Names"];
+
 }
 
 
