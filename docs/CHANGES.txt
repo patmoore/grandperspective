@@ -3,6 +3,31 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.3.0, 17-01-2010
+----------------------------------------------------------------------
+
+New functionality:
+- Improvements to filters (and masks):
+  - All filters now have names that can be used to select them:
+    - Select filters from the new filter selection panel.
+    - Select masks using a pop-up button in the Display panel.
+  - The application comes with a couple of filters out of the box.
+  - User-created filters are automatically stored in the preferences
+    so you can use them again later.
+  - Scan dumps now include information about filters that were used,
+    both their names as well as the filter tests they contain. 
+  - Enabled individual inversion of tests in a filter.
+
+Refactoring:
+- Converted all NIBs to XIBs.
+- Renamed several windows and their control classes.
+
+Bug fix:
+- Fixed bug #1947382: Typing return in Rule Name field can cause rule
+  completion.
+
+
+----------------------------------------------------------------------
   Version 1.1.0, 26-09-2009
 ----------------------------------------------------------------------
 
@@ -22,7 +47,7 @@ Minor improvements:
 
 Bug fixes:
 - Fixed bug #2562846: Failure to load scan data
-  - Incorrec saving of scan data in OS X 10.4 should be fixed now.
+  - Incorrect saving of scan data in OS X 10.4 should be fixed now.
 - Freed space did not correctly reflect deletion of hard-linked files.
 
 Documentation:
@@ -621,7 +646,6 @@ Changes since Version 0.90:
 First release of GrandPerspective.
 
 Features:
-
 - A view showing directory trees graphically:
   - Layout of files using a basic balanced tree building algorithm.
   - Drawing of files using basic gradient filling.
