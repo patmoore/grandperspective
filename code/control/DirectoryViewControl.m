@@ -482,6 +482,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (IBAction) openFile:(id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
+  NSString  *filePath = [file systemPath];
 
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSString  *customApp = 
@@ -490,12 +491,12 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   if ([customApp length] > 0) {
     NSLog(@"Opening using customApp");
-    if ( [workspace openFile: [file path] withApplication: customApp] ) {
+    if ( [workspace openFile: filePath withApplication: customApp] ) {
       return; // All went okay
     }
   }
   else {
-    if ( [workspace openFile: [file path]] ) {
+    if ( [workspace openFile: filePath] ) {
       return; // All went okay
     }
   }
@@ -528,6 +529,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 - (IBAction) revealFileInFinder:(id) sender {
   FileItem  *file = [pathModelView selectedFileItem];
+  NSString  *filePath = [file systemPath];
   
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSString  *customApp = 
@@ -536,7 +538,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
   if ([customApp length] > 0) {
     NSLog(@"Revealing using customApp %@.", customApp);
-    if ( [workspace openFile: [file path] withApplication: customApp] ) {
+    if ( [workspace openFile: filePath withApplication: customApp] ) {
       return; // All went okay
     }
   }
@@ -560,11 +562,16 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       }
       ancestor = [ancestor parentDirectory];
     }
-      
-    NSString  *rootPath = (package != nil) ? [package path] : invisiblePathName;
+    
+    // Note: This does not work properly when the system representation of the
+    // invisiblePathName differs from its friendly representation, i.e. when
+    // it contains slashes in any of its path components. So be it. This
+    // happens rarely and would then only be a minor cosmetic flaw anyway.
+    NSString  *rootPath = 
+      (package != nil) ? [package systemPath] : invisiblePathName;
 
     if ( [[NSWorkspace sharedWorkspace] 
-             selectFile: [file path] 
+             selectFile: filePath 
              inFileViewerRootedAtPath: rootPath] ) {
       return; // All went okay
     }

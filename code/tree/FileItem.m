@@ -5,8 +5,10 @@
 
 @interface FileItem (PrivateMethods)
 
-+ (NSString *)filesizeUnitString: (int) order;
++ (NSString *)filesizeUnitString:(int) order;
 + (NSString *)decimalSeparator;
+
+- (NSString *)constructPath:(BOOL) useFileSystemRepresentation;
 
 @end
 
@@ -14,26 +16,26 @@
 @implementation FileItem
 
 // Overrides super's designated initialiser.
-- (id) initWithItemSize: (ITEM_SIZE) sizeVal {
+- (id) initWithItemSize:(ITEM_SIZE) sizeVal {
   return [self initWithName: @"" parent: nil size: sizeVal];
 }
 
-- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal {
+- (id) initWithName:(NSString *)nameVal parent:(DirectoryItem *)parentVal {
   return [self initWithName: nameVal parent: parentVal size: 0 flags: 0];
 }
 
-- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal
-         flags: (UInt8) flagsVal {
+- (id) initWithName:(NSString *)nameVal parent:(DirectoryItem *)parentVal
+         flags:(UInt8) flagsVal {
   return [self initWithName: nameVal parent: parentVal size: 0 flags: flagsVal];
 }
 
-- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal 
-         size: (ITEM_SIZE) sizeVal {
+- (id) initWithName:(NSString *)nameVal parent:(DirectoryItem *)parentVal 
+         size:(ITEM_SIZE) sizeVal {
   return [self initWithName: nameVal parent: parentVal size: sizeVal flags: 0];
 }
 
-- (id) initWithName: (NSString *)nameVal parent: (DirectoryItem *)parentVal
-         size: (ITEM_SIZE)sizeVal flags: (UInt8) flagsVal {
+- (id) initWithName:(NSString *)nameVal parent:(DirectoryItem *)parentVal
+         size:(ITEM_SIZE)sizeVal flags:(UInt8) flagsVal {
   if (self = [super initWithItemSize: sizeVal]) {
     name = [nameVal copyWithZone: [self zone]];
     parent = parentVal; // not retaining it, as it is not owned.
@@ -52,12 +54,12 @@
 }
 
 
-- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
+- (FileItem *)duplicateFileItem:(DirectoryItem *)newParent {
   NSAssert(NO, @"-duplicateFileItem: called on (abstract) FileItem.");
 }
 
 
-- (NSString*) description {
+- (NSString *)description {
   return [NSString stringWithFormat:@"FileItem(%@, %qu)", name, size];
 }
 
@@ -66,15 +68,15 @@
   return 1;
 }
 
-- (NSString*) name {
+- (NSString *)name {
   return name;
 }
 
-- (DirectoryItem*) parentDirectory {
+- (DirectoryItem *)parentDirectory {
   return parent;
 }
 
-- (BOOL) isAncestorOfFileItem: (FileItem *)fileItem {
+- (BOOL) isAncestorOfFileItem:(FileItem *)fileItem {
   do {
     if (fileItem == self) {
       return YES;
@@ -108,26 +110,21 @@
 }
 
 
-- (NSString *) pathComponent {
+- (NSString *)pathComponent {
   // Only physical items contribute to the path.
   return [self isPhysical] ? name : nil;
 }
 
-- (NSString *) path {
-  NSString  *comp = [self pathComponent];
-  
-  if (comp != nil) {
-    return ( (parent != nil) 
-             ? [[parent path] stringByAppendingPathComponent: comp] 
-             : comp );
-  }
-  else {
-    return (parent != nil) ? [parent path] : @"";
-  }
+- (NSString *)path {
+  [self constructPath: NO];
+}
+
+- (NSString *)systemPath {
+  [self constructPath: YES];
 }
 
 
-+ (NSString*) stringForFileItemSize: (ITEM_SIZE)filesize {
++ (NSString *)stringForFileItemSize:(ITEM_SIZE) filesize {
   if (filesize < 1024) {
     // Definitely don't want a decimal point here
     NSString  *byteSizeUnit = NSLocalizedString( @"B", 
@@ -180,7 +177,7 @@
 }
 
 
-+ (NSString*) exactStringForFileItemSize: (ITEM_SIZE)filesize {
++ (NSString *)exactStringForFileItemSize:(ITEM_SIZE) filesize {
   NSString  *format = NSLocalizedString( @"%qu bytes", 
                                          @"Exact file size (in bytes)." );
 
@@ -191,9 +188,25 @@
 @end // @implementation FileItem
 
 
+@implementation FileItem (ProtectedMethods)
+
+- (NSString *)systemPathComponent {
+  if (! [self isPhysical] ) {
+    return nil;
+  }
+  NSMutableString  *comp = [NSMutableString stringWithString: name];
+
+  [comp replaceOccurrencesOfString: @"/" withString: @":"
+          options: NSLiteralSearch range: NSMakeRange(0, [comp length])];
+  return comp;
+}
+    
+@end // @implementation FileItem (ProtectedMethods)
+
+
 @implementation FileItem (PrivateMethods)
 
-+ (NSString *) filesizeUnitString: (int) order {
++ (NSString *)filesizeUnitString:(int) order {
   switch (order) {
     case 0: return NSLocalizedString( @"kB", @"File size unit for kilobytes.");
     case 1: return NSLocalizedString( @"MB", @"File size unit for megabytes.");
@@ -204,7 +217,7 @@
 }
 
 
-+ (NSString *) decimalSeparator {
++ (NSString *)decimalSeparator {
   static  NSString  *decimalSeparator = nil;
 
   if (decimalSeparator == nil) {
@@ -217,4 +230,24 @@
   return decimalSeparator;
 }
 
-@end // FileItem (PrivateMethods)
+
+- (NSString *)constructPath:(BOOL) useFileSystemRepresentation {
+  NSString  *comp = 
+    ( useFileSystemRepresentation 
+      ? [self systemPathComponent] 
+      : [self pathComponent] );
+  
+  if (comp != nil) {
+    return ( (parent != nil) 
+             ? [[parent constructPath: useFileSystemRepresentation] 
+                   stringByAppendingPathComponent: comp] 
+             : comp );
+  }
+  else {
+    return ( (parent != nil) 
+             ? [parent constructPath: useFileSystemRepresentation] 
+             : @"" );
+  }
+}
+
+@end // @implementation FileItem (PrivateMethods)

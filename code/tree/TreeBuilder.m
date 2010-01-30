@@ -3,6 +3,7 @@
 #import "TreeConstants.h"
 #import "PlainFileItem.h"
 #import "DirectoryItem.h"
+#import "ScanTreeRoot.h"
 #import "CompoundItem.h"
 #import "TreeContext.h"
 #import "FilterSet.h"
@@ -327,7 +328,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
                             freeSpace: freeSpace
                             filterSet: filterSet] autorelease];
   DirectoryItem  *scanTree = 
-    [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
+    [[[ScanTreeRoot allocWithZone: [Item dedicatedZone]] 
          initWithName: relativePath 
          parent: [scanResult scanTreeParent]
          flags: [self flagsForFileRef: &pathRef]] autorelease];

@@ -14,6 +14,7 @@
 @class DirectoryItem;
 
 @interface FileItem : Item {
+  // The friendly name of the item, as it is shown to the user.
   NSString  *name;
   DirectoryItem  *parent;
 
@@ -21,27 +22,27 @@
   UInt8  flags;
 }
 
-- (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent;
-- (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent
-         flags: (UInt8) flags;
-- (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent 
-         size: (ITEM_SIZE) size;
-- (id) initWithName: (NSString *)name parent: (DirectoryItem *)parent 
-         size: (ITEM_SIZE) size flags: (UInt8) flags;
+- (id) initWithName:(NSString *)name parent:(DirectoryItem *)parent;
+- (id) initWithName:(NSString *)name parent:(DirectoryItem *)parent
+         flags:(UInt8) flags;
+- (id) initWithName:(NSString *)name parent:(DirectoryItem *)parent 
+         size:(ITEM_SIZE) size;
+- (id) initWithName:(NSString *)name parent:(DirectoryItem *)parent 
+         size:(ITEM_SIZE) size flags:(UInt8) flags;
          
 /* Creates a duplicate item, for use in a new tree (so with a new parent).
  *
  * Note: If the item is a directory, its contents still need to be set, as
  * these can be different from the original item, e.g. by applying a filter.
  */
-- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent;
+- (FileItem *)duplicateFileItem:(DirectoryItem *)newParent;
 
 
-- (NSString *) name;
+- (NSString *)name;
 
 - (DirectoryItem *) parentDirectory;
 
-- (BOOL) isAncestorOfFileItem: (FileItem *)fileItem;
+- (BOOL) isAncestorOfFileItem:(FileItem *)fileItem;
   
 /* Returns YES iff the file item is a directory.
  */
@@ -76,21 +77,41 @@
 /* Returns the path component that the item contributes to the path. The path
  * component is nil if the item is not physical.
  */
-- (NSString *) pathComponent;
+- (NSString *)pathComponent;
 
 /* Returns the path to the file item. It is the path as shown to the user. The
  * system representation of the path can be different. This is for example the
  * case when a path component contain slash characters.
+ *
+ * See also: -systemPath
  */
-- (NSString *) path;
+- (NSString *)path;
+
+/* Returns the path to the file item, in the file system representation.
+ * 
+ * See also: -path
+ */
+- (NSString *)systemPath;
 
 
 /* Returns a short string, approximating the given size. E.g. "1.23 MB"
  */
-+ (NSString *) stringForFileItemSize: (ITEM_SIZE)size;
++ (NSString *)stringForFileItemSize:(ITEM_SIZE) size;
 
 /* Returns a string, specifying the file size exactly. E.g. "12345678 bytes"
  */
-+ (NSString *) exactStringForFileItemSize: (ITEM_SIZE)size;
++ (NSString *)exactStringForFileItemSize:(ITEM_SIZE) size;
 
-@end
+@end // @interface FileItem
+
+
+@interface FileItem (ProtectedMethods) 
+
+/* Returns the path component that the item contributes to the path, in the 
+ * file system representation.
+ *
+ * See also -pathComponent.
+ */
+- (NSString *)systemPathComponent;
+
+@end // @interface FileItem (ProtectedMethods)

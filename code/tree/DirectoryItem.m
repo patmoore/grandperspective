@@ -13,7 +13,7 @@
 }
 
 
-- (FileItem *) duplicateFileItem: (DirectoryItem *)newParent {
+- (FileItem *)duplicateFileItem:(DirectoryItem *)newParent {
   return [[[DirectoryItem allocWithZone: [newParent zone]] 
               initWithName: name parent: newParent flags: flags] autorelease];
 }
@@ -29,7 +29,7 @@
 }
 
 
-- (void) replaceDirectoryContents: (Item *)newItem {
+- (void) replaceDirectoryContents:(Item *)newItem {
   NSAssert([newItem itemSize] == [contents itemSize], @"Sizes must be equal.");
   
   if (contents != newItem) {
@@ -39,7 +39,7 @@
 }
 
 
-- (FileItem *) itemWhenHidingPackageContents {
+- (FileItem *)itemWhenHidingPackageContents {
   if ([self isPackage]) {
     UniformType  *fileType = 
       [[UniformTypeInventory defaultUniformTypeInventory] 
@@ -58,7 +58,7 @@
 }
 
 
-- (NSString*) description {
+- (NSString *)description {
   return [NSString stringWithFormat:@"DirectoryItem(%@, %qu, %@)", name, size,
                      [contents description]];
 }
@@ -72,8 +72,28 @@
   return YES;
 }
 
-- (Item*) getContents {
+- (Item *)getContents {
   return contents;
 }
 
-@end
+@end // @implementation DirectoryItem
+
+
+@implementation DirectoryItem (ProtectedMethods)
+
+- (NSString *)systemPathComponent {
+  if (! [self isPhysical]) {
+    return nil;
+  }
+  if (parent == nil) {
+    // This is the volume root. Return the name "as is", it could be "/".
+    return [self pathComponent];
+  }
+
+  // The path component is the name of a single folder. It may contain
+  // slashes, which should be converted to colons.
+  return [super systemPathComponent];
+}
+
+@end // @implementation DirectoryItem (ProtectedMethods)
+
