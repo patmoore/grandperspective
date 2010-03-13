@@ -115,6 +115,8 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 
 - (NamedFilter *)getNamedFilter:(NamedFilter *)initialFilter;
 
++ (NSString *)getPathFromPasteboard:(NSPasteboard *)pboard;
+
 /* Helper method for reporting the names of unbound filters or filter tests.
  */
 + (void) reportUnbound:(NSArray *)unboundNames messageFormat:(NSString *)format
@@ -289,8 +291,12 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 - (void) applicationDidFinishLaunching:(NSNotification *)notification {
+  [NSApp setServicesProvider: self];
+  
   if (scanAfterLaunch) {
-    [self scanDirectoryView: self];
+    // TODO: Figure out how to enable this only when user invokes application
+    // directly and not when it is started up in response to a service request.
+    // [self scanDirectoryView: self];
   }
 }
 
@@ -302,6 +308,57 @@ static MainMenuControl  *singletonInstance = nil;
        
   [self release];
 }
+
+
+// Service method for handling dock drags.
+- (void)scanFolder:(NSPasteboard *)pboard 
+          userData:(NSString *)userData
+          error:(NSString **)error {
+  NSLog(@"scanFolder:userData:error:");
+
+  NSString  *path = [MainMenuControl getPathFromPasteboard: pboard];
+  if (path == nil) {
+    *error = NSLocalizedString( @"Failed to get path from pasteboard.",
+                                @"Error message" );
+    NSLog(*error); // Also logging. Setting *error does not seem to work?
+    return;
+  }
+  
+  if (! [TreeBuilder pathIsDirectory: path]) {
+    *error = NSLocalizedString( @"Expected a folder.",
+                                @"Error message" );
+    NSLog(*error); // Also logging. Setting *error does not seem to work?
+    return;
+  }
+  
+  [self scanFolder: path namedFilter: nil];
+}
+
+
+// Service method for handling dock drags.
+- (void)loadScanData:(NSPasteboard *)pboard 
+          userData:(NSString *)userData
+          error:(NSString **)error {
+  NSLog(@"loadScanData:userData:error:");
+
+  NSString  *path = [MainMenuControl getPathFromPasteboard: pboard];
+  if (path == nil) {
+    *error = NSLocalizedString( @"Failed to get path from pasteboard.",
+                                @"Error message" );
+    NSLog(*error); // Also logging. Setting *error does not seem to work?
+    return;
+  }
+  
+  if (! [[[path pathExtension] lowercaseString] isEqualToString: @"gpscan"]) {
+    *error = NSLocalizedString( @"Expected scandata file.",
+                                @"Error message" );
+    NSLog(*error); // Also logging. Setting *error does not seem to work?
+    return;
+  }
+  
+  [self loadScanDataFromFile: path];
+}
+
 
 - (BOOL) validateMenuItem:(NSMenuItem *)item {
   SEL  action = [item action];
@@ -691,6 +748,28 @@ static MainMenuControl  *singletonInstance = nil;
     return [filterSelectionPanelControl selectedNamedFilter];
   }
   return nil;
+}
+
+
++ (NSString *)getPathFromPasteboard:(NSPasteboard *)pboard {
+  NSArray *supportedTypes =
+    [NSArray arrayWithObjects: NSFilenamesPboardType, NSStringPboardType, nil];
+    
+  NSString  *bestType = [pboard availableTypeFromArray: supportedTypes];
+  if (bestType == nil) {
+    return nil;
+  }
+
+  if ([bestType isEqualToString: NSFilenamesPboardType]) {
+    NSArray  *files = [pboard propertyListForType: NSFilenamesPboardType];
+    if ([files count] < 1) {
+      return nil;
+    }
+    return [files objectAtIndex: 0];
+  }
+  else if ([bestType isEqualToString: NSStringPboardType]) {
+    return [pboard stringForType: NSStringPboardType];
+  }
 }
 
 
