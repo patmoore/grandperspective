@@ -9,6 +9,9 @@
 Minor improvement:
 - Application now also accepts drops of folders and volumes (Feature 
   request #2789715)
+- Exported Scan Folder and Load Scan Data as a service.
+  - Added Services menu item to application menu (it wouldn't be fair
+    otherwise now, would it? ;-)
 
 Bug fix:
 - Fixed bug #2935266: Cannot open or reveal files with slashes in 
