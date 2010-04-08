@@ -105,6 +105,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (IBAction) openFile:(id) sender;
 - (IBAction) revealFileInFinder:(id) sender;
 - (IBAction) deleteFile:(id) sender;
+- (IBAction) rescanFile:(id) sender;
 - (IBAction) toggleDrawer:(id) sender;
 
 - (IBAction) maskCheckBoxChanged:(id) sender;
@@ -142,6 +143,7 @@ extern NSString  *DeleteFilesAndFolders;
 - (BOOL) canOpenSelectedFile;
 - (BOOL) canRevealSelectedFile;
 - (BOOL) canDeleteSelectedFile;
+- (BOOL) canRescanSelectedFile;
 
 + (NSArray *)fileDeletionTargetNames;
 

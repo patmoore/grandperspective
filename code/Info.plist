@@ -129,6 +129,8 @@
 		<true/>
 		<key>confirmFolderDeletion</key>
 		<true/>
+		<key>defaultRescanAction</key>
+		<string>rescan all</string>
 		<key>rescanBehaviour</key>
 		<string>keep old window</string>
 		<key>progressPanelRefreshRate</key>

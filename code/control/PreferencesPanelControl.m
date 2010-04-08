@@ -13,6 +13,7 @@
 
 NSString  *FileDeletionTargetsKey = @"fileDeletionTargets";
 NSString  *ConfirmFileDeletionKey = @"confirmFileDeletion";
+NSString  *DefaultRescanActionKey = @"defaultRescanAction";
 NSString  *RescanBehaviourKey = @"rescanBehaviour";
 NSString  *FileSizeMeasureKey = @"fileSizeMeasure";
 NSString  *DefaultColorMappingKey = @"defaultColorMapping";

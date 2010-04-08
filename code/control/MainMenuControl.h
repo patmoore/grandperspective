@@ -32,7 +32,19 @@
 
 - (IBAction) scanDirectoryView:(id) sender;
 - (IBAction) scanFilteredDirectoryView:(id) sender;
+
+// Default rescan action
+- (IBAction) rescan:(id) sender;
+
+// Rescan entire scan tree
 - (IBAction) rescanDirectoryView:(id) sender;
+
+// Rescan visible tree
+- (IBAction) rescanDirectoryInView:(id) sender;
+
+// Rescan selected item (file or directory)
+- (IBAction) rescanSelectedFile:(id) sender;
+
 - (IBAction) filterDirectoryView:(id) sender;
 - (IBAction) duplicateDirectoryView:(id) sender;
 - (IBAction) twinDirectoryView:(id) sender;

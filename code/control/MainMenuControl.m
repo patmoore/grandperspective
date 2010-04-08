@@ -51,6 +51,9 @@ NSString  *RescanClosesOldWindow = @"close old window";
 NSString  *RescanKeepsOldWindow = @"keep old window";
 NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 
+NSString  *RescanAll = @"rescan all";
+NSString  *RescanVisible = @"rescan visible";
+NSString  *RescanSelected = @"rescan selected";
 
 @interface ReadTaskCallback : NSObject {
   WindowManager  *windowManager;
@@ -108,6 +111,8 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 - (void) scanFolderUsingFilter:(BOOL) useFilter;
 - (void) scanFolder:(NSString *)path namedFilter:(NamedFilter *)filter;
 - (void) scanFolder:(NSString *)path filterSet:(FilterSet *)filterSet;
+- (void) rescanItem:(FileItem *)item 
+           deriveFrom:(DirectoryViewControl *)oldControl;
 
 - (void) loadScanDataFromFile:(NSString *)path;
 
@@ -385,6 +390,8 @@ static MainMenuControl  *singletonInstance = nil;
        action == @selector(saveScanData:) ||
        action == @selector(saveDirectoryViewImage:) ||
        action == @selector(rescanDirectoryView:) ||
+       action == @selector(rescanDirectoryInView:) ||
+       action == @selector(rescanSelectedFile:) ||
        action == @selector(filterDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
@@ -402,50 +409,60 @@ static MainMenuControl  *singletonInstance = nil;
 }
 
 
+- (IBAction) rescan:(id) sender {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSString  *rescanAction = [userDefaults stringForKey: DefaultRescanActionKey];
+  if ([rescanAction isEqualToString: RescanAll]) {
+    [self rescanDirectoryView: sender];
+  }
+  else if ([rescanAction isEqualToString: RescanVisible]) {
+    [self rescanDirectoryInView: sender];
+  }
+  else if ([rescanAction isEqualToString: RescanSelected]) {
+    [self rescanSelectedFile: sender];
+  }
+  else {
+    NSLog(@"Unrecognized rescan action: %@", rescanAction);
+  }
+}
+
 - (IBAction) rescanDirectoryView:(id) sender {
   DirectoryViewControl  *oldControl = 
     [[[NSApplication sharedApplication] mainWindow] windowController];
-
-  ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
-
-  if (pathModel == nil) {
+  if (oldControl == nil) {
     return;
   }
-  
+
   NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
   NSString  *rescanBehaviour = [userDefaults stringForKey: RescanBehaviourKey];
   if ([rescanBehaviour isEqualToString: RescanClosesOldWindow]) {
     [[oldControl window] close];
   }
   
-  DerivedDirViewWindowCreator  *windowCreator =
-    [[[DerivedDirViewWindowCreator alloc] 
-         initWithWindowManager: windowManager
-           targetPath: pathModel
-           settings: [oldControl directoryViewControlSettings]]
-         autorelease];
-
   TreeContext  *oldContext = [oldControl treeContext];
-  FilterSet  *filterSet = [oldContext filterSet];
-  if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
-    NSMutableArray  *unboundFilters = [NSMutableArray arrayWithCapacity: 8];
-    NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
-    filterSet = [filterSet updatedFilterSetUnboundFilters: unboundFilters
-                             unboundTests: unboundTests];
-    [MainMenuControl reportUnboundFilters: unboundFilters];
-    [MainMenuControl reportUnboundTests: unboundTests];
+  [self rescanItem: [oldContext scanTree] deriveFrom: oldControl];
+}
+
+- (IBAction) rescanDirectoryInView:(id) sender {
+  DirectoryViewControl  *oldControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+  if (oldControl == nil) {
+    return;
   }
   
-  ScanTaskInput  *input = 
-    [[[ScanTaskInput alloc] 
-         initWithPath: [[oldContext scanTree] path]
-           fileSizeMeasure: [oldContext fileSizeMeasure]
-           filterSet: filterSet]
-         autorelease];
-    
-  [scanTaskManager asynchronouslyRunTaskWithInput: input
-                     callback: windowCreator
-                     selector: @selector(createWindowForTree:)];
+  ItemPathModelView  *pathModelView = [oldControl pathModelView];
+  [self rescanItem: [pathModelView visibleTree] deriveFrom: oldControl];
+}
+
+- (IBAction) rescanSelectedFile:(id) sender {
+  DirectoryViewControl  *oldControl = 
+    [[[NSApplication sharedApplication] mainWindow] windowController];
+  if (oldControl == nil) {
+    return;
+  }
+  
+  ItemPathModelView  *pathModelView = [oldControl pathModelView];
+  [self rescanItem: [pathModelView selectedFileItem] deriveFrom: oldControl];  
 }
 
 
@@ -684,6 +701,49 @@ static MainMenuControl  *singletonInstance = nil;
     [[[ScanTaskInput alloc] initWithPath: path
                               fileSizeMeasure: fileSizeMeasure 
                               filterSet: filterSet] 
+         autorelease];
+    
+  [scanTaskManager asynchronouslyRunTaskWithInput: input
+                     callback: windowCreator
+                     selector: @selector(createWindowForTree:)];
+}
+
+/* Used to implement various Rescan commands. The new view is derived from the
+ * current/old control, and its settings are matched as much as possible.
+ */
+- (void) rescanItem:(FileItem *)item 
+           deriveFrom:(DirectoryViewControl *)oldControl {
+  // Make sure to always scan a directory.
+  if (![item isDirectory]) {
+    item = [item parentDirectory];
+  }
+           
+  TreeContext  *oldContext = [oldControl treeContext];
+  ItemPathModel  *pathModel = [[oldControl pathModelView] pathModel];
+    
+  DerivedDirViewWindowCreator  *windowCreator =
+    [[[DerivedDirViewWindowCreator alloc] 
+         initWithWindowManager: windowManager
+           targetPath: pathModel
+           settings: [oldControl directoryViewControlSettings]]
+         autorelease];
+
+  FilterSet  *filterSet = [oldContext filterSet];
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  if ([userDefaults boolForKey: UpdateFiltersBeforeUse]) {
+    NSMutableArray  *unboundFilters = [NSMutableArray arrayWithCapacity: 8];
+    NSMutableArray  *unboundTests = [NSMutableArray arrayWithCapacity: 8];
+    filterSet = [filterSet updatedFilterSetUnboundFilters: unboundFilters
+                             unboundTests: unboundTests];
+    [MainMenuControl reportUnboundFilters: unboundFilters];
+    [MainMenuControl reportUnboundTests: unboundTests];
+  }
+  
+  ScanTaskInput  *input = 
+    [[[ScanTaskInput alloc] 
+         initWithPath: [item systemPath]
+           fileSizeMeasure: [oldContext fileSizeMeasure]
+           filterSet: filterSet]
          autorelease];
     
   [scanTaskManager asynchronouslyRunTaskWithInput: input
@@ -1030,27 +1090,31 @@ static MainMenuControl  *singletonInstance = nil;
 
 - (DirectoryViewControl *)createDirectoryViewControlForAnnotatedTree:
                             (AnnotatedTreeContext *)annTreeContext {
-  // Try to match the path.
-  ItemPathModel  *path = 
+  // Try to match the subjectPath to the targetPath
+  ItemPathModel  *subjectPath = 
     [ItemPathModel pathWithTreeContext: [annTreeContext treeContext]];
 
-  [path suppressVisibleTreeChangedNotifications: YES];
+  [subjectPath suppressVisibleTreeChangedNotifications: YES];
 
   NSEnumerator  *fileItemEnum = [[targetPath fileItemPath] objectEnumerator];
   FileItem  *targetItem;
   FileItem  *itemToSelect = nil;
 
-  BOOL  insideScanTree = NO;
+  BOOL  insideTargetScanTree = NO;
+  BOOL  insideSubjectScanTree = NO;
   BOOL  insideVisibleTree = NO;
   BOOL  hasVisibleItems = NO;
   
+  NSString  *subjectScanTreePath = [[subjectPath scanTree] path];
+  
   while (targetItem = [fileItemEnum nextObject]) {
-    if ( insideScanTree ) {
-      // Only try to extend the visible path once we are inside the scan tree,
-      // as "path" starts at its scan tree.
-      if ( [path extendVisiblePathToSimilarFileItem: targetItem] ) {
+    if (insideSubjectScanTree) {
+      // Only try to extend the visible path once we are inside the subject's 
+      // scan tree, as this is where the path starts. (Also, we need to be in
+      // the target's scan tree as well, but this is implied). 
+      if ( [subjectPath extendVisiblePathToSimilarFileItem: targetItem] ) {
         if (! insideVisibleTree) {
-          [path moveVisibleTreeDown];
+          [subjectPath moveVisibleTreeDown];
         }
         else {
           hasVisibleItems = YES;
@@ -1063,39 +1127,43 @@ static MainMenuControl  *singletonInstance = nil;
     }
     if (itemToSelect == nil && targetItem == [targetPath selectedFileItem]) {
       // Found the selected item. It is the path's current end point. 
-      itemToSelect = [path lastFileItem];
+      itemToSelect = [subjectPath lastFileItem];
     }
     if (!insideVisibleTree && targetItem == [targetPath visibleTree]) {
       // The remainder of this path can remain visible.
       insideVisibleTree = YES;
     }
-    if (!insideScanTree && targetItem == [targetPath scanTree]) {
-      // We can now start extending "path" to match "targetPath". 
-      insideScanTree = YES;
+    if (!insideTargetScanTree && targetItem == [targetPath scanTree]) {
+      insideTargetScanTree = YES;
+    }
+    if (insideTargetScanTree && 
+        [[targetItem path] isEqualToString: subjectScanTreePath]) {
+      // We can now start extending "subjectPath" to match "targetPath". 
+      insideSubjectScanTree = YES;
     }
   }
 
   if (hasVisibleItems) {
-    [path setVisiblePathLocking: YES];
+    [subjectPath setVisiblePathLocking: YES];
   }
   
   if (itemToSelect != nil) {
     // Match the selection to that of the original path. 
-    [path selectFileItem: itemToSelect];
+    [subjectPath selectFileItem: itemToSelect];
   }
   else {
     // Did not manage to match the new path all the way up to the selected
     // item in the original path. The selected item of the new path can 
     // therefore be set to the path endpoint (as that is the closest it can 
     // come to matching the old selection).
-    [path selectFileItem: [path lastFileItem]];
+    [subjectPath selectFileItem: [subjectPath lastFileItem]];
   }
         
-  [path suppressVisibleTreeChangedNotifications: NO];
+  [subjectPath suppressVisibleTreeChangedNotifications: NO];
 
   return [[[DirectoryViewControl alloc] 
              initWithAnnotatedTreeContext: annTreeContext
-               pathModel: path 
+               pathModel: subjectPath 
                settings: settings] autorelease];
 }
 

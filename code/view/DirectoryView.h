@@ -41,6 +41,7 @@ extern NSString  *ColorMappingChangedEvent;
   BOOL  openFileEnabled;
   BOOL  revealFileEnabled;
   BOOL  deleteFileEnabled;
+  BOOL  rescanFileEnabled;
   
   NSImage  *treeImage;
   
@@ -69,6 +70,7 @@ extern NSString  *ColorMappingChangedEvent;
 - (void) setOpenFileEnabled: (BOOL) flag;
 - (void) setRevealFileEnabled: (BOOL) flag;
 - (void) setDeleteFileEnabled: (BOOL) flag;
+- (void) setRescanFileEnabled: (BOOL) flag;
 
 - (TreeLayoutBuilder*) layoutBuilder;
 

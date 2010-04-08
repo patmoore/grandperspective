@@ -676,6 +676,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
+- (IBAction) rescanFile:(id) sender {
+  [[MainMenuControl singletonInstance] rescanSelectedFile: sender];
+}
+
+
 - (IBAction) toggleDrawer:(id) sender {
   [drawer toggle: sender];
 }
@@ -782,6 +787,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
       // active for the file deletion controls to be enabled.
       && [[self window] isKeyWindow]
     );
+}
+
+- (BOOL) canRescanSelectedFile {
+  return ( [[pathModelView pathModel] isVisiblePathLocked]
+           && [[pathModelView selectedFileItem] isPhysical]);
 }
 
 
@@ -1032,6 +1042,7 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   [mainView setOpenFileEnabled: [self canOpenSelectedFile]];
   [mainView setRevealFileEnabled: [self canRevealSelectedFile]];
   [mainView setDeleteFileEnabled: [self canDeleteSelectedFile]];
+  [mainView setRescanFileEnabled: [self canRescanSelectedFile]];
 }
 
 

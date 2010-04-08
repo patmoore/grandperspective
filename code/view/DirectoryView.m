@@ -63,6 +63,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     openFileEnabled = NO;
     revealFileEnabled = NO;
     deleteFileEnabled = NO;
+    rescanFileEnabled = NO;
   }
 
   return self;
@@ -197,6 +198,10 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 - (void) setDeleteFileEnabled: (BOOL) flag {
   deleteFileEnabled = flag;
+}
+
+- (void) setRescanFileEnabled: (BOOL) flag {
+  rescanFileEnabled = flag;
 }
 
 
@@ -485,6 +490,14 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
                    NSLocalizedStringFromTable( @"Delete file", 
                                                @"PopUpMenu", @"Menu item" )
                  action: @selector(deleteFile:) 
+                 keyEquivalent: @"" atIndex: itemCount++];
+  }
+  
+  if (rescanFileEnabled) {
+    [popUpMenu insertItemWithTitle: 
+                   NSLocalizedStringFromTable( @"Rescan", 
+                                               @"PopUpMenu", @"Menu item" )
+                 action: @selector(rescanFile:) 
                  keyEquivalent: @"" atIndex: itemCount++];
   }
   
