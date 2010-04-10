@@ -53,10 +53,17 @@
     
     invisibleSelectedItem = nil;
     showPackageContents = YES;
-    preferredSelectionDepth = STICK_TO_ENDPOINT;
-    automaticallyStickToEndPoint = YES;
     
     [self updatePath];
+    
+    automaticallyStickToEndPoint = YES;
+    if (automaticallyStickToEndPoint && ![self canMoveSelectionDown]) {
+      // We're at the end-point. Make depth stick to end-point. 
+      preferredSelectionDepth = STICK_TO_ENDPOINT;
+    }
+    else {
+      preferredSelectionDepth = selectedItemIndex - visibleTreeIndex; 
+    }
     
     NSNotificationCenter  *nc = [NSNotificationCenter defaultCenter];
 
