@@ -78,8 +78,14 @@ early releases of GrandPerspective, and to Craig Hughes who helped me
 early on to make the source code Intel-compatible.
 
 Thanks to Miles Ponson (iTweek) for providing the free set of "knobs"
-icons, two of which I used for the toolbar (the images for the Reveal
-and Delete actions to be precise; the Open icon is my own concoction).
+icons, three of which I used for the toolbar (the images for the 
+Reveal, Delete and Rescan actions to be precise; the Open icon is my
+own concoction).
+
+Thanks to Keith Blount for developing and making available the source
+code of various handy utility classes. His KBPopUpToolbarItem class
+provides the pop-up menu functionality of the Rescan button in the
+toolbar.
 
 Thanks to the many users that have reported bugs and suggested
 improvements. This has definitely made the application better than it
