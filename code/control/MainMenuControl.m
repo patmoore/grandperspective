@@ -389,9 +389,7 @@ static MainMenuControl  *singletonInstance = nil;
        
        action == @selector(saveScanData:) ||
        action == @selector(saveDirectoryViewImage:) ||
-       action == @selector(rescanDirectoryView:) ||
-       action == @selector(rescanDirectoryInView:) ||
-       action == @selector(rescanSelectedFile:) ||
+       action == @selector(rescan:) ||
        action == @selector(filterDirectoryView:) ) {
     return ([[NSApplication sharedApplication] mainWindow] != nil);
   }
