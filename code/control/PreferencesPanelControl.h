@@ -26,6 +26,7 @@ extern NSString  *UpdateFiltersBeforeUse;
   IBOutlet NSPopUpButton  *fileDeletionPopUp;
   IBOutlet NSButton  *fileDeletionConfirmationCheckBox;
   
+  IBOutlet NSPopUpButton  *rescanActionPopUp;
   IBOutlet NSPopUpButton  *rescanBehaviourPopUp;
   
   IBOutlet NSPopUpButton  *fileSizeMeasurePopUp;

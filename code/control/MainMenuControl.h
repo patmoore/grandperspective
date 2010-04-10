@@ -25,6 +25,7 @@
 
 + (MainMenuControl *)singletonInstance;
 
++ (NSArray *)rescanActionNames;
 + (NSArray *)rescanBehaviourNames;
 
 + (void) reportUnboundFilters:(NSArray *)unboundFilters;

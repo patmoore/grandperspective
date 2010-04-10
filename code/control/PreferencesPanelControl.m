@@ -71,6 +71,8 @@ NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
   // Configure all pop-up buttons.
   [self setupPopUp: fileDeletionPopUp key: FileDeletionTargetsKey
           content: [DirectoryViewControl fileDeletionTargetNames]];
+  [self setupPopUp: rescanActionPopUp key: DefaultRescanActionKey
+          content: [MainMenuControl rescanActionNames]];
   [self setupPopUp: rescanBehaviourPopUp key: RescanBehaviourKey
           content: [MainMenuControl rescanBehaviourNames]];
   [self setupPopUp: fileSizeMeasurePopUp key: FileSizeMeasureKey

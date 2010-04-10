@@ -53,7 +53,6 @@ NSString  *RescanReusesOldWindow = @"reuse old window"; // Not (yet?) supported
 
 NSString  *RescanAll = @"rescan all";
 NSString  *RescanVisible = @"rescan visible";
-NSString  *RescanSelected = @"rescan selected";
 
 @interface ReadTaskCallback : NSObject {
   WindowManager  *windowManager;
@@ -174,6 +173,10 @@ static MainMenuControl  *singletonInstance = nil;
   return singletonInstance;
 }
 
++ (NSArray *) rescanActionNames {
+  return [NSArray arrayWithObjects: RescanAll, 
+                                    RescanVisible, nil];
+}
 
 + (NSArray *) rescanBehaviourNames {
   return [NSArray arrayWithObjects: RescanClosesOldWindow, 
@@ -415,9 +418,6 @@ static MainMenuControl  *singletonInstance = nil;
   }
   else if ([rescanAction isEqualToString: RescanVisible]) {
     [self rescanDirectoryInView: sender];
-  }
-  else if ([rescanAction isEqualToString: RescanSelected]) {
-    [self rescanSelectedFile: sender];
   }
   else {
     NSLog(@"Unrecognized rescan action: %@", rescanAction);
