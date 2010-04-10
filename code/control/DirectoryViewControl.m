@@ -41,6 +41,11 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 @interface DirectoryViewControl (PrivateMethods)
 
+- (BOOL) canOpenSelectedFile;
+- (BOOL) canRevealSelectedFile;
+- (BOOL) canDeleteSelectedFile;
+- (BOOL) canRescanSelectedFile;
+
 - (void) informativeAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo;
 
@@ -745,53 +750,27 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 }
 
 
-- (BOOL) canOpenSelectedFile {
-  FileItem  *selectedFile = [pathModelView selectedFileItem];
-
-  return
-    ( [[pathModelView pathModel] isVisiblePathLocked] 
-    
-      // Can only open actual files
-      && [selectedFile isPhysical]
-      
-      // Can only open plain files and packages
-      && ( ! [selectedFile isDirectory]
-           || [selectedFile isPackage] )
-    );
+- (BOOL) validateAction:(SEL) action {
+  if ( action == @selector(openFile:) ) {
+    return [self canOpenSelectedFile];
+  }
+  else if ( action == @selector(revealFileInFinder:) ) {
+    return [self canRevealSelectedFile];
+  }
+  else if ( action == @selector(deleteFile:) ) {
+    return [self canDeleteSelectedFile];
+  }
+  else if ( action == @selector(rescanFile:) ) {
+    return [self canRescanSelectedFile];
+  }
+  
+  NSLog(@"Unsupported action");
+  return NO;
 }
 
-- (BOOL) canRevealSelectedFile {
-  return ( [[pathModelView pathModel] isVisiblePathLocked]
-           && [[pathModelView selectedFileItem] isPhysical] );
-}
 
-- (BOOL) canDeleteSelectedFile {
-  FileItem  *selectedFile = [pathModelView selectedFileItem];
-
-  return 
-    ( [[pathModelView pathModel] isVisiblePathLocked] 
-
-      // Can only delete actual files.
-      && [selectedFile isPhysical] 
-
-      // Can this type of item be deleted (according to the preferences)?
-      && ( (canDeleteFiles && ![selectedFile isDirectory])
-           || (canDeleteFolders && [selectedFile isDirectory]) ) 
-
-      // Can only delete the entire scan tree when it is an actual folder 
-      // within the volume. You cannot delete the root folder.
-      && ! ( (selectedFile == [pathModelView scanTree])
-             && [[[pathModelView scanTree] name] isEqualToString: @""])
-
-      // Don't enable Click-through for deletion. The window needs to be 
-      // active for the file deletion controls to be enabled.
-      && [[self window] isKeyWindow]
-    );
-}
-
-- (BOOL) canRescanSelectedFile {
-  return ( [[pathModelView pathModel] isVisiblePathLocked]
-           && [[pathModelView selectedFileItem] isPhysical]);
+- (BOOL) isSelectedFileLocked {
+  return [[pathModelView pathModel] isVisiblePathLocked];
 }
 
 
@@ -811,6 +790,50 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
 
 
 @implementation DirectoryViewControl (PrivateMethods)
+
+- (BOOL) canOpenSelectedFile {
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
+
+  return
+    ( // Can only open actual files
+      [selectedFile isPhysical]
+      
+      // Can only open plain files and packages
+      && ( ! [selectedFile isDirectory]
+           || [selectedFile isPackage] )
+    );
+}
+
+- (BOOL) canRevealSelectedFile {
+  return [[pathModelView selectedFileItem] isPhysical];
+}
+
+- (BOOL) canDeleteSelectedFile {
+  FileItem  *selectedFile = [pathModelView selectedFileItem];
+
+  return 
+    ( // Can only delete actual files.
+      [selectedFile isPhysical] 
+
+      // Can this type of item be deleted (according to the preferences)?
+      && ( (canDeleteFiles && ![selectedFile isDirectory])
+           || (canDeleteFolders && [selectedFile isDirectory]) ) 
+
+      // Can only delete the entire scan tree when it is an actual folder 
+      // within the volume. You cannot delete the root folder.
+      && ! ( (selectedFile == [pathModelView scanTree])
+             && [[[pathModelView scanTree] name] isEqualToString: @""])
+
+      // Don't enable Click-through for deletion. The window needs to be 
+      // active for the file deletion controls to be enabled.
+      && [[self window] isKeyWindow]
+    );
+}
+
+- (BOOL) canRescanSelectedFile {
+  return [[pathModelView selectedFileItem] isPhysical];
+}
+
 
 - (void) informativeAlertDidEnd:(NSAlert *)alert 
            returnCode:(int) returnCode contextInfo:(void *)contextInfo {
@@ -1038,11 +1061,6 @@ NSString  *DeleteFilesAndFolders = @"delete files and folders";
   // update its visible items (unnecessarily often it seems). Nevertheless, 
   // it's good to do so explicitly, in response to relevant events.
   [[[self window] toolbar] validateVisibleItems];
-  
-  [mainView setOpenFileEnabled: [self canOpenSelectedFile]];
-  [mainView setRevealFileEnabled: [self canRevealSelectedFile]];
-  [mainView setDeleteFileEnabled: [self canDeleteSelectedFile]];
-  [mainView setRescanFileEnabled: [self canRescanSelectedFile]];
 }
 
 

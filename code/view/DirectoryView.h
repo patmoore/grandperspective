@@ -38,11 +38,6 @@ extern NSString  *ColorMappingChangedEvent;
 
   BOOL  showEntireVolume;
 
-  BOOL  openFileEnabled;
-  BOOL  revealFileEnabled;
-  BOOL  deleteFileEnabled;
-  BOOL  rescanFileEnabled;
-  
   NSImage  *treeImage;
   
   // Indicates if the image has been resized to fit inside the current view.
@@ -66,11 +61,6 @@ extern NSString  *ColorMappingChangedEvent;
 
 - (BOOL) showEntireVolume;
 - (void) setShowEntireVolume: (BOOL) flag;
-
-- (void) setOpenFileEnabled: (BOOL) flag;
-- (void) setRevealFileEnabled: (BOOL) flag;
-- (void) setDeleteFileEnabled: (BOOL) flag;
-- (void) setRescanFileEnabled: (BOOL) flag;
 
 - (TreeLayoutBuilder*) layoutBuilder;
 

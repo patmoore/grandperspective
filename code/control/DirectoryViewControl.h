@@ -140,10 +140,17 @@ extern NSString  *DeleteFilesAndFolders;
 - (TreeContext *)treeContext;
 - (AnnotatedTreeContext *)annotatedTreeContext;
 
-- (BOOL) canOpenSelectedFile;
-- (BOOL) canRevealSelectedFile;
-- (BOOL) canDeleteSelectedFile;
-- (BOOL) canRescanSelectedFile;
+/* Returns YES iff the action is currently enabled. 
+ * 
+ * Only works for a subset of of actions, e.g. openFile: and deleteFile:. See 
+ * implementation for complete list, which can be extended when needed.
+ */
+- (BOOL) validateAction:(SEL) action;
+
+/* Returns YES iff the selection is currently locked, which means that it does
+ * not change when the mouse position changes.
+ */
+- (BOOL) isSelectedFileLocked;
 
 + (NSArray *)fileDeletionTargetNames;
 

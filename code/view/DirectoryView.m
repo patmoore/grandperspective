@@ -28,6 +28,8 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 @interface DirectoryView (PrivateMethods)
 
+- (BOOL) validateAction:(SEL) action;
+
 - (void) forceRedraw;
 
 - (void) itemTreeImageReady: (id) image;
@@ -59,11 +61,6 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     pathDrawer = [[ItemPathDrawer alloc] init];
     
     scrollWheelDelta = 0;
-    
-    openFileEnabled = NO;
-    revealFileEnabled = NO;
-    deleteFileEnabled = NO;
-    rescanFileEnabled = NO;
   }
 
   return self;
@@ -185,23 +182,6 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     showEntireVolume = flag;
     [self forceRedraw];
   }
-}
-
-
-- (void) setOpenFileEnabled: (BOOL) flag {
-  openFileEnabled = flag;
-}
-
-- (void) setRevealFileEnabled: (BOOL) flag {
-  revealFileEnabled = flag;
-}
-
-- (void) setDeleteFileEnabled: (BOOL) flag {
-  deleteFileEnabled = flag;
-}
-
-- (void) setRescanFileEnabled: (BOOL) flag {
-  rescanFileEnabled = flag;
 }
 
 
@@ -469,7 +449,8 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
     [[[NSMenu alloc] initWithTitle: @"Contextual Menu"] autorelease];
   int  itemCount = 0;
 
-  if (revealFileEnabled) {
+
+  if ( [self validateAction: @selector(revealFileInFinder:)] ) {
     [popUpMenu insertItemWithTitle: 
                    NSLocalizedStringFromTable( @"Reveal in Finder", 
                                                @"PopUpMenu", @"Menu item" )
@@ -477,7 +458,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
                  keyEquivalent: @"" atIndex: itemCount++];
   }
   
-  if (openFileEnabled) {
+  if ( [self validateAction: @selector(openFile:)] ) {
     [popUpMenu insertItemWithTitle: 
                    NSLocalizedStringFromTable( @"Open with Finder", 
                                                @"PopUpMenu", @"Menu item" )
@@ -485,7 +466,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
                  keyEquivalent: @"" atIndex: itemCount++];
   }
   
-  if (deleteFileEnabled) {
+  if ( [self validateAction: @selector(deleteFile:)] ) {
     [popUpMenu insertItemWithTitle: 
                    NSLocalizedStringFromTable( @"Delete file", 
                                                @"PopUpMenu", @"Menu item" )
@@ -493,7 +474,7 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
                  keyEquivalent: @"" atIndex: itemCount++];
   }
   
-  if (rescanFileEnabled) {
+  if ( [self validateAction: @selector(rescanFile:)] ) {
     [popUpMenu insertItemWithTitle: 
                    NSLocalizedStringFromTable( @"Rescan", 
                                                @"PopUpMenu", @"Menu item" )
@@ -508,6 +489,16 @@ NSString  *ColorMappingChangedEvent = @"colorMappingChanged";
 
 
 @implementation DirectoryView (PrivateMethods)
+
+/**
+ * Checks with the target that will execute the action if it should be enabled.
+ * It assumes that the target has implemented validateAction:, which is the
+ * case when the target is DirectoryViewControl.
+ */
+- (BOOL) validateAction:(SEL) action {
+  id  target = [[NSApplication sharedApplication] targetForAction: action];
+  return [target validateAction: action];
+}
 
 - (void) forceRedraw {
   [self setNeedsDisplay: YES];
