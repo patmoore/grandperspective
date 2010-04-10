@@ -4,6 +4,7 @@
 #import "DirectoryView.h"
 #import "ToolbarSegmentedCell.h"
 #import "MainMenuControl.h"
+#import "KBPopUpToolbarItem.h"
 
 
 NSString  *ToolbarZoom = @"Zoom"; 
@@ -58,6 +59,9 @@ NSString  *ToolbarToggleDrawer = @"ToggleDrawer";
 - (void) revealFile: (id) sender;
 - (void) deleteFile: (id) sender;
 - (void) rescan: (id) sender;
+- (void) rescanAll: (id) sender;
+- (void) rescanVisible: (id) sender;
+- (void) rescanSelected: (id) sender;
 
 @end
 
@@ -215,6 +219,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
                       ToolbarZoom, ToolbarFocus,
                       NSToolbarSpaceItemIdentifier, 
                       ToolbarOpenItem, ToolbarRevealItem, ToolbarDeleteItem, 
+                      NSToolbarSpaceItemIdentifier, 
+                      ToolbarRescan,
                       NSToolbarFlexibleSpaceItemIdentifier, 
                       ToolbarToggleDrawer, nil];
 }
@@ -393,8 +399,8 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 - (NSToolbarItem *) rescanToolbarItem {
-  NSToolbarItem  *item = 
-    [[[NSToolbarItem alloc] 
+  KBPopUpToolbarItem  *item = 
+    [[[KBPopUpToolbarItem alloc] 
          initWithItemIdentifier: ToolbarRescan] autorelease];
 
   [item setLabel: NSLocalizedStringFromTable( @"Rescan", @"Toolbar",
@@ -405,6 +411,45 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   [item setImage: [NSImage imageNamed: @"Rescan"]];
   [item setAction: @selector(rescan:) ];
   [item setTarget: self];
+  
+  NSString  *rescanAllTitle =
+    NSLocalizedStringFromTable( @"Rescan all", @"Toolbar", 
+                                @"Toolbar action" );
+  NSString  *rescanVisibleTitle =
+    NSLocalizedStringFromTable( @"Rescan folder in view", @"Toolbar", 
+                                @"Toolbar action" );
+  NSString  *rescanSelectedTitle =
+    NSLocalizedStringFromTable( @"Rescan selected", @"Toolbar", 
+                                @"Toolbar action" );
+
+  NSMenu  *menu = [[NSMenu alloc] initWithTitle: @"Rescan actions"];
+
+  NSMenuItem  *rescanAllItem =
+    [[[NSMenuItem alloc]
+         initWithTitle: rescanAllTitle 
+         action: @selector(rescanAll:) 
+         keyEquivalent: @""] autorelease];
+  [rescanAllItem setTarget: self];
+  [menu addItem: rescanAllItem];
+
+  NSMenuItem  *rescanVisibleItem =
+    [[[NSMenuItem alloc]
+         initWithTitle: rescanVisibleTitle 
+         action: @selector(rescanVisible:) 
+         keyEquivalent: @""] autorelease];
+  [rescanVisibleItem setTarget: self];
+  [menu addItem: rescanVisibleItem];
+
+  NSMenuItem  *rescanSelectedItem =
+    [[[NSMenuItem alloc]
+         initWithTitle: rescanSelectedTitle 
+         action: @selector(rescanSelected:) 
+         keyEquivalent: @""] autorelease];
+  [rescanSelectedItem setTarget: self];
+  [menu addItem: rescanSelectedItem];
+
+  [menu setAutoenablesItems: YES];
+  [item setMenu: menu];
 
   return item;
 }
@@ -479,10 +524,16 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
   else if ( action == @selector(deleteFile:) ) {
     return [dirViewControl canDeleteSelectedFile];
   }
-  else if ( action == @selector(rescan:) ) {
+  else if ( action == @selector(rescan:) ||
+            action == @selector(rescanAll:) ||
+            action == @selector(rescanVisible:) ) {
     return ( [[[NSApplication sharedApplication] mainWindow] windowController]
              == dirViewControl );
   }
+  else if ( action == @selector(rescanSelected:) ) {
+    return [dirViewControl canRescanSelectedFile];
+  }
+
   else {
     NSLog(@"Unrecognized action %@", NSStringFromSelector(action));
   }
@@ -550,7 +601,19 @@ NSMutableDictionary  *createToolbarItemLookup = nil;
 }
 
 - (void) rescan: (id) sender {
+  [[MainMenuControl singletonInstance] rescan: sender];
+}
+
+- (void) rescanAll: (id) sender {
   [[MainMenuControl singletonInstance] rescanDirectoryView: sender];
+}
+
+- (void) rescanVisible: (id) sender {
+  [[MainMenuControl singletonInstance] rescanDirectoryInView: sender];
+}
+
+- (void) rescanSelected: (id) sender {
+  [[MainMenuControl singletonInstance] rescanSelectedFile: sender];
 }
 
 @end // @implementation DirectoryViewToolbarControl (PrivateMethods)
