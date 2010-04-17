@@ -168,6 +168,15 @@ die "FATAL: Couldn't mount DMG $dmgName (Error: $?)\n" if $?;
 ($dev)  = ($output =~ /(\/dev\/.+?)\s*Apple_partition_scheme/im);
 ($dest) = ($output =~ /Apple_HFS\s+(.+?)\s*$/im);
 
+# Replace .Trashes folder by zero-sized file
+$output = `sudo rm -rf \"$dest\"/.Trashes`;
+$output = `touch \"$dest\"/.Trashes`;
+
+# Remove FSEvents files that were already created
+# Note: Also removing the "no_log", as it did its job when mounting.
+$output = `rm \"$dest\"/.fseventsd/*`;
+$output = `rmdir \"$dest\"/.fseventsd`; 
+
 # disable Spotlight indexing
 # $output = `mdutil -i off $dest`;
 
