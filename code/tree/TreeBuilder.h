@@ -47,6 +47,8 @@ extern NSString  *PhysicalFileSize;
   FSCatalogInfo  *catalogInfoArray;
   FSRef  *fileRefArray;
   HFSUniStr255   *namesArray;
+  
+  BOOL  debugLogEnabled;
 }
 
 + (NSArray *) fileSizeMeasureNames;

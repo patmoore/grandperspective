@@ -131,6 +131,10 @@
 		<true/>
 		<key>defaultRescanAction</key>
 		<string>rescan all</string>
+		<key>logAll</key>
+		<false/>
+		<key>logScanning</key>
+		<false/>
 		<key>rescanBehaviour</key>
 		<string>keep old window</string>
 		<key>progressPanelRefreshRate</key>

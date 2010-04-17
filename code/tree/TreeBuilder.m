@@ -206,6 +206,10 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
     
     fileSizeMeasureFunction = NULL;
     [self setFileSizeMeasure: LogicalFileSize];
+    
+    NSUserDefaults *args = [NSUserDefaults standardUserDefaults];
+    debugLogEnabled = 
+      [args boolForKey: @"logAll"] || [args boolForKey: @"logScanning"];      
   }
   return self;
 }
@@ -379,6 +383,9 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   
   [treeGuide descendIntoDirectory: dirItem];
   [progressTracker processingFolder: dirItem];
+  if (debugLogEnabled) {
+    NSLog( @"Scanning %@", [dirItem systemPath]);
+  }
 
   NSMutableArray  *files = 
     [[NSMutableArray alloc] initWithCapacity: INITIAL_FILES_CAPACITY];
