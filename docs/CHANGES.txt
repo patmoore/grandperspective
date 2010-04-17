@@ -3,6 +3,27 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.3.2, 17-04-2010
+----------------------------------------------------------------------
+
+Minor improvements:
+- Added two more rescan commands: "Rescan folder in view" and "Rescan
+  selected".
+  - Both commands are available from the toolbar by way of a pop-up 
+    menu. Thanks to Keith Blount for sharing the delayed pop-up code 
+    that enables this.
+  - "Rescan selected" is also available from the context menu.
+  - In the Preferences you can specify the default rescan action.
+- The selection does not have to be locked anymore for the context 
+  menu to be available.
+- Added optional detailed logging when scanning (useful for 
+  troubleshooting).
+
+Bug fix:
+- Fixed bug: After a rescan the focus can move down when it should.
+
+
+----------------------------------------------------------------------
   Version 1.3.1, 13-03-2010
 ----------------------------------------------------------------------
 
