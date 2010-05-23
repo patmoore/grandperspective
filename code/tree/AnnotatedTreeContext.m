@@ -40,10 +40,18 @@
     
     // Create a copy of the string, to ensure it is immutable.
     comments = (commentsVal != nil 
-                ? [[NSString stringWithString: commentsVal] retain]
+                ? [NSString stringWithString: commentsVal]
                 : @"");
+    [comments retain];
   }
   return self;
+}
+
+- (void) dealloc {
+  [treeContext release];
+  [comments release];
+
+  [super dealloc];
 }
 
 
