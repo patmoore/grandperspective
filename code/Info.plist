@@ -183,6 +183,8 @@
 		<real>640</real>
 		<key>defaultViewWindowHeight</key>
 		<real>480</real>
+		<key>treeMemoryZone</key>
+		<string>default</string>        
 	</dict>
 	<key>GPDefaultFilters</key>
 	<dict>

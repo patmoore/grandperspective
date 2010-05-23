@@ -1,16 +1,39 @@
 #import "Item.h"
 
+#import "PreferencesPanelControl.h"
+
+/* The supported memory-zone options for storing trees. */
+NSString  *DefaultZone = @"default";
+NSString  *DedicatedSharedZone = @"dedicated shared";
+NSString  *DedicatedPrivateZone = @"dedicated private";
 
 @implementation Item
 
-+ (NSZone *) dedicatedZone {
-  static NSZone  *dedicatedZone = nil;
+static NSZone  *dedicatedSharedZone = nil;
 
-  if (dedicatedZone == nil) {
-    dedicatedZone = NSCreateZone(8192 * 16, 4096 * 16, YES);
++ (NSZone *)zoneForTree {
+  NSUserDefaults  *userDefaults = [NSUserDefaults standardUserDefaults];
+  NSString  *memoryZone = [userDefaults stringForKey: TreeMemoryZoneKey];
+  NSLog(@"Allocating tree in %@ memory zone.", memoryZone);
+  if ([memoryZone isEqualToString: DefaultZone]) {
+    return NSDefaultMallocZone();
+  } 
+  else if ([memoryZone isEqualToString: DedicatedSharedZone]) {
+    if (dedicatedSharedZone == nil) {
+      dedicatedSharedZone = NSCreateZone(8192 * 16, 4096 * 16, YES);
+    }
+    return dedicatedSharedZone;
+  }
+  else if ([memoryZone isEqualToString: DedicatedPrivateZone]) {
+    return NSCreateZone(8192 * 16, 4096 * 16, NO);
   }
 
-  return dedicatedZone;
+  NSAssert2(NO, @"Unrecognized value for %@: \"%@\"", 
+    TreeMemoryZoneKey, memoryZone);
+}
+
++ (BOOL) disposeZoneAfterUse:(NSZone *)zone {
+  return (zone != NSDefaultMallocZone() && zone != dedicatedSharedZone);
 }
 
 

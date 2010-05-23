@@ -18,6 +18,7 @@ extern NSString  *DefaultViewWindowHeight;
 extern NSString  *CustomFileOpenApplication;
 extern NSString  *CustomFileRevealApplication;
 extern NSString  *UpdateFiltersBeforeUse;
+extern NSString  *TreeMemoryZoneKey;
 
 @class FilterPopUpControl;
 

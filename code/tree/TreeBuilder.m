@@ -108,10 +108,10 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
   return self;
 }
 
-- (void) dealloc {
-  [super dealloc];
-  
+- (void) dealloc {  
   [dirItem release];
+  
+  [super dealloc];
 }
 
 - (DirectoryItem *) directoryItem {
@@ -332,7 +332,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
                             freeSpace: freeSpace
                             filterSet: filterSet] autorelease];
   DirectoryItem  *scanTree = 
-    [[[ScanTreeRoot allocWithZone: [Item dedicatedZone]] 
+    [[[ScanTreeRoot allocWithZone: [Item zoneForTree]] 
          initWithName: relativePath 
          parent: [scanResult scanTreeParent]
          flags: [self flagsForFileRef: &pathRef]] autorelease];
@@ -431,9 +431,14 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
       FSRef  *childRef = &fileRefArray[i];
       HFSUniStr255  *name = &namesArray[i];
 
+      // Allocate the string in the same zone as the rest of the tree.
+      // BUG: This does not seem to work. The string always ends up in the 
+      // default zone. which largely defeats the purpose of using zones for
+      // performance reasons.
       NSString  *childName = 
-        [[NSString alloc] initWithCharacters: (unichar *) &(name->unicode)
-                            length: name->length];
+        [[NSString allocWithZone: [dirItem zone]] 
+            initWithCharacters: (unichar *) &(name->unicode)
+              length: name->length];
                             
       // The "system path" path to the child item. It may not be needed, so it
       // is created lazily.
@@ -470,7 +475,7 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
           DirectoryItem  *dirChildItem = 
             [[DirectoryItem allocWithZone: [dirItem zone]] 
                 initWithName: childName parent: dirItem flags: flags];
-
+          
           // Only add directories that should be scanned (this does not
           // necessarily mean that it has passed the filter test already) 
           if ( [treeGuide shouldDescendIntoDirectory: dirChildItem] ) {
@@ -545,6 +550,12 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
       // the tmpDirInfo object does not trigger deallocation of dirChildItem.
       [dirChildItem retain]; 
       
+      // TEMP: Added assertion to help track cause of bug #2989277
+      NSAssert2(
+        [dirChildItem retainCount] == 2 && [tmpDirInfo retainCount] == 1, 
+        @"Unexpected retainCounts: %d, %d", 
+        [dirChildItem retainCount], [tmpDirInfo retainCount]);
+
       // Replace the tmpDirInfo object with the actual DirectoryItem object.
       [dirs replaceObjectAtIndex: i withObject: dirChildItem];
 

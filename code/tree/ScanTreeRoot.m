@@ -22,9 +22,18 @@
 }
 
 - (void) dealloc {
+  NSLog(@"ScanTreeRoot-dealloc (root)");
+  NSZone  *zone = [self zone];
+
   [systemName release];
   
   [super dealloc];
+
+  if ([Item disposeZoneAfterUse: zone]) {
+    NSLog(@"Recyling memory zone");
+    NSRecycleZone(zone);
+    NSLog(@"Recycled memory zone");
+  }
 }
 
 @end // @implementation ScanTreeRoot

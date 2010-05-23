@@ -77,7 +77,7 @@
 
   DirectoryItem  *oldScanTree = [oldTree scanTree];
   DirectoryItem  *scanTree = 
-    [[[DirectoryItem allocWithZone: [Item dedicatedZone]] 
+    [[[DirectoryItem allocWithZone: [Item zoneForTree]] 
          initWithName: [oldScanTree name]
          parent: [filterResult scanTreeParent]
          flags: [oldScanTree fileItemFlags]] autorelease];

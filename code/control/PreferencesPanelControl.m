@@ -34,6 +34,7 @@ NSString  *DefaultViewWindowHeight = @"defaultViewWindowHeight";
 NSString  *CustomFileOpenApplication = @"customFileOpenApplication";
 NSString  *CustomFileRevealApplication = @"customFileRevealApplication";
 NSString  *UpdateFiltersBeforeUse = @"updateFiltersBeforeUse";
+NSString  *TreeMemoryZoneKey = @"treeMemoryZone";
 
 
 @interface PreferencesPanelControl (PrivateMethods)

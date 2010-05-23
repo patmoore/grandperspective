@@ -37,7 +37,8 @@
 - (id) initWithName:(NSString *)nameVal parent:(DirectoryItem *)parentVal
          size:(ITEM_SIZE)sizeVal flags:(UInt8) flagsVal {
   if (self = [super initWithItemSize: sizeVal]) {
-    name = [nameVal copyWithZone: [self zone]];
+    name = [nameVal retain];
+
     parent = parentVal; // not retaining it, as it is not owned.
     flags = flagsVal;
   }
