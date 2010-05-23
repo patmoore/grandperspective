@@ -100,7 +100,7 @@ NSString  *UnknownTypeUTI = @"unknown";
   }
 
   NSString  *uti = 
-    (NSString*) UTTypeCreatePreferredIdentifierForTag
+    (NSString *)UTTypeCreatePreferredIdentifierForTag
                   (kUTTagClassFilenameExtension, (CFStringRef)ext, NULL); 
     // TODO: Use "kUTTypeData" in Mac OS X 10.4 and up. 
 
@@ -115,9 +115,13 @@ NSString  *UnknownTypeUTI = @"unknown";
       // UniformType can be created, which is why the check is needed.
       
       [typeForExtension setObject: type forKey: ext];
-    
-      return type;
     }
+  }
+
+  CFRelease(uti);
+  
+  if (type != nil) {
+    return type;
   }
   
   // No proper type could be constructed for the given UTI.
