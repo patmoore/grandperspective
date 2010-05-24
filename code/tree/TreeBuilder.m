@@ -434,12 +434,16 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
       // Allocate the string in the same zone as the rest of the tree.
       // BUG: This does not seem to work. The string always ends up in the 
       // default zone. which largely defeats the purpose of using zones for
-      // performance reasons.
+      // performance reasons. I do not know of a good workaround. It is for
+      // example not easy to instead allocate a CFString in the given zone
+      // either. Subclassing NSString so that the instance and its backing
+      // store are in the right zone probably works, but seems a hassle and may
+      // inadvertently harm performance if not done carefully.
       NSString  *childName = 
         [[NSString allocWithZone: [dirItem zone]] 
             initWithCharacters: (unichar *) &(name->unicode)
               length: name->length];
-                            
+      
       // The "system path" path to the child item. It may not be needed, so it
       // is created lazily.
       NSString  *systemPath = nil; 
@@ -550,12 +554,14 @@ ITEM_SIZE getPhysicalFileSize(FSCatalogInfo *catalogInfo) {
       // the tmpDirInfo object does not trigger deallocation of dirChildItem.
       [dirChildItem retain]; 
       
-      // TEMP: Added assertion to help track cause of bug #2989277
-      NSAssert2(
-        [dirChildItem retainCount] == 2 && [tmpDirInfo retainCount] == 1, 
-        @"Unexpected retainCounts: %d, %d", 
-        [dirChildItem retainCount], [tmpDirInfo retainCount]);
-
+      // TEMP: Add checks and logging to help track cause of bug #2989277
+      if ([dirChildItem retainCount] != 2 || [tmpDirInfo retainCount] != 1) {
+        NSLog(@"Unexpected retainCounts (%d and %d) at %@", 
+          [dirChildItem retainCount], [tmpDirInfo retainCount], path);
+        NSLog(@"dirChildItem=%@", [dirChildItem name]);
+        // Abort execution
+        NSAssert(NO, @"Unexpected retainCounts"); 
+      }
       // Replace the tmpDirInfo object with the actual DirectoryItem object.
       [dirs replaceObjectAtIndex: i withObject: dirChildItem];
 
