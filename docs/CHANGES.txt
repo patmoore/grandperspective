@@ -3,6 +3,23 @@
 ======================================================================
 
 ----------------------------------------------------------------------
+  Version 1.3.3, 24-05-2010
+----------------------------------------------------------------------
+
+Minor improvements:
+- Made usage of memory zones for scan tree configurable (default,
+  dedicated shared, or dedicated private). Now defaulting to default
+  memory zone.
+- Added checks and verbose logging in TreeBuilder to help trace bug 
+  #2989277: Crashes on Scan of Boot Volume.
+- Minor fix to TmpDirInfo-dealloc (may fix bug #2989277?)
+
+Bug fix:
+- Plugged a big memory leak: The scan tree was never released.
+- Plugged a small memory leak in UniformTypeInventory.
+
+
+----------------------------------------------------------------------
   Version 1.3.2, 17-04-2010
 ----------------------------------------------------------------------
 
